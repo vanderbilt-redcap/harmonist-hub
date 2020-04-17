@@ -1,9 +1,4 @@
 <?php
-$project_id = 85;
-$instrument = 'sop_comments';
-$event_id = 124;
-$record = 58;
-
 use ExternalModules\ExternalModules;
 
 $RecordSetComment = \REDCap::getData($project_id, 'array', array('record_id' => $record));
