@@ -1,0 +1,48 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,data_upload,,text,"Record ID",,,,,,,,,,,,,
+data_assoc_concept,data_upload,,sql,"Associated Concept Sheet
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>","SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 58325 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = 58325 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",,,,,,,,,,,,
+data_assoc_request,data_upload,,sql,"Associated Request
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>","SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 61750 AND field_name = 'record_id') a JOIN (SELECT record, value FROM redcap_data where project_id = 61750 and field_name = 'sop_name') b ON b.record=a.record ORDER BY a.value, b.value",,,,,,,,,,,,
+data_upload_person,data_upload,,sql,"Person ID
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
+data_upload_region,data_upload,,sql,"Region ID of Person
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099  GROUP BY a.record  ORDER BY value",,,,,,,,,,,,
+data_upload_ts,data_upload,,text,"Data Upload Timestamp
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,,,,,,,,,,,
+responsecomplete_ts,data_upload,,text,"Data Upload Timestamp v2
+<div style=""font-weight:lighter;font-style:italic"">(Autopopulated by Shiny tool)</div>",,,,,,,,,,,,,
+upload_notes,data_upload,,notes,"User's Upload Notes",,,,,,,,,,,,,
+emails_sent_y,data_upload,"Upload Email Confirmation/Notification",checkbox,"Confirmation Emails Sent","1,",,,,,,,,,,,,
+data_upload_n,data_upload,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Upload Data Summary</h3></div>",text,"Number of patient records included in upload
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,,,,,,,,,,,
+critical_explanation,data_upload,,notes,"Explanation of Critical Errors",,,,,,,,,,,,,
+dqmetrics_json,data_upload,,notes,"Data Quality Metrics Summary",,,,,,,,,,,,,
+conc_cat_n,data_upload,"DES Concordance",text,"Category Count
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,integer,,,,,,,,,,
+conc_n,data_upload,,text,"Count of Errors in Category
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,integer,,,,,,,,,,
+plaus_cat_n,data_upload,Plausibility,text,"Category Count
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,integer,,,,,,,,,,
+plaus_n,data_upload,,text,"Count of Errors in Category
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,integer,,,,,,,,,,
+comp_cat_n,data_upload,Completeness,text,"Category Count
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,integer,,,,,,,,,,
+comp_n,data_upload,,text,"Count of Errors in Category
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,integer,,,,,,,,,,
+error_cat_json,data_upload,Summary,notes,"JSON of Error Subcategories
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,,,,,,,LV,,,,
+data_upload_bucket,sensitive_data,"Data Files",text,"AWS Bucket Name<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,,,,,,,,,,,
+data_upload_folder,sensitive_data,,text,"AWS Folder Name<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,,,,,,,,,,,
+data_upload_zip,sensitive_data,,text,"ZIP Filename
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,,,,,,,,,,,
+data_upload_html,sensitive_data,"Data Reports",file,"HTML Report
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,,,,,,,,,,,
+data_upload_pdf,sensitive_data,,file,"PDF Report
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>",,,,,,,,,,,,,
+deleted_y,deletion_information,,yesno,"Has this file been deleted from AWS?",,,,,,,,,,,,,
+deletion_type,deletion_information,,dropdown,"Deletion Type","1, Automatic | 2, Manual | 9, Other",,,,,,,,,,,,
+deletion_ts,deletion_information,,text,"Deletion Timestamp",,,,,,,,,,,,,
+deletion_hubuser,deletion_information,,sql,"Deleting User
+(ID from Harmonist 5)","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
+deletion_rs,deletion_information,,notes,"Deletion Reason",,,,,,,,,,,,,

@@ -1,0 +1,23 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,news_item,,text,"Record ID",,,,,,,,,,,,,
+news_category,news_item,,dropdown,"News Category
+<div style=""font-weight:lighter;font-style:italic"">Only ""Data"" news appears on the Data page of the Hub.</div>","1, Data | 99, Other",,,,,,,,,,,,
+news_type,news_item,,dropdown,"News Type
+<div style=""font-weight:lighter;font-style:italic"">Affects the icon that will be shown alongside the news type.</div>
+
+fa-newspaper-o, General (newspaper icon)
+fa-bullhorn, Announcement / Notice (bullhorn icon)
+fa-calendar-o, Event (calendar icon)
+fa-bell-o, Reminder (bell icon)
+fa-list-ol, Minutes / List (list icon)
+fa-file-o, File (file icon)
+fa-trophy, Congratulations (trophy icon)
+fa-exclamation-triangle, Warning / Alert (triangle with exclamation mark)","fa-newspaper-o, Announcement / Notice | fa-calendar-o, Event | fa-list-ol, Minutes / List | fa-trophy, Congratulations",,,,,,,,,,,,
+news_person,news_item,,sql,"Person posting the news item
+<div style=""font-weight:lighter;font-style:italic"">Select your name. List contains Hub Admins and Users with News edit rights.</div>","SELECT DISTINCT a.record, CONCAT(a.value, ' ', b.value) AS  VALUE  FROM redcap_data a  LEFT JOIN redcap_data b on b.project_id = 798 and b.record = a.record and b.field_name = 'lastname'  LEFT JOIN redcap_data c on c.project_id = 798 and c.record = a.record  WHERE a.field_name = 'firstname' and a.project_id = 798 and ((c.field_name = 'harmonist_perms' AND c.value = '9') OR (c.field_name = 'harmonistadmin_y' AND c.value = '1'))  ORDER BY     a.value,      b.value",,,,,,,y,,,,,
+news_d,news_item,,text,"Date of News Item",,,date_ymd,,,,,y,LV,,,," @TODAY"
+news_title,news_item,"News Content",text,"Title of News Item (short)",,,,,,,,y,LV,,,,
+news,news_item,,notes,"News Item
+<div style=""font-weight:lighter;font-style:italic"">HTML text allowed</div>",,,,,,,,y,LV,,,,
+news_file,news_item,,file,"File #1 (optional)",,,,,,,,,LV,,,,
+news_file2,news_item,,file,"File #2",,,,,,,,,LV,,,,

@@ -1,0 +1,16 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,file_information,,text,"Record ID",,,,,,,,,,,,,
+hidden_y,file_information,,checkbox,"Hide File in Library","1,",,,,,,,,,,,," @HIDDEN-SURVEY"
+upload_dt,file_information,,text,"Upload Datetime",,,datetime_ymd,,,,,,,,,," @READONLY-SURVEY @NOW"
+upload_type,file_information,,radio,"Document Category
+<div style=""font-weight:lighter;font-style:italic"">Select a main category for this document or file</div>","1, Governance | 2, Presentations | 3, Grants | 4, Study Forms | 5, WG Materials | 6, Templates | 99, Other",,,,,,,,LV,,,,
+file_title,file_information,,text,"Short Title
+<div style=""font-weight:lighter;font-style:italic"">Provide a <u>short</u> title for the document. This will be the clickable download link on the Hub interface.</div>",,,,,,,,,LV,,,,
+file_description,file_information,,notes,"Description
+<div style=""font-weight:lighter;font-style:italic"">(optional) Provide a brief description of the document. This text will be displayed on the Hub interface.</div>",,,,,,,,,LV,,,,
+file,file_information,,file,"File Upload
+<div style=""font-weight:lighter;font-style:italic"">Use a ZIP to combine multiple files</div>",,,,,,,,,LV,,,,
+file_uploader,file_information,,sql,"File Contact
+<div style=""font-weight:lighter;font-style:italic"">Begin typing to find a match in the list. If you are uploading a file on behalf of someone else, you can select their name as the owner of the upload.</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,LV,,,,
+file_tags,file_information,,checkbox,"File Tags
+<div style=""font-weight:lighter;font-style:italic"">(optional) Select any relevant tags for this file. These are searchable on the Hub interface. Contact the Harmonist team to suggest new tags.</div>","1, CROI 2020 | 2, IWHOD 2020 | 3, AIDS 2020 | 4, SUWG | 5, MHWG | 6, TBWG | 7, DHWG | 99, other",,,,,,,,LV,,,,

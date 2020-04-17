@@ -1,0 +1,16 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,region_information,,text,"Record ID",,,,,,,,,,,,,
+region_name,region_information,,text,"Region name",,,,,,,,,,,,,
+region_full_name,region_information,,text,"Region full name
+(write out long name, no abbreviations)",,,,,,,,,,,,,
+region_code,region_information,,text,"Region code",,,,,,,,,,,,,
+display_order,region_information,,text,"Display order",,,number,,,,,,,,,,
+region_tbl_option,region_information,"Region tblCENTER map",radio,"What tblCENTER map should display?","0, Single Region | 1, All",,,,,,,,,,,,
+region_latitude,region_information,,text,Latitude,,,,,,,"[region_tbl_option] = '0'",,,,,,
+region_longitude,region_information,,text,Longitude,,,,,,,"[region_tbl_option] = '0'",,,,,,
+region_zoom,region_information,,text,Zoom,,,,,,,"[region_tbl_option] = '0'",,,,,,
+region_color,region_information,,text,"Map color",,,,,,,"[region_tbl_option] = '0'",,,,,,
+region_legend,region_information,,text,"Legend text",,,,,,,"[region_tbl_option] = '0'",,,,,,
+showregion_y,region_information,"Region Access Settings ",yesno,"Should this region be listed in the main interface?
+<span style=""font-weight:lighter;font-style:italic"">(ex. core IeDEA regions are listed, but non-voting ""regions"" like NIH and Harmonist Test are not.)</span>",,,,,,,,,,,,,
+voteregion_y,region_information,,yesno,"Will this region participate in voting?",,,,,,,,,,,,,

@@ -1,0 +1,28 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,output_record,,text,"Record ID",,,,,,,,,,,,,
+output_txt,output_record,,descriptive,"<div style=""color:white; text-align:center; border: 1px #3498db; background-color: #004F84;""><h3 style=""margin:0px; padding:10px"">Scientific Outputs (not MR-linked)</h3></div>",,,,,,,,,,,,,
+output_type,output_record,,dropdown,"Type of Scientific Output","1, Manuscript | 2, Abstract | 3, Poster | 4, Presentation Slides | 5, Report | 99, Other",,autocomplete,,,,,y,,,,,
+producedby_region,output_record,,radio,"Is this output produced by one or more IeDEA regions? ","1, Single Region | 2, Multiple Regions",,,,,,,,,,,,
+lead_region,output_record,,sql,"Lead Region","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099 GROUP BY a.record  ORDER BY value",,,,,,"[producedby_region] = '1'",,,,,,
+output_presentformat,output_record,,radio,"Abstract Presentation Format","1, Poster presentation | 2, Oral presentation | 9, Other | 0, Not applicable",,,,,,"[output_type] = '2'",,,,,,
+output_title,output_record,,notes,Title,,,,,,,,,,,,,
+output_authors,output_record,,notes,"Author List
+<div style=""font-weight:lighter; font-style:italic""> Use PubMed format:
+Duda SN, Vansell HJ, McGowan CC</div>",,,,,,,,,,,,,
+output_venue,output_record,,text,"Journal / Conference Name
+<span style=""font-weight:lighter; font-style:italic"">(e.g., JAIDS, JIAS, CROI, IWHOD)</span>",,,,,,,,,,,,,
+output_year,output_record,,text,"Publication / Conference Year
+<span style=""font-weight:lighter; font-style:italic"">(e.g., 2018. 2019)</span>",,,integer,2000,2050,,,y,,,,,
+output_citation,output_record,,notes,"Citation
+<div style=""font-weight:lighter; font-style:italic"">Use PubMed format: 
+J Int AIDS Soc. 2018 Feb; 21(S1):e25044
+(Can copy this line directly from PubMed webpage.)</div>",,,,,,,"[output_type] = '1' or [output_type] = '5'",,,,,,
+output_file,output_record,,file,"File
+<span style=""font-weight:lighter; font-style:italic"">(optional)</span>",,,,,,,,,,,,,
+output_pmcid,output_record,,text,"PMCID
+<span style=""font-weight:lighter; font-style:italic"">(e.g., PMC5463912, PMC4048591)</span>",,"Note: Do not enter PMIDs, only PMCIDs",,,,,"[output_type] = '1'",,,,,,
+output_pmid,output_record,,text,"PMID (not displayed)
+<span style=""font-weight:lighter; font-style:italic"">(e.g., 32010735, 31852025)</span>",,,,,,,"[output_type] = '1'",,,,,,
+output_url,output_record,,text,"Web link (URL) to resource
+<span style=""font-weight:lighter; font-style:italic"">(optional)</span>",,,,,,,,,,,,,
+dashboard_color,supplemental_fields,,calc,"Color code for REDCap Dashboard labels","if(([producedby_region] > 1), 154360, '873600')",,,,,,,,,,,,

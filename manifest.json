@@ -1,0 +1,30 @@
+{
+  "short_name": "IeDEA",
+  "name": "IeDEA Harmonist Hub",
+  "icons": [
+    {
+      "src": "/img/iedea_logo-100x40.png",
+      "type": "image/png",
+      "sizes": "100x40"
+    },
+    {
+      "src": "/img/iedea_favicon.png",
+      "type": "image/png",
+      "sizes": "50x80"
+    },
+    {
+      "src": "/img/logo.png",
+      "type": "image/png",
+      "sizes": "130x52"
+    },
+    {
+      "src": "iedea/img/IeDEA-logo-200px.png",
+      "type": "image/png",
+      "sizes": "200x80"
+    }
+  ],
+  "start_url": "",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "theme_color": "#fff"
+}

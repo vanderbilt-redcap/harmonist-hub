@@ -1,0 +1,71 @@
+{
+  "name": "Harmonist Hub",
+
+  "namespace": "Vanderbilt\\HarmonistHubExternalModule",
+  "framework-version": 4,
+  "authors": [
+    {
+      "name": "Eva Bascompte Moragas",
+      "email": "datacore@vumc.org",
+      "institution": "Vanderbilt University Medical Center"
+    }
+  ],
+
+  "permissions": ["redcap_module_link_check_display"],
+  "enable-every-page-hooks-on-system-pages": false,
+
+  "links": {
+    "project": [
+      {
+        "name": "Harmonist Hub",
+        "icon": "database_table",
+        "url": "index.php",
+        "target": "_blank"
+      }
+    ]
+  },
+
+  "no-auth-pages":["configure","downloadFile","startDDProjects","functions"],
+
+  "description": "Harmonist Hub",
+
+  "project-settings": [
+    {
+      "key": "hub-projectname",
+      "name": "Enter the Hub name",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "key": "hub-type-description",
+      "name": "<div>Select the default profile on your installation:</div><br><div class='alert alert-info' style='border-color:#bce8f1 !important'><ul><li><strong>Solo</strong> (only the Hub)</li><li><strong>Basic</strong> (Hub with Basic Data Hub (REDCap features only like data request builder and file transfer))</li><li><strong>All</strong> (Hub with Data Hub and Data Toolkit)</li></ul></div>",
+      "type": "descriptive"
+    },
+    {
+      "key": "hub-profile",
+      "name": "Hub Profile",
+      "required": true,
+      "choices": [
+        {
+          "name": "Solo",
+          "value": "solo"
+        },
+        {
+          "name": "Basic",
+          "value": "basic"
+        },
+        {
+          "name": "All",
+          "value": "all"
+        }
+      ],
+      "type":"radio"
+    }
+  ],
+  "compatibility": {
+    "php-version-min": "5.5.0",
+    "php-version-max": "",
+    "redcap-version-min": "9.7.5",
+    "redcap-version-max": ""
+  }
+}

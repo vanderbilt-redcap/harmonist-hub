@@ -1,0 +1,11 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,about_general_info,,text,"Record ID",,,,,,,,,,,,,
+about_title,about_general_info,,text,"About Name Title. 
+Text to add after ""About"". For example: ""About Harmonist""",,,,,,,,,,,,,
+about_text,about_general_info,,notes,"About description text",,,,,,,,,,,,,
+about_firstname,about_members,,text,"First Name",,,,,,,,,,,,,
+about_lastname,about_members,,text,"Last Name",,,,,,,,,,,,,
+about_degree,about_members,,text,"Professional Degrees
+List titles separated by comma.",,,,,,,,,,,,,
+about_project_title,about_members,,text,"Project title",,,,,,,,,,,,,
+about_photo,about_members,,file,Photo,,,,,,,,,,,,,

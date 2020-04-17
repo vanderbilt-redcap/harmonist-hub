@@ -1,0 +1,7 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,file_download_log,,text,"Record ID",,,,,,,,,,,,,
+library_item_id,file_download_log,,text,"ID of Downloaded Library Item",,,,,,,,,,,,,
+library_edoc,file_download_log,,text,"Edoc File Number",,,,,,,,,,,,,
+library_download_d,file_download_log,,text,"Date of Download",,,datetime_seconds_ymd,,,,,,,,,,
+library_download_person,file_download_log,,sql,"Download Person (ID)","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
+library_download_region,file_download_log,,sql,"Download Person Region","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099  GROUP BY a.record  ORDER BY value",,,,,,,,,,,,

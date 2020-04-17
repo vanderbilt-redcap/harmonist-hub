@@ -1,0 +1,14 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,data_download_action,,text,"Record ID",,,,,,,,,,,,,
+downloader_assoc_concept,data_download_action,"Information about Person Downloading Data Files",sql,"Associated Concept Sheet
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Shiny tool</div>","SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 58325 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = 58325 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",,,,,,,,,,,,
+downloader_id,data_download_action,,sql,"Person ID
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
+downloader_region,data_download_action,,sql,"Region ID of Person
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099  GROUP BY a.record  ORDER BY value",,,,,,,,,,,,
+downloader_rcuser,data_download_action,,text,"Downloader REDCap Username
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>",,,,,,,,,,,,,
+download_id,data_download_action,"Information about Downloaded Data",sql,"ID of Data Upload (from Harmonist 9) that was downloaded by user<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'record_id', a.value, NULL)),    ' (',   max(if(a.field_name = 'responsecomplete_ts', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=70621  GROUP BY a.record  ORDER BY value",,,,,,,,,,,,
+download_files,data_download_action,,notes,"Downloaded Files (list of names)
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>",,,,,,,,,,,,,
+responsecomplete_ts,data_download_action,,text,"Download Timestamp",,,,,,,,,,,,,

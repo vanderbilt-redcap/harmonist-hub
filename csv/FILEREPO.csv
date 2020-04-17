@@ -1,0 +1,9 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,stored_file,,text,"Record ID",,,,,,,,,,,,,
+upload_category,stored_file,,dropdown,"File upload category","1, Display file | 2, IeDEA Hub Quick Links | 3, IeDEA Hub Resource Links",,,,,,,,,,,,
+upload_name,stored_file,,text,"File name (display text)",,,,,,,,,,,,,
+upload_file,stored_file,,file,"Document or file",,,,,,,,,,,,,
+upload_url,stored_file,,text,URL,,,,,,,,,,,,,
+upload_user,stored_file,,text,"Username of person uploading file",,,,,,,,,,,,," @USERNAME"
+upload_date,stored_file,,text,"Date of file upload",,,date_ymd,,,,,,,,,,
+upload_text,stored_file,,text,"Download text",,,,,,,,,,,,,

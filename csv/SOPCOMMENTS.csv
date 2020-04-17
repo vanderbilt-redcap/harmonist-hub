@@ -1,0 +1,16 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,sop_comments,,text,"Record ID",,,,,,,,,,,,,
+sop_id,sop_comments,,text,"SOP ID
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>",,,,,,,,,LV,,,," @HIDDEN-SURVEY"
+response_person,sop_comments,,sql,"Person ID
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
+response_region,sop_comments,,sql,"Region ID of User
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099  GROUP BY a.record  ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
+comment_ver,sop_comments,,dropdown,"Comment on Draft vs. Final
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","0, Draft | 1, Final",,,,,,,,LV,,,," @HIDDEN-SURVEY"
+comments,sop_comments,,notes,"Questions and Comments",,,,,,,,,LV,,,,
+revised_file,sop_comments,,file,"Revised File",,,,,,,,,LV,,,,
+response_regioncode,data_redundancy,"These fields will be filled by a redcap_survey_complete hook",text,"2-letter Region Code 
+(from Harmonist 4)",,,,,,,,,,,,,
+responsecomplete_ts,data_redundancy,,text,"Survey Completion Timestamp
+<span style=""font-weight:lighter;font-style:italic"">(completion_time from redcap_surveys_response  table)</span>",,,,,,,,,,,,,

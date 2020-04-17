@@ -1,0 +1,40 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,table_metadata,,text,"Record ID",,,,,,,,,,,,,
+table_name,table_metadata,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Table Definition</h3></div>",text,"Table name",,,,,,,,,,,,,
+table_format,table_metadata,,radio,"Table type","1, One row per patient | 2, Multiple rows per patient | 0, N/A (e.g., tblCENTER)",,,,,,,,,,,,
+table_definition,table_metadata,,text,"Table definition
+<div style=""font-weight:lighter;font-style:italic"">(brief text)</div>",,,,,,,,,,,,,
+table_category,table_metadata,,dropdown,"Table category","main, Core | meds, Medications | labs, Labs | dis, Conditions | preg, Pregnancy | tool, Tools | meta, Meta | oth, Other",,,,,,,,,,,,
+table_display_y,table_metadata,"<div style=""color:white; text-align:center; border: 1px #e67e22; background-color: #d35400;""><h3 style=""margin:0px; padding:10px"">Display Settings</h3></div>",yesno,"Display this table in human-readable documents and forms?",,,,,,,,,,,,,
+table_display_name,table_metadata,,text,"Table display name 
+<div style=""font-weight:lighter;font-style:italic"">(optional, if different title is needed for human-readable documents)</div>",,,,,,,,,,,,,
+table_order,table_metadata,,text,"Display order for this table ",,"(e.g., use 1.5 to place a table between tables 1 and 2)",number,,,,,,RH,,,,
+text_top,table_metadata,,notes,"Text (HTML-formatted) to display before the table definiton",,,,,,,,,LH,,,,
+text_bottom,table_metadata,,notes,"Text (HTML-formatted) to display after the table definition",,,,,,,,,LH,,,,
+table_status,table_metadata,"Table Status",radio,"Table Status","0, DRAFT (table under consideration) | 1, Active | 2, DEPRECATED (table retired from use)",,,,,,,,,,,,
+table_added_d,table_metadata,,text,"Date table added (as draft or active)",,,date_ymd,,,,,,,,,,
+table_deprecated_d,table_metadata,,text,"Date of table deprecation",,"(approximate, for DES version)",date_ymd,,,,"[table_status] = '2'",,RH,,,,
+table_required,table_metadata,,checkbox,"REQUIRED
+<span style=""font-weight:lighter"">(This table is required for database integrity and should always be included with data submissions.)</span>","1, YES",,,,,,,,RH,,,,
+variable_name,variable_metadata,"<div style=""color:white; text-align:center; border: 1px #1abc9c; background-color:#16a085;""><h3 style=""margin:0px; padding:10px"">Variable Definition</h3></div>",text,"Variable name",,,,,,,,,,,,,
+data_format,variable_metadata,,dropdown,"Variable format","1, Character | 2, Numeric | 3, Character or Numeric | 4, YYYY-MM-DD | 5, YYYY-MM-DD hh:mm",,,,,,,,,,,,
+description,variable_metadata,,notes,"Variable description",,,,,,,,,,,,,
+description_extra,variable_metadata,,notes,"Extra text for variable description (subheader)",,,,,,,,,,,,,
+variable_order,variable_metadata,,text,"Display order for this variable
+<span style=""font-weight:lighter"">(numbering is within table)</span>",,"(e.g., use 1.5 to place a variable between variables 1 and 2)",number,,,,,,RH,,,,
+variable_key,variable_metadata,,checkbox,"TABLE PRIMARY KEY / COMPOSITE KEY
+<span style=""font-weight:lighter"">(Is this variable the primary key for this table, or part of a composite key? A key variable is one that can uniquely identify each row in the table. A composite key combines two or more columns in the table to uniquely identify each row.)</span>","1, YES",,,,,,,,RH,,,,
+variable_required,variable_metadata,,checkbox,"REQUIRED
+<span style=""font-weight:lighter"">(This variable is required for database integrity and should always be included when data from this table is requested.)</span>","1, YES",,,,,,,,RH,,,,
+variable_status,variable_metadata,"Variable Status",radio,"Variable Status","0, DRAFT (variable under consideration) | 1, Active | 2, DEPRECATED (variable retired from use)",,,,,,,,,,,,
+variable_added_d,variable_metadata,,text,"Date variable added 
+<span style=""font-weight:lighter"">(as draft or active)</span>",,,date_ymd,,,,,,,,,,
+variable_deprecated_d,variable_metadata,"Variable Deprecation Details",text,"Date of variable deprecation",,"(approximate, for DES version)",date_ymd,,,,"[variable_status] = '2'",,RH,,,,
+variable_replacedby,variable_metadata,,sql,"Deprecated variable replaced by other variable
+<div style=""font-weight:lighter;font-style:italic"">(One-to-one replacement)</div>","SELECT CONCAT(a.record, ':', b.instance), CONCAT(a.value, ':', b.value) FROM (SELECT record,value FROM redcap_data WHERE project_id=64149 AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM redcap_data WHERE project_id=64149 AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance",,autocomplete,,,,"[variable_status] = '2'",,,,,,
+variable_deprecatedinfo,variable_metadata,,notes,"Instructions for deprecated variable",,,,,,,"[variable_status] = '2'",,,,,,
+has_codes,variable_metadata,"<div style=""color:white; text-align:center; border: 1px #e67e22; background-color: #d35400;""><h3 style=""margin:0px; padding:10px"">Variable Codes</h3></div>",yesno,"Is this a coded variable?",,,,,,,,,,,,,
+code_list_ref,variable_metadata,,sql,"Select code list:","select record, value from redcap_data where project_id = 64150 and field_name = 'list_name' order by value asc",,,,,,"[has_codes] = '1'",,,,,,
+code_text,variable_metadata,,notes,"Extra text to show in ""Format""/codes column",,,,,,,,,LH,,,,
+codes_print,variable_metadata,,radio,"Should code lists be printed for this variable?","1, Yes | 0, No",,,,,,"[has_codes] = '1'",,,,,,
+variable_missingaction,variable_metadata,"<div style=""color:white; text-align:center; border: 1px #e67e22; background-color: #d35400;""><h3 style=""margin:0px; padding:10px"">Data Quality Guidance</h3></div>",checkbox,"Report missing entries as data quality errors","1, Yes",,,,,,,,,,,,

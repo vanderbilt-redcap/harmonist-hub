@@ -1,0 +1,11 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,code_list,,text,"Record ID",,,,,,,,,,,,,
+list_name,code_list,,text,"Name of Code List",,,,,,,,,,,,,
+code_format,code_list,,radio,"Choose a format for the code list:","1, List of codes separated by pipe character | 3, CSV file upload with codes in column 1 and labels in column 2.",,,,,,,,,,,,
+code_list,code_list,,notes,"Code list
+<div style=""font-weight:lighter; font-style:italic"">Format is ""1 = Chocolate | 2 = Strawberry | 3 = Vanilla"".
+The Pipe character is required between codes because line breaks will be lost if the data dictionary (CSV) is used to update this field.</div>",,,,,,,"[code_format] = '1'",,LV,,,,
+code_file,code_list,,file,"Code CSV file",,,,,,,"[code_format] = '3'",,,,,,
+codelist_header,code_list,,descriptive,"<div style=""color:white; text-align:center; border: 1px #1abc9c; background-color:#16a085;""><h3 style=""margin:0px; padding:10px"">Update Notes</h3></div>",,,,,,,,,,,,,
+codelist_update_d,code_list,,text,"Date code list last updated",,,date_ymd,,,,,,,,,,
+codelist_update_txt,code_list,,notes,"Update Notes",,,,,,,"[codelist_update_d] <> ''",,LH,,,,
