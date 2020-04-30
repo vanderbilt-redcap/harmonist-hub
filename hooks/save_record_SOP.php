@@ -1,4 +1,6 @@
 <?php
+use ExternalModules\ExternalModules;
+
 $records = \REDCap::getData($project_id, 'array', array('record_id' => $record));
 $sop = getProjectInfoArray($records)[0];
 

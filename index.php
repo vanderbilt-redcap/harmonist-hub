@@ -151,7 +151,8 @@ if($hub_projectname == '' || $hub_profile == ''){
         </head>
         <body>
         <?php
-        //include_once("hooks/save_record_SOP_comments.php");
+        print_array($module->getUrl("hooks/save_record_hooks.php"));
+        //checkAndUpdatJSONCopyProject('0a');
         ?>
         <br/>
         </body>

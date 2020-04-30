@@ -1,4 +1,6 @@
 <?php
+#Upload SQL fields to projects
+include_once(__DIR__ ."/../projects.php");
 include_once __DIR__ ."/../functions.php";
 
 #Add to all projects needed
@@ -24,8 +26,8 @@ if($project_id == IEDEA_HARMONIST){
         </script>`
 
     <?php }
-}else if($project_id == IEDEA_SOPCOMMENTS || $project_id == IEDEA_HOME || $project_id == IEDEA_PEOPLE || $project_id == IEDEA_SOP || $project_id == IEDEA_RMANAGER || $project_id == IEDEA_SOPCOMMENTS){
-    if($project_id == IEDEA_SOPCOMMENTS || $project_id == IEDEA_HOME || $project_id == IEDEA_COMMENTSVOTES || $project_id == IEDEA_RMANAGER || ($project_id == IEDEA_PEOPLE && $_REQUEST['s'] != IEDEA_SURVEYPERSONINFO) || $project_id == IEDEA_SOP && $_REQUEST['s'] != IEDEA_DATARELEASEREQUEST){?>
+}else if($project_id == IEDEA_TBLCENTERREVISED || $project_id == IEDEA_SOPCOMMENTS || $project_id == IEDEA_HOME || $project_id == IEDEA_PEOPLE || $project_id == IEDEA_SOP || $project_id == IEDEA_RMANAGER || $project_id == IEDEA_SOPCOMMENTS){
+    if($project_id == IEDEA_TBLCENTERREVISED || $project_id == IEDEA_SOPCOMMENTS || $project_id == IEDEA_HOME || $project_id == IEDEA_COMMENTSVOTES || $project_id == IEDEA_RMANAGER || ($project_id == IEDEA_PEOPLE && $_REQUEST['s'] != IEDEA_SURVEYPERSONINFO) || $project_id == IEDEA_SOP && $_REQUEST['s'] != IEDEA_DATARELEASEREQUEST){?>
         <script>
             $(document).ready(function() {
                 $('[name=submit-btn-savereturnlater]').hide();
