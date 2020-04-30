@@ -150,10 +150,6 @@ if($hub_projectname == '' || $hub_profile == ''){
             <?php include('navbar.php'); ?>
         </head>
         <body>
-        <?php
-        print_array($module->getUrl("hooks/save_record_hooks.php"));
-        //checkAndUpdatJSONCopyProject('0a');
-        ?>
         <br/>
         </body>
         </html>
