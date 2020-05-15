@@ -54,6 +54,10 @@ foreach($linkedProjects as $projectTitle) {
 }
 $secret_key="";
 $secret_iv="";
+
+$RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
+$settings = $RecordSetSettings[0];
+
 include_once("functions.php");
-require_once 'vendor/autoload.php';
+require_once (__DIR__ . '/vendor/autoload.php');
 include_once(__DIR__ . "/email.php");

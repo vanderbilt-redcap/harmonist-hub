@@ -1,4 +1,13 @@
 <?php
+
+function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
+    $sort_col = array();
+    foreach ($arr as $key=> $row) {
+        $sort_col[$key] = $row[$col];
+    }
+    array_multisort($sort_col, $dir, $arr);
+}
+
 /**
  * Function that returns the info array from a specific project
  * @param $project, the project id
@@ -16,6 +25,47 @@ function getProjectInfoArray($records){
 
     return $array;
 }
+
+function getProjectInfoArrayRepeatingInstruments($records){
+    $array = array();
+    $index=0;
+    foreach ($records as $record=>$record_array) {
+        foreach ($record_array as $event=>$data) {
+            if($event == 'repeat_instances'){
+                foreach ($data as $eventarray){
+                    $datarepeat = array();
+                    foreach ($eventarray as $instrument=>$instrumentdata){
+                        $count = 0;
+                        foreach ($instrumentdata as $instance=>$instancedata){
+                            foreach ($instancedata as $field_name=>$value){
+                                if(!array_key_exists($field_name,$array[$index])){
+                                    $array[$index][$field_name] = array();
+                                }
+
+                                if($value != "" ){
+                                    $datarepeat[$field_name][$instance] = $value;
+                                }
+
+                            }
+                            $count++;
+                        }
+                    }
+                    foreach ($datarepeat as $field=>$datai){
+                        if($array[$index][$field] == ""){
+                            $array[$index][$field] = $datarepeat[$field];
+                        }
+                    }
+                }
+            }else{
+                $array[$index] = $data;
+            }
+        }
+        $index++;
+    }
+
+    return $array;
+}
+
 function getCrypt($string, $action = 'e',$secret_key="",$secret_iv="" ) {
     $output = false;
     $encrypt_method = "AES-256-CBC";

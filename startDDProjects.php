@@ -134,11 +134,6 @@ $projects_array_module_seamlessiframe = array(0=>'0',1=>'0',2=>'0',3=>'0',4=>'0'
     7=>'0',8=>'0',9=>'0', 10=>'0',11=>'1',12=>'0',13=>'0',
     14=>'0',15=>'0',16=>'0',17=>'0',18=>'0',19=>'0',
     20=>'0',21=>'0',22=>'0',23=>'0',24=>'0',25=>'0',26=>'0',27=>'0',28=>'0');
-//
-//$projects_array_module_emailalerts = array(0=>'0',1=>'0',2=>'0',3=>'1',4=>'0',5=>'0',6=>'0',
-//    7=>'0',8=>'0',9=>'0', 10=>'0',11=>'0',12=>'0',13=>'0',
-//    14=>'0',15=>'0',16=>'0',17=>'0',18=>'0',19=>'0',
-//    20=>'0',21=>'0',22=>'0',23=>'0',24=>'0',25=>'0',26=>'0',27=>'0',28=>'0');
 
 $projects_array_module_emailalerts = array(
     3=> array(
@@ -146,13 +141,13 @@ $projects_array_module_emailalerts = array(
                             [cc_email1], CC Email 1
                             [cc_email2], CC Email 2",
         "emailFromForm_var" => "",
-        "emailSender_var" => "IeDEA Hub",
+        "emailSender_var" => $hub_projectname." Hub",
         "datapipeEmail_var" => "[request_id], Request ID
                                 [request_type], Request Type
                                 [request_title], Request Title
                                 [request_conf], Conference
-                                [assoc_concept], Concept MR#
-                                [wg_name], IeDEA WG1
+                                [assoc_concept], Concept Tracking Number
+                                [wg_name], ".$hub_projectname." WG1
                                 [request_description], Request Desc
                                 [contact_email], Contact Email
                                 [contact_name], Contact Name
@@ -173,7 +168,7 @@ $projects_array_module_emailalerts = array(
                                 [custom_note], Custom Note to Author
                                 [author_doc], Author Final Doc
                                 [datarequest_type], Requested Data Types
-                                [mr_assigned], Assigned MR
+                                [mr_assigned], Assigned Tracking Number
                                 [finalconcept_doc], Final DOC
                                 [finalconcept_pdf], Final PDF
                                 [vote_ap], AP vote
@@ -187,86 +182,86 @@ $projects_array_module_emailalerts = array(
                             [__SURVEYLINK_admin_review],Admin Review Survey
                             [__SURVEYLINK_finalization_of_request], Finalization of Request
                             [__SURVEYLINK_final_docs_request_survey],Final Docs Request
-                            [__SURVEYLINK_mr_assignment_survey],MR Assignment Survey",
+                            [__SURVEYLINK_mr_assignment_survey],Tracking Number Assignment Survey",
         "formLink_var" => "",
         "emailFailed_var" => "harmonist@vanderbilt.edu",
         "form-name" => array
-                        (
-                            0 => "request",
-                            1 => "admin_review",
-                            2 => "request",
-                            3 => "admin_review",
-                            4 => "admin_review",
-                            5 => "admin_review",
-                            6 => "admin_review",
-                            7 => "admin_review",
-                            8 => "admin_review",
-                            9 => "finalization_of_request",
-                            10 => "admin_review",
-                            11 => "finalization_of_request",
-                            12 => "final_docs_request_survey",
-                            13 => "mr_assignment_survey",
-                            14 => "mr_assignment_survey",
-                            15 => "finalization_of_request"
-                        ),
+        (
+            0 => "request",
+            1 => "admin_review",
+            2 => "request",
+            3 => "admin_review",
+            4 => "admin_review",
+            5 => "admin_review",
+            6 => "admin_review",
+            7 => "admin_review",
+            8 => "admin_review",
+            9 => "finalization_of_request",
+            10 => "admin_review",
+            11 => "finalization_of_request",
+            12 => "final_docs_request_survey",
+            13 => "mr_assignment_survey",
+            14 => "mr_assignment_survey",
+            15 => "finalization_of_request"
+        ),
         "form-name-event" => array
-            (
-                4 => "",
-                5 => "",
-                3 => "",
-                2 => "",
-                0 => "",
-                1 => "",
-                6 => "",
-                7 => "",
-                8 => "",
-                9 => "",
-                10 => "",
-                11 => "",
-                12 => "",
-                13 => "",
-                14 => "",
-                15 => ""
-            ),
+        (
+            4 => "",
+            5 => "",
+            3 => "",
+            2 => "",
+            0 => "",
+            1 => "",
+            6 => "",
+            7 => "",
+            8 => "",
+            9 => "",
+            10 => "",
+            11 => "",
+            12 => "",
+            13 => "",
+            14 => "",
+            15 => ""
+        ),
         "email-from" => array
-            (
-                4 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                0 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                1 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                2 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                3 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                5 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                6 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                7 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                8 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                9 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                10 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                11 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                12 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                13 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                14 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                15 => "noreply@fakemail.com, ".$hub_projectname." Hub"
-            ),
+        (
+            4 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            0 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            1 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            2 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            3 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            5 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            6 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            7 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            8 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            9 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            10 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            11 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            12 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            13 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            14 => "noreply@fakemail.com, ".$hub_projectname." Hub",
+            15 => "noreply@fakemail.com, ".$hub_projectname." Hub"
+        ),
         "email-to" => array
-            (
-                0 => "[contact_email]",
-                1 => "[contact_email]",
-                2 => "noreply@fakemail.com",
-                3 => "noreply@fakemail.com",
-                4 => "noreply@fakemail.com",
-                5 => "noreply@fakemail.com",
-                6 => "[contact_email]",
-                7 => "noreply@fakemail.com",
-                8 => "noreply@fakemail.com",
-                9 => "noreply@fakemail.com",
-                10 => "noreply@fakemail.com",
-                11 => "[contact_email]",
-                12 => "noreply@fakemail.com",
-                13 => "[contact_email]",
-                14 => "noreply@fakemail.com",
-                15 => "noreply@fakemail.com"
-            ),
-    "email-cc" => array
+        (
+            0 => "[contact_email]",
+            1 => "[contact_email]",
+            2 => "noreply@fakemail.com",
+            3 => "noreply@fakemail.com",
+            4 => "noreply@fakemail.com",
+            5 => "noreply@fakemail.com",
+            6 => "[contact_email]",
+            7 => "noreply@fakemail.com",
+            8 => "noreply@fakemail.com",
+            9 => "noreply@fakemail.com",
+            10 => "noreply@fakemail.com",
+            11 => "[contact_email]",
+            12 => "noreply@fakemail.com",
+            13 => "[contact_email]",
+            14 => "noreply@fakemail.com",
+            15 => "noreply@fakemail.com"
+        ),
+        "email-cc" => array
         (
             0 => "",
             1 => "",
@@ -285,7 +280,7 @@ $projects_array_module_emailalerts = array(
             14 => "",
             15 => ""
         ),
-    "email-bcc" => array
+        "email-bcc" => array
         (
             4 => "",
             5 => "",
@@ -304,7 +299,7 @@ $projects_array_module_emailalerts = array(
             14 => "",
             15 => ""
         ),
-    "email-subject" => array
+        "email-subject" => array
         (
             0 => $hub_projectname." Request #[request_id] received: [request_type], [contact_name]",
             1 => $hub_projectname." Request #[request_id] posted: [request_type], [contact_name]",
@@ -315,18 +310,18 @@ $projects_array_module_emailalerts = array(
             6 => "Admin question about ".$hub_projectname." Request #[request_id] ([request_type])",
             7 => $hub_projectname." Request #[request_id] voting complete: [request_type], [contact_name]",
             8 => $hub_projectname." Request #[request_id] voting incomplete: [request_type], [contact_name]",
-            9 => $hub_projectname." Request #[request_id] approved by EC: [request_type], [contact_name]",
+            9 => $hub_projectname." Request #[request_id] approved by [EXECUTIVE COMMITTEE NAME]: [request_type], [contact_name]",
             10 => $hub_projectname." Request #[request_id] voting incomplete: [request_type], [contact_name]",
             11 => $hub_projectname." Request #[request_id] post-approval final steps: [request_type], [contact_name]",
             12 => "New [request_type] needs MR: Request #[request_id], [contact_name]",
             13 => "New ".$hub_projectname." Concept approved: [mr_assigned], [contact_name]",
             14 => "New ".$hub_projectname." Concept: [mr_assigned], [contact_name]",
-            15 => $hub_projectname." Request #[request_id] approved by EC: [request_type], [contact_name]"
+            15 => $hub_projectname." Request #[request_id] approved by [EXECUTIVE COMMITTEE NAME]: [request_type], [contact_name]"
         ),
-    "email-text" => array
+        "email-text" => array
         (
             0 => '<h2>New Submission</h2>
-<p>Thank you for submitting a review request to the IeDEA Executive Committee (EC). This email serves as your confirmation that the request has been submitted to the system. An IeDEA Hub Admin will review your request and contact you with any followup questions. You will be notified once the request is distributed to the IeDEA EC.</p>
+<p>Thank you for submitting a review request to the '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME]. This email serves as your confirmation that the request has been submitted to the system. An '.$hub_projectname.' Hub Admin will review your request and contact you with any followup questions. You will be notified once the request is distributed to the '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME].</p>
 <p><strong>Request Tracking ID:</strong>&nbsp; [request_id]</p>
 <p><strong>Review Type:</strong>&nbsp; [request_type]</p>
 <p><strong>Contact Person:</strong>&nbsp; [contact_name], [contact_email]</p>
@@ -334,9 +329,9 @@ $projects_array_module_emailalerts = array(
 <p><strong>Description:</strong>&nbsp; [request_description]</p>
 <p><span style="color: #000000;"><strong>Link to review/edit submission #[request_id]:</strong> </span>[__SURVEYLINK_request]</p>
 <p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the IeDEA Hub system (<a href="http://iedeahub.org">iedeahub.org</a>). If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>
-            [1] => <h2>Submission Posted</h2>
-<p>Your request has been reviewed by <strong>[reviewer_id]</strong> and will now be displayed on the IeDEA Hub. This will begin the IeDEA EC review process.</p>
+<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php').'">'.$hub_projectname.' Hub system</a>. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:'.$hub_projectname.'@fake.com">'.$hub_projectname.'@fake.com</a>.</span></p>',
+            1 => '<h2>Submission Posted</h2>
+<p>Your request has been reviewed by <strong>[reviewer_id]</strong> and will now be displayed on the '.$hub_projectname.' Hub. This will begin the '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME] review process.</p>
 <p><strong><span style="color: #e74c3c;">Due Date Assigned</span>:</strong>&nbsp;[due_d]</p>
 <p><strong>Request Tracking ID:</strong>&nbsp; [request_id]</p>
 <p><strong>Review Type:</strong>&nbsp; [request_type]</p>
@@ -346,9 +341,9 @@ $projects_array_module_emailalerts = array(
 <p><strong>Public Admin Notes:</strong>&nbsp; [admin_review_notes]</p>
 <p><span style="color: #000000;"><strong>Link to review/edit submission #[request_id]:</strong> </span>[__SURVEYLINK_request]</p>
 <p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the IeDEA Hub system (<a href="http://iedeahub.org">iedeahub.org</a>). If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>',
+<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php').'">'.$hub_projectname.' Hub system</a>. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>',
             2 => '<h2>New Submission</h2>
-<p>A new review request has been submitted and requires admin review before posting to the IeDEA Hub.</p>
+<p>A new review request has been submitted and requires admin review before posting to the '.$hub_projectname.' Hub.</p>
 <p><strong>Request Tracking ID:</strong>&nbsp; [request_id]</p>
 <p><strong>Review Type:</strong>&nbsp; [request_type]</p>
 <p><strong>Contact Person:</strong>&nbsp; [contact_name], [contact_email]</p>
@@ -358,7 +353,7 @@ $projects_array_module_emailalerts = array(
 <p><strong>1. Link to <span style="color: #e74c3c;">review/edit submission #[request_id]</span>:</strong>&nbsp;<br />[__SURVEYLINK_request]</p>
 <p><strong>2. Link to Hub Admin <span style="color: #16a085;">approval page</span>:</strong><br />[__SURVEYLINK_admin_review]</p>',
             3 => '<h2>Submission Posted</h2>
-<p>The following request has been reviewed by <strong>[reviewer_id]</strong> and will now be displayed on the IeDEA Hub.</p>
+<p>The following request has been reviewed by <strong>[reviewer_id]</strong> and will now be displayed on the '.$hub_projectname.' Hub.</p>
 <p><strong><span style="color: #e74c3c;">Due Date Assigned</span>:</strong>&nbsp;[due_d]</p>
 <p><strong>Request Tracking ID:</strong>&nbsp; [request_id]</p>
 <p><strong>Review Type:</strong>&nbsp; [request_type]</p>
@@ -371,7 +366,7 @@ $projects_array_module_emailalerts = array(
 <p><strong>1. Link to <span style="color: #e74c3c;">review/edit submission #[request_id]</span>:</strong>&nbsp;<br />[__SURVEYLINK_request]</p>
 <p><strong>2. Link to Hub Admin <span style="color: #16a085;">approval page</span>:</strong><br />[__SURVEYLINK_admin_review]</p>',
             4 => '<h2>Submission Paused/Deactivated</h2>
-<p>The following request has been paused or deactivated by <strong>[reviewer_id]</strong>. It will not appear on the IeDEA Hub.</p>
+<p>The following request has been paused or deactivated by <strong>[reviewer_id]</strong>. It will not appear on the '.$hub_projectname.' Hub.</p>
 <p><strong>Request Tracking ID:</strong>&nbsp; [request_id]</p>
 <p><strong>Review Type:</strong>&nbsp; [request_type]</p>
 <p><strong>Contact Person:</strong>&nbsp; [contact_name], [contact_email]</p>
@@ -383,7 +378,7 @@ $projects_array_module_emailalerts = array(
 <p><strong>1. Link to <span style="color: #e74c3c;">review/edit submission #[request_id]</span>:</strong>&nbsp;<br />[__SURVEYLINK_request]</p>
 <p><strong>2. Link to Hub Admin <span style="color: #16a085;">approval page</span>:</strong><br />[__SURVEYLINK_admin_review]</p>',
             5 => '<h2>Submission Rejected</h2>
-<p>The following request has been rejected by <strong>[reviewer_id]</strong>. It will not appear on the IeDEA Hub. <strong><span style="color: #e74c3c;">The Contact Person has not been notified.</span></strong></p>
+<p>The following request has been rejected by <strong>[reviewer_id]</strong>. It will not appear on the '.$hub_projectname.' Hub. <strong><span style="color: #e74c3c;">The Contact Person has not been notified.</span></strong></p>
 <p><strong>Request Tracking ID:</strong>&nbsp; [request_id]</p>
 <p><strong>Review Type:</strong>&nbsp; [request_type]</p>
 <p><strong>Contact Person:</strong>&nbsp; [contact_name], [contact_email]</p>
@@ -394,8 +389,8 @@ $projects_array_module_emailalerts = array(
 <h2>Reference Links</h2>
 <p><strong>1. Link to <span style="color: #e74c3c;">review/edit submission #[request_id]</span>:</strong>&nbsp;<br />[__SURVEYLINK_request]</p>
 <p><strong>2. Link to Hub Admin <span style="color: #16a085;">approval page</span>:</strong><br />[__SURVEYLINK_admin_review]</p>',
-            6 => '<h2>Question about IeDEA Request</h2>
-<p>Your request has been approved by <strong>[reviewer_id]</strong> and will now be displayed on the IeDEA Hub.</p>
+            6 => '<h2>Question about '.$hub_projectname.' Request</h2>
+<p>Your request has been approved by <strong>[reviewer_id]</strong> and will now be displayed on the '.$hub_projectname.' Hub.</p>
 <p><strong><span style="color: #e74c3c;">Due Date Assigned</span>:</strong>&nbsp;[due_d]</p>
 <p><strong>Request Tracking ID:</strong>&nbsp; [request_id]</p>
 <p><strong>Review Type:</strong>&nbsp; [request_type]</p>
@@ -405,7 +400,7 @@ $projects_array_module_emailalerts = array(
 <p><strong>Public Admin Notes:</strong>&nbsp; [admin_internal_notes]</p>
 <p><span style="color: #000000;"><strong>Link to review/edit submission #[request_id]:</strong> </span>[__SURVEYLINK_request]</p>
 <p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the IeDEA Hub system (<a href="http://iedeahub.org">iedeahub.org</a>). If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:stephany.duda@vanderbilt.edu">harmonist@vanderbilt.edu</a>.</span></p>',
+<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php').'">'.$hub_projectname.' Hub system</a>. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vanderbilt.edu">harmonist@vanderbilt.edu</a>.</span></p>',
             7 => '<h2>Voting Complete</h2>
 <p>The following request has received all regional votes. Please take action below to finalize the request or respond to votes and comments.</p>
 <p><strong><span style="color: #e74c3c;">Due Date Assigned</span>:</strong>&nbsp;[due_d]</p>
@@ -414,13 +409,13 @@ $projects_array_module_emailalerts = array(
 <p><strong>Contact Person:</strong>&nbsp; [contact_name], [contact_email]</p>
 <p><strong>Request Title:</strong>&nbsp; [request_title]</p>
 <h2>Summary of Votes</h2>
-<p><strong>AP:</strong>&nbsp; [vote_ap]</p>
-<p><strong>CA:</strong>&nbsp; [vote_ca]</p>
-<p><strong>CN:</strong>&nbsp; [vote_cn]</p>
-<p><strong>EA:</strong>&nbsp; [vote_ea]</p>
-<p><strong>NA:</strong>&nbsp; [vote_na]</p>
-<p><strong>SA:</strong>&nbsp; [vote_sa]</p>
-<p><strong>WA:</strong>&nbsp; [vote_wa]</p>
+<p><strong>[REGION 1]:</strong>&nbsp; [vote_ap]</p>
+<p><strong>[REGION 2]:</strong>&nbsp; [vote_ca]</p>
+<p><strong>[REGION 3]:</strong>&nbsp; [vote_cn]</p>
+<p><strong>[REGION 4]:</strong>&nbsp; [vote_ea]</p>
+<p><strong>[REGION 5]:</strong>&nbsp; [vote_na]</p>
+<p><strong>[REGION 6]:</strong>&nbsp; [vote_sa]</p>
+<p><strong>[REGION 7]:</strong>&nbsp; [vote_wa]</p>
 <h2>Actions</h2>
 <p><strong>1. Link to <span style="color: #16a085;">Finalize Request page</span>:</strong><br />[__SURVEYLINK_finalization_of_request]</p>',
             8 => '<h2>Voting Incomplete</h2>
@@ -431,28 +426,28 @@ $projects_array_module_emailalerts = array(
 <p><strong>Contact Person:</strong>&nbsp; [contact_name], [contact_email]</p>
 <p><strong>Request Title:</strong>&nbsp; [request_title]</p>
 <h2>Summary of Votes</h2>
-<p><strong>AP:</strong>&nbsp; [vote_ap]</p>
-<p><strong>CA:</strong>&nbsp; [vote_ca]</p>
-<p><strong>CN:</strong>&nbsp; [vote_cn]</p>
-<p><strong>EA:</strong>&nbsp; [vote_ea]</p>
-<p><strong>NA:</strong>&nbsp; [vote_na]</p>
-<p><strong>SA:</strong>&nbsp; [vote_sa]</p>
-<p><strong>WA:</strong>&nbsp; [vote_wa]</p>
+<p><strong>[REGION 1]:</strong>&nbsp; [vote_ap]</p>
+<p><strong>[REGION 2]:</strong>&nbsp; [vote_ca]</p>
+<p><strong>[REGION 3]:</strong>&nbsp; [vote_cn]</p>
+<p><strong>[REGION 4]:</strong>&nbsp; [vote_ea]</p>
+<p><strong>[REGION 5]:</strong>&nbsp; [vote_na]</p>
+<p><strong>[REGION 6]:</strong>&nbsp; [vote_sa]</p>
+<p><strong>[REGION 7]:</strong>&nbsp; [vote_wa]</p>
 <h2>Actions</h2>
-<p><strong>1. Link to <span style="color: #31708f;">Visit Request page</span>:</strong><br /><a href="https://redcap.vanderbilt.edu/plugins/iedea/index.php?option=hub&amp;record=[request_id]">https://redcap.vanderbilt.edu/plugins/iedea/index.php?option=hub&amp;record=[request_id]</a></p>
+<p><strong>1. Link to <span style="color: #31708f;">Visit Request page</span>:</strong><br /><a href="'.$module->getUrl('index.php?option=hub&amp;record=[request_id]').'">'.$module->getUrl('index.php?option=hub&amp;record=[request_id]').'</a></p>
 <p><strong>2. Link to <span style="color: #16a085;">Finalize Request page</span>:</strong><br />[__SURVEYLINK_finalization_of_request]</p>',
-            9 => '<h2>Request Approved by IeDEA EC</h2>
+            9 => '<h2>Request Approved by '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME]</h2>
 <p>Dear [contact_name],</p>
-<p>We are pleased to confirm approval of your IeDEA multiregional [request_type], <strong>[request_title]</strong>. The IeDEA EC approval date is [final_d].</p>
+<p>We are pleased to confirm approval of your '.$hub_projectname.' [request_type], <strong>[request_title]</strong>. The '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME] approval date is [final_d].</p>
 <p><strong>Next Steps</strong></p>
 <ol>
-<li>Please check the IeDEA Hub for <a href="https://redcap.vanderbilt.edu/plugins/iedea/index.php?option=hub&amp;record=[request_id]">any comments or queries from the regions</a> and incorporate further revisions into your document.</li>
+<li>Please check the '.$hub_projectname.' Hub for <a href="'.$module->getUrl('index.php?option=hub&amp;record=[request_id]').'">any comments or queries from the regions</a> and incorporate further revisions into your document.</li>
 <li>Remove all comments and tracked changes from the document.</li>
 <li>Upload a final version of your [request_type] for logging at the link below.&nbsp;</li>
 </ol>
 <p>[__SURVEYLINK_final_docs_request_survey]</p>
-<p>Please contact <a href="mailto:annette.sohn@treatasia.org">Annette Sohn</a> or <a href="mailto:afreeman@jhu.edu">Aimee Freeman</a> if you have any questions.</p>
-<p>Thank you for participating in IeDEA research.</p>
+<p>Please contact [HUB ADMIN CONTACT] or [HUB ADMIN CONTACT2] if you have any questions.</p>
+<p>Thank you for participating in '.$hub_projectname.' research.</p>
 <hr />
 <p><em>Additional review notes (optional):</em></p>
 <p>[custom_note]</p>',
@@ -464,81 +459,81 @@ $projects_array_module_emailalerts = array(
 <p><strong>Contact Person:</strong>&nbsp; [contact_name], [contact_email]</p>
 <p><strong>Request Title:</strong>&nbsp; [request_title]</p>
 <h2>Summary of Votes</h2>
-<p><strong>AP:</strong>&nbsp; [vote_ap]</p>
-<p><strong>CA:</strong>&nbsp; [vote_ca]</p>
-<p><strong>CN:</strong>&nbsp; [vote_cn]</p>
-<p><strong>EA:</strong>&nbsp; [vote_ea]</p>
-<p><strong>NA:</strong>&nbsp; [vote_na]</p>
-<p><strong>SA:</strong>&nbsp; [vote_sa]</p>
-<p><strong>WA:</strong>&nbsp; [vote_wa]</p>
+<p><strong>[REGION 1]:</strong>&nbsp; [vote_ap]</p>
+<p><strong>[REGION 2]:</strong>&nbsp; [vote_ca]</p>
+<p><strong>[REGION 3]:</strong>&nbsp; [vote_cn]</p>
+<p><strong>[REGION 4]:</strong>&nbsp; [vote_ea]</p>
+<p><strong>[REGION 5]:</strong>&nbsp; [vote_na]</p>
+<p><strong>[REGION 6]:</strong>&nbsp; [vote_sa]</p>
+<p><strong>[REGION 7]:</strong>&nbsp; [vote_wa]</p>
 <h2>Actions</h2>
-<p><strong>1. Link to <span style="color: #31708f;">Visit Request page</span>:</strong><br /><a href="https://redcap.vanderbilt.edu/plugins/iedea/index.php?option=hub&amp;record=[request_id]">https://redcap.vanderbilt.edu/plugins/iedea/index.php?option=hub&amp;record=[request_id]</a></p>
+<p><strong>1. Link to <span style="color: #31708f;">Visit Request page</span>:</strong><br /><a href="'.$module->getUrl('index.php?option=hub&amp;record=[request_id]').'">'.$module->getUrl('index.php?option=hub&amp;record=[request_id]').'</a></p>
 <p><strong>2. Link to <span style="color: #16a085;">Finalize Request page</span>:</strong><br />[__SURVEYLINK_finalization_of_request]</p>',
             11 => '<h2>Final Documents Requested</h2>
 <p>Dear [contact_name],</p>
-<p>We are pleased to confirm approval of your IeDEA multiregional concept,&nbsp;<strong>[request_title]</strong>. The IeDEA EC approval date is <strong>[final_d]</strong>.</p>
+<p>We are pleased to confirm approval of your '.$hub_projectname.' concept,&nbsp;<strong>[request_title]</strong>. The '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME] approval date is <strong>[final_d]</strong>.</p>
 <p><strong>Next Steps</strong></p>
 <ol>
-<li style="padding-bottom: 5px;">Please check the IeDEA Hub for <a href="https://redcap.vanderbilt.edu/plugins/iedea/index.php?option=hub&amp;record=[request_id]">any changes requested by the EC</a> and incorporate further revisions into your concept sheet.</li>
+<li style="padding-bottom: 5px;">Please check the '.$hub_projectname.' Hub for <a href="https://redcap.vanderbilt.edu/plugins/iedea/index.php?option=hub&amp;record=[request_id]">any changes requested by the Executive Comitee</a> and incorporate further revisions into your concept sheet.</li>
 <li style="padding-bottom: 5px;">Remove all comments and tracked changes from the document.</li>
-<li style="padding-bottom: 5px;"><strong><span style="color: #e74c3c;">Upload a final version of your concept</span></strong> to the IeDEA Hub using the link below. <strong>This will trigger all subsequent steps for your project.</strong></li>
+<li style="padding-bottom: 5px;"><strong><span style="color: #e74c3c;">Upload a final version of your concept</span></strong> to the '.$hub_projectname.' Hub using the link below. <strong>This will trigger all subsequent steps for your project.</strong></li>
 </ol>
 <p>&nbsp;</p>
 <p>[__SURVEYLINK_final_docs_request_survey]</p>
 <p>&nbsp;</p>
-<p>After you have uploaded the final version of your concept, the IeDEA concept sheet management team will <strong>assign a concept tracking number</strong> and your concept will be logged on the Hub. You <strong>must have a tracking number (MR number) before requesting IeDEA data.</strong>&nbsp;Once your tracking number has been assigned, you will receive a notification email with the tracking number and next steps for your project. Please contact&nbsp;<a href="mailto:annette.sohn@treatasia.org">Annette Sohn</a>&nbsp;or&nbsp;<a href="mailto:afreeman@jhu.edu">Aimee Freeman</a>&nbsp;if you have any questions.</p>
+<p>After you have uploaded the final version of your concept, the '.$hub_projectname.' concept sheet management team will <strong>assign a concept tracking number</strong> and your concept will be logged on the Hub. You <strong>must have a tracking number before requesting '.$hub_projectname.' data.</strong>&nbsp;Once your tracking number has been assigned, you will receive a notification email with the tracking number and next steps for your project. Please contact&nbsp;[HUB ADMIN CONTACT]&nbsp;or&nbsp;[HUB ADMIN CONTACT2]&nbsp;if you have any questions.</p>
 <p>This email is scheduled to repeat as a reminder&nbsp;<strong>every 7 days</strong> until documents have been uploaded.&nbsp;</p>
-<p>Thank you for participating in IeDEA research.</p>
+<p>Thank you for participating in '.$hub_projectname.' research.</p>
 <p>&nbsp;</p>
 <hr />
 <p><em>Additional review notes (if needed):</em></p>
 <p>[custom_note]</p>
 <hr />
 <p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the IeDEA Hub system (<a href="http://iedeahub.org">iedeahub.org</a>). If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>',
-            12 => '<h2>IeDEA Concept Needs MR</h2>
-<p>Dear Morna and Kathleen,</p>
-<p>The following IeDEA multiregional concept has been approved by the EC on [final_d].</p>
+<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php').'">'.$hub_projectname.' Hub system</a>. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>',
+            12 => '<h2>'.$hub_projectname.' Concept Needs Tracking Number</h2>
+<p>Dear [HUB ADMIN CONTACT],</p>
+<p>The following '.$hub_projectname.' concept has been approved by the [EXECUTIVE COMMITTEE NAME] on [final_d].</p>
 <p><strong>[request_title]</strong> (Request ID: [request_id])</p>
 <p>[contact_name], <a href="mailto:[contact_email]">[contact_email]</a></p>
-<p>The author\'s final documents are attached. Please follow the link below to assign a multiregional tracking number (MR#) and update the documents.</p>
+<p>The author\'s final documents are attached. Please follow the link below to assign a tracking number and update the documents.</p>
 <p>This email <strong>will repeat every 7 days</strong> as a reminder.</p>
 <p>&nbsp;</p>
 <h2>Actions</h2>
 <p><strong>1. Link to <span style="color: #e74c3c;">view author submission (optional)</span>:</strong>&nbsp;<br />[__SURVEYLINK_final_docs_request_survey]</p>
-<p><strong>2. Link to <span style="color: #16a085;">assign MR tracking number</span>:</strong><br />[__SURVEYLINK_mr_assignment_survey]</p>
+<p><strong>2. Link to <span style="color: #16a085;">assign tracking number</span>:</strong><br />[__SURVEYLINK_mr_assignment_survey]</p>
 <p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the IeDEA Hub system (<a href="http://iedeahub.org">iedeahub.org</a>). If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:stephany.duda@vanderbilt.edu">stephany.duda@vanderbilt.edu</a>.</span></p>',
-            13 => '<h2>IeDEA Tracking Number Assigned</h2>
+<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php').'">'.$hub_projectname.' Hub system</a>. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vanderbilt.edu">harmonist@vanderbilt.edu</a>.</span></p>',
+            13 => '<h2>'.$hub_projectname.' Tracking Number Assigned</h2>
 <p>Dear [contact_name],</p>
-<p>Your IeDEA multiregional concept, <strong>[request_title]</strong>, has been assigned the following multiregional tracking number:</p>
+<p>Your '.$hub_projectname.' concept, <strong>[request_title]</strong>, has been assigned the following tracking number:</p>
 <p><strong>[mr_assigned]</strong></p>
-<p>A listing for your new concept will be available soon on the Concepts page of the IeDEA Hub (<a href="http://iedeahub.org">iedeahub.org</a>).</p>
+<p>A listing for your new concept will be available soon on the Concepts page of the '.$hub_projectname.' Hub (<a href="'.$module->getUrl('index.php').'">'.$module->getUrl('index.php').'</a>).</p>
 <p><strong>Next Steps</strong></p>
 <ol>
-<li style="padding-bottom: 5px;"><strong>Data:</strong> The IeDEA regional data leads are cc\'d if you are requesting either IeDEA patient-level or site assessment data. Please follow up with them to develop an official Data Request or receive access to existing datasets, as stated in your EC-approved concept sheet.</li>
-<li style="padding-bottom: 5px;"><strong>Collaborating Authors:</strong> We recommend including regional representatives on your writing team at an early stage of the project (don\'t wait until the end.) If you need to identify regional collaborators, send your request to Aimee Freeman (<a href="afreeman@jhu.edu">afreeman@jhu.edu</a>), who can forward it to the regional coordinators.</li>
-<li style="padding-bottom: 5px;"><strong>Updates:</strong> You will be automatically subscribed to an email survey that will request a brief project update (2-3 sentences) related to this concept every 90 days. These updates will be shared with the EC and logged in the overall IeDEA project tracker.</li>
-<li style="padding-bottom: 5px;"><strong>Abstracts and Publications:</strong> All resulting abstracts and publications will need review and approval from your collaborating working group (if applicable) and the IeDEA EC. EC turnaround times are approximately 1+ weeks for abstracts and 2+ weeks for manuscripts. Actual dates are set by the IeDEA admin team. Please plan ahead for any conference and journal deadlines.</li>
+<li style="padding-bottom: 5px;"><strong>Data:</strong> The '.$hub_projectname.' regional data leads are cc\'d if you are requesting either '.$hub_projectname.' patient-level or site assessment data. Please follow up with them to develop an official Data Request or receive access to existing datasets, as stated in your [EXECUTIVE COMMITTEE NAME]-approved concept sheet.</li>
+<li style="padding-bottom: 5px;"><strong>Collaborating Authors:</strong> We recommend including regional representatives on your writing team at an early stage of the project (don\'t wait until the end.) If you need to identify regional collaborators, send your request to [HUB ADMIN CONTACT], who can forward it to the regional coordinators.</li>
+<li style="padding-bottom: 5px;"><strong>Updates:</strong> You will be automatically subscribed to an email survey that will request a brief project update (2-3 sentences) related to this concept every 90 days. These updates will be shared with the [EXECUTIVE COMMITTEE NAME] and logged in the overall '.$hub_projectname.' project tracker.</li>
+<li style="padding-bottom: 5px;"><strong>Abstracts and Publications:</strong> All resulting abstracts and publications will need review and approval from your collaborating working group (if applicable) and the '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME]. [EXECUTIVE COMMITTEE NAME] turnaround times are approximately 1+ weeks for abstracts and 2+ weeks for manuscripts. Actual dates are set by the '.$hub_projectname.' admin team. Please plan ahead for any conference and journal deadlines.</li>
 </ol>
-<p>Thank you for participating in IeDEA research.</p>
+<p>Thank you for participating in '.$hub_projectname.' research.</p>
 <p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the IeDEA Hub system (<a href="http://iedeahub.org">iedeahub.org</a>). If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:stephany.duda@vanderbilt.edu">stephany.duda@vanderbilt.edu</a>.</span></p>',
-            14 => '<h2>New IeDEA Concept: [mr_assigned]</h2>
-<p>The following new IeDEA multiregional concept has been approved by the IeDEA Executive Committee:</p>
+<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php').'">'.$hub_projectname.' Hub system</a>. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vanderbilt.edu">harmonist@vanderbilt.edu</a>.</span></p>',
+            14 => '<h2>New '.$hub_projectname.' Concept: [mr_assigned]</h2>
+<p>The following new '.$hub_projectname.' concept has been approved by the '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME]:</p>
 <p><strong>[mr_assigned]:&nbsp;</strong><em>[request_title]</em></p>
 <p>&nbsp;</p>
 <p>The main project contact is <strong>[contact_name]</strong> (<a href="mailto:[contact_email]">[contact_email]</a>).</p>
-<p>The finalized concept sheet PDF is attached (if available). Project updates will be tracked on the IeDEA Hub (<a href="http://iedeahub.org">iedeahub.org</a>). Please archive the document or distribute for review in your regions.</p>
+<p>The finalized concept sheet PDF is attached (if available). Project updates will be tracked on the <a href="'.$module->getUrl('index.php').'">'.$hub_projectname.' Hub</a>. Please archive the document or distribute for review in your regions.</p>
 <p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the IeDEA Hub system (<a href="http://iedeahub.org">iedeahub.org</a>). If you believe you received this email in error, please contact <a href="mailto:stephany.duda@vanderbilt.edu">stephany.duda@vanderbilt.edu</a>.</span></p>',
-            15 => '<h2>IeDEA Request Approved</h2>
+<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php').'">'.$hub_projectname.' Hub system</a>. If you believe you received this email in error, please contact <a href="mailto:harmonist@vanderbilt.edu">harmonist@vanderbilt.edu</a>.</span></p>',
+            15 => '<h2>'.$hub_projectname.' Request Approved</h2>
 <p>Dear [contact_name],</p>
-<p>We are pleased to confirm approval of your IeDEA multiregional concept,&nbsp;<strong>[request_title]</strong>. The IeDEA EC approval date is <strong>[final_d]</strong>.</p>
+<p>We are pleased to confirm approval of your '.$hub_projectname.' concept,&nbsp;<strong>[request_title]</strong>. The '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME] approval date is <strong>[final_d]</strong>.</p>
 <p><strong>Next Steps</strong></p>
 <ol>
-<li style="padding-bottom: 5px;">Please check the IeDEA Hub for <a href="https://redcap.vanderbilt.edu/plugins/iedea/index.php?option=hub&amp;record=[request_id]">any feedback or changes requested by the EC</a> and incorporate them into the final version or respond directly to the region/investigator if this is not feasible.</li>
-<li style="padding-bottom: 5px;">Contact&nbsp;<a href="mailto:annette.sohn@treatasia.org">Annette Sohn</a>&nbsp; (cc\'d) or&nbsp;<a href="mailto:afreeman@jhu.edu">Aimee Freeman</a>&nbsp;with any general questions.</li>
+<li style="padding-bottom: 5px;">Please check the '.$hub_projectname.' Hub for <a href="'.$module->getUrl('index.php?option=hub?record=[request_id]').'">any feedback or changes requested by the [EXECUTIVE COMMITTEE NAME]</a> and incorporate them into the final version or respond directly to the region/investigator if this is not feasible.</li>
+<li style="padding-bottom: 5px;">Contact&nbsp;[HUB ADMIN CONTACT]&nbsp; (cc\'d) or&nbsp;[HUB ADMIN CONTACT2]&nbsp;with any general questions.</li>
 <li style="padding-bottom: 5px;">Follow these final documents instructions for your submission type:</li>
 <ol>
 <li>For <strong>Abstracts</strong>: Upload your <u>submitted</u> abstract at the link below. We will contact you at a later date to find out if the abstract was accepted.</li>
@@ -550,16 +545,16 @@ $projects_array_module_emailalerts = array(
 <p>[__SURVEYLINK_final_docs_request_survey]</p>
 <p>&nbsp;</p>
 <p><em>If you do not have the final version available, you will receive a reminder email to upload your documents at a later date.</em></p>
-<p>Thank you for your leadership of IeDEA&rsquo;s multiregional research.</p>
+<p>Thank you for your leadership of '.$hub_projectname.'&rsquo;s research.</p>
 <p>&nbsp;</p>
 <hr />
 <p><em>Additional review notes (if needed):</em></p>
 <p>[custom_note]</p>
 <hr />
 <p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the IeDEA Hub system (<a href="http://iedeahub.org">iedeahub.org</a>). If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>'
+<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php').'">'.$hub_projectname.' Hub system</a>. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>'
         ),
-    "email-attachment-variable" => array
+        "email-attachment-variable" => array
         (
             0 => "",
             1 => "",
@@ -578,7 +573,7 @@ $projects_array_module_emailalerts = array(
             14 => "[finalconcept_pdf]",
             15 => ""
         ),
-    "email-repetitive" => array
+        "email-repetitive" => array
         (
             0 => 0,
             1 => 0,
@@ -597,7 +592,26 @@ $projects_array_module_emailalerts = array(
             14 => 0,
             15 => 0
         ),
-    "email-condition" => array
+        "email-deleted" => array
+        (
+            0 => 1,
+            1 => 1,
+            2 => 1,
+            3 => 1,
+            4 => 1,
+            5 => 1,
+            6 => 1,
+            7 => 1,
+            8 => 1,
+            9 => 1,
+            10 => 1,
+            11 => 1,
+            12 => 1,
+            13 => 1,
+            14 => 1,
+            15 => 1
+        ),
+        "email-condition" => array
         (
             0 => "",
             1 => "[approval_y]=1 and [admin_noemail(1)] <> '1'",
@@ -616,7 +630,7 @@ $projects_array_module_emailalerts = array(
             14 => "[mr_assigned] <> \"\" and [mr_noemail(2)] <> '1'",
             15 => "[finalize_y]=1 and ([request_type]<>1 and [request_type]<>5) and [finalize_noemail]<>'1'"
         ),
-    "email-incomplete" => array
+        "email-incomplete" => array
         (
             0 => 0,
             1 => 0,
@@ -635,7 +649,7 @@ $projects_array_module_emailalerts = array(
             14 => 0,
             15 => 0
         ),
-    "cron-send-email-on" => array
+        "cron-send-email-on" => array
         (
             0 => "now",
             7 => "calc",
@@ -653,7 +667,7 @@ $projects_array_module_emailalerts = array(
             14 => "now",
             15 => "now"
         ),
-    "cron-send-email-on-field" => array
+        "cron-send-email-on-field" => array
         (
             0 => "",
             7 => "sum(if([vote_ap] <> \"\", 1, 0), if([vote_ca] <> \"\", 1, 0), if([vote_cn] <> \"\", 1, 0), if([vote_ea] <> \"\", 1, 0), if([vote_na] <> \"\", 1, 0), if([vote_sa] <> \"\", 1, 0), if([vote_wa] <> \"\", 1, 0)) = '7' and [finalize_y] = ''",
@@ -671,7 +685,7 @@ $projects_array_module_emailalerts = array(
             14 => "",
             15 => ""
         ),
-    "cron-repeat-for" => array
+        "cron-repeat-for" => array
         (
             0 => 0,
             7 => 0,
@@ -689,7 +703,7 @@ $projects_array_module_emailalerts = array(
             14 => 0,
             15 => 0
         ),
-    "cron-queue-expiration-date" => array
+        "cron-queue-expiration-date" => array
         (
             0 => "never",
             7 => "cond",
@@ -707,7 +721,7 @@ $projects_array_module_emailalerts = array(
             14 => "never",
             15 => "never"
         ),
-    "cron-queue-expiration-date-field" => array
+        "cron-queue-expiration-date-field" => array
         (
             0 => "[finalize_y] <> \"\"",
             7 => "[finalize_y] <> \"\"",
@@ -725,7 +739,7 @@ $projects_array_module_emailalerts = array(
             14 => "",
             15 => ""
         ),
-    "alert-id" => array
+        "alert-id" => array
         (
             0 => 0,
             1 => 1,
@@ -748,7 +762,7 @@ $projects_array_module_emailalerts = array(
             18 => 18,
             19 => 19
         ),
-    "alert-name" => array(
+        "alert-name" => array(
             0 => "To Author: confirmation of initial submission",
             1 => "To Author: Admin posting confirmed",
             2 => "To Admin: heads-up of new request",
@@ -757,13 +771,13 @@ $projects_array_module_emailalerts = array(
             5 => "To Admin: request rejected (not posted to Hub)",
             7 => "To Admins: notify voting complete",
             8 => "To Admins: alert voting incomplete by due_d",
-            9 => "To Steph: non-concept approved by EC",
-            10 => "To Steph: alert voting incomplete by due_d TEST2",
-            11 => "To Author+Annette: concept or fast-track approved by EC",
-            12 => "To MR Team: Assign MR#",
-            13 => "To Author and Admins: MR Assigned",
+            9 => "To Admin: non-concept approved by EC",
+            10 => "To Admin: alert voting incomplete by due_d TEST2",
+            11 => "To Author: concept or fast-track approved by EC",
+            12 => "To Tracking Number Team: Assign Tracking Number",
+            13 => "To Author and Admins: Tracking Number Assigned",
             14 => "To PMs: notification of new concept",
-            15 => "To Author+Annette: non-concept approved by EC",
+            15 => "To Author: non-concept approved by EC",
         )
     ));
 
@@ -805,9 +819,10 @@ foreach ($projects_array as $index=>$name){
             $module->addProjectToList($project_id_new, $rowtype['event_id'], 1, 'deactivate_datadown', 1);
             $module->addProjectToList($project_id_new, $rowtype['event_id'], 1, 'deactivate_tblcenter', 1);
         }else if($hub_profile == 'basic'){
-
+            $module->addProjectToList($project_id_new, $rowtype['event_id'], 1, 'deactivate_datadown', 1);
+            $module->addProjectToList($project_id_new, $rowtype['event_id'], 1, 'deactivate_toolkit', 1);
         }else if($hub_profile == 'all'){
-
+            #We show everything
         }
 
         \Records::addRecordToRecordListCache($project_id_new, $record,1);
@@ -865,8 +880,6 @@ foreach ($projects_array as $index=>$name){
         \Records::addRecordToRecordListCache($project_id, $record,1);
         $record++;
     }
-
-
 }
 #Upload SQL fields to projects
 include_once("projects.php");
