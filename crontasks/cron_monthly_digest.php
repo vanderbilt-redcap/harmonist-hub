@@ -47,7 +47,7 @@ foreach ($requests as $req){
         }
         $email_req .= ", ".$req['contact_name']."</div>";
 
-        $email_req .= "<div style='padding: 3px;'><a href='".APP_PATH_PLUGIN."/index.php?pid=".IEDEA_DATAMODEL."&option=hub&record=".$req['request_id']."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
+        $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub&record=".$req['request_id'])."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
         $votes = array();
         foreach ($req['region_response_status'] as $region => $vote_status){
             if($vote_status != 0 && in_array($req['region_vote_status'],$req)){
@@ -96,7 +96,7 @@ foreach ($requests_hub as $req){
         }
         $email_req .= ", ".$req['contact_name']."</div>";
 
-        $email_req .= "<div style='padding: 3px;'><a href='".APP_PATH_PLUGIN."/index.php?pid=".IEDEA_DATAMODEL."&option=hub&record=".$req['request_id']."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
+        $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".IEDEA_DATAMODEL."&option=hub&record=".$req['request_id'])."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
 
         if($req['finalize_y'] == "1"){
             $color_text = "color:#5cb85c";
@@ -141,7 +141,7 @@ foreach ($sops as $sop){
             $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;'><div style='padding: 3px;'><strong>Due:</strong> <span style='$date_color_text'>" . $sop['sop_due_d'] . "</span></span></div>";
         }
 
-        $email_req .= "<div style='padding: 3px;'><a href='" . APP_PATH_PLUGIN . "/index.php?pid=" . IEDEA_DATAMODEL . "&option=hub&record=" . $sop['request_id'] . "' target='_blank' alt='concept_link'>" . $sop['request_title'] . "</a></div>";
+        $email_req .= "<div style='padding: 3px;'><a href='" . $module->getUrl("index.php?pid=" . IEDEA_DATAMODEL . "&option=hub&record=" . $sop['request_id']) . "' target='_blank' alt='concept_link'>" . $sop['request_title'] . "</a></div>";
         $RecordSetCreator = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_creator']));
         $creator = getProjectInfoArray($RecordSetCreator)[0];
         $RecordSetCreator2 = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_creator2']));
@@ -161,7 +161,7 @@ foreach ($sops as $sop){
         $sop_people_all = implode(', ',array_unique(explode(', ' , $sop_people)));
 
         $email_req .= "<div style='padding: 3px;'><strong>Data Request for " . $concept_sheet . ", </strong>" . $sop_people_all . "</div>";
-        $email_req .= "<div style='padding: 3px;'><a href='".APP_PATH_PLUGIN."/index.php?option=sop&record=" . $sop['record_id'] . "'>" . $sop['sop_name'] . "</a></div>";
+        $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=sop&record".$sop['record_id']). "'>" . $sop['sop_name'] . "</a></div>";
 
         $votes = array();
         foreach ($regions as $region){

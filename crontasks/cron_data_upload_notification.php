@@ -69,8 +69,8 @@ foreach ($request_DU as $upload){
 
             $subject = "Successful ".$settings['hub_name']." data upload for " . $concept_id;
             $message = "<div>Dear " . $firstname . ",</div><br/><br/>" .
-                "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl(APP_PATH_PLUGIN."/index.php?&option=sop&record=" . $upload['data_assoc_request']) . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
-                "<div>You may log into the ".$settings['hub_name']." Hub and view the <a href='" . $module->getUrl(APP_PATH_PLUGIN."/index.php?&option=slgd") . "' target='_blank'>Data Activity Log</a> report, track downloads, and delete your dataset. Your dataset will be available for " .
+                "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=sop&record=" . $upload['data_assoc_request']) . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
+                "<div>You may log into the ".$settings['hub_name']." Hub and view the <a href='" . $module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=slgd") . "' target='_blank'>Data Activity Log</a> report, track downloads, and delete your dataset. Your dataset will be available for " .
                 "download by the approved data downloaders <strong>until " . $expire_date . " 23:59</strong> ET unless you choose to delete it before then. </div><br/>" .
                 "<div>Approved Data Downloaders:</div>" .
                 $downloaders_list . "<br/>" .
@@ -94,7 +94,7 @@ foreach ($request_DU as $upload){
                     $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
                         "<div>A new dataset has been submitted to secure cloud storage by <strong>" . $name_uploader . "</strong> from <strong>" . $region_code_uploader . "</strong> in response to \"" . $sop['sop_name'] . "\" for concept <b>" . $concept_id . "</b>. The upload was received at " . $date_time . " Eastern US Time (ET). </div><br/>" .
                         "<div>The data will be available to download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .
-                        "<div>To download the dataset, log in to the ".$settings['hub_name']." Hub and select <strong>Retrieve Data on the <a href='" .$module->getUrl(APP_PATH_PLUGIN."/index.php?&option=dat")."' target='_blank'>Data page</a></strong>. " .
+                        "<div>To download the dataset, log in to the ".$settings['hub_name']." Hub and select <strong>Retrieve Data on the <a href='" .$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=dat")."' target='_blank'>Data page</a></strong>. " .
                         "A summary report for the dataset is also available on that page. The dataset will be deleted on " . $expire_date . " 23:59 ET</div><br/>" .
                         "<span style='color:#777'>Please email <a href='mailto:".$settings['hub_contact_email']."'>".$settings['hub_contact_email']."</a> with any questions.</span>";
 
