@@ -150,6 +150,9 @@ if($hub_projectname == '' || $hub_profile == ''){
             <?php include('navbar.php'); ?>
         </head>
         <body>
+        <?php
+//        include ("crontasks/cron_publications.php");
+        ?>
         <br/>
         </body>
         </html>

@@ -161,7 +161,7 @@ foreach ($sops as $sop){
         $sop_people_all = implode(', ',array_unique(explode(', ' , $sop_people)));
 
         $email_req .= "<div style='padding: 3px;'><strong>Data Request for " . $concept_sheet . ", </strong>" . $sop_people_all . "</div>";
-        $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=sop&record".$sop['record_id']). "'>" . $sop['sop_name'] . "</a></div>";
+        $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=sop&record=".$sop['record_id']). "'>" . $sop['sop_name'] . "</a></div>";
 
         $votes = array();
         foreach ($regions as $region){
@@ -184,11 +184,11 @@ if($isEmpty){
     $email_req .= "<li><em>No active data calls.</em></li>";
 }
 $email_req .= "</ol></div>";
-print_array($email_req);
+
 if($settings['hub_subs_monthly_digest'] != "") {
     $emails = explode(';', $settings['hub_subs_monthly_digest']);
     foreach ($emails as $email) {
-//        sendEmail($email, 'noreply@vumc.org', $settings['accesslink_sender_name'], $subject, $email_req, "Not in database");
+        sendEmail($email, 'noreply@vumc.org', $settings['accesslink_sender_name'], $subject, $email_req, "Not in database");
     }
 }
 

@@ -99,20 +99,20 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
     }
 
     function cronMethod($cronAttributes){
-//        if($cronAttributes['cron_name'] == 'cron_metrics'){
-//            include ("crontasks/cron_metrics.php");
-//        }else if($cronAttributes['cron_name'] == 'cron_delete'){
-//            include ("crontasks/cron_delete_AWS.php");
-//        }else if($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder'){
-//            include ("crontasks/cron_data_upload_expiration_reminder.php");
-//        }else if($cronAttributes['cron_name'] == 'cron_data_upload_notification'){
-//            include ("crontasks/cron_data_upload_notification.php");
-//        }else if($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1'){
-//           //Every First Monday
-//            include ("crontasks/cron_monthly_digest.php");
-//        }else if($cronAttributes['cron_name'] == 'cron_publications'){
-//            include ("crontasks/cron_publications.php");
-//        }
+        if($cronAttributes['cron_name'] == 'cron_metrics'){
+            include ("crontasks/cron_metrics.php");
+        }else if($cronAttributes['cron_name'] == 'cron_delete'){
+            include ("crontasks/cron_delete_AWS.php");
+        }else if($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder'){
+            include ("crontasks/cron_data_upload_expiration_reminder.php");
+        }else if($cronAttributes['cron_name'] == 'cron_data_upload_notification'){
+            include ("crontasks/cron_data_upload_notification.php");
+        }else if($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1'){
+           //Every First Monday
+            include ("crontasks/cron_monthly_digest.php");
+        }else if($cronAttributes['cron_name'] == 'cron_publications'){
+            include ("crontasks/cron_publications.php");
+        }
     }
 
     function hook_every_page_before_render($project_id) {
