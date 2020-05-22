@@ -7,6 +7,7 @@ use ExternalModules\ExternalModules;
 $project_id = $_REQUEST['pid'];
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
+$module->setProjectSetting('hub-mapper',$project_id);
 
 $path = $module->framework->getModulePath()."csv/PID_data_dictionary.csv";
 $module->framework->importDataDictionary($project_id,$path);
@@ -129,11 +130,6 @@ $projects_array_hooks = array(0=>'1',1=>'1',2=>'1',3=>'1',4=>'1',5=>'1',6=>'1',
     7=>'0',8=>'1',9=>'0', 10=>'0',11=>'1',12=>'0',13=>'0',
     14=>'0',15=>'0',16=>'0',17=>'0',18=>'0',19=>'0',
     20=>'0',21=>'0',22=>'0',23=>'0',24=>'0',25=>'0',26=>'0',27=>'1',28=>'0');
-
-$projects_array_module_seamlessiframe = array(0=>'0',1=>'0',2=>'0',3=>'0',4=>'0',5=>'0',6=>'0',
-    7=>'0',8=>'0',9=>'0', 10=>'0',11=>'1',12=>'0',13=>'0',
-    14=>'0',15=>'0',16=>'0',17=>'0',18=>'0',19=>'0',
-    20=>'0',21=>'0',22=>'0',23=>'0',24=>'0',25=>'0',26=>'0',27=>'0',28=>'0');
 
 $projects_array_module_emailalerts = array(
     3=> array(
@@ -841,13 +837,8 @@ foreach ($projects_array as $index=>$name){
     #enable modules in projects
     if($projects_array_hooks[$index] == '1') {
         #enable current module to activate hooks
-        $module->enableModule($project_id_new, "");
-    }
-    if($projects_array_module_seamlessiframe[$index] == '1'){
-        #enable modules to certain projects
-        $module->enableModule($project_id_new,"seamless-iframes-module");
-        $othermodule = ExternalModules::getModuleInstance("seamless-iframes-module");
-        $othermodule->setProjectSetting("allowed-url-prefixes", APP_PATH_WEBROOT_FULL."external_modules/?prefix=harmonist-hub&page=index?pid=".$project_id, $project_id_new);
+        $module->enableModule($project_id_new, "harmonist-hub");
+        $module->setProjectSetting('hub-mapper',$project_id, $project_id_new);
     }
     if(array_key_exists($index,$projects_array_module_emailalerts)){
         #enable modules to certain projects

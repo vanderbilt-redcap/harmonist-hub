@@ -31,6 +31,14 @@ $(document).ready(function()
     });
 });
 
+function inIframe(){
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+}
+
 /**
  * Function to add/remove the selected class an to un/select the doubles at the same time
  * @param id

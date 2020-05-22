@@ -11,8 +11,9 @@
     }
   ],
 
-  "permissions": ["redcap_module_link_check_display","hook_every_page_before_render"],
-  "enable-every-page-hooks-on-system-pages": false,
+  "permissions": ["redcap_module_link_check_display","hook_every_page_top","hook_every_page_before_render","hook_save_record"],
+
+  "enable-every-page-hooks-on-system-pages": true,
 
   "links": {
     "project": [

@@ -1,12 +1,18 @@
-
-$('[name=submit-btn-saverecord]').click(function() {
-    if(window.frameElement.getAttribute("stayrequest_y") == "0"){
+var isInIframe = inIframe();
+if(isInIframe == true) {
+    if (window.frameElement.getAttribute("stayrequest_y") == "0") {
         parent.location.href = redirect_hub(parent.location.href);
-    }else{
+    } else {
         parent.location.href = addMessageLetter(parent.location.href, window.frameElement.getAttribute("message"));
     }
-
-});
+}
+function inIframe(){
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+}
 
 function addMessageLetter(url,letter){
     if (url.substring(url.length-1) == "#")

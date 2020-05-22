@@ -34,30 +34,32 @@ define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 define('APP_PATH_PLUGIN',APP_PATH_WEBROOT_FULL."external_modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
 define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
 
-# Define the projects stored in DES_PROJECTS
-$projects = \REDCap::getData(array('project_id'=>IEDEA_PROJECTS),'array');
-
-$linkedProjects = array();
-foreach ($projects as $event){
-    foreach ($event as $project) {
-        define(ENVIRONMENT . '_IEDEA_' . $project['project_constant'], $project['project_id']);
-        array_push($linkedProjects,"IEDEA_".$project['project_constant']);
-    }
-}
-
-# Define the environment for each project
-foreach($linkedProjects as $projectTitle) {
-    if(defined(ENVIRONMENT."_".$projectTitle)) {
-        define($projectTitle, constant(ENVIRONMENT."_".$projectTitle));
-
-    }
-}
+# Define the projects stored in MAPPER
+$module->setProjectConstants(IEDEA_PROJECTS);
+//$projects = \REDCap::getData(array('project_id'=>IEDEA_PROJECTS),'array');
+//
+//$linkedProjects = array();
+//foreach ($projects as $event){
+//    foreach ($event as $project) {
+//        define(ENVIRONMENT . '_IEDEA_' . $project['project_constant'], $project['project_id']);
+//        array_push($linkedProjects,"IEDEA_".$project['project_constant']);
+//    }
+//}
+//
+//# Define the environment for each project
+//foreach($linkedProjects as $projectTitle) {
+//    if(defined(ENVIRONMENT."_".$projectTitle)) {
+//        define($projectTitle, constant(ENVIRONMENT."_".$projectTitle));
+//
+//    }
+//}
 $secret_key="";
 $secret_iv="";
-
-$RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
-$settings = $RecordSetSettings[0];
-
-include_once("functions.php");
+include_once __DIR__ ."/Passthru.php";
 require_once (__DIR__ . '/vendor/autoload.php');
 include_once(__DIR__ . "/email.php");
+include_once("functions.php");
+
+$RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
+$settings = getProjectInfoArray($RecordSetSettings)[0];
+

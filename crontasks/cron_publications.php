@@ -1,7 +1,6 @@
 <?php
 include_once(__DIR__ ."/../projects.php");
 include_once __DIR__ ."/../functions.php";
-include_once __DIR__ ."/../Passthru.php";
 
 $isAdmin = false;
 if(array_key_exists('isAdmin', $_REQUEST) && ($_REQUEST['isAdmin'] == '1')){
@@ -50,7 +49,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                 }
 
                 $passthru_link = \Passthru::passthruToSurvey($concept['record_id'],IEDEA_HARMONIST, "output_record", true);
-                $survey_link = 'surveyPassthru.php?&surveyLink=' . $passthru_link;
+                $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link);
 
                 $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
@@ -97,7 +96,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
 
             $passthru_link = \Passthru::passthruToSurvey($output['record_id'],IEDEA_EXTRAOUTPUTS, "output_record", true);
-            $survey_link = 'surveyPassthru.php?&surveyLink=' . $passthru_link;
+            $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link);
             $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
             $table_aux = array();

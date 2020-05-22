@@ -4,8 +4,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use Exception;
 use REDCap;
 
-require_once(__DIR__ ."/projects.php");
-require_once (__DIR__ ."/functions.php");
+//require_once(__DIR__ ."/projects.php");
 
 class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
 {
@@ -34,7 +33,11 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
             [$project_id, $eventId, $record, $fieldName, $value]);
     }
 
-    function redcap_save_record($project_id,$record,$instrument,$event_id){
+    function hook_save_record($project_id,$record,$instrument,$event_id){
+//        $hub_mapper = $this->getProjectSetting('hub-mapper');
+        $hub_mapper = 366;
+        $this->setProjectConstants($hub_mapper);
+
         #Depending on the project que add one hook or another
         if($project_id == IEDEA_SOP){
             include_once("hooks/save_record_SOP.php");
@@ -48,11 +51,18 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
             checkAndUpdatJSONCopyProject($this, '0a');
         }else if($project_id == IEDEA_CODELIST){
             checkAndUpdatJSONCopyProject($this, '0b');
-
+        }else if($project_id == IEDEA_HOME){
+            echo '<script>';
+            include_once("js/iframe.js");
+            echo '</script>';
         }
     }
 
-    function redcap_every_page_top($project_id){
+    function hook_every_page_top($project_id){
+//        $hub_mapper = $this->getProjectSetting('hub-mapper');
+        $hub_mapper = 366;
+        $this->setProjectConstants($hub_mapper);
+
         #Add to all projects needed
         if($project_id == IEDEA_HARMONIST){
             if($_REQUEST['s'] != "" || $_REQUEST['sq'] != ""){
@@ -77,7 +87,7 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
             }
         }else if($project_id == IEDEA_TBLCENTERREVISED || $project_id == IEDEA_SOPCOMMENTS || $project_id == IEDEA_HOME || $project_id == IEDEA_PEOPLE || $project_id == IEDEA_SOP || $project_id == IEDEA_RMANAGER || $project_id == IEDEA_SOPCOMMENTS) {
             if ($project_id == IEDEA_TBLCENTERREVISED || $project_id == IEDEA_SOPCOMMENTS || $project_id == IEDEA_HOME || $project_id == IEDEA_COMMENTSVOTES || $project_id == IEDEA_RMANAGER || ($project_id == IEDEA_PEOPLE && $_REQUEST['s'] != IEDEA_SURVEYPERSONINFO) || $project_id == IEDEA_SOP && $_REQUEST['s'] != IEDEA_DATARELEASEREQUEST) {
-                echo "<script>
+               echo "<script>
                     $(document).ready(function() {
                         $('[name=submit-btn-savereturnlater]').hide();
                         $('#return_code_completed_survey_div').hide();
@@ -122,6 +132,27 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
             <script>
                 $(document).ready(function() { $('.chklist.round:eq(6)').hide(); });
             </script>\n";
+        }
+    }
+
+    function setProjectConstants($project_id){
+        # Define the projects stored in MAPPER
+        $projects = \REDCap::getData(array('project_id'=>$project_id),'array');
+
+        $linkedProjects = array();
+        foreach ($projects as $event){
+            foreach ($event as $project) {
+                define(ENVIRONMENT . '_IEDEA_' . $project['project_constant'], $project['project_id']);
+                array_push($linkedProjects,"IEDEA_".$project['project_constant']);
+            }
+        }
+
+        # Define the environment for each project
+        foreach($linkedProjects as $projectTitle) {
+            if(defined(ENVIRONMENT."_".$projectTitle)) {
+                define($projectTitle, constant(ENVIRONMENT."_".$projectTitle));
+
+            }
         }
     }
 }
