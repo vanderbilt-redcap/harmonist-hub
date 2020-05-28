@@ -38,6 +38,12 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
         $hub_mapper = 366;
         $this->setProjectConstants($hub_mapper);
 
+        if($project_id == IEDEA_HOME || $project_id == IEDEA_COMMENTSVOTES){
+            echo '<script>';
+            include_once("js/iframe.js");
+            echo '</script>';
+        }
+
         #Depending on the project que add one hook or another
         if($project_id == IEDEA_SOP){
             include_once("hooks/save_record_SOP.php");
@@ -49,12 +55,8 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
             include_once("hooks/save_record_SOP_comments.php");
         }else if($project_id == IEDEA_DATAMODEL){
             checkAndUpdatJSONCopyProject($this, '0a');
-        }else if($project_id == IEDEA_CODELIST){
+        }else if($project_id == IEDEA_CODELIST) {
             checkAndUpdatJSONCopyProject($this, '0b');
-        }else if($project_id == IEDEA_HOME){
-            echo '<script>';
-            include_once("js/iframe.js");
-            echo '</script>';
         }
     }
 
@@ -85,9 +87,9 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
                     });
                 </script>";
             }
-        }else if($project_id == IEDEA_TBLCENTERREVISED || $project_id == IEDEA_SOPCOMMENTS || $project_id == IEDEA_HOME || $project_id == IEDEA_PEOPLE || $project_id == IEDEA_SOP || $project_id == IEDEA_RMANAGER || $project_id == IEDEA_SOPCOMMENTS) {
+        }else {
             if ($project_id == IEDEA_TBLCENTERREVISED || $project_id == IEDEA_SOPCOMMENTS || $project_id == IEDEA_HOME || $project_id == IEDEA_COMMENTSVOTES || $project_id == IEDEA_RMANAGER || ($project_id == IEDEA_PEOPLE && $_REQUEST['s'] != IEDEA_SURVEYPERSONINFO) || $project_id == IEDEA_SOP && $_REQUEST['s'] != IEDEA_DATARELEASEREQUEST) {
-               echo "<script>
+                echo "<script>
                     $(document).ready(function() {
                         $('[name=submit-btn-savereturnlater]').hide();
                         $('#return_code_completed_survey_div').hide();
@@ -125,7 +127,7 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
         }
     }
 
-    function hook_every_page_before_render($project_id) {
+    function hook_every_page_before_render($project_id=null) {
         if (PAGE == "ProjectSetup/index.php") {
 //            echo "<script src='".CareerDev::link("/js/jquery.min.js")."'></script>\n";   // change this line to ensure that jquery is included
             echo "

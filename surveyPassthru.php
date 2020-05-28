@@ -1,6 +1,5 @@
 <?php
 define('NOAUTH',true);
-//require_once "base.php";
 
 if(!empty($_REQUEST['surveyLink'])){?>
     <html>

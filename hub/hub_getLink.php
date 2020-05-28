@@ -1,5 +1,6 @@
 <?php
 define('NOAUTH',true);
+require_once dirname(dirname(__FILE__))."/projects.php";
 
 $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
 $settings = getProjectInfoArray($RecordSetSettings)[0];
@@ -7,7 +8,10 @@ $settings = getProjectInfoArray($RecordSetSettings)[0];
 $result = "";
 $current_record = $_POST['record'];
 $current_option = $_POST['option'];
-$options = array(0=>"map",1=>"sop",2=>"ss1",3=>"cpt",4=>"ttl",5=>"pup",6=>"cup",7=>"cns",8=>"hub",9=>"adm",10=>"hra",11=>"upd",12=>"ups",13=>"uph",14=>"dnd",15=>"out",16=>"sts",17=>"faq",18=>"arc",19=>"pro");
+$options = array(0=>"map",1=>"sop",2=>"ss1",3=>"cpt",4=>"ttl",5=>"pup",6=>"cup",7=>"bug",8=>"hub",9=>"adm",10=>"hra",
+    11=>"upd",12=>"ups",13=>"uph",14=>"dnd",15=>"out",16=>"abt",17=>"faq",18=>"arc",19=>"pro",20=>"smn",
+    21=>"gac",22=>"sra",23=>"tbl",24=>"ofs",25=>"fsa",26=>"dna",27=>"ss5",28=>"spr",29=>"lgd",30=>"usr",
+    31=>"mra",32=>"mrr",33=>"dat",34=>"pdc",35=>"mts",36=>"mth",37=>"unf",38=>"und",39=>"cal");
 
 if(!empty($_POST['email'])) {
     $RecordSetEmail = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[email] ='".$_POST['email']."'");
@@ -61,7 +65,6 @@ if(!empty($_POST['email'])) {
             $environment = " ".ENVIRONMENT;
         }
         sendEmail(strtolower($_POST['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database");
-
     }
 }
 

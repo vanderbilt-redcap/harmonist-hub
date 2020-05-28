@@ -26,10 +26,11 @@ function getProjectInfoArray($records){
     return $array;
 }
 
-function getProjectInfoArrayRepeatingInstruments($records){
+function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
     $array = array();
     $index=0;
     foreach ($records as $record=>$record_array) {
+        $found = false;
         foreach ($record_array as $event=>$data) {
             if($event == 'repeat_instances'){
                 foreach ($data as $eventarray){
@@ -44,6 +45,12 @@ function getProjectInfoArrayRepeatingInstruments($records){
 
                                 if($value != "" ){
                                     $datarepeat[$field_name][$instance] = $value;
+
+                                    foreach ($filterLogic as $filterkey => $filtervalue){
+                                        if($value == $filtervalue && $field_name == $filterkey){
+                                            $found = true;
+                                        }
+                                    }
                                 }
 
                             }
@@ -58,11 +65,21 @@ function getProjectInfoArrayRepeatingInstruments($records){
                 }
             }else{
                 $array[$index] = $data;
+                foreach ($data as $fname=>$fvalue) {
+                    foreach ($filterLogic as $filterkey => $filtervalue){
+                        if($fvalue == $filtervalue && $fname == $filterkey){
+                            $found = true;
+                        }
+                    }
+                }
             }
         }
+        if(!$found && $filterLogic != null){
+            unset($array[$index]);
+        }
+
         $index++;
     }
-
     return $array;
 }
 
@@ -225,6 +242,20 @@ function getToken($userid){
     $people = getProjectInfoArray($projectPeople)[0];
     if(!empty($people)){
         return $people['access_token'];
+    }
+}
+
+function getReqAssocConceptLink($module,$assoc_concept, $option=""){
+    if(!empty($assoc_concept)){
+        $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $assoc_concept));
+        $concepts = getProjectInfoArray($RecordSetConceptSheets)[0];
+        $concept_sheet = $concepts['concept_id'];
+        $concept_title = $concepts['concept_title'];
+        if($option == '1'){
+            return '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ttl&record='.$assoc_concept).'" target="_blank">'.$concept_sheet.', '.$concept_title.'</a>';
+        }else{
+            return '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ttl&record='.$assoc_concept).'" target="_blank">'.$concept_sheet.'</a>';
+        }
     }
 }
 
@@ -531,9 +562,8 @@ function getRequestHeader($regions, $person_region, $vote_grid, $option, $type="
     if($option != '2'){
         $small_screen_class = 'hidden-sm hidden-xs';
         if ($vote_grid == '2') {
-            $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
-            $RecordSetMyRegion = new \Plugin\RecordSet($projectRegions, array('record_id' => $person_region));
-            $my_region = $RecordSetMyRegion->getDetails()[0]['region_code'];
+            $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region));
+            $my_region = getProjectInfoArray($RecordSetRegions)[0]['region_code'];
             $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" style="width:150px" data-sortable="false">' . $my_region . '</th>';
         } else {
             foreach ($regions as $region) {
@@ -665,9 +695,8 @@ function showClosedRequest($settings,$req,$instance){
  * @return bool
  */
 function showPendingRequest($request_id, $req, $current_region){
-    $projectComment = new \Plugin\Project(IEDEA_COMMENTSVOTES);
-    $RecordSetComment = new \Plugin\RecordSet($projectComment, array('request_id' => $request_id));
-    $comments = $RecordSetComment->getDetails();
+    $RecordSetComment = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array('request_id' => $request_id));
+    $comments = getProjectInfoArray($RecordSetComment);
     foreach ($comments as $comment){
         if($comment['vote_now'] == "0" && $comment['response_region'] == $current_region && (!array_key_exists('finalize_y', $req) || $req['finalize_y'] == "")){
             return true;
@@ -714,9 +743,8 @@ function getPrivateVotesHTML($region_response_status,$small_screen_class){
 }
 
 function getMixVotesHTML($region_vote_status,$region_response_status,$region_id,$req,$small_screen_class){
-    $projectCommentsVotes = new \Plugin\Project(IEDEA_COMMENTSVOTES);
-    $RecordSetComments = new \Plugin\RecordSet($projectCommentsVotes, array("request_id" => $req['request_id'], "response_region" =>$region_id));
-    $votes = $RecordSetComments->getDetails();
+    $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array("request_id" => $req['request_id']),null,null,null,false,false,false,"[response_region] ='".$region_id."'");
+    $votes = getProjectInfoArray($RecordSetComments);
     $mix = false;
     foreach ($votes as $vote){
         if($region_vote_status != $vote['pi_vote'] && array_key_exists('pi_vote',$vote) && array_key_exists('region_vote_status',$req) && $region_vote_status != ""){
@@ -753,7 +781,6 @@ function getMixVotesHTML($region_vote_status,$region_response_status,$region_id,
  * @return string
  */
 function getPublicVotesHTML($response_status,$vote,$small_screen_class){
-
     $current_req_region = "";
     if ($vote == "1") {
         //Approved
@@ -780,7 +807,7 @@ function getPublicVotesHTML($response_status,$vote,$small_screen_class){
  * @param $option
  * @return string
  */
-function getRequestHTML($req,$regions,$request_type_label,$current_user, $option, $vote_visibility, $vote_grid, $req_type){
+function getRequestHTML($module,$req,$regions,$request_type_label,$current_user, $option, $vote_visibility, $vote_grid, $req_type){
     $class = "nowrap";
 
     if($option == 0){
@@ -807,7 +834,7 @@ function getRequestHTML($req,$regions,$request_type_label,$current_user, $option
                     <td '.$width[1].'>
                         <strong>'.$request_type_label[$req['request_type']].'</strong><br>';
 
-    $current_req .= getReqAssocConceptLink($req['assoc_concept']);
+    $current_req .= getReqAssocConceptLink($module,$req['assoc_concept'],"");
 
     if($req_type != 'home'){
         $current_req .= '</td>
@@ -816,9 +843,8 @@ function getRequestHTML($req,$regions,$request_type_label,$current_user, $option
 
     $text = "";
     if ($req['revision_counter_total'] != '') {
-        $projectComments = new \Plugin\Project(IEDEA_COMMENTSVOTES);
-        $RecordSetComments = new \Plugin\RecordSet($projectComments, array('revision_counter' => $req['revision_counter_total'], 'request_id' => $req['request_id']));
-        $comment = $RecordSetComments->getDetails()[0];
+        $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array('request_id' => $req['request_id']),null,null,null,false,false,false,"[revision_counter] =".$req['revision_counter_total']);
+        $comment = getProjectInfoArray($RecordSetComments)[0];
 
         $comment_time ="";
         if(!empty($comment['responsecomplete_ts'])){
@@ -833,14 +859,13 @@ function getRequestHTML($req,$regions,$request_type_label,$current_user, $option
     if($option == '2') {
         $type = '&type=r';
     }
-    $current_req .= '<td '.$width[2].' class="hidden-xs"><a href="index.php?option=hub&record=' . $req['request_id'] . $type.'">'.$text.$req['request_title'].'</a></td>';
+    $current_req .= '<td '.$width[2].' class="hidden-xs"><a href="'.$module->getUrl('index.php?option=hub&record=' . $req['request_id'] . $type).'">'.$text.$req['request_title'].'</a></td>';
 
     $current_req_region = '';
     if($option != '2') {
         if($vote_grid == '2'){
-            $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
-            $RecordSetMyRegion = new \Plugin\RecordSet($projectRegions, array('record_id' => $current_user['person_region']));
-            $my_region = $RecordSetMyRegion->getDetails()[0];
+            $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
+            $my_region = getProjectInfoArray($RecordSetMyRegion)[0];
             $current_req_region = getRequestVoteIcon($current_req_region,$vote_grid,$current_user['person_region'],$my_region['record_id'],$vote_visibility,$req,$current_user);
 
         }else{
@@ -856,17 +881,18 @@ function getRequestHTML($req,$regions,$request_type_label,$current_user, $option
 
         $view_all_votes = "";
         if ($vote_grid == '2') {
-            $view_all_votes = '<div><a href="#" onclick="viewAllVotes(' . $req['request_id'] . ');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> All votes</a></div>';
+            $url = $module->getUrl("hub/hub_requests_view_all_votes_AJAX.php");
+            $view_all_votes = '<div><a href="#" onclick="viewAllVotes(' . $req['request_id'] . ',\''.$url.'\');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> All votes</a></div>';
         }
         if ($vote_visibility == '3') {
-            $view_all_votes .= '<div><a href="#" onclick="viewMixedVotes(' . $req['request_id'] . ',' . $current_user['person_region'] . ');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> Vote Details</a></div>';
+            $url = $module->getUrl("hub/hub_requests_view_mixed_votes_AJAX.php");
+            $view_all_votes .= '<div><a href="#" onclick="viewMixedVotes(' . $req['request_id'] . ',' . $current_user['person_region'].',\''.$url.'\');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> Vote Details</a></div>';
         }
         if ($option == 0) {
             if ($req_type == 'archive' || $req_type == 'home') {
                 $current_req .= '<td ' . $width[0] . '>';
                 if ($req['finalize_y'] != "") {
-                    $projectRM = new \Plugin\Project(IEDEA_RMANAGER);
-                    $request_finalize_y_label = \Plugin\Project::convertEnumToArray($projectRM->getMetadata('finalize_y')->getElementEnum());
+                    $request_finalize_y_label = $module->getChoiceLabels('finalize_y', IEDEA_RMANAGER);
                     $current_req .= $request_finalize_y_label[$req['finalize_y']] . "<br><span style='font-size: 12px'>" . $req['final_d'] . "</span>";
                 } else {
                     $current_req .= "<em>None</em>";
@@ -874,20 +900,18 @@ function getRequestHTML($req,$regions,$request_type_label,$current_user, $option
             } else {
                 if ($req_type != 'home') {
                     if ($current_user['harmonist_regperm'] == 1) {
-                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="index.php?option=hub&record=' . $req['request_id'] . '" class="btn btn-primary btn-xs"><span class="fa fa-eye"></span> View</a></div>';
+                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa fa-eye"></span> View</a></div>';
                     } else {
-                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="index.php?option=hub&record=' . $req['request_id'] . '" class="btn btn-primary btn-xs"><span class="fa ' . $button_icon . '"></span> ' . $button_text . '</a></div>';
+                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa ' . $button_icon . '"></span> ' . $button_text . '</a></div>';
                     }
                 }
             }
         } else {
-            $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="index.php?option=hub&record=' . $req['request_id'] . '" class="btn btn-default btn-xs actionbutton"><span class="fa fa-eye"></span> View/Edit</a></div>';
+            $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?option=hub&record=' . $req['request_id']) . '" class="btn btn-default btn-xs actionbutton"><span class="fa fa-eye"></span> View/Edit</a></div>';
         }
     }else {
         if ($req['reviewer_id'] != ''){
-            $projectPeople = new \Plugin\Project(IEDEA_PEOPLE);
-            $RecordSetPeople = new \Plugin\RecordSet($projectPeople, array('record_id' => $req['reviewer_id']));
-            $reviewer = $RecordSetPeople->getDetails()[0]['firstname'] . " " . $RecordSetPeople->getDetails()[0]['lastname'];
+            $reviewer = getPeopleName(array('record_id' => $req['reviewer_id']),"");
             if ($reviewer != '') {
                 $reviewer = ' by ' . $reviewer;
             }
@@ -900,22 +924,18 @@ function getRequestHTML($req,$regions,$request_type_label,$current_user, $option
             $current_req .= '<td width="150px"><strong>Deactivated</strong>'.$reviewer.'</td>';
         }
 
-        $projectRM = new \Plugin\Project(IEDEA_RMANAGER);
-        $RecordSetRM = new \Plugin\RecordSet($projectRM, array('request_id' => $req['request_id']));
-        $passthru_link = \Plugin\Passthru::passthruToSurvey($RecordSetRM->getRecords()[0],"request",true);
-        $current_req .=  '<td><div><a href="surveyPassthru.php?&surveyLink='.$passthru_link.'" class="btn btn-primary btn-xs actionbutton" target="_blank"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> Check Submission</a></div>';
+        $passthru_link = \Passthru::passthruToSurvey($req['request_id'],IEDEA_RMANAGER,"request",true);
+        $current_req .=  '<td><div><a href="'.$module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link).'" class="btn btn-primary btn-xs actionbutton" target="_blank"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> Check Submission</a></div>';
 
-        $passthru_link_admin = \Plugin\Passthru::passthruToSurvey($RecordSetRM->getRecords()[0],"admin_review",true);
-        $survey_link = 'surveyPassthru.php?&surveyLink='.$passthru_link_admin;
+        $passthru_link_admin = \Passthru::passthruToSurvey($req['request_id'],IEDEA_RMANAGER,"admin_review",true);
+        $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link_admin);
 
         $current_req .=  '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> Change Status</a></div>';
     }
 
     if(($req['contactperson_id'] == $current_user['record_id'] || ($current_user['person_region'] == $req['contact_region'] && $current_user['harmonist_regperm'] == 3)) && $req_type != 'archive' && $req_type != 'home'){
-        $projectRM = new \Plugin\Project(IEDEA_RMANAGER);
-        $RecordSetRM = new \Plugin\RecordSet($projectRM, array('request_id' => $req['request_id']));
-        $passthru_link = \Plugin\Passthru::passthruToSurvey($RecordSetRM->getRecords()[0],"request",true);
-        $current_req .= '<div><a href="surveyPassthru.php?&surveyLink='.$passthru_link.'" class="btn btn-default btn-xs actionbutton" target="_blank" style="margin-top: 7px;"><span class="fa fa-pencil"></span> '.$req_type.'Edit</a></div>';
+        $passthru_link = \Passthru::passthruToSurvey($req['request_id'],IEDEA_RMANAGER,"request",true);
+        $current_req .= '<div><a href="'.$module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link).'" class="btn btn-default btn-xs actionbutton" target="_blank" style="margin-top: 7px;"><span class="fa fa-pencil"></span> '.$req_type.'Edit</a></div>';
     }
     $current_req .= '</td>';
 
@@ -929,7 +949,7 @@ function getRequestHTML($req,$regions,$request_type_label,$current_user, $option
  * @param $person_region
  * @return string
  */
-function getArchiveHTML($req,$request_type_label,$person_region, $vote_visibility){
+function getArchiveHTML($module,$req,$request_type_label,$person_region, $vote_visibility){
 
     $class = "nowrap";
     if (strtotime($req['due_d']) < strtotime(date('Y-m-d'))){
@@ -941,7 +961,7 @@ function getArchiveHTML($req,$request_type_label,$person_region, $vote_visibilit
                     <td>
                         <strong>'.$request_type_label[$req['request_type']].'</strong><br>';
 
-    $current_req .= getReqAssocConceptLink($req['assoc_concept']);
+    $current_req .= getReqAssocConceptLink($module,$req['assoc_concept'],"");
 
     $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
     $RecordSetRegions = new \Plugin\RecordSet($projectRegions, array('showregion_y' => "1", 'record_id' => $req['contact_region']));
@@ -1105,5 +1125,45 @@ function getNumberOfDaysLeftButtonHTML($date_deadline, $region_response_status,$
     }else{
         return array('text' => '<em>Unknown</em>','button' =>'');
     }
+}
+
+/**
+ * Function that returns the row of the requested files
+ * @param $edoc
+ * @param $contact_name
+ * @param $text
+ * @param $datetime
+ * @return string
+ */
+function getFileRow($module,$edoc, $contact_name, $text, $datetime,$secret_key,$secret_iv,$user,$lid){
+    $file_row = '';
+    if($edoc != "") {
+        $q = $module->query("SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
+        while ($row = $q->fetch_assoc()) {
+            $file_row = "<td><a href='downloadFile.php?code=" . getCrypt("sname=" . $row['stored_name'] . "&file=" . urlencode($row['doc_name']) . "&edoc=" . $edoc . "&pid=" . $user . "&id=" . $lid, 'e', $secret_key, $secret_iv) . "' target='_blank'>" . $row['doc_name'] . "</a></td>";
+            $file_row .= "<td>" . $text . "</td>";
+            $file_row .= "<td>" . $contact_name . "</td>";
+            $file_row .= "<td>" . $datetime . "</td>";
+            $file_row .= "<td>" . convertToReadableSize($row['doc_size']) . "</td>";
+        }
+    }
+    return $file_row;
+}
+
+/**
+ * Function that passes from bytes to KB
+ * @param $size
+ * @return string
+ */
+function convertToReadableSize($size){
+    if($size <= 0){
+        $base = $size;
+    }else{
+        $base = log($size) / log(1024);
+    }
+
+    $suffix = array(" bytes", " KB", " MB", " GB", " TB");
+    $f_base = floor($base);
+    return round(pow(1024, $base - floor($base)), 1) . $suffix[$f_base];
 }
 ?>

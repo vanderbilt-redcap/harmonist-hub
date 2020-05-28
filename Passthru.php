@@ -60,7 +60,7 @@ class Passthru {
             $sql = "INSERT INTO redcap_surveys_response (participant_id, record, instance, first_submit_time, return_code)
 					VALUES ($participantId, ".prep($record_id).", '$instance', NULL,'$returnCode')";
 
-            //echo "$sql<br/>";
+            echo "$sql<br/>";
             if(!db_query($sql)) echo "Error: ".db_error()." <br />$sql<br />";
             $responseId = db_insert_id();
         }

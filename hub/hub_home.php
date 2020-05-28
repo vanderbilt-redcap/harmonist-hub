@@ -3,7 +3,6 @@ $RecordSetHome = \REDCap::getData(IEDEA_HOME, 'array', null);
 $homepage = getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
 $homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', IEDEA_HOME);
 
-//print_array($homepage);
 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] =1");
 $request = getProjectInfoArray($RecordSetRM);
 array_sort_by_column($request, 'due_d');
@@ -255,7 +254,7 @@ if(!empty($homepage)) {
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">My Requests
-                    <a href="<?=$module->getUrl("index.php?option=mra&type=h")?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=mra&type=h")?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <div class="table-responsive">
@@ -300,7 +299,7 @@ if(!empty($homepage)) {
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Recent Activity
-                    <a href="<?=$module->getUrl("index.php?option=hra")?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hra")?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <ul class="list-group">
@@ -326,7 +325,7 @@ if(!empty($homepage)) {
                                 if ($comment['author_revision_y'] == '1') {
                                     echo '<i class="fa fa-fw fa-file-text-o text-success" aria-hidden="true"></i>' .
                                         '<span class="time"> ' . $time . '</span> ' .
-                                        '<strong>' . $name . '</strong> submitted a <b>revision</b> for <a href="index.php?option=hub&record=' . $requestComment['request_id'] . '" target="_blank">' . $title . '</a>';
+                                        '<strong>' . $name . '</strong> submitted a <b>revision</b> for <a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $requestComment['request_id']) . '" target="_blank">' . $title . '</a>';
                                 } else{
                                     $text = '<span class="time"> ' . $time . '</span> <strong>' . $name . '</strong> submited a ';
                                     $itemcount = 0;
@@ -353,7 +352,7 @@ if(!empty($homepage)) {
                                         $text .= '<strong>vote</strong>';
                                     }
 
-                                    echo $icon.$text.' for <a href="'.$module->getUrl('index.php?option=hub&record=' . $requestComment['request_id']).'" target="_blank">' . $title . '</a>';
+                                    echo $icon.$text.' for <a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $requestComment['request_id']).'" target="_blank">' . $title . '</a>';
                                 }
                                 echo '</li>';
                                 $i++;
@@ -391,7 +390,7 @@ if(!empty($homepage)) {
             </div>
             <div class="stat-table-outer" aria-expanded="true">
                 <div style="padding-bottom: 10px;text-align: left;"><?=$settings['hub_active_shortcut']?></div>
-                <div style="text-align: center;"><a href="index.php?option=upd" class="btn btn-default">View Data Calls</a></div>
+                <div style="text-align: center;"><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=upd')?>" class="btn btn-default">View Data Calls</a></div>
             </div>
         </div>
 
@@ -400,7 +399,7 @@ if(!empty($homepage)) {
                 <h3 class="panel-title">
                     Hub Metrics
                         <?php if($settings['deactivate_metrics'][1] != "1" || $isAdmin){ ?>
-                            <span style="float: right"><a href="<?=$module->getUrl("index.php?option=mts")?>">View more</a></span>
+                            <span style="float: right"><a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=mts")?>">View more</a></span>
                         <?php } ?>
                 </h3>
             </div>
@@ -423,7 +422,7 @@ if(!empty($homepage)) {
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Calendar
-                    <span style="float: right"><a href="<?=$module->getUrl("index.php?option=cal")?>">View more</a></span>
+                    <span style="float: right"><a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=cal")?>">View more</a></span>
                 </h3>
             </div>
             <div class="stat-table-outer" aria-expanded="true">
@@ -466,22 +465,6 @@ if(!empty($homepage)) {
 
 <script>
     $(document).ready(function() {
-        //var iframeurl = <?//=json_encode($module->getUrl('js/iframe.js'))?>//;
-        //console.log('iframeurl:'+iframeurl)
-        //iFrameResize(
-        //    {
-        //        initCallback: function (iframe) {
-        //            iframe.iFrameResizer.sendMessage({
-        //                message: 'load resources',
-        //                resources: [
-        //                    iframeurl
-        //                ]
-        //            });
-        //        }
-        //    },
-        //    '#announcements-frame,#deadlines-frame'
-        //);
-
         Sortable.init();
         $('html,body').scrollTop(0);
         $("html,body").animate({ scrollTop: 0 }, "slow");

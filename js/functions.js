@@ -886,22 +886,24 @@ function CallAJAXAndShowMessage(data,url,letter,url_window){
     });
 }
 
-function save_votes(user,region,pi_level){
+function save_votes(user,region,pi_level,url){
     var data = "&pi_level="+pi_level+"&region="+region+"&user="+user+"&request_id="+$('.dropdown-toggle-custom').find('.dropdown_votes').attr('request')+"&region_vote_values=";
     $('.dropdown-toggle-custom input').each(function() {
         data +=$(this).attr('id')+",";
-   });
-    $.ajax({
-        type: "POST",
-        url: 'hub/hub_request_admin_vote_AJAX.php',
-        data: data,
-        error: function (xhr, status, error) {
-            alert(xhr.responseText);
-        },
-        success: function (result) {
-            location.reload();
-        }
     });
+    console.log(data)
+    console.log(url)
+    // $.ajax({
+    //     type: "POST",
+    //     url: url,
+    //     data: data,
+    //     error: function (xhr, status, error) {
+    //         alert(xhr.responseText);
+    //     },
+    //     success: function (result) {
+    //         location.reload();
+    //     }
+    // });
 }
 
 function save_status(user,region){
@@ -1129,10 +1131,10 @@ function isDonutEmpty(values_array){
     return returnValue;
 }
 
-function viewAllVotes(request_id){
+function viewAllVotes(request_id,url){
     $.ajax({
         type: "POST",
-        url: "hub/hub_main_view_all_votes_AJAX.php",
+        url: url,
         data: "request_id="+request_id,
         error: function (xhr, status, error) {
             alert(xhr.responseText);
@@ -1145,10 +1147,10 @@ function viewAllVotes(request_id){
     });
 }
 
-function viewMixedVotes(request_id,region_id){
+function viewMixedVotes(request_id,region_id,url){
     $.ajax({
         type: "POST",
-        url: "hub/hub_main_view_mixed_votes_AJAX.php",
+        url: url,
         data: "request_id="+request_id+"&region_id="+region_id,
         error: function (xhr, status, error) {
             alert(xhr.responseText);

@@ -10,8 +10,9 @@ if($current_user['harmonistadmin_y'] == '1'){//$userRights->super_user == "1"
 $RecordSetPersonRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
 $person_region = getProjectInfoArray($RecordSetPersonRegion)[0];
 
-$RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = 1");
-$request = getProjectInfoArray($RecordSetRM);
+$RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array',null);
+$requests = getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
+
 array_sort_by_column($request, 'due_d');
 $request_type_label = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
 $request_response_person = $module->getChoiceLabels('response_person', IEDEA_RMANAGER);
@@ -56,26 +57,26 @@ if($isAdmin) {
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="index.php?option=hub" role="button" option="hub">Requests <span class="badge label-default"><?=$numberOfOpenRequest?></span></a>
+                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub')?>" role="button" option="hub">Requests <span class="badge label-default"><?=$numberOfOpenRequest?></span></a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="index.php?option=cpt"role="button" option="cpt">Concepts</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=cpt')?>"role="button" option="cpt">Concepts</a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="index.php?option=out"role="button" option="out">Publications</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=out')?>"role="button" option="out">Publications</a>
                 </li>
             </ul>
 
             <?php if($settings['deactivate_datahub'][0] != "1"){ ?>
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="index.php?option=dat"role="button" option="dat">Data Hub</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>"role="button" option="dat">Data Hub</a>
 
                 </li>
             </ul>
@@ -84,7 +85,7 @@ if($isAdmin) {
             <?php if($isAdmin){ ?>
                 <ul class="nav navbar-nav navbar-links">
                     <li class="menu-item dropdown">
-                        <a href="index.php?option=adm"role="button" option="adm">Admin <span class="badge label-default"><?=$numberOfAdminRequest?></span></a>
+                        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=adm')?>"role="button" option="adm">Admin <span class="badge label-default"><?=$numberOfAdminRequest?></span></a>
                     </li>
                 </ul>
             <?php } ?>
@@ -96,8 +97,8 @@ if($isAdmin) {
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle hidden-xs hidden-md hidden-lg" style="padding: 20px"><span class="label label-primary"><?=$person_region['region_code']?></span>&nbsp;&nbsp;<i class="fa fa-user" aria-hidden="true"></i> <span class="caret"></span></a>
 
                         <ul class="dropdown-menu">
-                            <li><a href="index.php?option=pro"><i class="fa fa-user fa-fw" aria-hidden="true"></i> Profile</a></li>
-                            <li><a href="index.php?option=faq"><i class="fa fa-support fa-fw" aria-hidden="true"></i> Help</a></li>
+                            <li><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=pro')?>"><i class="fa fa-user fa-fw" aria-hidden="true"></i> Profile</a></li>
+                            <li><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=faq')?>"><i class="fa fa-support fa-fw" aria-hidden="true"></i> Help</a></li>
                             <li class="divider"></li>
                             <li><a href="#" onclick="destroy_session('index.php?sout')"><i class="fa fa-sign-out fa-fw" aria-hidden="true"></i> Logout</a></li>
                         </ul>

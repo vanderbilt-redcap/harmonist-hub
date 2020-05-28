@@ -275,9 +275,9 @@ if($hub_projectname == '' || $hub_profile == ''){
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'hub')
                     {
                         if(array_key_exists('record', $_REQUEST) && !empty($_REQUEST['record'])) {
-                            include('hub/hub_request.php');
+                            include('hub/hub_request_title.php');
                         }else{
-                            include('hub/hub_main.php');
+                            include('hub/hub_requests.php');
                         }
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'adm')
                     {
@@ -338,7 +338,7 @@ if($hub_projectname == '' || $hub_profile == ''){
                         include('hub/hub_report_bug.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'unf')
                     {
-                        include('hub/hub_request.php');
+                        include('hub/hub_request_title.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'und' && !$deactivate_datahub)
                     {
                         include('sop/sop_title.php');

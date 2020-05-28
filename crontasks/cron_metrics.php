@@ -169,7 +169,7 @@ foreach ($comments_revision as $comment){
 $arrayMetrics[0]['revisions'] = $revisions;
 
 $RecordRequests = \REDCap::getData(IEDEA_RMANAGER, 'array');
-$requests = getProjectInfoArrayRepeatingInstruments($RecordRequests);
+$requests = getProjectInfoArrayRepeatingInstruments($RecordRequests,array('approval_y' => '1'));
 
 $number_votes_completed_before_duedate = 0;
 $number_votes_completed_after_duedate = 0;
@@ -177,26 +177,24 @@ $completerequests = 0;
 $numregions = count($regions);
 $completed_requests_by_all_regions = array();
 foreach ($requests as $request){
-    if($request['approval_y'] == '1') {
-        $votecount = 0;
-        foreach ($regions as $region) {
-            $instance = $region['record_id'];
+    $votecount = 0;
+    foreach ($regions as $region) {
+        $instance = $region['record_id'];
 
-            if ($request['region_vote_status'][$instance] != "") {
-                $votecount++;
-                $request_date = date("Y-m-d", strtotime($request['region_close_ts'][$instance]));
-                if (strtotime($request['due_d']) <= strtotime($request_date)) {
-                    //if vote submitted before or on due date
-                    $number_votes_completed_before_duedate++;
-                } else {
-                    $number_votes_completed_after_duedate++;
-                }
+        if ($request['region_vote_status'][$instance] != "") {
+            $votecount++;
+            $request_date = date("Y-m-d", strtotime($request['region_close_ts'][$instance]));
+            if (strtotime($request['due_d']) <= strtotime($request_date)) {
+                //if vote submitted before or on due date
+                $number_votes_completed_before_duedate++;
+            } else {
+                $number_votes_completed_after_duedate++;
             }
+        }
 
-            if ($votecount == $numregions) {
-                $completerequests++; //if the number of votes (vote count) equals the number of voting regions, then this request is complete, so increment complete counter
-                array_push($completed_requests_by_all_regions, $request['request_id']);
-            }
+        if ($votecount == $numregions) {
+            $completerequests++; //if the number of votes (vote count) equals the number of voting regions, then this request is complete, so increment complete counter
+            array_push($completed_requests_by_all_regions, $request['request_id']);
         }
     }
 }
