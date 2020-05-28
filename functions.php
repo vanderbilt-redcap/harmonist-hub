@@ -1,4 +1,6 @@
 <?php
+use Carbon\Carbon;
+require_once 'vendor/autoload.php';
 
 function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
     $sort_col = array();
@@ -1165,5 +1167,13 @@ function convertToReadableSize($size){
     $suffix = array(" bytes", " KB", " MB", " GB", " TB");
     $f_base = floor($base);
     return round(pow(1024, $base - floor($base)), 1) . $suffix[$f_base];
+}
+
+function getDateForHumans($date){
+    $today = strtotime(date("Y-m-d H:i:s"));
+    $comment_date = strtotime($date);
+    $seconds = $today - $comment_date;
+    $cn = Carbon::now()->subSeconds($seconds)->diffForHumans();
+    return $cn;
 }
 ?>

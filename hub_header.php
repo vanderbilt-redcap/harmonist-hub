@@ -51,7 +51,7 @@ if($isAdmin) {
         <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="index.php" role="button" option="null">Home</a>
+                    <a href="<?=$module->getUrl('index.php')?>" role="button" option="null">Home</a>
                 </li>
             </ul>
 
