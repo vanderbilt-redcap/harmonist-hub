@@ -36,26 +36,9 @@ define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(
 
 # Define the projects stored in MAPPER
 $module->setProjectConstants(IEDEA_PROJECTS);
-//$projects = \REDCap::getData(array('project_id'=>IEDEA_PROJECTS),'array');
-//
-//$linkedProjects = array();
-//foreach ($projects as $event){
-//    foreach ($event as $project) {
-//        define(ENVIRONMENT . '_IEDEA_' . $project['project_constant'], $project['project_id']);
-//        array_push($linkedProjects,"IEDEA_".$project['project_constant']);
-//    }
-//}
-//
-//# Define the environment for each project
-//foreach($linkedProjects as $projectTitle) {
-//    if(defined(ENVIRONMENT."_".$projectTitle)) {
-//        define($projectTitle, constant(ENVIRONMENT."_".$projectTitle));
-//
-//    }
-//}
+
 $secret_key="";
 $secret_iv="";
-include_once __DIR__ ."/Passthru.php";
 require_once (__DIR__ . '/vendor/autoload.php');
 include_once(__DIR__ . "/email.php");
 include_once("functions.php");

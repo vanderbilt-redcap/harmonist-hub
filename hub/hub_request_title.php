@@ -133,11 +133,13 @@ if($request !="") {
             </h2>
             <?php if($isAdmin){
                 $editRequestButton ='';
-                $editRequest = \Passthru::passthruToSurvey($request_id,IEDEA_RMANAGER,"request",true);
+                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $request_id, "request", "");
+                $editRequest = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                 $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".IEDEA_RMANAGER."&arm=1&id=".$request['request_id'];
 
-                $changeApproval = \Passthru::passthruToSurvey($request_id,IEDEA_RMANAGER,"admin_review",true);
+                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $request_id, "admin_review", "");
+                $changeApproval = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                 ?>
                 <div class="btn-group hidden-xs pull-right">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -149,8 +151,8 @@ if($request !="") {
                         <li><a href="<?=$editRequest?>"target="_blank">Edit Request</a></li>
                         <li><a href="<?=$changeApproval?>"target="_blank">Change Approval</a></li>
                         <?php
-                        $passthru_link = \Passthru::passthruToSurvey($_REQUEST['record'],IEDEA_RMANAGER,"finalization_of_request",true);
-                        $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link);
+                        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $_REQUEST['record'], "finalization_of_request", "");
+                        $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                         echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\''.$survey_link.'\');" style="cursor:pointer">Finalize Request</a></li>';
                         ?>
                         <li role="separator" class="divider"></li>
@@ -487,9 +489,8 @@ if($request !="") {
                                         "<td style='width:75%'>".$comment_vote.nl2br($comment['comments']).$gd_files."</td>".
                                         "<td  style='width:5%'>";
                                     if($comment['response_person'] == $current_user['record_id']){
-                                        $passthru_link = \Passthru::passthruToSurvey($comment['record_id'],IEDEA_COMMENTSVOTES,"comments_and_votes",true);
-
-                                        $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link);
+                                        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_COMMENTSVOTES, $comment['record_id'], "comments_and_votes", "");
+                                        $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                         $group_discussion .= '<button class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button>';
                                     }
                                     $group_discussion .= "</td></tr>";

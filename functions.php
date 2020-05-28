@@ -926,18 +926,21 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
             $current_req .= '<td width="150px"><strong>Deactivated</strong>'.$reviewer.'</td>';
         }
 
-        $passthru_link = \Passthru::passthruToSurvey($req['request_id'],IEDEA_RMANAGER,"request",true);
-        $current_req .=  '<td><div><a href="'.$module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link).'" class="btn btn-primary btn-xs actionbutton" target="_blank"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> Check Submission</a></div>';
+        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "request", "");
+        $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+        $current_req .=  '<td><div><a href="'.$survey_link.'" class="btn btn-primary btn-xs actionbutton" target="_blank"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> Check Submission</a></div>';
 
-        $passthru_link_admin = \Passthru::passthruToSurvey($req['request_id'],IEDEA_RMANAGER,"admin_review",true);
-        $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link_admin);
+        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "admin_review", "");
+        $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
         $current_req .=  '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> Change Status</a></div>';
     }
 
     if(($req['contactperson_id'] == $current_user['record_id'] || ($current_user['person_region'] == $req['contact_region'] && $current_user['harmonist_regperm'] == 3)) && $req_type != 'archive' && $req_type != 'home'){
-        $passthru_link = \Passthru::passthruToSurvey($req['request_id'],IEDEA_RMANAGER,"request",true);
-        $current_req .= '<div><a href="'.$module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link).'" class="btn btn-default btn-xs actionbutton" target="_blank" style="margin-top: 7px;"><span class="fa fa-pencil"></span> '.$req_type.'Edit</a></div>';
+        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "request", "");
+        $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+
+        $current_req .= '<div><a href="'.$survey_link.'" class="btn btn-default btn-xs actionbutton" target="_blank" style="margin-top: 7px;"><span class="fa fa-pencil"></span> '.$req_type.'Edit</a></div>';
     }
     $current_req .= '</td>';
 

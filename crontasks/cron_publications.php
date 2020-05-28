@@ -48,8 +48,8 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     $file = getFileLink($concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                 }
 
-                $passthru_link = \Passthru::passthruToSurvey($concept['record_id'],IEDEA_HARMONIST, "output_record", true);
-                $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link);
+                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_HARMONIST, $concept['record_id'], "output_record", "");
+                $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                 $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
@@ -95,8 +95,8 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                 $file = getFileLink($output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
             }
 
-            $passthru_link = \Passthru::passthruToSurvey($output['record_id'],IEDEA_EXTRAOUTPUTS, "output_record", true);
-            $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.$passthru_link);
+            $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_EXTRAOUTPUTS, $output['record_id'], "output_record", "");
+            $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
             $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
             $table_aux = array();
