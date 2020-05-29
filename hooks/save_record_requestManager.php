@@ -50,13 +50,13 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             $aux['dashboard_region_status_complete'] = '1';
 
             $array_repeat_instances[$record]['repeat_instances'][$event_id]['dashboard_region_status'][$instance] = $aux;
-            $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+            $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
         }else{
             break;
         }
     }
     $jsonRM = json_encode($arrayRM);
-    $results = \Records::saveData($project_id, 'json', $jsonRM,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    $results = \Records::saveData($project_id, 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($project_id, $event_id,1);
 }else if($instrument == 'mr_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
     $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', array('record_id' => '1'));
@@ -148,7 +148,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         }
 
         $json = json_encode($arrayConcepts);
-        $results = \Records::saveData(IEDEA_HARMONIST, 'json', $json,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        $results = \Records::saveData(IEDEA_HARMONIST, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     }else{
         $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_HARMONIST . "&arm=1&id=" . $concept['record_id'];
 
@@ -210,6 +210,6 @@ if(($request['finalize_y'] != "" && ($request['request_type'] != '1' && $request
     $arrayRM = array(array('record_id' => $record));
     $arrayRM[0]['workflowcomplete_d'] = date("Y-m-d");
     $json = json_encode($arrayRM);
-    $results = \Records::saveData(IEDEA_RMANAGER, 'json', $json,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    $results = \Records::saveData(IEDEA_RMANAGER, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 }
 ?>

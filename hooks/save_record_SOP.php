@@ -49,11 +49,11 @@ if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" &
             $docId = db_insert_id();
 
             $jsonConcepts = json_encode(array(array('record_id' => $sop['sop_concept_id'], 'datasop_file' => $docId)));
-            $results = \Records::saveData($project_id, 'json', $jsonConcepts,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            $results = \Records::saveData($project_id, 'json', $jsonConcepts,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         }
 
         $jsonSOP = json_encode($arraySOP);
-        $results = \Records::saveData($project_id, 'json', $jsonSOP,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        $results = \Records::saveData($project_id, 'json', $jsonSOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 
     }else if($instrument == 'data_call_closure'){
         $arrayComments[0]['other_action'] = "4";
@@ -61,7 +61,7 @@ if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" &
         $arrayComments[0]['comment_ver'] = "1";
     }else if($instrument == 'dhwg_review_request') {
         $jsonSOP = json_encode(array(array('record_id' => $record, 'sop_visibility' => "2")));//PUBLIC
-        $results = \Records::saveData($project_id, 'json', $jsonSOP,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        $results = \Records::saveData($project_id, 'json', $jsonSOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 
         $arrayComments[0]['other_action'] = "1";
         $arrayComments[0]['comments'] = "Data Call made PUBLIC";
@@ -69,7 +69,7 @@ if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" &
     }
 
     $json = json_encode($arrayComments);
-    $results = \Records::saveData(IEDEA_SOPCOMMENTS, 'json', $json,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    $results = \Records::saveData(IEDEA_SOPCOMMENTS, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     $recordcomment = array_pop(array_reverse($results['ids']));
 
     \Records::addRecordToRecordListCache(IEDEA_SOPCOMMENTS, $recordcomment,1);

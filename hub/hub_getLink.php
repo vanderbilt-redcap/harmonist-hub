@@ -54,7 +54,7 @@ if(!empty($_POST['email'])) {
         }
 
         $json = json_encode($arrayLogin);
-        $results = \Records::saveData(IEDEA_PEOPLE, 'json', $json,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        $results = \Records::saveData(IEDEA_PEOPLE, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache(IEDEA_PEOPLE, $people['record_id'],1);
     }else if($people == "" || strtolower($people['email']) != strtolower($_POST['email'])){
         $message = "<html>This email address does not exist in the Hub.<br><br>".

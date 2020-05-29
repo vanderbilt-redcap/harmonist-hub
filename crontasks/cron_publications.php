@@ -136,7 +136,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $Proj = new \Project(IEDEA_SETTINGS);
     $event_id = $Proj->firstEventId;
     $json = json_encode(array(array('record_id' => 1, 'publications_json' => $docId,'publications_lastupdate' => date("Y-m-d H:m:s"))));
-    $results = \Records::saveData(IEDEA_SETTINGS, 'json', $json, 'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    $results = \Records::saveData(IEDEA_SETTINGS, 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache(DES_SETTINGS, 1, $event_id);
 
 }

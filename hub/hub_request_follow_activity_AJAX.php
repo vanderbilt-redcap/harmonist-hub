@@ -32,7 +32,7 @@ if($option == "0"){
     }
     $button = '<button onclick="follow_activity(\'0\',\''.$userid.'\',\''.$request_id.'\','.$module->getUrl('hub/hub_request_follow_activity_AJAX.php').')" class="btn btn-primary actionbutton"><i class="fa fa-check-square"></i> <span class="hidden-xs">Following</span></button>';
 }
-$results = \Records::saveData(IEDEA_RMANAGER, 'array', $recordRM,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+$results = \Records::saveData(IEDEA_RMANAGER, 'array', $recordRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 \Records::addRecordToRecordListCache(IEDEA_RMANAGER, $request_id,1);
 
 echo json_encode($button);

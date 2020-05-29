@@ -208,7 +208,7 @@ foreach ($completed_requests_by_all_regions as $completed){
         $arrayRM = array();
         $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete'] = array(1=>"1");//checkbox
         $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete_ts'] = date('Y-m-d H:i:s');
-        $results = \Records::saveData(IEDEA_RMANAGER, 'array', $arrayRM,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        $results = \Records::saveData(IEDEA_RMANAGER, 'array', $arrayRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     }
 }
 
@@ -244,6 +244,6 @@ $number_requests_admin = count(getProjectInfoArray($RecordSetUsersAdmin));
 $arrayMetrics[0]['admins'] = $number_requests_admin;
 
 $json = json_encode($arrayMetrics);
-$results = \Records::saveData(IEDEA_METRICS, 'json', $json,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+$results = \Records::saveData(IEDEA_METRICS, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 \Records::addRecordToRecordListCache(IEDEA_METRICS, $record_id_metrics,1);
 ?>

@@ -52,7 +52,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 $Proj = new \Project(IEDEA_RMANAGER);
                 $event_id = $Proj->firstEventId;
                 $array_repeat_instances[$comment['request_id']]['repeat_instances'][$event_id]['dashboard_region_status'][$instanceId] = $aux;
-                $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+                $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
                 break;
             }
 
@@ -70,7 +70,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 $arrayRM = array();
                 $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete'] = array(1=>"1");//checkbox
                 $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete_ts'] = date('Y-m-d H:i:s');
-                $results = \Records::saveData(IEDEA_RMANAGER, 'array', $arrayRM,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+                $results = \Records::saveData(IEDEA_RMANAGER, 'array', $arrayRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
             }
         }
 
@@ -83,11 +83,11 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             }
             $arrayComment = array(array('record_id' => $comment['record_id'], 'revision_counter' => $revision_counter_total));
             $jsonComment = json_encode($arrayComment);
-            $results = \Records::saveData(IEDEA_RMANAGER, 'json', $jsonComment,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            $results = \Records::saveData(IEDEA_RMANAGER, 'json', $jsonComment,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 
             $arrayRM = array(array('request_id' => $comment['request_id'],'revision_counter_total' => $revision_counter_total));
             $jsonRM = json_encode($arrayRM);
-            $results = \Records::saveData(IEDEA_RMANAGER, 'json', $jsonRM,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            $results = \Records::saveData(IEDEA_RMANAGER, 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 
             \Records::addRecordToRecordListCache(IEDEA_RMANAGER, $comment['request_id'],1);
             \Records::addRecordToRecordListCache($project_id, $record,1);
@@ -97,7 +97,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $arrayCV[$record][$event_id]['contact_email'] = $request['contact_email'];
         $arrayCV[$record][$event_id]['request_title'] = $request['request_title'];
         $arrayCV[$record][$event_id]['contactnotification_y'] = $request['contactnotification_y'];//checkbox
-        $results = \Records::saveData($project_id, 'array', $arrayCV,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        $results = \Records::saveData($project_id, 'array', $arrayCV,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache(IEDEA_RMANAGER, $record,1);
         if($request['follow_activity'] != ''){
             $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array');

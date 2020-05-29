@@ -450,7 +450,7 @@ function saveJSONCopy($module, $type, $jsonArray){
     $jsoncopy[0]['version'] = $lastversion;
 
     $json = json_encode($jsoncopy);
-    $results = \Records::saveData(IEDEA_JSONCOPY, 'json', $json,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    $results = \Records::saveData(IEDEA_JSONCOPY, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache(IEDEA_JSONCOPY, $jsoncopy_id,1);
 
     return $jsoncopy_id;

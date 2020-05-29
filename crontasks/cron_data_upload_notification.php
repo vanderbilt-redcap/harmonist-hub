@@ -16,7 +16,7 @@ foreach ($request_DU as $upload){
         $event_id = $Proj->firstEventId;
         $arraySaveDU = array();
         $arraySaveDU[$upload['record_id']][$event_id]['emails_sent_y'] = array(1=>"1");//checkbox
-        $results = \Records::saveData(IEDEA_DATAUPLOAD, 'array', $arraySaveDU,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        $results = \Records::saveData(IEDEA_DATAUPLOAD, 'array', $arraySaveDU,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache(IEDEA_DATAUPLOAD, $upload['emails_sent_y'],1);
 
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));

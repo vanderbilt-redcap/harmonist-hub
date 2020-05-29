@@ -40,7 +40,7 @@ foreach ($request_DU as $upload){
             $recordSaveDU[$upload['record_id']][$event_id]['deletion_rs'] = "Expired. Deleted automatically";
             $recordSaveDU[$upload['record_id']][$event_id]['deletion_information_complete'] = "2";
             $recordSaveDU[$upload['record_id']][$event_id]['deleted_y'] = "1";
-            $results = \Records::saveData(IEDEA_DATAUPLOAD, 'array', $recordSaveDU,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            $results = \Records::saveData(IEDEA_DATAUPLOAD, 'array', $recordSaveDU,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
             \Records::addRecordToRecordListCache(IEDEA_DATAUPLOAD, $upload['record_id'],1);
 
             #EMAIL NOTIFICATION

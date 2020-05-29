@@ -55,7 +55,7 @@ if($request !="") {
             unset($array_userid[$key]);
             $string_userid = implode(",", $array_userid);
             $arrayMRmanager[0]['follow_activity'] = $string_userid;
-            $results = \Records::saveData(IEDEA_RMANAGER, 'array', $arrayMRmanager,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            $results = \Records::saveData(IEDEA_RMANAGER, 'array', $arrayMRmanager,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
             \Records::addRecordToRecordListCache(IEDEA_RMANAGER, $request_id,1);
         }
     }
@@ -280,7 +280,7 @@ if($request !="") {
                     }
                 }
                 ?>
-                <button onclick="follow_activity('<?=$follow_option?>','<?=$current_user['record_id']?>','<?=$request['request_id']?>','hub/hub_request_follow_activity_AJAX.php')" class="btn <?=$follow_class?> actionbutton"><i class="<?=$follow_icon_class?>"></i> <span class="hidden-xs"><?=$follow_text?></span></button>
+                <button onclick="follow_activity('<?=$follow_option?>','<?=$current_user['record_id']?>','<?=$request['request_id']?>','<?=$module->getUrl('hub/hub_request_follow_activity_AJAX.php')?>')" class="btn <?=$follow_class?> actionbutton"><i class="<?=$follow_icon_class?>"></i> <span class="hidden-xs"><?=$follow_text?></span></button>
             </div>
         </div>
 

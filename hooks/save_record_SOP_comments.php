@@ -23,7 +23,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     if(!empty($regions)){
         $arrayCV[$record][$event_id]['response_regioncode'] = $regions['region_code'];
     }
-    $results = \Records::saveData($project_id, 'array', $arrayCV,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    $results = \Records::saveData($project_id, 'array', $arrayCV,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($project_id, $record,1);
 
     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $comment['sop_id']));

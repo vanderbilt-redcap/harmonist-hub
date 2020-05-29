@@ -58,7 +58,7 @@ foreach ($region_vote_values as $votes_info){
         $region_code = strtolower($regions_comment['region_code']);
         $recordRM[$request_id][$event_id_RM]["vote_".$region_code] = $vote;
 
-        $results = \Records::saveData(IEDEA_COMMENTSVOTES, 'array', $comments,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        $results = \Records::saveData(IEDEA_COMMENTSVOTES, 'array', $comments,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache(IEDEA_RMANAGER, $event_id_RM,1);
         \Records::addRecordToRecordListCache(IEDEA_COMMENTSVOTES, $event_id_comments,1);
 
@@ -73,5 +73,5 @@ if($all_votes_completed){
         $recordRM[$request_id][$event_id_RM]["detected_complete_ts"] = date('Y-m-d H:i:s');
     }
 }
-$results = \Records::saveData(IEDEA_RMANAGER, 'array', $recordRM,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+$results = \Records::saveData(IEDEA_RMANAGER, 'array', $recordRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 ?>
