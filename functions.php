@@ -561,7 +561,7 @@ function getRequestHeader($regions, $person_region, $vote_grid, $option, $type="
     $count_regions = 0;
     $total_regions = count($regions);
 
-    if($option != '2'){
+    if($option != '2' && $type != 'home'){
         $small_screen_class = 'hidden-sm hidden-xs';
         if ($vote_grid == '2') {
             $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region));
@@ -611,10 +611,12 @@ function getRequestHeader($regions, $person_region, $vote_grid, $option, $type="
         $header .= '<th class="request_grid_actions" data-sortable="false">Status</th>';
     }
 
-    if($option == "1"){
-        $header .= '<th class="request_grid_actions" data-sortable="false">Final Status</th></tr></thead>';
-    }else{
-        $header .= '<th class="request_grid_actions" data-sortable="false">Actions</th></tr></thead>';
+    if($type != 'home') {
+        if ($option == "1") {
+            $header .= '<th class="request_grid_actions" data-sortable="false">Final Status</th></tr></thead>';
+        } else {
+            $header .= '<th class="request_grid_actions" data-sortable="false">Actions</th></tr></thead>';
+        }
     }
 
     return $header_colgroup.$header;
@@ -865,21 +867,22 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
 
     $current_req_region = '';
     if($option != '2') {
-        if($vote_grid == '2'){
-            $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
-            $my_region = getProjectInfoArray($RecordSetMyRegion)[0];
-            $current_req_region = getRequestVoteIcon($current_req_region,$vote_grid,$current_user['person_region'],$my_region['record_id'],$vote_visibility,$req,$current_user);
+        if($req_type != 'home') {
+            if ($vote_grid == '2') {
+                $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
+                $my_region = getProjectInfoArray($RecordSetMyRegion)[0];
+                $current_req_region = getRequestVoteIcon($current_req_region, $vote_grid, $current_user['person_region'], $my_region['record_id'], $vote_visibility, $req, $current_user);
 
-        }else{
-            foreach ($regions as $region){
-                $current_req_region = getRequestVoteIcon($current_req_region,$vote_grid,$current_user['person_region'],$region['record_id'],$vote_visibility,$req,$current_user);
-                if($vote_grid == "0"){
-                    break;
+            } else {
+                foreach ($regions as $region) {
+                    $current_req_region = getRequestVoteIcon($current_req_region, $vote_grid, $current_user['person_region'], $region['record_id'], $vote_visibility, $req, $current_user);
+                    if ($vote_grid == "0") {
+                        break;
+                    }
                 }
             }
+            $current_req .= $current_req_region;
         }
-
-        $current_req .= $current_req_region;
 
         $view_all_votes = "";
         if ($vote_grid == '2') {
@@ -891,7 +894,7 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
             $view_all_votes .= '<div><a href="#" onclick="viewMixedVotes(' . $req['request_id'] . ',' . $current_user['person_region'].',\''.$url.'\');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> Vote Details</a></div>';
         }
         if ($option == 0) {
-            if ($req_type == 'archive' || $req_type == 'home') {
+            if ($req_type == 'archive') {
                 $current_req .= '<td ' . $width[0] . '>';
                 if ($req['finalize_y'] != "") {
                     $request_finalize_y_label = $module->getChoiceLabels('finalize_y', IEDEA_RMANAGER);

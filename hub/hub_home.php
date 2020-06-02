@@ -260,13 +260,12 @@ if(!empty($homepage)) {
             <div class="table-responsive">
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                     <?php
-//                    $request = "";
                     if(!empty($requests)) {
                         $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
                         $regions = getProjectInfoArray($RecordSetRegions);
                         array_sort_by_column($regions, 'region_code');
 
-                        $user_req_header = getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '1');
+                        $user_req_header = getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '1','home');
 
                         $requests_counter = 0;
                         foreach ($requests as $req) {
