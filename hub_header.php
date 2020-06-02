@@ -12,11 +12,11 @@ $person_region = getProjectInfoArray($RecordSetPersonRegion)[0];
 
 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array',null);
 $requests = getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
+array_sort_by_column($requests, 'due_d');
 
-array_sort_by_column($request, 'due_d');
 $request_type_label = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
 $request_response_person = $module->getChoiceLabels('response_person', IEDEA_RMANAGER);
-$numberOfOpenRequest = numberOfOpenRequest($request,$current_user['person_region']);
+$numberOfOpenRequest = numberOfOpenRequest($requests,$current_user['person_region']);
 
 if($isAdmin) {
     $RecordSetRM_admin = \REDCap::getData(IEDEA_RMANAGER, 'array', null);

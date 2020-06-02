@@ -1048,14 +1048,14 @@ function getRequestVoteIcon($current_req_region,$vote_grid,$person_region,$recor
  * @param $vote_grid
  * @return string
  */
-function getHomeRequestHTML($req,$regions,$request_type_label,$current_user, $option, $vote_visibility, $vote_grid, $request_duration, $type){
+function getHomeRequestHTML($module, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $request_duration, $type){
     //Only open requests
     if (($req['contactperson_id'] == $current_user['record_id'] && !empty($req['due_d'])) || $request_duration == "none"){
         $extra_days = ' + ' . $request_duration . " days";
         $due_date_time = date('Y-m-d', strtotime($req['due_d'] . $extra_days));
         $today = date('Y-m-d');
         if ((strtotime($due_date_time) > strtotime($today))|| $request_duration == "none") {
-            return getRequestHTML($req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $type);
+            return getRequestHTML($module, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $type);
         }
     }
 }

@@ -30,7 +30,7 @@ foreach ($requests as $req){
         $days_passed = floor($interval / (60 * 60 * 24));
 
         if($datetime > $today){
-            $date_color_text = "color:#5cb85c";
+            $date_color_text = "color:#1F8B4D";
         }else{
             $date_color_text = "color:#e74c3c";
         }
@@ -79,7 +79,7 @@ $numberDaysInCurrentMonth = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'
 $expire_date = date('Y-m-d', strtotime(date('Y-m-d') ."-".$numberDaysInCurrentMonth." days"));
 $RecordSetReq = \REDCap::getData(IEDEA_RMANAGER, 'array',null,null,null,null,false,false,false,"[finalize_y] <> '' and [final_d] <>'' and datediff ([final_d], '".$expire_date."', \"d\", true) <= 0");
 $requests_hub = getProjectInfoArray($RecordSetReq);
-array_sort_by_column($requests_hub, 'due_d',SORT_ASC);
+array_sort_by_column($requests_hub, 'final_d',SORT_ASC);
 $isEmpty = true;
 foreach ($requests_hub as $req){
     if($req['final_d'] != "" ){
@@ -115,7 +115,7 @@ $email_req .= "</ol>".
 
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 && [sop_finalize_y] = 1");
 $sops = getProjectInfoArray($RecordSetSOP);
-array_sort_by_column($sops, 'due_d',SORT_ASC);
+array_sort_by_column($sops, 'sop_due_d',SORT_ASC);
 $isEmpty = true;
 $RecordSetRegions = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
 $regions = getProjectInfoArray($RecordSetRegions);
