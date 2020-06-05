@@ -31,7 +31,7 @@ foreach ($request_DU as $upload){
             $region_code_uploader = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
 
             $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $upload['data_assoc_concept']));
-            $concept_id = getProjectInfoArray($RecordSetConcepts)[0]['concept_id'];
+            $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
 
             $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $upload['data_assoc_request']));
             $sop = getProjectInfoArray($RecordSetSOP)[0];

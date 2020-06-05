@@ -263,16 +263,13 @@ if($hub_projectname == '' || $hub_profile == ''){
                     }
                     else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'cpt' )
                     {
-                        include('harmonist/concepts/concepts.php');
+                        include('hub/hub_concepts.php');
                     }
                     else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'ttl' )
                     {
-                        include('harmonist/concepts/concepts_title.php');
+                        include('hub/hub_concept_title.php');
                     }
-                    else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'cup' )
-                    {
-                        include('harmonist/concepts/concepts_update.php');
-                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'hub')
+                    else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'hub')
                     {
                         if(array_key_exists('record', $_REQUEST) && !empty($_REQUEST['record'])) {
                             include('hub/hub_request_title.php');

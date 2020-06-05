@@ -45,7 +45,7 @@ foreach ($request_DU as $upload){
 
             #EMAIL NOTIFICATION
             $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $upload['data_assoc_concept']));
-            $concepts = getProjectInfoArray($RecordSetConcepts)[0];
+            $concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
             $concept_id = $concepts['concept_id'];
             $concept_title = $concepts['concept_title'];
 
@@ -93,7 +93,7 @@ foreach ($request_DU as $upload){
                 array_sort_by_column($downloadersOrdered, 'name');
 
                 $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $upload['data_assoc_concept']));
-                $concept_id = getProjectInfoArray($RecordSetConcepts)[0]['concept_id'];
+                $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
 
                 $subject = "Notification of ".$settings['hub_name']." ".$concept_id." dataset deletion";
                 foreach ($downloadersOrdered as $down) {

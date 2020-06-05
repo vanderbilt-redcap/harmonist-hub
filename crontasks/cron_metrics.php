@@ -14,15 +14,15 @@ $total_concepts = count($RecordSetConcepts);
 $arrayMetrics[0]['concepts'] = $total_concepts;
 
 $RecordSetConceptsActive = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[active_y] = 'Y'");
-$number_concepts_active = count(getProjectInfoArray($RecordSetConceptsActive));
+$number_concepts_active = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive));
 $arrayMetrics[0]['concepts_a'] = $number_concepts_active;
 
 $RecordSetConceptsCompleted = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[concept_outcome] = 1");
-$number_concepts_completed = count(getProjectInfoArray($RecordSetConceptsCompleted));
+$number_concepts_completed = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsCompleted));
 $arrayMetrics[0]['concepts_c'] = $number_concepts_completed;
 
 $RecordSetConceptsDiscontinued = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[concept_outcome] = 2");
-$number_concepts_discontinued = count(getProjectInfoArray($RecordSetConceptsDiscontinued));
+$number_concepts_discontinued = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsDiscontinued));
 $arrayMetrics[0]['concepts_d'] = $number_concepts_discontinued;
 
 /***REQUESTS***/

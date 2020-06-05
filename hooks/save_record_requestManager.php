@@ -63,7 +63,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $settings = getProjectInfoArray($RecordSetSettings)[0];
 
     $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[concept_id] = '".$request['mr_assigned']."'");
-    $concept = getProjectInfoArray($RecordSetConcepts)[0];
+    $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
     if (empty($concept)) {
         if($request['final_d'] != ""){
             $start_year = date("Y", strtotime($request['final_d']));

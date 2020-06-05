@@ -9,7 +9,7 @@ if(array_key_exists('isAdmin', $_REQUEST) && ($_REQUEST['isAdmin'] == '1')){
 $today = strtotime(date("Y-m-d"));
 if(strtotime($settings['publications_lastupdate']) < $today || $settings['publications_lastupdate'] == "" || $isAdmin) {
     $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[output_year] <> ''");
-    $concepts = getProjectInfoArray($RecordSetConceptSheets);
+    $concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets);
 
     $RecordSetExtraOut = \REDCap::getData(IEDEA_EXTRAOUTPUTS, 'array', null);
     $extra_outputs = getProjectInfoArray($RecordSetExtraOut);

@@ -30,9 +30,17 @@ function getProjectInfoArray($records){
 
 function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
     $array = array();
+    $found = array();
     $index=0;
+    foreach ($filterLogic as $filterkey => $filtervalue){
+        array_push($found, false);
+    }
     foreach ($records as $record=>$record_array) {
-        $found = false;
+        $count = 0;
+        foreach ($filterLogic as $filterkey => $filtervalue){
+            $found[$count] = false;
+            $count++;
+        }
         foreach ($record_array as $event=>$data) {
             if($event == 'repeat_instances'){
                 foreach ($data as $eventarray){
@@ -47,11 +55,12 @@ function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
 
                                 if($value != "" ){
                                     $datarepeat[$field_name][$instance] = $value;
-
+                                    $count = 0;
                                     foreach ($filterLogic as $filterkey => $filtervalue){
                                         if($value == $filtervalue && $field_name == $filterkey){
-                                            $found = true;
+                                            $found[$count] = true;
                                         }
+                                        $count++;
                                     }
                                 }
 
@@ -68,15 +77,24 @@ function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
             }else{
                 $array[$index] = $data;
                 foreach ($data as $fname=>$fvalue) {
+                    $count = 0;
                     foreach ($filterLogic as $filterkey => $filtervalue){
                         if($fvalue == $filtervalue && $fname == $filterkey){
-                            $found = true;
+                            $found[$count] = true;
                         }
+                        $count++;
                     }
                 }
             }
         }
-        if(!$found && $filterLogic != null){
+        $found_total = true;
+        foreach ($found as $fname=>$fvalue) {
+            if($fvalue == false){
+                $found_total = false;
+                break;
+            }
+        }
+        if(!$found_total && $filterLogic != null){
             unset($array[$index]);
         }
 
@@ -250,7 +268,7 @@ function getToken($userid){
 function getReqAssocConceptLink($module,$assoc_concept, $option=""){
     if(!empty($assoc_concept)){
         $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $assoc_concept));
-        $concepts = getProjectInfoArray($RecordSetConceptSheets)[0];
+        $concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
         $concept_sheet = $concepts['concept_id'];
         $concept_title = $concepts['concept_title'];
         if($option == '1'){
@@ -971,9 +989,8 @@ function getArchiveHTML($module,$req,$request_type_label,$person_region, $vote_v
 
     $current_req .= getReqAssocConceptLink($module,$req['assoc_concept'],"");
 
-    $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
-    $RecordSetRegions = new \Plugin\RecordSet($projectRegions, array('showregion_y' => "1", 'record_id' => $req['contact_region']));
-    $region = $RecordSetRegions->getDetails()[0];
+    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']),null,null,null,false,false,false,"[showregion_y] = 1");
+    $region = getProjectInfoArray($RecordSetRegions)[0];
 
     $current_req .= '</td>
                     <td>'.$req['contact_name'].'</td>
@@ -1012,10 +1029,6 @@ function getRequestVoteIcon($current_req_region,$vote_grid,$person_region,$recor
         $instance = $person_region;
     }else{
         $instance = $record_id;
-    }
-
-    if($instance == 1){
-        $instance = '';
     }
 
     $small_screen_class = 'hidden-sm  hidden-xs';
@@ -1181,5 +1194,418 @@ function getDateForHumans($date){
     $seconds = $today - $comment_date;
     $cn = Carbon::now()->subSeconds($seconds)->diffForHumans();
     return $cn;
+}
+
+function getDataCallHeader($person_region,$vote_grid,$option=""){
+    $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
+    $RecordSetRegions = new \Plugin\RecordSet($projectRegions, array('showregion_y' => "1"));
+    $regions = $RecordSetRegions->getDetails();
+    array_sort_by_column($regions, 'region_code');
+
+    $header_colgroup = "<colgroup><col><col><col>";
+    $header_region = "";
+    if($vote_grid == '2' || $vote_grid == '0') {
+        $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
+        $RecordSetMyRegion = new \Plugin\RecordSet($projectRegions, array('record_id' => $person_region));
+        $my_region = $RecordSetMyRegion->getDetails()[0]['region_code'];
+        $header_region .= '<th class="request_grid_icon hidden-sm hidden-xs" style="width:40px" data-sortable="false">' . $my_region . '</th>';
+    }else {
+        foreach ($regions as $region) {
+            $instance = $region['record_id'];
+            $header_region .= '<th class="request_grid_icon" data-sortable="false" style="width:40px;text-align: center">' . $region['region_code'] . '</th>';
+            if ($instance == $person_region) {
+                $header_colgroup .= '<col class="active">';
+            } else {
+                $header_colgroup .= '<col>';
+            }
+        }
+    }
+    $text = "Actions";
+    if($option == "1"){
+        $text = "Final Status";
+    }
+
+    $header_colgroup .= '<col></colgroup>';
+    if($vote_grid == '2' || $vote_grid == '0') {
+        $header = $header_colgroup . '<thead>
+                    <tr>
+                        <th class="sorted_class" style="width:100px" data-sorted="true" data-sorted-direction="descending">Due Date</th>
+                        <th class="sorted_class" style="width:721px">Data Request Details</th>
+                        <th style="width:168px">Data Contact</th>' .
+            $header_region . '
+                        <th class="" data-sortable="false" data-sorted="false" style="width:107px">' . $text . '</th>
+                    </tr>
+                    </thead>';
+    }else {
+        $header = $header_colgroup . '<thead>
+                    <tr>
+                        <th class="sorted_class" style="width:90px" data-sorted="true" data-sorted-direction="descending">Due Date</th>
+                        <th class="sorted_class" style="width:504px">Data Request Details</th>
+                        <th style="width:168px">Data Contact</th>' .
+            $header_region . '
+                        <th class="" data-sortable="false" data-sorted="false" style="width:96px">' . $text . '</th>
+                    </tr>
+                    </thead>';
+    }
+    return $header;
+}
+
+function getDataCallRow($sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote_grid,$type,$harmonist_perm=""){
+    $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
+    $projectPeople = new \Plugin\Project(IEDEA_PEOPLE);
+    $projectConcepts = new \Plugin\Project(IEDEA_HARMONIST);
+    $projectSOP = new \Plugin\Project(IEDEA_SOP);
+
+    $status_type = \Plugin\Project::convertEnumToArray($projectSOP->getMetadata('data_response_status')->getElementEnum());
+
+    $data =  "<tr>";
+    $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '0');
+
+    $RecordSetPeople = new \Plugin\RecordSet($projectPeople, array('record_id' => $sop['sop_datacontact']));
+    $people = $RecordSetPeople->getDetails()[0];
+    $RecordSetRegionsLogin = new \Plugin\RecordSet($projectRegions, array('record_id' => $people['person_region']));
+    $region_code = $RecordSetRegionsLogin->getDetails()[0]['region_code'];
+
+    $contact_person = "";
+    if($people != ""){
+        $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a> (" . $region_code . ")";
+    }
+
+    $RecordSetConceptSheets = new \Plugin\RecordSet($projectConcepts, array('record_id' => $sop['sop_concept_id']));
+    $concept_id = $RecordSetConceptSheets->getDetails()[0]['concept_id'];
+    $concept_title = $RecordSetConceptSheets->getDetails()[0]['concept_title'];
+
+    $RecordSetRegions = new \Plugin\RecordSet($projectRegions, array('showregion_y' => "1"));
+    $regions = $RecordSetRegions->getDetails();
+    array_sort_by_column($regions, 'region_code');
+    $status_row = "";
+    $current_region_status = "";
+    $url = "";
+    $buttons = '';
+    $width='';
+    if($vote_grid == '2' || $vote_grid == '0') {
+        $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
+        $RecordSetMyRegion = new \Plugin\RecordSet($projectRegions, array('record_id' => $current_user['person_region']));
+        $my_region = $RecordSetMyRegion->getDetails()[0]['record_id'];
+
+        $status = $sop['data_response_status'][$my_region];
+        $status_row .= "<td style='text-align: center'>";
+        $status_icons = getDataCallStatusIcons($status);
+        $status_row .= $status_icons."</td>";
+    }else {
+        foreach ($regions as $region) {
+            $status = $sop['data_response_status'][$region['record_id']];
+            $status_text = $status_type[$sop['data_response_status'][$current_user['person_region']]];
+            if ($sop['data_response_status'][$current_user['person_region']] == "") {
+                $status_text = $status_type[0];
+            }
+
+            $status_row .= "<td style='text-align: center'>";
+            $status_icons = getDataCallStatusIcons($status);
+            if ($region['record_id'] == $current_user['person_region']) {
+                $current_region_status = htmlentities($status_icons . '<span class="status-text"> ' . $status_text . '</span>');
+            }
+            $status_row .= $status_icons . "</td>";
+        }
+    }
+    $button_votes = "";
+    if($vote_grid == '2') {
+        $button_votes = '<div><a href="#" onclick="viewAllVotesData(' . $sop['record_id'] . ');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> All votes</a></div>';
+    }
+    if ($type == "s" || $type == "a") {
+        if ($type == "a") {
+            $width = "style='100px'";
+            $buttons = "<div><em>None</em></div>";
+            if ($sop['sop_finalize_y'] != "" || ($sop['sop_closed_y'][0] != "" && $sop['sop_closed_y'][0] != "1")) {
+                if ($sop['sop_finalize_y'] != "") {
+                    $buttons = "<div>Started</div>";
+                    if ($sop['sop_final_d'] != "") {
+                        $buttons .= "<div>" . $sop['sop_final_d'] . "</div>";
+                    }
+                }
+                if ($sop['sop_closed_y'][0] != "" && $sop['sop_closed_y'][0] == "1") {
+                    $buttons = "<div style='color: green;font-weight: bold;'>Completed</div>";
+                    if ($sop['sop_closed_d'] != "") {
+                        $buttons .= "<div>" . $sop['sop_closed_d'] . "</div>";
+                    }
+                }
+            }
+        } else {
+            $buttons = '<div><a href="#" onclick="confirmDataUpload(\'' . $sop['sop_concept_id'] . '\',\'' . $current_user['record_id'] . '\',\'' . $concept_id . '\',\'' . $sop['record_id'] . '\');" class="btn btn-primary btn-xs">Upload Data</a></div>';
+            if ($current_user['allowgetdata_y'][0] == "1" || $current_user['harmonistadmin_y'] == '1') {
+                $buttons .= '<div style="padding-top: 8px"><a href="#" onclick="changeStatus(\'' . $current_region_status . '\',\'' . $sop['record_id'] . '\',\'' . $current_user['person_region'] . '\',\'' . htmlspecialchars($sop['data_response_notes'][$current_user['person_region']]) . '\',\'' . $sop['region_update_ts'][$current_user['person_region']] . '\',\'modal-data-change-status\')" class="btn btn-default btn-xs">Change Status</a></div>';
+            }
+        }
+
+        $url = "&type=s";
+
+        $data .= "<td><div style='text-align: center'>" . $array_dates['text'] . "</div><div>" . $array_dates['button'] . "</div></td>";
+    } else if ($type == "p") {
+        if ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id']) {
+            $buttons .= '<div><a href="index.php?pid=' . IEDEA_DATAMODEL . '&option=ss1&record=' . $sop['record_id'] . '&step=3" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
+        }
+        if ($isAdmin || $harmonist_perm) {
+            $buttons .= '<div style="padding-top: 8px"><a href="#" onclick="confirmMakePrivate(\'' . $sop['record_id'] . '\')" class="btn btn-default btn-xs"><i class="fa fa-thumb-tack" aria-hidden="true"></i> Make private</a></div>';
+        }
+
+        $status_row = "<td style='width: 149px'><div>" . $sop['sop_updated_dt'] . "</div></td>";
+    } else if ($type == 'm') {
+        $buttons = '';
+        if ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id']) {
+            $buttons .= '<div><a href="index.php?pid=' . IEDEA_DATAMODEL . '&option=ss1&record=' . $sop['record_id'] . '&step=3" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
+        }
+
+        if ($sop['sop_visibility'] == '2') {
+            $sop_visibility = '<span class="badge badge-pill badge-public">Public</span>';
+
+            $buttons .= '<div><a href="#" onclick="confirmMakePrivate(\'' . $sop['record_id'] . '\')" class="btn btn-default btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-thumb-tack" aria-hidden="true"></i> Make private</a></div>';
+        } else if ($sop['sop_visibility'] == '1') {
+            $sop_visibility = '<span class="badge badge-pill badge-private">Private</span>';
+
+            $RecordSetSOP = new \Plugin\RecordSet($projectSOP, array('record_id' => $sop['record_id']));
+            $passthru_link = \Plugin\Passthru::passthruToSurvey($RecordSetSOP->getRecords()[0], "dhwg_review_request", true);
+            $survey_link = APP_PATH_PLUGIN . '/surveyPassthru.php?&surveyLink=' . $passthru_link;
+
+            $buttons .= '<div><a href="#" onclick="editIframeModal(\'sop-make-public\',\'redcap-edit-frame-make-public\',\'' . $survey_link . '\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send for Review</a></div>';
+        }
+        $buttons .= '<div><a href="#" onclick="deleteDataRequest(\'' . $sop['record_id'] . '\')" style="cursor: pointer;margin-top: 7px;" class="btn btn-danger btn-xs" title="Delete Data Request"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</a></div></td>';
+        $contact_person = $sop['sop_created_dt'];
+        $status_row = "<td style='width: 149px'><div>" . $sop['sop_updated_dt'] . "</div></td>";
+    }
+
+
+    $file_data ='';
+    if($sop['sop_finalpdf'] != ""){
+        $file_data = " | ".getFileLink($sop['sop_finalpdf'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+    }
+
+    $data .=    "<td><div><strong>" . $concept_id . "</strong> ".$sop_visibility."</div><div>" . $concept_title . "</div><div><em>Draft ID: ".$sop['record_id']."</em></div><div></div><a href='index.php?option=sop&record=".$sop['record_id'].$url."'>Data Request </a> | <a href='index.php?pid=".IEDEA_HARMONIST."&option=ttl&record=".$sop['sop_concept_id']."'>".$concept_id." Concept</a>".$file_data."</td>" .
+        "<td style='width:168px'>" . $contact_person . "</td>" .
+        $status_row.
+        "<td ".$width.">" . $button_votes.$buttons . "</td>" .
+        "</tr>";
+
+    return $data;
+}
+function getDataCallConceptsHeader($person_region,$vote_grid){
+    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+    $regions = getProjectInfoArray($RecordSetRegions);
+    array_sort_by_column($regions, 'region_code');
+
+    $header_colgroup = "<colgroup><col><col><col><col>";
+    $header_region = "";
+
+    if($vote_grid == '2' || $vote_grid == '0') {
+        $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region));
+        $my_region = getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
+        $header_region .= '<th class="request_grid_icon hidden-sm hidden-xs" style="width:150px" data-sortable="false">' . $my_region . '</th>';
+    }else{
+        foreach ($regions as $region) {
+            $instance = $region['record_id'];
+
+            if ($person_region == $instance) {
+                $small_screen_class = '';
+            }else{
+                $small_screen_class = 'hidden-sm hidden-xs';
+            }
+
+
+            $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" data-sortable="false" style="width:40px;text-align: center">' . $region['region_code'] . '</th>';
+            if ($instance == $person_region) {
+                $header_colgroup .= '<col class="active">';
+            } else {
+                $header_colgroup .= '<col>';
+            }
+        }
+    }
+
+
+    $header_colgroup .= '</colgroup>';
+    $header = $header_colgroup.'<thead>
+                    <tr>
+                        <th class="sorted_class" style="width:90px" data-sorted="true" data-sorted-direction="descending">Due Date</th>
+                        <th class="sorted_class" style="width:504px">Data Request Details</th>
+                        <th class="sorted_class" style="width:100px">Status</th>
+                        <th style="width:268px">Data Contact</th>'.$header_region;
+    if($vote_grid == '2') {
+        $header .= '<th class="sorted_class">Actions</th>';
+    }
+    $header .= '</tr></thead>';
+    return $header;
+}
+
+function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_key, $secret_iv, $vote_grid, $concept_record, $option = ""){
+    $data =  "<tr>";
+    $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '3');
+
+    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
+    $people = getProjectInfoArray($RecordSetPeople)[0];
+    $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']));
+    $region_code = getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+
+    $contact_person = "<em>Unknown</em>";
+    if($people != ""){
+        $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a> (" . $region_code . ")";
+    }
+
+    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+    $regions = getProjectInfoArray($RecordSetRegions);
+    array_sort_by_column($regions, 'region_code');
+
+
+    $status_row = "";
+    $view_all_votes = "";
+    if($vote_grid == '2' || $vote_grid == '0') {
+        $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
+        $my_region = getProjectInfoArray($RecordSetMyRegion)[0]['record_id'];
+
+        $status = $sop['data_response_status'][$my_region];
+        $status_row .= "<td style='text-align: center'>";
+        $status_icons = getDataCallStatusIcons($status);
+        $status_row .= $status_icons."</td>";
+
+        if($vote_grid == '2') {
+            $view_all_votes = '<td><div><a href="#" onclick="viewAllVotesData(' . $sop['record_id'] . ');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> All votes</a></div></td>';
+        }
+    }else{
+        foreach ($regions as $region) {
+            if ($current_user['person_region'] == $region['record_id']) {
+                $small_screen_class = '';
+            }else{
+                $small_screen_class = 'hidden-sm hidden-xs';
+            }
+
+            $status = $sop['data_response_status'][$region['record_id']];
+            $status_row .= "<td style='text-align: center' class='".$small_screen_class."'>";
+            $status_icons = getDataCallStatusIcons($status);
+            $status_row .= $status_icons."</td>";
+        }
+    }
+
+    $data .= "<td><div style='text-align: center'>" . $array_dates['text'] . "</div><div>" . $array_dates['button'] . "</div></td>";
+
+    if($option == "1"){
+        $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $concept_record));
+        $data_sopfile = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['datasop_file'];
+
+        $details = "<div><em>Historic (pre-Hub) Data Request";
+        if($data_sopfile != ""){
+            $details .= ": ".getFileLink($data_sopfile,'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+        }
+        $details .= "</em></div>";
+
+        $sop_status = "<em>Unknown</em>";
+    }else{
+        if($sop['sop_status'] == "1"){
+            if ($sop['sop_closed_y'][1] != '1') {
+                $sop_closed_y = '<span class="label label-as-badge label-retrieve">Open</span>';
+            } else if ($sop['sop_closed_y'][1] == '1') {
+                $sop_closed_y = '<span class="label label-as-badge label-default_dark">Closed</span>';
+            }
+        }
+
+        $status = 'badge-draft';
+        if ($sop['sop_status'] == '1') {
+            $status = 'badge-final';
+        }
+
+        $sop_status = $module->getChoiceLabels('sop_status', IEDEA_SOP);
+        $sop_status = '<span class="label label-as-badge '.$status.'">'. $sop_status[$sop['sop_status']].'</span>&nbsp;&nbsp;';
+
+        $url = "&type=s";
+        $details = "<div><em>Draft ID: ".$sop['record_id']."</em></div><div><a href='index.php?option=sop&record=".$sop['record_id'].$url."'>Data Request </a></div>";
+    }
+
+
+    $data .=  "<td>".$details."</td>" .
+        "<td width='200px'>".$sop_status.$sop_closed_y."</td>" .
+        "<td style='width:168px'>" . $contact_person . "</td>" .
+        $status_row.
+        $view_all_votes.
+        "</tr>";
+
+    return $data;
+}
+
+function getDataCallStatusIcons($status){
+    switch($status){
+        case "0": $status_icons ='<span class="label label-default_light" title="Not Started"><i class="fa-label-legend status fa fa-times text-default_light" status="'.$status.'"></i></span>';break;
+        case "1": $status_icons ='<span class="label label-warning" title="Partial Data"><i class="fa-label-legend status fa fa-wrench" status="'.$status.'"></i></span>';break;
+        case "2": $status_icons ='<span class="label label-approved" title="Complete Data"><i class="fa-label-legend status fa fa-check" status="'.$status.'"></i></span>';break;
+        case "3": $status_icons ='<span class="label label-default" title="Data Not Available"><i class="fa-label-legend status fa fa-ban" status="'.$status.'"></i></span>';break;
+        case "4": $status_icons ='<span class="label label-default" title="Region Not Requested"><i class="fa-label-legend status fa fa-times" status="'.$status.'"></i></span>';break;
+        case "9": $status_icons ='<span class="label label-other" title="Other Status"><i class="fa-label-legend status fa fa-question" status="'.$status.'"></i></span>';break;
+        default: $status_icons ='<span class="label label-default_light" title="Not Started"><i class="fa-label-legend status fa fa-times text-default_light" status="0"></i></span>';
+    }
+    return $status_icons;
+}
+
+
+/***PHP SPREADSHEET***/
+
+function getExcelHeaders($sheet,$headers,$letters,$width,$row_number){
+    foreach ($headers as $index=>$header) {
+        $sheet->setCellValue($letters[$index] . $row_number, $header);
+        $sheet->getStyle($letters[$index] . $row_number)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+        $sheet->getStyle($letters[$index].$row_number)->getFill()->getStartColor()->setARGB('4db8ff');
+        $sheet->getStyle($letters[$index].$row_number)->getFont()->setBold( true );
+        $sheet->getStyle($letters[$index].$row_number)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
+        $sheet->getStyle($letters[$index].$row_number)->getAlignment()->setHorizontal('center');
+        $sheet->getStyle($letters[$index].$row_number)->getAlignment()->setWrapText(true);
+
+        $sheet->getColumnDimension($letters[$index])->setAutoSize(false);
+        $sheet->getColumnDimension($letters[$index])->setWidth($width[$index]);
+    }
+    return $sheet;
+}
+
+function getExcelData($sheet,$data_array,$headers,$letters,$section_centered,$row_number,$option){
+    $found = false;
+    $active_n_found = false;
+    foreach ($data_array as $row => $data) {
+        foreach ($headers as $index => $header) {
+            $sheet->setCellValue($letters[$index].$row_number, $data[$index]);
+            $sheet->getStyle($letters[$index].$row_number)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle($letters[$index].$row_number)->getAlignment()->setWrapText(true);
+            if($section_centered[$index] == "1"){
+                $sheet->getStyle($letters[$index].$row_number)->getAlignment()->setHorizontal('center');
+            }
+            if($option == "1"){
+                if ($index == "11" && $data[$index] == "N") {
+                    $active_n_found = true;
+                    $sheet->getStyle($letters[$index] . $row_number)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                    $sheet->getStyle($letters[$index].$row_number)->getFill()->getStartColor()->setARGB('e6e6e6');
+                }
+            }
+
+            if ($option == "2" && $index == "2"){
+                $year = $data[$index];
+                if(array_key_exists(($row+1),$data_array) && $year != $data_array[$row+1][$index]) {
+                    $found = true;
+                }
+            }
+        }
+        if( $active_n_found && $option == '1'){
+            foreach ($headers as $index=>$header) {
+                $sheet->getStyle($letters[$index] . $row_number)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                $sheet->getStyle($letters[$index].$row_number)->getFill()->getStartColor()->setARGB('e6e6e6');
+            }
+            $active_n_found = false;
+        }
+        $row_number++;
+
+        if($option == "2" && $found){
+            foreach ($headers as $index=>$header) {
+                $sheet->setCellValue($letters[$index].$row_number,"");
+                $sheet->getStyle($letters[$index] . $row_number)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $sheet->getStyle($letters[$index] . $row_number)->getAlignment()->setWrapText(true);
+                $sheet->getStyle($letters[$index] . $row_number)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                $sheet->getStyle($letters[$index] . $row_number)->getFill()->getStartColor()->setARGB('ffffcc');
+            }
+            $row_number++;
+            $found = false;
+        }
+    }
+    return $sheet;
 }
 ?>

@@ -40,7 +40,7 @@ foreach ($requests as $req){
         $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
         if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
             $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array',  array('record_id' => $req['assoc_concept']));
-            $concept = getProjectInfoArray($RecordSetConceptSheets)[0];
+            $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
             $concept_sheet = $concept['concept_id'];
             $concept_title = $concept['concept_title'];
             $email_req .= ", ".$concept_sheet;
@@ -89,7 +89,7 @@ foreach ($requests_hub as $req){
         $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
         if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
             $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $req['assoc_concept']));
-            $concept = getProjectInfoArray($RecordSetConceptSheets)[0];
+            $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
             $concept_sheet = $concept['concept_id'];
             $concept_title = $concept['concept_title'];
             $email_req .= ", ".$concept_sheet;
@@ -134,7 +134,7 @@ foreach ($sops as $sop){
                 $date_color_text = "color:#e74c3c";
             }
             $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $sop['sop_concept_id']));
-            $concept = getProjectInfoArray($RecordSetConceptSheets)[0];
+            $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
             $concept_sheet = $concept['concept_id'];
             $concept_title = $concept['concept_title'];
 
