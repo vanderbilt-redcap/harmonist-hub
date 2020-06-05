@@ -12,7 +12,6 @@ if ($instance == 1) {
     $instance = '';
 }
 
-
 $number_concepts = 0;
 $number_abstracts = 0;
 $number_manuscripts = 0;
@@ -62,7 +61,7 @@ $number_of_deadlines = 6;
 $number_of_quicklinks = 10;
 $number_of_recentactivity = 10;
 
-$RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".date('Y-m-d', strtotime("-7 day"))."', \"d\", true) <= 0");
+$RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".date('Y-m-d', strtotime("-7 day"))."', \"d\", true) >= 0");
 $comments_sevenDaysYoung = getProjectInfoArray($RecordSetComments);
 array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
