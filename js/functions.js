@@ -269,16 +269,6 @@ $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
 });
 
 /**
- * Function that on keyup loads the nanmes of the People Project with the searching parameters the user types
- * @param arg
- */
-function getProjectList(arg){
-    var id = arg.getAttribute('id');
-    var value = arg.getAttribute('value');
-    loadAjax('parameters='+value, 'concepts/get-project-list.php', 'json-datalist-'+id);
-}
-
-/**
  * On logout we destroy the session
  * @param goToUrl
  */

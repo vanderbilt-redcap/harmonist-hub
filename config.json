@@ -68,34 +68,34 @@
     {
       "cron_name": "cron_metrics",
       "cron_description": "Cron that saves metrics every morning",
-      "method": "cron_metrics",
+      "method": "cronMethod",
       "cron_hour": "6",
       "cron_minute": "00"
     },
     {
       "cron_name": "cron_delete",
-      "cron_description": "Cron that saves metrics every morning",
+      "cron_description": "Cron that deletes expired datasets",
       "method": "cronMethod",
       "cron_hour": "23",
       "cron_minute": "59"
     },
     {
       "cron_name": "cron_data_upload_expiration_reminder",
-      "cron_description": "Cron that saves metrics every morning",
+      "cron_description": "Cron that sends datasets expiration notifications",
       "method": "cronMethod",
       "cron_hour": "0",
       "cron_minute": "01"
     },
     {
       "cron_name": "cron_data_upload_notification",
-      "cron_description": "Cron that saves metrics every morning",
+      "cron_description": "Cron that sends a dataupload notification",
       "method": "cronMethod",
       "cron_frequency": "60",
-      "cron_max_run_time": "900"
+      "cron_max_run_time": "60"
     },
     {
       "cron_name": "cron_monthly_digest",
-      "cron_description": "Cron that saves metrics every morning",
+      "cron_description": "Cron that sends a status report monthly",
       "method": "cronMethod",
       "cron_hour": "12",
       "cron_minute": "00",
@@ -103,7 +103,14 @@
     },
     {
       "cron_name": "cron_publications",
-      "cron_description": "Cron that saves metrics every morning",
+      "cron_description": "Cron that saves the publications txt file to generate the table in the HUB",
+      "method": "cronMethod",
+      "cron_hour": "23",
+      "cron_minute": "59"
+    },
+    {
+      "cron_name": "cron_upload_pending",
+      "cron_description": "Cron that sends an email and generates an uploads records if there are any pending files",
       "method": "cronMethod",
       "cron_hour": "23",
       "cron_minute": "59"

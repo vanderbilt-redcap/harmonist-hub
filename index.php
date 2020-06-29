@@ -222,9 +222,6 @@ if($hub_projectname == '' || $hub_profile == ''){
                     } else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'smn' && !$deactivate_datahub)
                     {
                         include('sop/sop_request_data.php');
-                    } else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'gac')
-                    {
-                        include('hub/getActiveConceptsAndAuthors.php');
                     } else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'sra' && !$deactivate_datahub)
                     {
                         include('sop/sop_recent_activity.php');

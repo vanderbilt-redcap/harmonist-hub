@@ -54,7 +54,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                 $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
                 $table_aux = array();
-                $table_aux['concept'] = '<a href="index.php?pid=' . IEDEA_HARMONIST . '&option=ttl&record=' . $concept['record_id'] . '">' . $concept['concept_id'] . '</a>';
+                $table_aux['concept'] = '<a href="index.php?pid=' . IEDEA_PROJECTS . '&option=ttl&record=' . $concept['record_id'] . '">' . $concept['concept_id'] . '</a>';
                 $table_aux['year'] = '<strong>' . $concept['output_year'][$index] . '</strong>';
                 $table_aux['region'] = '<span class="badge badge-pill badge-draft">MR</span>';
                 $table_aux['conf'] = $concept['output_venue'][$index];
