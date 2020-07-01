@@ -146,22 +146,6 @@ function getFile($module, $edoc, $type){
     return $file;
 }
 
-function loadImg($module,$imgEdoc,$default,$option=""){
-    $img = $default;
-    if($imgEdoc != ''){
-        $q = $module->query("SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=?",[$imgEdoc]);
-
-        while ($row = $q->fetch_assoc()) {
-            if($option == 'pdf'){
-                $img = EDOC_PATH.$row['stored_name'];
-            }else{
-                $img = 'downloadFile.php?sname='.$row['stored_name']."&file=". urlencode($row['doc_name']);
-            }
-        }
-    }
-    return $img;
-}
-
 /**
  * function that returns the link to the file with the designed icon
  * @param $edoc
@@ -1625,5 +1609,52 @@ function getExcelData($sheet,$data_array,$headers,$letters,$section_centered,$ro
         }
     }
     return $sheet;
+}
+
+function getTBLCenterUpdatePercentRegions($TBLCenter,$regions,$pastlastreview_dur){
+    if(!is_array($regions)){
+        $total_centers = 0;
+        $total_centers_updated = 0;
+        foreach ($TBLCenter as $center){
+            if($center['region'] == $regions && ($center['drop_center'] == '' || !in_array($center['drop_center'],$center))){
+                $total_centers++;
+                if(strtotime($center['last_reviewed_d']) != "" && strtotime($center['last_reviewed_d']) >= strtotime(date('Y-m-d', strtotime("-".$pastlastreview_dur." day")))){
+                    $total_centers_updated++;
+                }
+            }
+        }
+        //percentage no decimals
+        $region_array = number_format((float)($total_centers_updated / $total_centers * 100), 0, '.', '');
+    }else{
+        $region_array = array();
+        foreach ($regions as $region){
+            $total_centers = 0;
+            $total_centers_updated = 0;
+            foreach ($TBLCenter as $center){
+                if($center['region'] == $region['region_code'] && ($center['drop_center'] == '' || !in_array($center['drop_center'],$center))){
+                    $total_centers++;
+                    if(strtotime($center['last_reviewed_d']) != "" && strtotime($center['last_reviewed_d']) >= strtotime(date('Y-m-d', strtotime("-".$pastlastreview_dur." day")))){
+                        $total_centers_updated++;
+                    }
+                }
+            }
+            //percentage no decimals
+            $region_array[$region['region_code']] = number_format((float)($total_centers_updated / $total_centers * 100), 0, '.', '');;
+        }
+    }
+    return $region_array;
+}
+
+function getTBLCenterUpdatePercentLabel($region_tbl_percent){
+    $icon = '<i class="fa fa-clock-o"></i>';
+    $color = 'label-notupdated';
+    if($region_tbl_percent >= 80){
+        $icon = '<i class="fa fa-smile-o"></i>';
+        $color = 'label-updated';
+    }else if($region_tbl_percent <= 79 && $region_tbl_percent >= 50){
+        $color = 'label-semiupdated';
+    }
+    $region_tbl_label = '<span class="badge '.$color.'" style="float: right;">'.$icon.' '.$region_tbl_percent.'%</span>';
+    return $region_tbl_label;
 }
 ?>

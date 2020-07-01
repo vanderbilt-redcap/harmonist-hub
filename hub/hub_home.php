@@ -56,10 +56,10 @@ foreach ($request as $req){
     }
 }
 
-$number_of_announcements = 6;
-$number_of_deadlines = 6;
-$number_of_quicklinks = 10;
-$number_of_recentactivity = 10;
+$number_of_announcements = $settings['home_number_announcements'];
+$number_of_deadlines = $settings['home_number_deadlines'];
+$number_of_quicklinks = $settings['home_number_quicklinks'];
+$number_of_recentactivity = $settings['home_number_recentactivity'];
 
 $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".date('Y-m-d', strtotime("-7 day"))."', \"d\", true) >= 0");
 $comments_sevenDaysYoung = getProjectInfoArray($RecordSetComments);
