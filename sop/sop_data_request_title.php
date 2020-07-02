@@ -158,7 +158,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                             <?php
                                 if(($sop['sop_status'] == '2' && ($isAdmin || $harmonist_perm)) || $sop['sop_status'] != '2'){
                                     ?> <li>
-                                        <a href="index.php?pid=<?= IEDEA_DATAMODEL ?>&option=ss1&record=<?= $_REQUEST['record'] ?>&step=3" target="_blank">Edit Data Request</a>
+                                        <a href='<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=ss1&record=".$_REQUEST['record']."&step=3")?>' target="_blank">Edit Data Request</a>
                                     </li>
                                     <?php
                                 }

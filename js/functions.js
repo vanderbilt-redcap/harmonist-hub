@@ -389,6 +389,7 @@ function checkConcept(){
  * @param step
  */
 function loadAjax_steps(data,url,loadAjax,step){
+    console.log(url)
     if(step == '0' && $('[name=optradio]:checked').val() == '1'){
         //New Step we clean up possible previous load
         resetData();
@@ -818,7 +819,7 @@ function deleteFile(record) {
 function generate_pdf(record_id){
     $.ajax({
         type: "POST",
-        url: "sop/save_step_4_AJAX.php",
+        url: "sop/sop_step_4_save_AJAX.php",
         data: "&id="+record_id,
         error: function (xhr, status, error) {
             alert(xhr.responseText);

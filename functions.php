@@ -1648,4 +1648,47 @@ function getTBLCenterUpdatePercentLabel($region_tbl_percent){
     $region_tbl_label = '<span class="badge '.$color.'" style="float: right;">'.$icon.' '.$region_tbl_percent.'%</span>';
     return $region_tbl_label;
 }
+
+/**
+ * Function that searches the armID from a project and returns the data
+ * @param $projectID
+ * @return array|mixed
+ */
+function getTablesInfo($module){
+    $q = $module->query("SELECT * FROM `redcap_events_arms` WHERE project_id = ?",[IEDEA_DATAMODEL]);
+    $dataTable = array();
+    while ($row = $q->fetch_assoc()){
+        $qTable = $module->query("SELECT * FROM `redcap_events_metadata` WHERE arm_id = ?",[$row['arm_id']]);
+        while ($rowTable = $qTable->fetch_assoc()){
+            $dataTable = generateTableArray($module,$dataTable);
+        }
+    }
+    return $dataTable;
+}
+
+/**
+ * Function that generates an array with the table name and event information
+ * @param $event_id, the event identificator
+ * @param $projectID, the project we want to search in
+ * @param $dataTable, the array we are going to fill up
+ * @return mixed, the array $dataTable we are going to fill up
+ */
+function generateTableArray($module, $dataTable){
+    $dataFormat = $module->getChoiceLabels('data_format', IEDEA_DATAMODEL);
+    $RecordSetTable = \REDCap::getData(IEDEA_DATAMODEL, 'array', null);
+    $recordsTable = getProjectInfoArrayRepeatingInstruments($RecordSetTable);
+    $dataTable['data_format_label'] = $dataFormat;
+    foreach( $recordsTable as $data ){
+        #we sort the variables by value and keep key
+        asort($data['variable_order']);
+
+        if(!empty($data['record_id'])){//Variables
+            $dataTable[$data['record_id']] = $data;
+        }
+    }
+    #We order the tables
+    array_sort_by_column($dataTable, "table_order");
+
+    return $dataTable;
+}
 ?>
