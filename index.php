@@ -234,7 +234,7 @@ if($hub_projectname == '' || $hub_profile == ''){
                     }
                     else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'sop' && !$deactivate_datahub)
                     {
-                        include('sop/sop_title.php');
+                        include('sop/sop_data_request_title.php');
                     }
                     else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'fsa' && !$deactivate_datahub)
                     {

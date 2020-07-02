@@ -73,14 +73,14 @@ $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-
         <div class="well centerwell data_boxes">
             <i class="fa fa-2x fa-fw fa-bullhorn" aria-hidden="true"></i>
             <div class="welltitle"><strong>Request</strong> <?=$settings['hub_name']?> data for your approved concept</div>
-            <a href="index.php?option=smn" class="btn btn-primary">Create Data Request</a>
+            <a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=smn");?>" class="btn btn-primary">Create Data Request</a>
         </div>
     </div>
     <div class="col-sm-3">
         <div class="well centerwell data_boxes">
             <i class="fa fa-2x fa-fw fa-cloud-upload" aria-hidden="true"></i>
             <div class="welltitle"><strong>Check and submit</strong> data for an active data call</div>
-            <a href="index.php?option=upd" class="btn btn-success">View Data Calls <span class="badge" style="padding: 2px 6px;"><?=$open_data_calls?></span></a>
+            <a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=upd");?>" class="btn btn-success">View Data Calls <span class="badge" style="padding: 2px 6px;"><?=$open_data_calls?></span></a>
         </div>
     </div>
     <?php

@@ -1252,33 +1252,29 @@ function getDataCallHeader($person_region,$vote_grid,$option=""){
     return $header;
 }
 
-function getDataCallRow($sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote_grid,$type,$harmonist_perm=""){
-    $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
-    $projectPeople = new \Plugin\Project(IEDEA_PEOPLE);
-    $projectConcepts = new \Plugin\Project(IEDEA_HARMONIST);
-    $projectSOP = new \Plugin\Project(IEDEA_SOP);
-
-    $status_type = \Plugin\Project::convertEnumToArray($projectSOP->getMetadata('data_response_status')->getElementEnum());
+function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote_grid,$type,$harmonist_perm=""){
+    $status_type = $module->getChoiceLabels('data_response_status', IEDEA_SOP);
 
     $data =  "<tr>";
     $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '0');
 
-    $RecordSetPeople = new \Plugin\RecordSet($projectPeople, array('record_id' => $sop['sop_datacontact']));
-    $people = $RecordSetPeople->getDetails()[0];
-    $RecordSetRegionsLogin = new \Plugin\RecordSet($projectRegions, array('record_id' => $people['person_region']));
-    $region_code = $RecordSetRegionsLogin->getDetails()[0]['region_code'];
+    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPL, 'array', array('record_id' => $sop['sop_datacontact']));
+    $people = getProjectInfoArray($RecordSetPeople)[0];
+    $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']));
+    $region_code = getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
     $contact_person = "";
     if($people != ""){
         $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a> (" . $region_code . ")";
     }
 
-    $RecordSetConceptSheets = new \Plugin\RecordSet($projectConcepts, array('record_id' => $sop['sop_concept_id']));
-    $concept_id = $RecordSetConceptSheets->getDetails()[0]['concept_id'];
-    $concept_title = $RecordSetConceptSheets->getDetails()[0]['concept_title'];
+    $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $sop['sop_concept_id']));
+    $concept = getProjectInfoArray($RecordSetConceptSheets)[0];
+    $concept_id = $concept['concept_id'];
+    $concept_title = $concept['concept_title'];
 
-    $RecordSetRegions = new \Plugin\RecordSet($projectRegions, array('showregion_y' => "1"));
-    $regions = $RecordSetRegions->getDetails();
+    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
+    $regions = getProjectInfoArray($RecordSetRegions);
     array_sort_by_column($regions, 'region_code');
     $status_row = "";
     $current_region_status = "";
@@ -1286,11 +1282,7 @@ function getDataCallRow($sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote
     $buttons = '';
     $width='';
     if($vote_grid == '2' || $vote_grid == '0') {
-        $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
-        $RecordSetMyRegion = new \Plugin\RecordSet($projectRegions, array('record_id' => $current_user['person_region']));
-        $my_region = $RecordSetMyRegion->getDetails()[0]['record_id'];
-
-        $status = $sop['data_response_status'][$my_region];
+        $status = $sop['data_response_status'][$current_user['person_region']];
         $status_row .= "<td style='text-align: center'>";
         $status_icons = getDataCallStatusIcons($status);
         $status_row .= $status_icons."</td>";
@@ -1299,7 +1291,7 @@ function getDataCallRow($sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote
             $status = $sop['data_response_status'][$region['record_id']];
             $status_text = $status_type[$sop['data_response_status'][$current_user['person_region']]];
             if ($sop['data_response_status'][$current_user['person_region']] == "") {
-                $status_text = $status_type[0];
+                $status_text = $status_type[1];
             }
 
             $status_row .= "<td style='text-align: center'>";
@@ -1318,14 +1310,14 @@ function getDataCallRow($sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote
         if ($type == "a") {
             $width = "style='100px'";
             $buttons = "<div><em>None</em></div>";
-            if ($sop['sop_finalize_y'] != "" || ($sop['sop_closed_y'][0] != "" && $sop['sop_closed_y'][0] != "1")) {
+            if ($sop['sop_finalize_y'] != "" || ($sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'][1] != "1")) {
                 if ($sop['sop_finalize_y'] != "") {
                     $buttons = "<div>Started</div>";
                     if ($sop['sop_final_d'] != "") {
                         $buttons .= "<div>" . $sop['sop_final_d'] . "</div>";
                     }
                 }
-                if ($sop['sop_closed_y'][0] != "" && $sop['sop_closed_y'][0] == "1") {
+                if ($sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'][1] == "1") {
                     $buttons = "<div style='color: green;font-weight: bold;'>Completed</div>";
                     if ($sop['sop_closed_d'] != "") {
                         $buttons .= "<div>" . $sop['sop_closed_d'] . "</div>";
@@ -1344,7 +1336,7 @@ function getDataCallRow($sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote
         $data .= "<td><div style='text-align: center'>" . $array_dates['text'] . "</div><div>" . $array_dates['button'] . "</div></td>";
     } else if ($type == "p") {
         if ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id']) {
-            $buttons .= '<div><a href="index.php?pid=' . IEDEA_DATAMODEL . '&option=ss1&record=' . $sop['record_id'] . '&step=3" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
+            $buttons .= '<div><a href="'.$module->getUrl('index.php?pid=' . IEDEA_PROJECTS . '&option=ss1&record=' . $sop['record_id'] . '&step=3').'" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
         }
         if ($isAdmin || $harmonist_perm) {
             $buttons .= '<div style="padding-top: 8px"><a href="#" onclick="confirmMakePrivate(\'' . $sop['record_id'] . '\')" class="btn btn-default btn-xs"><i class="fa fa-thumb-tack" aria-hidden="true"></i> Make private</a></div>';
@@ -1354,7 +1346,7 @@ function getDataCallRow($sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote
     } else if ($type == 'm') {
         $buttons = '';
         if ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id']) {
-            $buttons .= '<div><a href="index.php?pid=' . IEDEA_DATAMODEL . '&option=ss1&record=' . $sop['record_id'] . '&step=3" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
+            $buttons .= '<div><a href="'.$module->getUrl('index.php?pid=' . IEDEA_PROJECTS . '&option=ss1&record=' . $sop['record_id'] . '&step=3').'" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
         }
 
         if ($sop['sop_visibility'] == '2') {
@@ -1364,9 +1356,8 @@ function getDataCallRow($sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote
         } else if ($sop['sop_visibility'] == '1') {
             $sop_visibility = '<span class="badge badge-pill badge-private">Private</span>';
 
-            $RecordSetSOP = new \Plugin\RecordSet($projectSOP, array('record_id' => $sop['record_id']));
-            $passthru_link = \Plugin\Passthru::passthruToSurvey($RecordSetSOP->getRecords()[0], "dhwg_review_request", true);
-            $survey_link = APP_PATH_PLUGIN . '/surveyPassthru.php?&surveyLink=' . $passthru_link;
+            $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_SOP, $sop['record_id'], "dhwg_review_request", "");
+            $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
             $buttons .= '<div><a href="#" onclick="editIframeModal(\'sop-make-public\',\'redcap-edit-frame-make-public\',\'' . $survey_link . '\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send for Review</a></div>';
         }
@@ -1378,10 +1369,10 @@ function getDataCallRow($sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote
 
     $file_data ='';
     if($sop['sop_finalpdf'] != ""){
-        $file_data = " | ".getFileLink($sop['sop_finalpdf'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+        $file_data = " | ".getFileLink($module, $sop['sop_finalpdf'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
     }
 
-    $data .=    "<td><div><strong>" . $concept_id . "</strong> ".$sop_visibility."</div><div>" . $concept_title . "</div><div><em>Draft ID: ".$sop['record_id']."</em></div><div></div><a href='index.php?option=sop&record=".$sop['record_id'].$url."'>Data Request </a> | <a href='index.php?pid=".IEDEA_HARMONIST."&option=ttl&record=".$sop['sop_concept_id']."'>".$concept_id." Concept</a>".$file_data."</td>" .
+    $data .=    "<td><div><strong>" . $concept_id . "</strong> ".$sop_visibility."</div><div>" . $concept_title . "</div><div><em>Draft ID: ".$sop['record_id']."</em></div><div></div><a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=sop&record=".$sop['record_id'].$url)."'>Data Request </a> | <a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=ttl&record=".$sop['sop_concept_id'])."'>".$concept_id." Concept</a>".$file_data."</td>" .
         "<td style='width:168px'>" . $contact_person . "</td>" .
         $status_row.
         "<td ".$width.">" . $button_votes.$buttons . "</td>" .
