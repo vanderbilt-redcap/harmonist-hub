@@ -71,7 +71,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
     $(function(){
         $('#deleteDataRequest').submit(function () {
             var data = $('#deleteDataRequest').serialize();
-            CallAJAXAndRedirect(data, <?=json_encode($module->getUrl('sop/sop_delete_data_request.php'))?>,<?=json_encode($module->getUrl("index.php?option=smn&message=D"))?>);
+            CallAJAXAndRedirect(data, <?=json_encode($module->getUrl('sop/sop_delete_data_request.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=smn&message=D"))?>);
             return false;
         });
         $('#makePrivate').submit(function () {
@@ -91,7 +91,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
             data += "&status_record="+$('#status_record').val();
             data += "&data_response_notes="+encodeURIComponent($('#data_response_notes').val());
             var record = <?=json_encode($_REQUEST['record'])?>;
-            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?option=sop&record=".$_REQUEST['record']."&message=D"))?>);
+            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=sop&record=".$_REQUEST['record']."&message=D"))?>);
             return false;
         });
         //To change the text on select
@@ -132,12 +132,12 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
 
     <div class="backTo">
         <?php
-        $back_button = '<a href="'.$module->getUrl('index.php?option=smn').'">< Back to Request Data</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=smn').'">< Back to Request Data</a>';
         if($_REQUEST['type'] != ""){
             if($_REQUEST['type'] == 's'){
-                $back_button = '<a href="'.$module->getUrl('index.php?option=upd').'">< Back to Check and Submit Data</a>';
+                $back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=upd').'">< Back to Check and Submit Data</a>';
             }else if($_REQUEST['type'] == 'r'){
-                $back_button = '<a href="'.$module->getUrl('index.php?option=dnd').'">< Back to Retrieve Data</a>';
+                $back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dnd').'">< Back to Retrieve Data</a>';
             }
         }
         echo $back_button;

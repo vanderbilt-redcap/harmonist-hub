@@ -92,10 +92,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <a data-toggle="collapse" href="https://redcaptest.vanderbilt.edu/plugins/iedea/index.php?option=smn#collapse">My Drafts</a>
+                    <a data-toggle="collapse" href="#collapse2">My Drafts</a>
                 </h3>
             </div>
-            <div id="collapse" class="table-responsive panel-collapse collapse in" aria-expanded="true">
+            <div id="collapse2" class="table-responsive panel-collapse collapse in" aria-expanded="true">
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable="" id="" data-sortable-initialized="true">
                     <?php
                     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_hubuser] = '".$current_user['record_id']."' AND [sop_active] = '1' AND [sop_status] = '0'");

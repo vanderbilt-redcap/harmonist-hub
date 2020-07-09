@@ -19,7 +19,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
     <div class="optionSelect">
         <h3 style="color:#5cb85c">Steps Complete <i class="fa fa-check" aria-hidden="true"></i></span><span></h3>
         <div class="hub-title">
-            <p>Your Data Request has been generated successfully. You can review and download the PDF below or download a ZIP file with an HTML and a PDF version. If you need to make changes, <a href="index.php?&option=ss1&record=<?=$record_id?>&step=3">you can go back to edit your data request</a>.</p>
+            <p>Your Data Request has been generated successfully. You can review and download the PDF below or download a ZIP file with an HTML and a PDF version. If you need to make changes, <a href="index.php?pid=<?=IEDEA_PROJECTS?>&option=ss1&record=<?=$record_id?>&step=3">you can go back to edit your data request</a>.</p>
             <?php
             echo $settings['hub_steps_complete_text'];
             if($sop['sop_visibility'] != "2"){

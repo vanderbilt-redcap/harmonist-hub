@@ -9,7 +9,7 @@ $title = "Requests";
 $link_all_requests = '';
 if($_REQUEST['type'] != ''){
     $title = $title." for ".$request_type_label[$_REQUEST['type']];
-    $link_all_requests = '<a href="index.php?pid='.IEDEA_DATAMODEL.'&option=hub">View All Requests</a> | ';
+    $link_all_requests = '<a href="index.php?pid='.IEDEA_PROJECTS.'&option=hub">View All Requests</a> | ';
 }
 
 $completed_req = '';

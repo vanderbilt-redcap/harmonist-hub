@@ -1,6 +1,6 @@
 <div class="optionSelect">
     <div style="margin-bottom:5px">
-        <a href="<?=$module->getUrl('index.php?&option=ss5&record='.$_REQUEST['record'])?>">&lt; Back to Steps Complete</a>
+        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ss5&record='.$_REQUEST['record'])?>">&lt; Back to Steps Complete</a>
     </div>
     <h3>Share Data Request for Review</h3>
     <p class="hub-title"><?=$settings['hub_datareq_for_review']?></p>
