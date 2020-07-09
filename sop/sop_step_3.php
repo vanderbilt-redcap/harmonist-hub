@@ -247,7 +247,7 @@ if (!empty($people)) {
         <div class="col-md-12">
             <ul id="sortable1" class="connectedSortable" style="width: 35%;" role="list">
             <?php
-            $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[active_y] = 'Y' AND [redcap_name] != '' AND [allowgetdata_y] = '1'");
+            $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[active_y] = '1' AND [redcap_name] <> '' AND [allowgetdata_y(1)] = 1");
             $people_sop = getProjectInfoArray($RecordSetPeople);
             array_sort_by_column($people_sop,'firstname');
             foreach ($people_sop as $person){

@@ -33,30 +33,32 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
             [$project_id, $eventId, $record, $fieldName, $value]);
     }
 
-    function hook_save_record($project_id,$record,$instrument,$event_id){
+    function redcap_save_record($project_id,$record,$instrument,$event_id){
 //        $hub_mapper = $this->getProjectSetting('hub-mapper');
         $hub_mapper = 366;
         $this->setProjectConstants($hub_mapper);
 
-        if($project_id == IEDEA_HOME || $project_id == IEDEA_COMMENTSVOTES){
+        #Depending on the project que add one hook or another
+        if($project_id == IEDEA_SOP && $instrument == 'dhwg_review_request') {
+            include_once("sop/sop_make_public_request_AJAX.php?record=".$record);
+            echo '<script>parent.location.href = '.json_encode($this->getUrl("index.php?pid=".$hub_mapper."&option=smn&record='.$record.'&message=P")).'</script>';
+        }else{
+            if($project_id == IEDEA_SOP){
+                include_once("hooks/save_record_SOP.php");
+            }else if($project_id == IEDEA_RMANAGER){
+                include_once("hooks/save_record_requestManager.php");
+            }else if($project_id == IEDEA_COMMENTSVOTES){
+                include_once("hooks/save_record_commentsAndVotes.php");
+            }else if($project_id == IEDEA_SOPCOMMENTS){
+                include_once("hooks/save_record_SOP_comments.php");
+            }else if($project_id == IEDEA_DATAMODEL){
+                checkAndUpdatJSONCopyProject($this, '0a');
+            }else if($project_id == IEDEA_CODELIST) {
+                checkAndUpdatJSONCopyProject($this, '0b');
+            }
             echo '<script>';
             include_once("js/iframe.js");
             echo '</script>';
-        }
-
-        #Depending on the project que add one hook or another
-        if($project_id == IEDEA_SOP){
-            include_once("hooks/save_record_SOP.php");
-        }else if($project_id == IEDEA_RMANAGER){
-            include_once("hooks/save_record_requestManager.php");
-        }else if($project_id == IEDEA_COMMENTSVOTES){
-            include_once("hooks/save_record_commentsAndVotes.php");
-        }else if($project_id == IEDEA_SOPCOMMENTS){
-            include_once("hooks/save_record_SOP_comments.php");
-        }else if($project_id == IEDEA_DATAMODEL){
-            checkAndUpdatJSONCopyProject($this, '0a');
-        }else if($project_id == IEDEA_CODELIST) {
-            checkAndUpdatJSONCopyProject($this, '0b');
         }
     }
 

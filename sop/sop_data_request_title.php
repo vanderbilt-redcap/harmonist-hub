@@ -1,6 +1,6 @@
 <?php
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $_REQUEST['record']));
-$sop = getProjectInfoArray($RecordSetSOP)[0];
+$sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
 if($sop !="") {
     $sop_status = $module->getChoiceLabels('sop_status', IEDEA_SOP);
@@ -51,7 +51,7 @@ if($sop !="") {
         $recordSaveDU = array();
 
         $RecordSetFollowAct = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $record_id));
-        $follow_activity = getProjectInfoArray($RecordSetFollowAct)[0]['follow_activity'];
+        $follow_activity = getProjectInfoArrayRepeatingInstruments($RecordSetFollowAct)[0]['follow_activity'];
         $array_userid = explode(',', $follow_activity);
 
         #UNFOLLOW
@@ -71,13 +71,13 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
     $(function(){
         $('#deleteDataRequest').submit(function () {
             var data = $('#deleteDataRequest').serialize();
-            CallAJAXAndRedirect(data,'sop/sop_delete_data_request.php',"index.php?option=smn&message=D");
+            CallAJAXAndRedirect(data, <?=json_encode($module->getUrl('sop/sop_delete_data_request.php'))?>,<?=json_encode($module->getUrl("index.php?option=smn&message=D"))?>);
             return false;
         });
         $('#makePrivate').submit(function () {
             $('#sop-make-private-confirmation').modal('hide');
             var data = $('#makePrivate').serialize();
-            CallAJAXAndShowMessage(data,"sop/sop_make_private.php", "X",window.location.href);
+            CallAJAXAndShowMessage(data,<?=json_encode($module->getUrl('sop/sop_make_private.php'))?>, "X",window.location.href);
             return false;
         });
         $('#dataUploadForm').submit(function () {
@@ -91,7 +91,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
             data += "&status_record="+$('#status_record').val();
             data += "&data_response_notes="+encodeURIComponent($('#data_response_notes').val());
             var record = <?=json_encode($_REQUEST['record'])?>;
-            CallAJAXAndRedirect(data,'sop/sop_submit_data_change_status_AJAX.php',"index.php?option=sop&record="+record+"&message=D");
+            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?option=sop&record=".$_REQUEST['record']."&message=D"))?>);
             return false;
         });
         //To change the text on select
@@ -114,6 +114,9 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
         }else if($_REQUEST['message'] == 'C'){?>
             <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">Your comment has been successfully added.</div>
             <?php
+        }else if($_REQUEST['message'] == 'E'){?>
+            <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">Your comment has been successfully updated.</div>
+            <?php
         }else if($_REQUEST['message'] == 'D'){?>
             <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">The status has been changed</div>
             <?php
@@ -129,12 +132,12 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
 
     <div class="backTo">
         <?php
-        $back_button = '<a href="index.php?option=smn">< Back to Request Data</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php?option=smn').'">< Back to Request Data</a>';
         if($_REQUEST['type'] != ""){
             if($_REQUEST['type'] == 's'){
-                $back_button = '<a href="index.php?option=upd">< Back to Check and Submit Data</a>';
+                $back_button = '<a href="'.$module->getUrl('index.php?option=upd').'">< Back to Check and Submit Data</a>';
             }else if($_REQUEST['type'] == 'r'){
-                $back_button = '<a href="index.php?option=dnd">< Back to Retrieve Data</a>';
+                $back_button = '<a href="'.$module->getUrl('index.php?option=dnd').'">< Back to Retrieve Data</a>';
             }
         }
         echo $back_button;
@@ -302,7 +305,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-default btn-save" onclick='save_status(<?=json_encode($current_user['record_id'])?>,<?=json_encode($current_user['person_region'])?>)' data-dismiss="modal">Save</button>
+                                    <button type="button" class="btn btn-default btn-save" onclick='save_status(<?=json_encode($module->getUrl('sop/sop_data_request_title_admin_status_AJAX.php'))?>,<?=json_encode($current_user['record_id'])?>,<?=json_encode($current_user['person_region'])?>)' data-dismiss="modal">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -567,7 +570,6 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                     <div class="col-md-4">
                         <strong>Status: </strong>
                         <?php
-
                         $status_text = $status_type[$sop['data_response_status'][$current_user['person_region']]];
                         if($sop['data_response_status'][$current_user['person_region']] == ""){
                             $status_text = $status_type[0];
@@ -777,52 +779,49 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                     </thead>
                     <tbody>
                     <?php
-                    $parameter = '[sop_id] = "' . $_REQUEST['record'] . '"';
-                    $comments = REDCap::getData(IEDEA_SOPCOMMENTS, 'array', null, null, null, null, false, false, false, $parameter, false);
+                    $RecordSetComments = \REDCap::getData(IEDEA_SOPCOMMENTS, 'array', null,null,null,null,false,false,false,"[sop_id] = '".$_REQUEST['record']."'");
+                    $comments = getProjectInfoArray($RecordSetComments);
                     krsort($comments);
                     if (!empty($comments)) {
-                        foreach ($comments as $comment_record) {
-                            foreach ($comment_record as $comment) {
-
-                                $comment_time = "";
-                                if (!empty($comment['responsecomplete_ts'])) {
-                                    $dateComment = new DateTime($comment['responsecomplete_ts']);
-                                    $dateComment->modify("+1 hours");
-                                    $comment_time = $dateComment->format("Y-m-d H:i:s");
-                                }
-
-                                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $comment['response_person']));
-                                $people = getProjectInfoArray($RecordSetPeople)[0];
-                                $name = trim($people['firstname'] . ' ' . $people['lastname']);
-
-                                $gd_files = "";
-                                if (!empty($comment['revised_file'])) {
-                                    if (!empty($comment['comments'])) {
-                                        $gd_files .= "<br/>";
-                                    }
-                                    $gd_files .= getFileLink($module, $comment['revised_file'], '', '', $secret_key, $secret_iv,$current_user['record_id'],"");
-                                }
-
-
-                                if ($comment['sop_status'] == '1') {
-                                    $status = 'badge-final';
-                                } else {
-                                    $status = 'badge-draft';
-                                }
-
-                                $group_discussion .= "<tr>" .
-                                    "<td style='width:20%'><a href='mailto:" . $people['email'] . "'>" . $name . "</a> (" . $comment['response_regioncode'] . ")<br/>" . $comment_time . "</td>" .
-                                    "<td style='width:3%'><span class='label label-as-badge " . $status . "'>" . $sop_status[$comment['comment_ver']] . "</span></td>" .
-                                    "<td style='width:70%'>" . nl2br($comment['comments']) . $gd_files . "</td>" .
-                                    "<td  style='width:5%'>";
-                                if ($comment['response_person'] == $current_user['record_id']) {
-                                    $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_SOPCOMMENTS, $comment['record_id'], "sop_comments", "");
-                                    $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
-
-                                    $group_discussion .= '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
-                                }
-                                $group_discussion .= "</td></tr>";
+                        foreach ($comments as $comment) {
+                            $comment_time = "";
+                            if (!empty($comment['responsecomplete_ts'])) {
+                                $dateComment = new DateTime($comment['responsecomplete_ts']);
+                                $dateComment->modify("+1 hours");
+                                $comment_time = $dateComment->format("Y-m-d H:i:s");
                             }
+
+                            $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $comment['response_person']));
+                            $people = getProjectInfoArray($RecordSetPeople)[0];
+                            $name = trim($people['firstname'] . ' ' . $people['lastname']);
+
+                            $gd_files = "";
+                            if (!empty($comment['revised_file'])) {
+                                if (!empty($comment['comments'])) {
+                                    $gd_files .= "<br/>";
+                                }
+                                $gd_files .= getFileLink($module, $comment['revised_file'], '', '', $secret_key, $secret_iv,$current_user['record_id'],"");
+                            }
+
+
+                            if ($comment['sop_status'] == '1') {
+                                $status = 'badge-final';
+                            } else {
+                                $status = 'badge-draft';
+                            }
+
+                            $group_discussion .= "<tr>" .
+                                "<td style='width:20%'><a href='mailto:" . $people['email'] . "'>" . $name . "</a> (" . $comment['response_regioncode'] . ")<br/>" . $comment_time . "</td>" .
+                                "<td style='width:3%'><span class='label label-as-badge " . $status . "'>" . $sop_status[$comment['comment_ver']] . "</span></td>" .
+                                "<td style='width:70%'>" . nl2br($comment['comments']) . $gd_files . "</td>" .
+                                "<td  style='width:5%'>";
+                            if ($comment['response_person'] == $current_user['record_id']) {
+                                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_SOPCOMMENTS, $comment['record_id'], "sop_comments", "");
+                                $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+
+                                $group_discussion .= '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
+                            }
+                            $group_discussion .= "</td></tr>";
                         }
                         echo $group_discussion;
                     }
@@ -842,7 +841,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                     </div>
                     <div class="modal-body">
                         <input type="hidden" value="0" id="comment_loaded">
-                        <iframe class="commentsform" id="redcap-edit-frame" name="redcap-edit-frame" src=""
+                        <iframe class="commentsform" id="redcap-edit-frame" name="redcap-edit-frame" src="" message="E"
                                 style="border: none;height: 810px;width: 100%;"></iframe>
                     </div>
 
@@ -865,7 +864,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
             ?>
             <div id="collapse_ask" class="panel-collapse collapse in" aria-expanded="true">
                 <div class="panel-body">
-                    <iframe class="commentsform" id="redcap-sop" src="<?= $survey_path ?>"
+                    <iframe class="commentsform" id="redcap-sop" src="<?= $survey_path ?>" message="C"
                             style="border: none;height: 550px;width: 100%;"></iframe>
                 </div>
             </div>
@@ -879,88 +878,6 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                 $('html,body').scrollTop(0);
                 $("html,body").animate({scrollTop: 0}, "slow");
             });
-
-            //Parent page reload afte iframe submit
-           /* window.onload = function () {
-                //Hide return button
-                $('#redcap-sop').contents().find('[name=submit-btn-savereturnlater]').hide();
-                //Hide survey title
-                $('#redcap-sop').contents().find('#surveytitlelogo').hide();
-                //iframe body color change
-                $('#redcap-sop').contents().find('body').css('background-color', '#fff');
-
-                document.getElementById("redcap-sop").onload = function () {
-                    window.location.href = addMessageLetter("C");
-                }
-
-                //We reload the page when it has been called 3 times, which means the user clicked on the submit button
-                document.getElementById("redcap-edit-frame").onload = function () {
-                    $('#comment_loaded').val(parseInt($('#comment_loaded').val()) + 1);
-
-                    $('#redcap-edit-frame').contents().find('body').css('background-color', '#fff');
-                    $('#redcap-edit-frame').contents().find('#surveytitlelogo').hide();
-                    $('#redcap-edit-frame').contents().find('[name=submit-btn-savereturnlater]').hide();
-
-                    if ($('#comment_loaded').val() >= 3) {
-                        $('#hub_comment_and_votes_survey').modal('hide');
-                        top.location.reload(true);
-                    }
-                }
-
-                $('#hub_comment_and_votes_survey').on('show.bs.modal', function (e) {
-
-                });
-                $('#hub_comment_and_votes_survey').on('hide.bs.modal', function (e) {
-                    //Reset the hidden value, we reset te 'loading' value
-                    $('#comment_loaded').val(0);
-                });
-
-                document.getElementById("redcap-finalize-frame").onload = function () {
-                    $('#comment_loaded_finalize').val(parseInt($('#comment_loaded_finalize').val()) + 1);
-                    if ($('#comment_loaded_finalize').val() >= 3) {
-                        $('#hub-modal-finalize').modal('hide');
-                        window.location.href = addMessageLetter("S");
-                    }
-                }
-
-                $('#hub-modal-finalize').on('hide.bs.modal', function (e) {
-                    //Reset the hidden value, we reset te 'loading' value
-                    $('#comment_loaded_finalize').val(0);
-                });
-
-                document.getElementById("redcap-closure-frame").onload = function () {
-                    $('#comment_loaded_closure').val(parseInt($('#comment_loaded_closure').val()) + 1);
-                    if ($('#comment_loaded_closure').val() >= 3) {
-                        $('#hub-modal-closure').modal('hide');
-                        window.location.href = addMessageLetter("F");
-                    }
-                }
-
-                $('#hub-modal-closure').on('hide.bs.modal', function (e) {
-                    //Reset the hidden value, we reset te 'loading' value
-                    $('#comment_loaded_closure').val(0);
-                });
-
-                document.getElementById("redcap-edit-frame-make-public").onload = function () {
-                    $('#comment_loaded_public').val(parseInt($('#comment_loaded_public').val()) + 1);
-                    if ($('#comment_loaded_public').val() >= 3) {
-                        $('#sop-make-public').modal('hide');
-                        window.location.href = addMessageLetter("P");
-                    }
-                }
-
-                $('#sop-make-public').on('hide.bs.modal', function (e) {
-                    //Reset the hidden value, we reset te 'loading' value
-                    $('#comment_loaded_public').val(0);
-                });
-            }
-
-            function reloadCode() {
-                if (window.location.hash.substr(1) == "triggerReloadCode") {
-                    window.location.hash = "";
-                    $('#succMsgContainer').show();
-                }
-            }*/
         </script>
     <?php }
    }else{ ?>

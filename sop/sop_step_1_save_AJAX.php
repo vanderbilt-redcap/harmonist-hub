@@ -158,7 +158,7 @@ if($data['sop_creator'] != ""){
     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $data['sop_creator']));
     $people = getProjectInfoArray($RecordSetPeople)[0];
     $data['sop_creator_name'] = $people['firstname'].' '.$people['lastname'];
-    $data['sop_creator_email'] = $people[0]['email'];
+    $data['sop_creator_email'] = $people['email'];
 }
 
 if($data['sop_creator2'] != ""){

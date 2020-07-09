@@ -36,7 +36,7 @@ $region_tbl_percent = getTBLCenterUpdatePercentRegions($TBLCenter, $person_regio
 
 
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = '1' AND [sop_finalize_y] = '1'");
-$request_dataCall = getProjectInfoArray($RecordSetSOP);
+$request_dataCall = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
 $open_data_calls = 0;
 if(!empty($request_dataCall)) {
     foreach ($request_dataCall as $sop) {
@@ -231,10 +231,10 @@ if($settings['deactivate_datadown'][0] != "1"){
                                     "</div>";
                                 echo "<div class='comment more' style='display: inline-block;'>".$event['news']." ";
                                 if($event['news_file'] != "" && $event['news_file2'] == ""){
-                                    echo "<div style='padding-top: 10px;padding-bottom: 10px'>".getFileLink($event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
+                                    echo "<div style='padding-top: 10px;padding-bottom: 10px'>".getFileLink($module, $event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
                                 }else if($event['news_file'] != "" && $event['news_file2'] != ""){
-                                    echo "<div style='padding-top: 10px;'>".getFileLink($event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
-                                    echo  "<div style='padding-bottom: 10px'>".getFileLink($event['news_file2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
+                                    echo "<div style='padding-top: 10px;'>".getFileLink($module, $event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
+                                    echo  "<div style='padding-bottom: 10px'>".getFileLink($module, $event['news_file2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
                                 }
                                 echo "</div>";
 

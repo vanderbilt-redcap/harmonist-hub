@@ -1,6 +1,5 @@
 <?php
 include_once(__DIR__ ."/../projects.php");
-include_once __DIR__ ."/../functions.php";
 
 $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
 $request_DU = getProjectInfoArray($RecordSetDU);
@@ -22,7 +21,7 @@ foreach ($request_DU as $upload){
         $expired_date_reminder2 = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days2));
         if (strtotime($expired_date_reminder) == strtotime($today) || strtotime($expired_date_reminder2) == strtotime($today)) {
             $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $upload['data_assoc_request']));
-            $sop = getProjectInfoArray($RecordSetSOP)[0];
+            $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
             $downloaders_list = "";
             if ($sop['sop_downloaders'] != "") {
                 $downloaders = explode(',', $sop['sop_downloaders']);

@@ -1,41 +1,42 @@
 <?php
 define('NOAUTH',true);
-require_once dirname(dirname(__FILE__))."/base.php";
+require_once dirname(dirname(__FILE__))."/projects.php";
 
 $record_id = $_REQUEST['id'];
+$Proj = new \Project(IEDEA_SOP);
+$event_id = $Proj->firstEventId;
 
-$projectSOP = new \Plugin\Project(IEDEA_SOP);
-$recordSOP = new \Plugin\RecordSet($projectSOP, array("record_id" => $record_id));
-$sop = $recordSOP->getDetails()[0];
+$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record_id));
+$sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-$projectRegions = new \Plugin\Project(IEDEA_REGIONS);
-$RecordSetRegions = new \Plugin\RecordSet($projectRegions, array(\Plugin\RecordSet::getKeyComparatorPair($projectRegions->getFirstFieldName(),"!=") => ""));
-$regions = $RecordSetRegions->getDetails();
+$RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', null);
+$regions = getProjectInfoArray($RecordSetRegionsLoginDown);
 foreach ($regions as $region){
     $instance = $region['record_id'];
     if($instance == 1){
         $instance = '';
     }
     if($sop["data_response_status"][$instance] == "") {
-        $recordSOPSave = \Plugin\Record::createRecordFromId($projectSOP, $record_id);
-        $recordSOPSave->updateDetails(["data_response_status" => [$instance => '0']], true);
-        $recordSOPSave->updateDetails(["data_region" => [$instance => $region['record_id']]], true);
-        $recordSOPSave->updateDetails(["region_participation_status_complete" => [$instance => '1']], true);
-        $data = '[{"record_id":"' . $record_id . '","redcap_repeat_instrument":"region_participation_status","redcap_repeat_instance":' . $instance . '}]';
-        \REDCap::saveData(IEDEA_SOP, 'json', $data);
+        $array_repeat_instances = array();
+        $arraySOP = array();
+        $arraySOP['data_response_status'] = "0";
+        $arraySOP['data_region'] = $region['record_id'];
+        $arraySOP['region_participation_status_complete'] = "1";
+        $array_repeat_instances[$record_id]['repeat_instances'][$event_id]['region_participation_status'][$instance] = $arraySOP;
+        $results = \REDCap::saveData(IEDEA_SOP, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
     }else{
         break;
     }
 }
 
-$dataTable = getTablesInfo(IEDEA_DATAMODEL);
+$dataTable = getTablesInfo($module);
 $tableHtml = "";
 if(!empty($dataTable)) {
     # Get selected rows
     $tableHtml = generateTablesHTML_pdf($dataTable,$sop['sop_tablefields']);
     $requested_tables = generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
 
-    $dataTable = getTablesInfo(IEDEA_DATAMODEL);
+    $dataTable = getTablesInfo($module);
     $tablefields = array();
     foreach( $dataTable as $data ) {
         if (!empty($data['record_id'])) {
@@ -57,33 +58,36 @@ if(!empty($dataTable)) {
 
 $date = new DateTime();
 $sop_updated_dt = $date->format('Y-m-d H:i:s');
-$recordSOP_update = \Plugin\Record::createRecordFromId($projectSOP, $record_id);
-$recordSOP_update->updateDetails(["sop_updated_dt" => $sop_updated_dt], true);
+$arraySOP = array();
+$arraySOP[$record_id][$event_id]['sop_updated_dt'] = $sop_updated_dt;
 if(!empty($tablefields)){
-    $recordSOP_update->updateDetails(["shiny_json" => json_encode($tablefields)], true);
+    $arraySOP[$record_id][$event_id]['shiny_json'] = json_encode($tablefields);
 }
-\Records::addRecordToRecordListCache($projectSOP->getProjectId(), $recordSOP_update->getId(),$projectSOP->getArmNum());
+$results = \Records::saveData(IEDEA_SOP, 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+\Records::addRecordToRecordListCache(IEDEA_SOP, $record,1);
 
-$projectConcepts = new \Plugin\Project(IEDEA_HARMONIST);
-$RecordSetConcepts = new \Plugin\RecordSet($projectConcepts, array("record_id" => $sop['sop_concept_id']));
-$concept_id = $RecordSetConcepts->getDetails()[0]['concept_id'];
-$concept_title = $RecordSetConcepts->getDetails()[0]['concept_title'];
+$RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array("record_id" => $sop['sop_concept_id']));
+$concept = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+$concept_id = $concept['concept_id'];
+$concept_title = $concept['concept_title'];
 
-$projectPeople = new \Plugin\Project(IEDEA_PEOPLE);
-$RecordSetPeople = new \Plugin\RecordSet($projectPeople, array("record_id" => $sop['sop_creator']));
-$sop_creator_name = $RecordSetPeople->getDetails()[0]['firstname'].' '.$RecordSetPeople->getDetails()[0]['lastname'];
-$sop_creator_email = $RecordSetPeople->getDetails()[0]['email'];
+$RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $sop['sop_creator']));
+$people = getProjectInfoArray($RecordSetPeople)[0];
+$sop_creator_name = $people['firstname'].' '.$people['lastname'];
+$sop_creator_email = $people['email'];
 
-$RecordSetPeople = new \Plugin\RecordSet($projectPeople, array("record_id" => $sop['sop_creator2']));
-$sop_creator2_name = $RecordSetPeople->getDetails()[0]['firstname'].' '.$RecordSetPeople->getDetails()[0]['lastname'];
-$sop_creator2_email = $RecordSetPeople->getDetails()[0]['email'];
+$RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $sop['sop_creator2']));
+$people = getProjectInfoArray($RecordSetPeople)[0];
+$sop_creator2_name  = $people['firstname'].' '.$people['lastname'];
+$sop_creator2_email = $people['email'];
 
-$RecordSetPeople = new \Plugin\RecordSet($projectPeople, array("record_id" => $sop['sop_datacontact']));
-$sop_datacontact_name = $RecordSetPeople->getDetails()[0]['firstname'].' '.$RecordSetPeople->getDetails()[0]['lastname'];
-$sop_datacontact_email = $RecordSetPeople->getDetails()[0]['email'];
+$RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $sop['sop_datacontact']));
+$people = getProjectInfoArray($RecordSetPeople)[0];
+$sop_datacontact_name  = $people['firstname'].' '.$people['lastname'];
+$sop_datacontact_email = $people['email'];
 
-$RecordSetSOPDetails = new \Plugin\RecordSet($projectSOP, array("record_id" => $record_id));
-$data = $RecordSetSOPDetails->getDetails()[0];
+$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record_id));
+$data = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
 $date = new DateTime($sop['sop_due_d']);
 $sop_due_d = $date->format('d F Y');
@@ -122,7 +126,7 @@ $second_page .= "<p><span style='font-size:16pt'><strong>3. Exclusion Criteria</
 $second_page .= "<p><span style='font-size: 12pt'>".$sop['sop_exclusion']."</span></p>";
 $second_page .= "<p><span style='font-size:16pt'><strong>4. Data Submission Notes</strong></span></p>";
 if($sop['dataformat_prefer'] != ""){
-    $dataformat_prefer = \Plugin\Project::convertEnumToArray($projectSOP->getMetadata('dataformat_prefer')->getElementEnum());
+    $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', IEDEA_SOP);
     foreach($dataformat_prefer as $dataid => $dataformat){
         foreach($data['dataformat_prefer'] as $dataf) {
             if($dataf == $dataid){
@@ -143,8 +147,7 @@ $second_page .= "<p><span style='font-size: 12pt'>".$requested_tables."</span></
 
 $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }a{text-decoration: none;}</style>';
 
-
-$img = 'data:image/png;base64,'.base64_encode(file_get_contents(loadImg($settings['hub_logo_pdf'],$secret_key,$secret_iv,'img/IeDEA-logo-200px.png','pdf')));
+$img = getFile($module, $settings['hub_logo_pdf'],'pdf');
 
 $html_pdf = "<html><body style='font-family:\"Calibri\";font-size:10pt;'>".$page_num
     ."<div class='footer'><span left: 0px;>".$concept_id."</span></div>"
@@ -177,18 +180,13 @@ $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
 //$filesize = file_put_contents(EDOC_PATH.$storedName, ob_get_contents());
 
 //Save document on DB
-$sql = "INSERT INTO redcap_edocs_metadata (stored_name,mime_type,doc_name,doc_size,file_extension,gzipped,project_id,stored_date) VALUES
-      ('".db_escape($storedName)."','".db_escape('application/octet-stream')."','".db_escape($reportHash.".pdf")."',".db_escape($filesize).",'".db_escape('.pdf')."','".db_escape('0')."','".db_escape(IEDEA_SOP)."','".db_escape(date('Y-m-d h:i:s'))."')";
-db_query($sql);
+$q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$reportHash.".pdf",$filesize,'.pdf','application/octet-stream','0',IEDEA_SOP,date('Y-m-d h:i:s')]);
 $docId = db_insert_id();
 
-
 //Add document DB ID to project
-$project = new \Plugin\Project(IEDEA_SOP);
-$record = \Plugin\Record::createRecordFromId($project,$record_id);
-$record->updateDetails(['sop_finalpdf' => $docId],true);
-\Records::addRecordToRecordListCache($project->getProjectId(), $record->getId(),$project->getArmNum());
+$jsonConcepts = json_encode(array(array('record_id' => $record_id, 'sop_finalpdf' => $docId)));
+$results = \Records::saveData(IEDEA_SOP, 'json', $jsonConcepts,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+\Records::addRecordToRecordListCache(IEDEA_SOP, $record,1);
 
-//echo json_encode($html_pdf);
 echo json_encode('success');
 ?>

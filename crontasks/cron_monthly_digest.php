@@ -114,11 +114,11 @@ $email_req .= "</ol>".
     "<br><div style='padding: 3px;'><h3><strong>Active  Data Calls</strong></h3></div><ol style='padding-left: 15px;'>";
 
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 && [sop_finalize_y] = 1");
-$sops = getProjectInfoArray($RecordSetSOP);
+$sops = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
 array_sort_by_column($sops, 'sop_due_d',SORT_ASC);
 $isEmpty = true;
 $RecordSetRegions = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-$regions = getProjectInfoArray($RecordSetRegions);
+$regions = getProjectInfoArrayRepeatingInstruments($RecordSetRegions);
 foreach ($sops as $sop){
     if((!array_key_exists('sop_closed_y',$sop) || $sop['sop_closed_y'][0] == "") && $sop['sop_due_d'] != ""){
         $isEmpty = false;

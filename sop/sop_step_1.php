@@ -42,7 +42,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
         <div style="float:left;padding-left:10px;width:50%;display:none" id="setup_show_option_2">
                 <?php
                 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 && [sop_status] = 2");
-                $sop_templates = getProjectInfoArray($RecordSetSOP);
+                $sop_templates = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
                 if (!empty($sop_templates)) {?>
                     <select class="form-control" name="selectSOP_2" id="selectSOP_2" onchange="checkStep(1);checkConcept();">
                         <option value="">Select template</option>
@@ -63,7 +63,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
         <div style="float:left;padding-left:10px;width:50%;display:none" id="setup_show_option_3">
                 <?php
                 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 && [sop_status] = 0");
-                $sop_drafts = getProjectInfoArray($RecordSetSOP);
+                $sop_drafts = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
                 if (!empty($sop_drafts)) {?>
                     <select class="form-control" name="selectSOP_3" id="selectSOP_3" onchange="checkStep(1);checkConcept();">
                         <option value="">Select draft</option>

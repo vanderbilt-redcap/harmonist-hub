@@ -9,7 +9,7 @@ $Proj = new \Project(IEDEA_SOP);
 $event_id = $Proj->firstEventId;
 
 $arraySOP = array();
-$arraySOP[$record][$event_id]['sop_status'] = $checked_values;
+$arraySOP[$record][$event_id]['sop_tablefields'] = $checked_values;
 
 $date = new DateTime();
 $sop_updated_dt = $date->format('Y-m-d H:i:s');

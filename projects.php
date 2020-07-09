@@ -33,6 +33,7 @@ if(APP_PATH_WEBROOT[0] == '/'){
 define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 define('APP_PATH_PLUGIN',APP_PATH_WEBROOT_FULL."external_modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
 define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
+define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
 # Define the projects stored in MAPPER
 $module->setProjectConstants(IEDEA_PROJECTS);

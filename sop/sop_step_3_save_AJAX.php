@@ -13,30 +13,33 @@ if(!isset($_REQUEST['sop_downloaders_dummy'])){
     $downDummy = "1";
 }
 
-$projectSOP = new \Plugin\Project(IEDEA_SOP);
-$recordSOP = \Plugin\Record::createRecordFromId($projectSOP, $record);
-$recordSOP->updateDetails(["sop_downloaders" => $_REQUEST['downloaders']], true);
-$recordSOP->updateDetails(["sop_downloaders_dummy" => [$downDummy]], true);
-$recordSOP->updateDetails(["sop_inclusion" => $_REQUEST['sop_inclusion']], true);
-$recordSOP->updateDetails(["sop_exclusion" => $_REQUEST['sop_exclusion']], true);
-$recordSOP->updateDetails(["sop_notes" => $_REQUEST['sop_notes']], true);
-$recordSOP->updateDetails(["sop_due_d" => $_REQUEST['sop_due_d']], true);
-$recordSOP->updateDetails(["sop_creator" => $_REQUEST['sop_creator']], true);
-$recordSOP->updateDetails(["sop_creator_org" => $_REQUEST['sop_creator_org']], true);
-$recordSOP->updateDetails(["sop_creator2" => $_REQUEST['sop_creator2']], true);
-$recordSOP->updateDetails(["sop_creator2_org" => $_REQUEST['sop_creator2_org']], true);
-$recordSOP->updateDetails(["sop_datacontact" => $_REQUEST['sop_datacontact']], true);
-$recordSOP->updateDetails(["sop_datacontact_org" => $_REQUEST['sop_datacontact_org']], true);
-$recordSOP->updateDetails(["dataformat_prefer" => $dataformat_prefer], true);
-$recordSOP->updateDetails(["dataformat_notes" => $_REQUEST['dataformat_notes']], true);
+$Proj = new \Project(IEDEA_SOP);
+$event_id = $Proj->firstEventId;
+
+$arraySOP = array();
+$arraySOP[$record][$event_id]['sop_downloaders'] = $_REQUEST['downloaders'];
+$arraySOP[$record][$event_id]['sop_downloaders_dummy'] = $downDummy;
+$arraySOP[$record][$event_id]['sop_inclusion'] = $_REQUEST['sop_inclusion'];
+$arraySOP[$record][$event_id]['sop_exclusion'] = $_REQUEST['sop_exclusion'];
+$arraySOP[$record][$event_id]['sop_notes'] = $_REQUEST['sop_notes'];
+$arraySOP[$record][$event_id]['sop_due_d'] = $_REQUEST['sop_due_d'];
+$arraySOP[$record][$event_id]['sop_creator'] = $_REQUEST['sop_creator'];
+$arraySOP[$record][$event_id]['sop_creator_org'] = $_REQUEST['sop_creator_org'];
+$arraySOP[$record][$event_id]['sop_creator2'] = $_REQUEST['sop_creator2'];
+$arraySOP[$record][$event_id]['sop_creator2_org'] = $_REQUEST['sop_creator2_org'];
+$arraySOP[$record][$event_id]['sop_datacontact'] = $_REQUEST['sop_datacontact'];
+$arraySOP[$record][$event_id]['sop_datacontact_org'] = $_REQUEST['sop_datacontact_org'];
+$arraySOP[$record][$event_id]['dataformat_prefer'] = $_REQUEST['dataformat_prefer'];
+$arraySOP[$record][$event_id]['dataformat_notes'] = $_REQUEST['dataformat_notes'];
 
 $date = new DateTime();
 $sop_updated_dt = $date->format('Y-m-d H:i:s');
-$recordSOP->updateDetails(["sop_updated_dt" => $sop_updated_dt], true);
-\Records::addRecordToRecordListCache($projectSOP->getProjectId(), $recordSOP->getId(),$projectSOP->getArmNum());
+$arraySOP[$record][$event_id]['sop_updated_dt'] = $sop_updated_dt;
+$results = \Records::saveData(IEDEA_SOP, 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+\Records::addRecordToRecordListCache(IEDEA_SOP, $record,1);
 
-$RecordSetSOP = new \Plugin\RecordSet($projectSOP, array("record_id" => $record));
-$data = $RecordSetSOP->getDetails()[0];
+$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record));
+$data = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 $data['sop_version_date'] = "Data Request Version: ".date('d F Y');
 
 $date = new DateTime($_REQUEST['sop_due_d']);
@@ -44,33 +47,35 @@ $data['sop_due_d_preview'] = $date->format('d F Y');
 
 $data['selectConcept'] = $data['sop_concept_id'];
 
-$projectConcepts = new \Plugin\Project(IEDEA_HARMONIST);
-$RecordSetConcepts = new \Plugin\RecordSet($projectConcepts, array("record_id" => $data['sop_concept_id']));
-$data['sop_concept_id'] = $RecordSetConcepts->getDetails()[0]['concept_id'];
-$data['sop_concept_title'] = $RecordSetConcepts->getDetails()[0]['concept_title'];
+$RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array("record_id" => $data['sop_concept_id']));
+$concept = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+$data['sop_concept_id'] = $concept['concept_id'];
+$data['sop_concept_title'] = $concept['concept_title'];
 
-$projectPeople = new \Plugin\Project(IEDEA_PEOPLE);
 if($_REQUEST['sop_creator'] != ""){
-    $RecordSetPeople = new \Plugin\RecordSet($projectPeople, array("record_id" => $_REQUEST['sop_creator']));
-    $data['sop_creator_name'] = $RecordSetPeople->getDetails()[0]['firstname'].' '.$RecordSetPeople->getDetails()[0]['lastname'];
-    $data['sop_creator_email'] = $RecordSetPeople->getDetails()[0]['email'];
+    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $_REQUEST['sop_creator']));
+    $people = getProjectInfoArray($RecordSetPeople)[0];
+    $data['sop_creator_name'] = $people['firstname'].' '.$people['lastname'];
+    $data['sop_creator_email'] = $people['email'];
 }
 
 if($_REQUEST['sop_creator2'] != ""){
-    $RecordSetPeople2 = new \Plugin\RecordSet($projectPeople, array("record_id" => $_REQUEST['sop_creator2']));
-    $data['sop_creator2_name'] = $RecordSetPeople2->getDetails()[0]['firstname'].' '.$RecordSetPeople2->getDetails()[0]['lastname'];
-    $data['sop_creator2_email'] = $RecordSetPeople2->getDetails()[0]['email'];
+    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $_REQUEST['sop_creator2']));
+    $people = getProjectInfoArray($RecordSetPeople)[0];
+    $data['sop_creator2_name'] = $people['firstname'].' '.$people['lastname'];
+    $data['sop_creator2_email'] = $people['email'];
 }
 
 if($_REQUEST['sop_datacontact'] != "") {
-    $RecordSetPeople3 = new \Plugin\RecordSet($projectPeople, array("record_id" => $_REQUEST['sop_datacontact']));
-    $data['sop_datacontact_name'] = $RecordSetPeople3->getDetails()[0]['firstname'] . ' ' . $RecordSetPeople3->getDetails()[0]['lastname'];
-    $data['sop_datacontact_email'] = $RecordSetPeople3->getDetails()[0]['email'];
+    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $_REQUEST['sop_datacontact']));
+    $people = getProjectInfoArray($RecordSetPeople)[0];
+    $data['sop_datacontact_name'] = $people['firstname'].' '.$people['lastname'];
+    $data['sop_datacontact_email'] = $people['email'];
 }
 
 $dataformat_prefer_text = "";
 if($data['dataformat_prefer'] != ""){
-    $dataformat_prefer = \Plugin\Project::convertEnumToArray($projectSOP->getMetadata('dataformat_prefer')->getElementEnum());
+    $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', IEDEA_SOP);
     foreach($dataformat_prefer as $dataid => $dataformat){
         foreach($data['dataformat_prefer'] as $dataf) {
             if($dataf == $dataid){

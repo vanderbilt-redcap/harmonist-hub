@@ -45,7 +45,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
                 $file = '';
                 if ($concept['output_file'][$index] != "") {
-                    $file = getFileLink($concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                    $file = getFileLink($module, $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                 }
 
                 $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_HARMONIST, $concept['record_id'], "output_record", "");
@@ -92,7 +92,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
             $file = '';
             if ($output['output_file'] != "") {
-                $file = getFileLink($output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                $file = getFileLink($module, $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
             }
 
             $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_EXTRAOUTPUTS, $output['record_id'], "output_record", "");

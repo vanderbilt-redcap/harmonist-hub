@@ -96,7 +96,7 @@ function addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settin
     $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
 
     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array',  array('record_id' => $uploadData[0]['data_assoc_request']));
-    $sop = getProjectInfoArray($RecordSetSOP)[0];
+    $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
     $uploader_name = getPeopleName($uploadData[0]['data_upload_person'],"");
 
@@ -110,7 +110,7 @@ function addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settin
         $recordpdf = $record;
 
         $RecordSetUpload = \REDCap::getData(IEDEA_SOP, 'array',  array('record_id' => $record));
-        $upload = getProjectInfoArray($RecordSetUpload)[0];
+        $upload = getProjectInfoArrayRepeatingInstruments($RecordSetUpload)[0];
 
         $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_DATAUPLOAD . "&arm=1&id=" . $recordpdf;
         $message = "<div>Dear administrator,</div><br/>" .

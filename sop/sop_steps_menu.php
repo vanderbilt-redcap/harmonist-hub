@@ -64,7 +64,7 @@ if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmoni
                 if($('[name=optradio]:checked').val() == '1'){
                     saveoption = "";
                 }
-                loadAjax_steps('&save_option='+saveoption+'&selectConcept='+$('#selectConcept').val()+'&option='+$('[name=optradio]:checked').val()+"&sop_hubuser="+sop_hubuser+'&id='+id, 'sop/save_step_1_AJAX.php', 'loadFields','1');
+                loadAjax_steps('&save_option='+saveoption+'&selectConcept='+$('#selectConcept').val()+'&option='+$('[name=optradio]:checked').val()+"&sop_hubuser="+sop_hubuser+'&id='+id, <?=json_encode($module->getUrl('sop/sop_step_1_save_AJAX.php'))?>, 'loadFields','1');
             }else if(sButton.name == 'save_continue_2'){
                 var checked_values = [];
                 $("input[name='tablefields[]']:checked").each(function() {
@@ -73,7 +73,7 @@ if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmoni
                 //We add the required variables if any
                 var required_variables = check_required_variables();
                 checked_values.push(required_variables);
-                loadAjax_steps('&checked_values='+checked_values+'&id='+id, 'sop/save_step_2_AJAX.php', 'loadFields','2');
+                loadAjax_steps('&checked_values='+checked_values+'&id='+id, <?=json_encode($module->getUrl('sop/sop_step_2_save_AJAX.php'))?>, 'loadFields','2');
             }else if(sButton.name == 'save_continue_3' || sButton.name == 'save_and_stay') {
                 deleteFile($('#selectSOP_'+$('[name=optradio]:checked').val()).val());
                 if ($("[name=sop_extrapdf]").val() != ""){
@@ -90,7 +90,7 @@ if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmoni
                     checked_values.push($(this).val());
                 });
 
-                loadAjax_steps(data+'&downloaders='+$( "#sortable2" ).sortable( "toArray" )+'&id='+id+'&dataformat_prefer='+checked_values, 'sop/save_step_3_AJAX.php', 'loadFields','3');
+                loadAjax_steps(data+'&downloaders='+$( "#sortable2" ).sortable( "toArray" )+'&id='+id+'&dataformat_prefer='+checked_values, <?=json_encode($module->getUrl('sop/sop_step_3_save_AJAX.php'))?>, 'loadFields','3');
                 if(sButton.name == 'save_and_stay'){
                     $('#modal-save-and-stay').modal('show');
                     //After 25 seconds hide message
@@ -99,7 +99,7 @@ if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmoni
             }else if(sButton.name == 'save_continue_4') {
                 $('#save_continue_4_spinner').addClass('fa fa-spinner fa-spin');
                 $('#previous_4').css('right','220px');
-                generate_pdf($('#save_option').val());
+                generate_pdf($('#save_option').val(),<?=json_encode($module->getUrl('sop/sop_step_4_save_AJAX.php'))?>,<?=json_encode($module->getUrl('index.php?&option=ss5'))?>);
             }
             return false;
         });

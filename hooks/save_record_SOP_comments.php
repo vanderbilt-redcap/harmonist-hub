@@ -1,4 +1,5 @@
 <?php
+include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
 
 $RecordSetComment = \REDCap::getData($project_id, 'array', array('record_id' => $record));
@@ -27,7 +28,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     \Records::addRecordToRecordListCache($project_id, $record,1);
 
     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $comment['sop_id']));
-    $sop = getProjectInfoArray($RecordSetSOP)[0];
+    $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
     if(!empty($sop)){
         if($sop['follow_activity'] != ''){
             $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array');

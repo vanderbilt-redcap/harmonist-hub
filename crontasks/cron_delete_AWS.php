@@ -60,7 +60,7 @@ foreach ($request_DU as $upload){
             $date_time = $date->format("Y-m-d H:i");
 
             $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $upload['data_assoc_request']));
-            $sop = getProjectInfoArray($RecordSetSOP)[0];
+            $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
             #to uploader user
             $url = $module->getUrl("index.php?&option=dat=&pid=".IEDEA_PROJECTS);

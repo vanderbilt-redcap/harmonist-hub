@@ -103,6 +103,41 @@ function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
     return $array;
 }
 
+/**
+ * Function that searches the file name in the database, parses it and returns an array with the content
+ * @param $DocID, the id of the document
+ * @return array, the generated array with the data
+ */
+function parseCSVtoArray($DocID){
+    $sqlTableCSV = "SELECT * FROM `redcap_edocs_metadata` WHERE doc_id = '".$DocID."'";
+    $qTableCSV = db_query($sqlTableCSV);
+    $csv = array();
+    while ($rowTableCSV = db_fetch_assoc($qTableCSV)) {
+        $csv = createArrayFromCSV(EDOC_PATH,$rowTableCSV['stored_name']);
+    }
+    return $csv;
+}
+
+/**
+ * Function that parses de CSV file to an Array
+ * @param $filepath, the path of the file
+ * @param $filename, the file name
+ * @return array, the generated array with the CSV data
+ */
+function createArrayFromCSV($filepath,$filename, $addHeader = false){
+    $file = $filepath.$filename;
+    $csv = array_map('str_getcsv', file($file));
+    array_walk($csv, function(&$a) use ($csv) {
+        $a = array_combine($csv[0], $a);
+    });
+    if($addHeader){
+        # remove column header
+        array_shift($csv);
+    }
+
+    return $csv;
+}
+
 function getCrypt($string, $action = 'e',$secret_key="",$secret_iv="" ) {
     $output = false;
     $encrypt_method = "AES-256-CBC";
@@ -1483,7 +1518,7 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
 
         $details = "<div><em>Historic (pre-Hub) Data Request";
         if($data_sopfile != ""){
-            $details .= ": ".getFileLink($data_sopfile,'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+            $details .= ": ".getFileLink($module, $data_sopfile,'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
         }
         $details .= "</em></div>";
 
@@ -1691,4 +1726,315 @@ function generateTableArray($module, $dataTable){
 
     return $dataTable;
 }
+
+/**
+ * Table list with anchor links
+ * @param $dataTable
+ * @return string
+ */
+function generateRequestedTablesList($dataTable){
+    $requested_tables = "<ol>";
+    foreach ($dataTable as $data) {
+        if (!empty($data['record_id'])) {
+            foreach ($data['variable_order'] as $id=>$value) {
+                $record_varname_header = empty($id) ? $data['record_id'] . '_1' : $data['record_id'] . '_' . $id;
+                $requested_tables .= "<li record_id='". $record_varname_header ."'  style='display:none;'><a href='#anchor_".$data['record_id']."'>".$data["table_name"]."</a></li>";
+                break;
+            }
+        }
+    }
+    $requested_tables .= "</ol>";
+    return $requested_tables;
+}
+
+/**
+ * Table list with anchor links for the PDF
+ * @param $dataTable
+ * @return string
+ */
+function generateRequestedTablesList_pdf($dataTable,$fieldsSelected){
+    $fieldsSelected = explode(',',$fieldsSelected);
+    $requested_tables = "<ol>";
+    foreach ($dataTable as $data) {
+        if (!empty($data['record_id'])) {
+            foreach ($fieldsSelected as $field) {
+                $recordID = explode("_",$field);
+                $field = $recordID[0];
+                if ($data['record_id'] == $field) {
+                    $requested_tables .= "<li><a href='#anchor_" . $data['record_id'] . "' style='text-decoration:none'>" . $data["table_name"] . "</a></li>";
+                    break;
+                }
+            }
+        }
+    }
+    $requested_tables .= "</ol>";
+    return $requested_tables;
+}
+
+/**
+ * Function that creates HTML tables with the Tables and Variables information to print on screen after the information has been selected
+ * @param $dataTable, Tables and Variables information
+ * @return string, the html content
+ */
+function generateTablesHTML_steps($dataTable){
+    $tableHtml = "";
+    foreach ($dataTable as $data) {
+        if (!empty($data['record_id'])) {
+            $found = false;
+            foreach ($data['variable_order'] as $id=>$value) {
+                $record_varname = !array_key_exists($id,$data['variable_name'])?$data['variable_name']['']:$data['variable_name'][$id];
+                $record_varname_id = empty($id) ? $data['record_id'] . '_1' : $data['record_id'] . '_' . $id;
+                #We add the new Header table tags
+                if($found == false){
+                    $table_draft_text= "";
+                    if (array_key_exists('table_status', $data) ) {
+                        $table_draft_text = ($data['table_status'] == 0) ?'<span style="color: red;font-style: italic">(DRAFT)</span>':"";
+                    }
+
+                    $record_varname_header = empty($id) ? $data['record_id'] . '_1' : $data['record_id'] . '_' . $id;
+
+                    $htmlHeader = '<div class="panel panel-default preview" style="display:none;" record_id="'. $record_varname_header .'"><div class="panel-heading" style="display:none;" record_id="'. $record_varname_header .'" parent_table_header="'.$data['record_id'].'"><span style="font-size:16px"><strong><a href="http://redcap.vanderbilt.edu/plugins/iedea/des/index.php?tid='.$data['record_id'].'&page=variables"  name="anchor_'.$data['record_id'].'" target="_blank" style="text-decoration:none" class="label label-as-badge des-'.$data['table_category'].'">'.$data["table_name"].'</span></a> '.$table_draft_text.'</strong> - '.$data['table_definition'];
+                    if (array_key_exists('text_top', $data) && !empty($data['text_top']) && $data['text_top'] != ""){
+                        $htmlHeader .= '<div  style="border-color: white;font-style: italic;display:none" parent_table_header="'. $data['record_id'] .'">'.$data["text_top"].'</div>';
+                    }
+                    $htmlHeader .= '</div><table class="table table_requests sortable-theme-bootstrap preview_table step_4_table" parent_table="'.$data['record_id'].'" id="PreviewTable">
+                    <tr style="display:none;" parent_table_header="'.$data['record_id'].'">
+                        <td style="padding: 5px;width:20%"><strong>Field</strong></td>
+                        <td style="padding: 5px;width:20%"><strong>Format</strong></td>
+                        <td style="padding: 5px"><strong>Description</strong></td>
+                    </tr>';
+                    $found = true;
+                    $tableHtml .= $htmlHeader;
+                }
+
+                $variable_status = "";
+                $variable_text = "";
+                if (array_key_exists('variable_status', $data) && array_key_exists($id, $data['variable_status'])) {
+                    if($data['variable_status'][$id] == "0"){//DRAFT
+                        $variable_status = "background-color: #ffffe6;";
+                        $variable_text = "<span style='color:red;font-weight:bold'>DRAFT</span><br/>";
+                    }else if($data['variable_status'][$id] == "2"){//DEPRECATED
+                        $variable_status = "display:none;";
+                        $variable_text = "<span style='color:red;font-weight:bold'>DEPRECATED</span><br/>";
+                    }
+                }
+
+                //If Deprecated, don't show the variable
+                if ($data['variable_status'][$id] != "2") {
+                    #We add the Content rows
+                    $tableHtml .= '<tr record_id="' . $record_varname_id . '" style="' . $variable_status . 'display:none;">
+                            <td style="padding: 5px"><a href="http://redcap.vanderbilt.edu/plugins/iedea/des/index.php?tid=' . $data['record_id'] . '&vid=' . $id . '&page=variableInfo" target="_blank" style="text-decoration:none">' . $record_varname . '</a></td>
+                            <td style="width:160px;padding: 5px">';
+
+
+                    $dataFormat = $dataTable['data_format_label'][$data['data_format'][$id]];
+                    if ($data['has_codes'][$id] == '0') {
+                        if (!empty($data['code_text'][$id])) {
+                            $dataFormat .= "<br/>" . $data['code_text'][$id];
+                        }
+                    } else if ($data['has_codes'][$id] == '1') {
+                        if (!empty($data['code_list_ref'][$id])) {
+                            $dataTablerecords = \REDCap::getData(IEDEA_CODELIST, 'array',array('record_id' => $data['code_list_ref'][$id]));
+                            $codeformat = getProjectInfoArray($dataTablerecords);
+
+                            if ($codeformat['code_format'] == '1') {
+                                $codeOptions = empty($codeformat['code_list']) ? $data['code_text'][$id] : explode(" | ", $codeformat['code_list']);
+                                if (!empty($codeOptions[0])) {
+                                    $dataFormat .= "<div style='padding-left:15px'>";
+                                }
+                                foreach ($codeOptions as $option) {
+                                    $dataFormat .= $option . "<br/>";
+                                }
+                                if (!empty($codeOptions[0])) {
+                                    $dataFormat .= "</div>";
+                                }
+                            } else if ($codeformat['code_format'] == '3') {
+                                $dataFormat = "Numeric<br/>";
+                            }
+                        }
+                    }
+
+                    $description = empty($data["description"][$id]) ? $data["description"][''] : $data["description"][$id];
+                    if (!empty($data['description_extra'][$id])) {
+                        $description .= "<br/><em>" . $data['description_extra'][$id] . "</em>";
+                    }
+
+                    $tableHtml .= $dataFormat . '</td>
+                    <td style="padding: 5px">' . $variable_text . $description . '</td>
+                </tr>';
+                }
+            }
+            if($found) {
+                $tableHtml .= '</table><span record_id="'. $record_varname_id .'" style="display:none"></span></div>';
+                if (array_key_exists('text_bottom', $data) && !empty($data['text_bottom']) && $data['text_bottom'] != ""){
+                    $tableHtml .= '<div  style="border-color: white;font-style: italic;display:none;" parent_table="'. $data['record_id'] .'">'.$data["text_bottom"].'</div>';
+                }
+            }
+        }
+    }
+    return $tableHtml;
+}
+
+/**
+ * Function that creates HTML tables with the Tables and Variables information to print on the PDF after the information has been selected
+ * @param $dataTable, Tables and Variables information
+ * @param $fieldsSelected, the selected fields
+ * @return string, the html content
+ */
+function generateTablesHTML_pdf($dataTable,$fieldsSelected){
+    $fieldsSelected = explode(',',$fieldsSelected);
+    $tableHtml = "";
+    $table_counter = 0;
+    foreach ($dataTable as $data) {
+        if (!empty($data['record_id'])) {
+            $found = false;
+            $htmlCodes = '';
+            foreach ($fieldsSelected as $field) {
+                $recordID = explode("_",$field);
+                $field = $recordID[0];
+                $id = ($recordID[1] == '1')? '':$recordID[1];
+                if ($data['record_id'] == $field) {
+                    $record_varname = !array_key_exists($id,$data['variable_name'])?$data['variable_name']['']:$data['variable_name'][$id];
+                    #We add the new Header table tags
+                    if($found == false){
+                        $table_draft= "background-color: #f0f0f5";
+                        $table_draft_tdcolor= "background-color: lightgray";
+                        $table_draft_text= "";
+
+                        switch ($data['table_category']){
+                            case 'main': $table_draft = "background-color: #FFC000"; break;
+                            case 'labs': $table_draft = "background-color: #9cce77"; break;
+                            case 'dis': $table_draft = "background-color: #87C1E9"; break;
+                            case 'meds': $table_draft = "background-color: #FB8153"; break;
+                            case 'preg': $table_draft = "background-color: #D7AEFF"; break;
+                            case 'meta': $table_draft = "background-color: #BEBEBE"; break;
+                            default:$table_draft = "background-color: #f0f0f5"; break;
+                        }
+                        if (array_key_exists('table_status', $data) ) {
+                            if($data['table_status'] == 0){
+                                $table_draft = "background-color: #ffffcc;";
+                            }
+                            $table_draft_tdcolor = ($data['table_status'] == 0) ? "background-color: #999999;" : "background-color: lightgray";
+                            $table_draft_text = ($data['table_status'] == 0) ?'<span style="color: red;font-style: italic">(DRAFT)</span>':"";
+                        }
+
+                        $breakLine = '';
+                        if($table_counter >0){
+                            $breakLine = '<div style="page-break-before: always;"></div>';
+                        }
+                        $table_counter++;
+
+                        $htmlHeader = $breakLine.'<p style="'.$table_draft.'"><span style="font-size:16px"><strong><a href="http://redcap.vanderbilt.edu/plugins/iedea/des/index.php?tid='.$data['record_id'].'&page=variables" name="anchor_'.$data['record_id'].'" target="_blank" style="text-decoration:none">'.$data["table_name"].'</a></span> '.$table_draft_text.'</strong> - '.$data['table_definition'].'</p>';
+                        if (array_key_exists('text_top', $data) && !empty($data['text_top']) && $data['text_top'] != ""){
+                            $htmlHeader .= '<div  style="border-color: white;font-style: italic">'.$data["text_top"].'</div>';
+                        }
+                        $htmlHeader .= '<table border ="1px" style="border-collapse: collapse;width: 100%;">
+                        <tr style="'.$table_draft_tdcolor.'">
+                            <td style="padding: 5px;width:30%">Field</td>
+                            <td style="padding: 5px">Format</td>
+                            <td style="padding: 5px">Description</td>
+                        </tr>';
+                        $found = true;
+                        $tableHtml .= $htmlHeader;
+                    }
+
+                    $variable_status = "";
+                    $variable_text = "";
+                    if (array_key_exists('variable_status', $data) && array_key_exists($id, $data['variable_status'])) {
+                        if($data['variable_status'][$id] == "0"){//DRAFT
+                            $variable_status = "style='background-color: #ffffe6;'";
+                            $variable_text = "<span style='color:red;font-weight:bold'>DRAFT</span><br/>";
+                        }else if($data['variable_status'][$id] == "2"){//DEPRECATED
+                            $variable_status = "style='display:none'";
+                            $variable_text = "<span style='color:red;font-weight:bold'>DEPRECATED</span><br/>";
+                        }
+                    }
+
+                    #We add the Content rows
+                    $tableHtml .='<tr record_id="'.$data["record_id"].'" '.$variable_status.'>
+                                <td style="padding: 5px"><a href="http://redcap.vanderbilt.edu/plugins/iedea/des/index.php?tid='.$data['record_id'].'&vid='.$id.'&page=variableInfo" target="_blank" style="text-decoration:none">'.$record_varname.'</a></td>
+                                <td style="width:160px;padding: 5px">';
+
+                    $dataFormat = $dataTable['data_format_label'][$data['data_format'][$id]];
+                    if ($data['has_codes'][$id] == '0') {
+                        if (!empty($data['code_text'][$id])) {
+                            $dataFormat .= "<br/>".$data['code_text'][$id];
+                        }
+                    } else if ($data['has_codes'][$id] == '1') {
+                        if(!empty($data['code_list_ref'][$id])){
+                            $dataTablerecords = \REDCap::getData(IEDEA_CODELIST, 'array',array('record_id' => $data['code_list_ref'][$id]));
+                            $codeformat = getProjectInfoArray($dataTablerecords);
+
+                            if ($codeformat['code_format'] == '1') {
+                                $codeOptions = empty($codeformat['code_list']) ? $data['code_text'][$id] : explode(" | ", $codeformat['code_list']);
+                                if (!empty($codeOptions[0])) {
+                                    $dataFormat .= "<div style='padding-left:15px'>";
+                                }
+                                foreach ($codeOptions as $option) {
+                                    $dataFormat .= $option . "<br/>";
+                                }
+                                if (!empty($codeOptions[0])) {
+                                    $dataFormat .= "</div>";
+                                }
+                            } else if ($codeformat['code_format'] == '3') {
+                                $dataFormat = "Numeric<br/>";
+                                if (array_key_exists('code_file', $codeformat) && $data['codes_print'][$id] =='1') {
+                                    $htmlCodes .= "<table  border ='0' style='width: 100%;display:none' record_id='".$record_varname."'><tr><td><strong>".$data['variable_name'][$id]." code list:</strong><br/></td></tr></table>".getHtmlCodesTable($codeformat['code_file'], $htmlCodes,$record_varname);
+                                }
+                            }
+                        }
+                    }
+
+                    $description = empty($data["description"][$id]) ? $data["description"][''] : $data["description"][$id];
+                    if (!empty($data['description_extra'][$id])) {
+                        $description .= "<br/><em>" . $data['description_extra'][$id] . "</em>";
+                    }
+
+                    $tableHtml .= $dataFormat . '</td>
+                        <td style="padding: 5px">'.$variable_text.$description. '</td>
+                    </tr>';
+                }
+            }
+            if($found) {
+                $tableHtml .= "</table><br/>";
+                if (array_key_exists('text_bottom', $data) && !empty($data['text_bottom']) && $data['text_bottom'] != ""){
+                    $tableHtml .= '<p  style="border-color: white;font-style: italic">'.$data["text_bottom"].'</p><br/>';
+                }
+            }
+            if(!empty($htmlCodes))
+                $tableHtml .= $htmlCodes.'<br/>';
+        }
+    }
+    return $tableHtml;
+}
+
+/**
+ * Function that parses the CVS file and transforms the content into a table
+ * @param $code_file, the code in the db of the csv file
+ * @param $htmlCodes, the html table with the content
+ * @return string, the html table with the content
+ */
+function getHtmlCodesTable($code_file,$htmlCodes,$id){
+    $csv = parseCSVtoArray($code_file);
+    if(!empty($csv)) {
+        $htmlCodes = '<table border="1px" style="border-collapse: collapse;display:none;" record_id="'. $id .'">';
+        foreach ($csv as $header => $content) {
+            $htmlCodes .= '<tr style="border: 1px solid #000;">';
+            foreach ($content as $col => $value) {
+                #Convert to UTF-8 to avoid weird characters
+                $value = mb_convert_encoding($value,'UTF-8','HTML-ENTITIES');
+                if ($header == 0) {
+                    $htmlCodes .= '<td>' . $col . '</td>';
+                } else {
+                    $htmlCodes .= '<td>' . $value . '</td>';
+                }
+            }
+            $htmlCodes .= '</tr>';
+        }
+        $htmlCodes .= '</table>';
+    }
+    return $htmlCodes;
+}
+
+
 ?>

@@ -1,6 +1,5 @@
 <?php
 include_once(__DIR__ ."/../projects.php");
-include_once __DIR__ ."/../functions.php";
 $date = new DateTime();
 
 $record_id_metrics = $module->framework->addAutoNumberedRecord(IEDEA_METRICS);

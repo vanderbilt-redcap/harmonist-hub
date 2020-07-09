@@ -1,4 +1,5 @@
 <?php
+include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
 
 $records = \REDCap::getData($project_id, 'array', array('request_id' => $record));

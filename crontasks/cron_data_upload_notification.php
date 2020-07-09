@@ -34,7 +34,7 @@ foreach ($request_DU as $upload){
             $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
 
             $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $upload['data_assoc_request']));
-            $sop = getProjectInfoArray($RecordSetSOP)[0];
+            $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
             $downloaders_list = "";
             if ($sop['sop_downloaders'] != "") {
                 $downloaders = explode(',', $sop['sop_downloaders']);

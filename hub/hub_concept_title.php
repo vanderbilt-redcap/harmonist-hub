@@ -70,7 +70,7 @@ if(!empty($concept)) {
     if (!empty($concept["status"]) && in_array('1', $concept["status"]) && !empty($concept["pdf_file"])) {
         #SOP Files from Builder SOP project
         $RecordSop = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $concept['record_id']));
-        $pdf_file = getProjectInfoArray($RecordSop,'')[0]["pdf_file"];
+        $pdf_file = getProjectInfoArrayRepeatingInstruments($RecordSop,'')[0]["pdf_file"];
         $q = $module->query("SELECT doc_name,stored_name,file_extension FROM redcap_edocs_metadata WHERE doc_id = ?",[$pdf_file]);
         $row_datasop_file = $q->fetch_assoc();
     }
@@ -271,7 +271,7 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
                     $extension = ($row_concept_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
                     $pdf_path = APP_PATH_PLUGIN."/loadPDF.php?edoc=".$concept["concept_file"]."#page=1&zoom=100";
 
-                    $file_icon = getFileLink($concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                    $file_icon = getFileLink($module, $concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                     ?>
                     <span style="float: right;padding-right: 15px;"><?=$file_icon;?></span>
                     <a href="downloadFile.php?code=<?=getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv)?>" target="_blank" style="float: right;padding-right: 10px;"><span class="hidden-sm hidden-xs">Download </span>PDF </a>

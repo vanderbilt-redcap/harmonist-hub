@@ -389,7 +389,6 @@ function checkConcept(){
  * @param step
  */
 function loadAjax_steps(data,url,loadAjax,step){
-    console.log(url)
     if(step == '0' && $('[name=optradio]:checked').val() == '1'){
         //New Step we clean up possible previous load
         resetData();
@@ -816,10 +815,10 @@ function deleteFile(record) {
  * Generate the pdf and save it in the DB
  * @param record_id
  */
-function generate_pdf(record_id){
+function generate_pdf(record_id,url,urlgoto){
     $.ajax({
         type: "POST",
-        url: "sop/sop_step_4_save_AJAX.php",
+        url: url,
         data: "&id="+record_id,
         error: function (xhr, status, error) {
             alert(xhr.responseText);
@@ -828,7 +827,7 @@ function generate_pdf(record_id){
             jsonAjax = jQuery.parseJSON(result);
             // $('[name=html_pdf]').val(jsonAjax);
             $('#record_id').val($('#selectSOP_'+$('[name=optradio]:checked').val()).val());
-            window.location = "index.php?&option=ss5&record="+record_id;
+            window.location = urlgoto+"&record="+record_id;
         }
     });
 }
@@ -897,20 +896,22 @@ function save_votes(user,region,pi_level,url){
     // });
 }
 
-function save_status(user,region){
+function save_status(url,user,region){
     var data = "&region="+region+"&user="+user+"&record_id="+$('.dropdown-toggle-custom').find('.dropdown_votes').attr('record')+"&region_vote_values=";
     $('.dropdown-toggle-custom input').each(function() {
         data +=$(this).attr('id')+",";
     });
+    console.log(url)
+    console.log(data)
     $.ajax({
         type: "POST",
-        url: 'sop/sop_title_admin_status_AJAX.php',
+        url: url,
         data: data,
         error: function (xhr, status, error) {
             alert(xhr.responseText);
         },
         success: function (result) {
-            location.reload();
+            //location.reload();
         }
     });
 }

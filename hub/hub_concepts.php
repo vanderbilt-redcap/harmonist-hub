@@ -39,7 +39,7 @@ if (!empty($concepts)) {
         #Only check if they are final
         $row = "";
         $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $concept['record_id']));
-        $sop = getProjectInfoArray($RecordSetSOP)[0];
+        $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
         if(!empty($sop["status"]) && in_array('1',$sop["status"]) && !empty($sop["pdf_file"])) {
             #SOP Files from Builder SOP project
             $edoc_data = $sop["pdf_file"];
