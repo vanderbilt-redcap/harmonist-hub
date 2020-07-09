@@ -271,14 +271,15 @@ if($settings['deactivate_datadown'][0] != "1"){
                             if($recent_activity['comments'] != '') {
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = new \Plugin\RecordSet($projectPeople, array('record_id' => $recent_activity['response_person']));
-                                $people = $RecordSetPeople->getDetails()[0];
+                                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['response_person']));
+                                $people = getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                                $RecordSetSOP = new \Plugin\RecordSet($projectSOP, array('record_id' => $recent_activity['sop_id']));
-                                $sop_concept_id = $RecordSetSOP->getDetails()[0]['sop_concept_id'];
-                                $sop_name = $RecordSetSOP->getDetails()[0]['sop_name'];
-                                $assoc_concept = getReqAssocConceptLink($sop_concept_id);
+                                $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $recent_activity['sop_id']));
+                                $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+                                $sop_concept_id = $sop['sop_concept_id'];
+                                $sop_name = $sop['sop_name'];
+                                $assoc_concept = getReqAssocConceptLink($module, $sop_concept_id, "");
 
                                 $title = substr($sop_name, 0, 50) . '...';
 
@@ -311,16 +312,16 @@ if($settings['deactivate_datadown'][0] != "1"){
                             }else if($recent_activity['download_id'] != ""){
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = new \Plugin\RecordSet($projectPeople, array('record_id' => $recent_activity['downloader_id']));
-                                $people = $RecordSetPeople->getDetails()[0];
+                                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['downloader_id']));
+                                $people = getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                                $RecordSetUpload = new \Plugin\RecordSet($projectDataUpload, array('record_id' => $recent_activity['download_id']));
-                                $data_upload_region = $RecordSetUpload->getDetails()[0]['data_upload_region'];
-                                $RecordSetRegion = new \Plugin\RecordSet($projectRegions, array('record_id' => $data_upload_region));
-                                $region_code = $RecordSetRegion->getDetails()[0]['region_code'];
+                                $RecordSetUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', array('record_id' => $recent_activity['downloader_id']));
+                                $data_upload_region = getProjectInfoArray($RecordSetUpload)[0]['data_upload_region'];
+                                $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $data_upload_region));
+                                $region_code = getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                                $assoc_concept = getReqAssocConceptLink($recent_activity['downloader_assoc_concept']);
+                                $assoc_concept = getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept'], "");
 
                                 $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
@@ -330,14 +331,14 @@ if($settings['deactivate_datadown'][0] != "1"){
                             }else if($recent_activity['data_assoc_request'] != "") {
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = new \Plugin\RecordSet($projectPeople, array('record_id' => $recent_activity['data_upload_person']));
-                                $people = $RecordSetPeople->getDetails()[0];
+                                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['data_upload_person']));
+                                $people = getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                                $RecordSetRegion = new \Plugin\RecordSet($projectRegions, array('record_id' => $recent_activity['data_upload_region']));
-                                $region_code = $RecordSetRegion->getDetails()[0]['region_code'];
+                                $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $recent_activity['data_upload_region']));
+                                $region_code = getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                                $assoc_concept = getReqAssocConceptLink($recent_activity['data_assoc_concept']);
+                                $assoc_concept = getReqAssocConceptLink($module, $recent_activity['data_assoc_concept'], "");
 
                                 $icon = '<i class="fa fa-fw fa-arrow-up text-info" aria-hidden="true"></i>';
 

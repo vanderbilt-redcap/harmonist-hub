@@ -27,7 +27,7 @@
     }
     ?>
     <div class="backTo">
-        <a href="<?=json_encode($module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat'))?>">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>">< Back to Data</a>
     </div>
     <div class="optionSelect">
             <h3>Request Data</h3>
@@ -35,7 +35,7 @@
         <div class="optionSelect">
             <div style="margin: 0 auto 15px auto;width: 200px;">
                 <div style="display: inline-block">
-                    <a href="<?=json_encode($module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ss1'))?>" class="btn btn-success btn-md">Create New Data Request</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ss1')?>" class="btn btn-success btn-md">Create New Data Request</a>
                 </div>
             </div>
         </div>
