@@ -865,6 +865,10 @@ function CallAJAXAndShowMessage(data,url,letter,url_window){
             alert(xhr.responseText);
         },
         success: function (result) {
+            if (url_window.substring(url_window.length-1) == "#")
+            {
+                url_window = url_window.substring(0, url_window.length-1);
+            }
             if(url_window.match(/(&message=)([A-Z]{1})/)){
                 url_window = url_window.replace( /(&message=)([A-Z]{1})/, "&message="+letter );
             }else{
