@@ -1,6 +1,5 @@
 <?php
 include_once(__DIR__ ."/../projects.php");
-include_once __DIR__ ."/../functions.php";
 
 $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
 $request_DU = getProjectInfoArray($RecordSetDU);

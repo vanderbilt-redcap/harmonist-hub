@@ -7,7 +7,7 @@ function startDDProjects(){
             var data = JSON.parse(returnData);
             if (data.status == 'success') {
                 $('#create_spinner').removeClass('fa fa-spinner fa-spin');
-                window.location = getMessageLetterUrl(window.location.href, "S");
+                window.location = getMessageLetterUrl(window.location.href, "DD");
             }
         }
     });
@@ -34,7 +34,7 @@ function getMessageLetterUrl(url, letter){
     if(url.match(/(&message=)([A-Z]{1})/)){
         url = url.replace( /(&message=)([A-Z]{1})/, "&message="+letter );
     }else{
-        url = url + "&message=S";
+        url = url + "&message="+letter;
     }
     return url;
 }
@@ -1191,17 +1191,19 @@ function selectTag(value){
     }
 }
 
-function runPubsCron(){
+function runPubsCron(url){
     $('#pubsSpinner').show();
+    $('#btndataPubForm').attr('disabled','disabled');
     $.ajax({
         type: "POST",
-        url: "crontasks/cron_publications.php",
+        url: url,
         data:"isAdmin="+1,
         error: function (xhr, status, error) {
             alert(xhr.responseText);
         },
         success: function (result) {
             $('#pubsSpinner').hide();
+            $('#btndataPubForm').removeAttr('disabled');
             $('#modal-publications-confirmation').hide();
             window.location.href = getMessageLetterUrl(window.location.href, "P");
         }

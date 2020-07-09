@@ -4,7 +4,7 @@ $homepage = getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
 $homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', IEDEA_HOME);
 
 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] =1");
-$request = getProjectInfoArray($RecordSetRM);
+$request = getProjectInfoArrayRepeatingInstruments($RecordSetRM);
 array_sort_by_column($request, 'due_d');
 
 $instance = $current_user['person_region'];
@@ -368,7 +368,7 @@ if(!empty($homepage)) {
     <div class="col-sm-3">
         <?php
         $RecordSetSOP = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_finalize_y] = 1");
-        $request_dataCall = getProjectInfoArray($RecordSetSOP);
+        $request_dataCall = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
         $open_data_calls = 0;
         if(!empty($request_dataCall)) {
             foreach ($request_dataCall as $sop) {

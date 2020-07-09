@@ -45,7 +45,7 @@ use ExternalModules\ExternalModules;
         var pid = <?=json_encode($_GET['pid'])?>;
     </script>
 
-    <?php if(array_key_exists('message',$_REQUEST) && $_REQUEST['message']=='S'){?>
+    <?php if(array_key_exists('message',$_REQUEST) && $_REQUEST['message']=='DD'){?>
         <div class="container" style="margin-top: 80px">
             <div class="alert alert-success col-md-12">
                Data Dictionary and projects successfully installed. To see the Project Ids go to the <a href="<?=APP_PATH_WEBROOT?>DataEntry/record_status_dashboard.php?pid=<?=$_REQUEST['pid']?>" target="_blank">Record Dashboard</a>.

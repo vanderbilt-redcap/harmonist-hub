@@ -46,7 +46,7 @@ if($request !="") {
         $userid = $current_user['record_id'];
 
         $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $request_id));
-        $follow_activity = getProjectInfoArray($RecordSetRM)[0]['follow_activity'];
+        $follow_activity = getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0]['follow_activity'];
         $array_userid = explode(',', $follow_activity);
         $arrayMRmanager = array(array('record_id' => $request_id));
 

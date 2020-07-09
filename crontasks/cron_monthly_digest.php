@@ -1,6 +1,5 @@
 <?php
 include_once(__DIR__ ."/../projects.php");
-include_once __DIR__ ."/../functions.php";
 
 $environment = "";
 if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
@@ -11,7 +10,7 @@ $request_type = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
 $finalize_y = $module->getChoiceLabels('finalize_y', IEDEA_RMANAGER);
 
 $RecordSetReq = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = 1");
-$requests = getProjectInfoArray($RecordSetReq);
+$requests = getProjectInfoArrayRepeatingInstruments($RecordSetReq);
 array_sort_by_column($requests, 'due_d',SORT_ASC);
 
 $subject = $settings['hub_name']." Hub – Monthly Summary for ".date("F",strtotime("-1 months"))." ".date("Y",strtotime("-1 months")).$environment;
@@ -78,7 +77,7 @@ $email_req .= "</ol>".
 $numberDaysInCurrentMonth = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'));
 $expire_date = date('Y-m-d', strtotime(date('Y-m-d') ."-".$numberDaysInCurrentMonth." days"));
 $RecordSetReq = \REDCap::getData(IEDEA_RMANAGER, 'array',null,null,null,null,false,false,false,"[finalize_y] <> '' and [final_d] <>'' and datediff ([final_d], '".$expire_date."', \"d\", true) <= 0");
-$requests_hub = getProjectInfoArray($RecordSetReq);
+$requests_hub = getProjectInfoArrayRepeatingInstruments($RecordSetReq);
 array_sort_by_column($requests_hub, 'final_d',SORT_ASC);
 $isEmpty = true;
 foreach ($requests_hub as $req){

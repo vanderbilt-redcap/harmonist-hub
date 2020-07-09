@@ -18,9 +18,10 @@ $request_type_label = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
 $request_response_person = $module->getChoiceLabels('response_person', IEDEA_RMANAGER);
 $numberOfOpenRequest = numberOfOpenRequest($requests,$current_user['person_region']);
 
+$request_admin = "";
 if($isAdmin) {
     $RecordSetRM_admin = \REDCap::getData(IEDEA_RMANAGER, 'array', null);
-    $request_admin = getProjectInfoArray($RecordSetRM_admin);
+    $request_admin = getProjectInfoArrayRepeatingInstruments($RecordSetRM_admin);
     array_sort_by_column($request_admin, 'requestopen_ts');
     $numberOfAdminRequest = numberOfAdminRequest($request_admin);
 }

@@ -26,19 +26,19 @@ $arrayMetrics[0]['concepts_d'] = $number_concepts_discontinued;
 
 /***REQUESTS***/
 $RecordSetRequests = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] != 9");
-$total_requests = count(getProjectInfoArray($RecordSetRequests));
+$total_requests = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequests));
 $arrayMetrics[0]['requests'] = $total_requests;
 
 $RecordSetRequestsApproved = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = 1");
-$number_requests_approved = count(getProjectInfoArray($RecordSetRequestsApproved));
+$number_requests_approved = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequestsApproved));
 $arrayMetrics[0]['requests_a'] = $number_requests_approved;
 
 $RecordSetRequestsRejected = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = 0");
-$number_requests_rejected = count(getProjectInfoArray($RecordSetRequestsRejected));
+$number_requests_rejected = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequestsRejected));
 $arrayMetrics[0]['requests_r'] = $number_requests_rejected;
 
 $RecordSetRequestsDeactivated = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = 9");
-$number_requests_deactivated = count(getProjectInfoArray($RecordSetRequestsDeactivated));
+$number_requests_deactivated = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequestsDeactivated));
 $arrayMetrics[0]['requests_d'] = $number_requests_deactivated;
 
 
@@ -200,7 +200,7 @@ foreach ($requests as $request){
 
 foreach ($completed_requests_by_all_regions as $completed){
     $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $completed));
-    $recordRMComplete = getProjectInfoArray($RecordSetRM)[0];
+    $recordRMComplete = getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
     if($recordRMComplete['detected_complete'][1] != "1") {
         $Proj = new \Project(IEDEA_RMANAGER);
         $event_id_RM = $Proj->firstEventId;

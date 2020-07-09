@@ -1,6 +1,5 @@
 <?php
 include_once(__DIR__ ."/../projects.php");
-include_once __DIR__ ."/../functions.php";
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 require_once "/app001/credentials/iedea_aws_s3.php";
