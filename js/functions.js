@@ -7,18 +7,7 @@ function startDDProjects(){
             var data = JSON.parse(returnData);
             if (data.status == 'success') {
                 $('#create_spinner').removeClass('fa fa-spinner fa-spin');
-                var url = window.location.href;
-                if (url.substring(url.length-1) == "#")
-                {
-                    url = url.substring(0, url.length-1);
-                }
-
-                if(url.match(/(&message=)([A-Z]{1})/)){
-                    url = url.replace( /(&message=)([A-Z]{1})/, "&message=S" );
-                }else{
-                    url = url + "&message=S";
-                }
-                window.location = url;
+                window.location = getMessageLetterUrl(window.location.href, "S");
             }
         }
     });
@@ -31,12 +20,23 @@ $(document).ready(function()
     });
 });
 
-function inIframe(){
-    try {
-        return window.self !== window.top;
-    } catch (e) {
-        return true;
+/**
+ * function that adds a letter in the url to display a message
+ * @param letter
+ * @returns {string}
+ */
+function getMessageLetterUrl(url, letter){
+    if (url.substring(url.length-1) == "#")
+    {
+        url = url.substring(0, url.length-1);
     }
+
+    if(url.match(/(&message=)([A-Z]{1})/)){
+        url = url.replace( /(&message=)([A-Z]{1})/, "&message="+letter );
+    }else{
+        url = url + "&message=S";
+    }
+    return url;
 }
 
 /**
@@ -865,17 +865,7 @@ function CallAJAXAndShowMessage(data,url,letter,url_window){
             alert(xhr.responseText);
         },
         success: function (result) {
-            if (url_window.substring(url_window.length-1) == "#")
-            {
-                url_window = url_window.substring(0, url_window.length-1);
-            }
-            if(url_window.match(/(&message=)([A-Z]{1})/)){
-                url_window = url_window.replace( /(&message=)([A-Z]{1})/, "&message="+letter );
-            }else{
-                url_window = url_window + "&message="+letter;
-            }
-
-            window.location = url_window;
+            window.location = getMessageLetterUrl(url_window, letter);
         }
     });
 }
@@ -1020,25 +1010,6 @@ function copyStringToClipboard (str) {
     document.execCommand('copy');
     // Remove temporary element
     document.body.removeChild(el);
-}
-
-/**
- * function that adds a letter in the url to display a message
- * @param letter
- * @returns {string}
- */
-function addMessageLetter(letter){
-    var url = window.location.href;
-    if (url.substring(url.length-1) == "#")
-    {
-        url = url.substring(0, url.length-1);
-    }
-    if(window.location.href.match(/(&message=)([A-Z]{1})/)){
-        url = url.replace( /(&message=)([A-Z]{1})/, "&message="+letter );
-    }else{
-        url = url + "&message="+letter;
-    }
-    return url;
 }
 
 function addDeleteCode(code){
@@ -1232,7 +1203,7 @@ function runPubsCron(){
         success: function (result) {
             $('#pubsSpinner').hide();
             $('#modal-publications-confirmation').hide();
-            window.location.href = addMessageLetter("P");
+            window.location.href = getMessageLetterUrl(window.location.href, "P");
         }
     });
 }
