@@ -1527,7 +1527,27 @@ table[data-sortable] th[data-sorted]:after{
     background-color: rgba(0, 123, 255, 0.5);
 }
 
-/***CALENDAR***/
+/*** CALENDAR ***/
 .calendar iframe{
     width: 100%;
+}
+/*** METRICS ***/
+.canvas_title{
+    font-weight: bold;
+    width: 360px;
+    float:left;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 18px;
+}
+.canvas_statistics:after {
+    font-family: 'FontAwesome';
+    content: "\f078" !important;
+    float: right;
+    color: #F58723;
+    font-size: 18px;
+    line-height: 22px;
+}
+.canvas_statistics:after{
+    color: #8c8c8c !important;
 }

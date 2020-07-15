@@ -918,7 +918,7 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
     if($option == '2') {
         $type = '&type=r';
     }
-    $current_req .= '<td '.$width[2].' class="hidden-xs"><a href="'.$module->getUrl('index.php?option=hub&record=' . $req['request_id'] . $type).'">'.$text.$req['request_title'].'</a></td>';
+    $current_req .= '<td '.$width[2].' class="hidden-xs"><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $req['request_id'] . $type).'">'.$text.$req['request_title'].'</a></td>';
 
     $current_req_region = '';
     if($option != '2') {
@@ -960,14 +960,14 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
             } else {
                 if ($req_type != 'home') {
                     if ($current_user['harmonist_regperm'] == 1) {
-                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa fa-eye"></span> View</a></div>';
+                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa fa-eye"></span> View</a></div>';
                     } else {
-                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa ' . $button_icon . '"></span> ' . $button_text . '</a></div>';
+                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa ' . $button_icon . '"></span> ' . $button_text . '</a></div>';
                     }
                 }
             }
         } else {
-            $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?option=hub&record=' . $req['request_id']) . '" class="btn btn-default btn-xs actionbutton"><span class="fa fa-eye"></span> View/Edit</a></div>';
+            $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $req['request_id']) . '" class="btn btn-default btn-xs actionbutton"><span class="fa fa-eye"></span> View/Edit</a></div>';
         }
     }else {
         if ($req['reviewer_id'] != ''){
@@ -1684,6 +1684,33 @@ function getTBLCenterUpdatePercentLabel($region_tbl_percent){
     return $region_tbl_label;
 }
 
+function adjustColorLightenDarken($color_code,$percentage_adjuster = 0) {
+    $percentage_adjuster = round($percentage_adjuster/100,2);
+    if(is_array($color_code)) {
+        $r = $color_code["r"] - (round($color_code["r"])*$percentage_adjuster);
+        $g = $color_code["g"] - (round($color_code["g"])*$percentage_adjuster);
+        $b = $color_code["b"] - (round($color_code["b"])*$percentage_adjuster);
+
+        return array("r"=> round(max(0,min(255,$r))),
+            "g"=> round(max(0,min(255,$g))),
+            "b"=> round(max(0,min(255,$b))));
+    }
+    else if(preg_match("/#/",$color_code)) {
+        $hex = str_replace("#","",$color_code);
+        $r = (strlen($hex) == 3)? hexdec(substr($hex,0,1).substr($hex,0,1)):hexdec(substr($hex,0,2));
+        $g = (strlen($hex) == 3)? hexdec(substr($hex,1,1).substr($hex,1,1)):hexdec(substr($hex,2,2));
+        $b = (strlen($hex) == 3)? hexdec(substr($hex,2,1).substr($hex,2,1)):hexdec(substr($hex,4,2));
+        $r = round($r - ($r*$percentage_adjuster));
+        $g = round($g - ($g*$percentage_adjuster));
+        $b = round($b - ($b*$percentage_adjuster));
+
+        return "#".str_pad(dechex( max(0,min(255,$r)) ),2,"0",STR_PAD_LEFT)
+            .str_pad(dechex( max(0,min(255,$g)) ),2,"0",STR_PAD_LEFT)
+            .str_pad(dechex( max(0,min(255,$b)) ),2,"0",STR_PAD_LEFT);
+
+    }
+}
+
 /**
  * Function that searches the armID from a project and returns the data
  * @param $projectID
@@ -2036,5 +2063,111 @@ function getHtmlCodesTable($code_file,$htmlCodes,$id){
     return $htmlCodes;
 }
 
+/***METRICS***/
+function getRegionalAndMR($conceptsData,$type, $regionalmrdata,$startyear,$output_type){
+    $currentYear = date("Y");
+    $regionalmrdata['r'] = array();
+    $regionalmrdata['mr'] = array();
+    $regionalmrdata['mrw'] = array();
+    $concept_outputs_by_year = array();
+    ${"years_label_regional_pubs_".$type} = array();
+    for($year = $startyear; $year <= $currentYear; $year++) {
+        array_push(${"years_label_regional_pubs_".$type}, $year);
 
+        $RecordSetExtraOutputsSingleReg = \REDCap::getData(IEDEA_EXTRAOUTPUTS, 'array',  null,null,null,null,false,false,false,"[output_year] = '".$year."' AND [output_type] = '".$output_type."' AND [producedby_region] = '1'");
+        array_push($regionalmrdata['r'], count(getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputsSingleReg)));
+        $RecordSetExtraOutMultipleReg = \REDCap::getData(IEDEA_EXTRAOUTPUTS, 'array',  null,null,null,null,false,false,false,"[output_year] = '".$year."' AND [output_type] = '".$output_type."' AND [producedby_region] = '2'");
+        array_push($regionalmrdata['mrw'], count(getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg)));
+        ${"outputs_mrw_".$type} = getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg);
+
+        $regionalmrdata['mr'][$year] = 0;
+        foreach ($conceptsData as $concepts) {
+            if (is_array($concepts['output_year'])) {
+                foreach ($concepts['output_year'] as $index => $output) {
+                    if ($output == $year) {
+                        if ($concepts['output_type'][$index] == '' || $concepts['output_type'][$index] == '1' && $type == 'manuscripts') {
+                            $regionalmrdata['mr'][$year] += 1;
+                        } else if ($concepts['output_type'][$index] == '2' && $type == 'abstracts') {
+                            $regionalmrdata['mr'][$year] += 1;
+                        }
+
+                        if ($concepts['output_venue'][$index] != "") {
+                            if ($concepts['output_type'][$index] == "1" && $type == 'manuscripts') {
+                                $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] += 1;
+                            } else if ($concepts['output_type'][$index] == "2" && $type == 'abstracts') {
+                                $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] += 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        foreach (${'outputs_mrw_' . $type} as $outmanu) {
+            $concept_outputs_by_year[$year][$outmanu['output_venue']] += 1;
+        }
+        if(!array_key_exists($year,$concept_outputs_by_year)){
+            $concept_outputs_by_year[$year]['None'] = 0;
+        }
+    }
+    krsort($concept_outputs_by_year);
+
+    $regionalmrdata['mr'] = array_values($regionalmrdata['mr']);
+    $regionalmrdata['outputs'] = $concept_outputs_by_year;
+    $regionalmrdata['years'] = ${"years_label_regional_pubs_".$type};
+
+    return $regionalmrdata;
+}
+
+function getDataRMRTable($concept_outputs_by_year,$type){
+    ${"data_".$type} = "";
+    ${"data_".$type."_total"} = 0;
+    ${"data_".$type."_venue"} = array();
+
+    foreach ($concept_outputs_by_year as $year=>$venue_year){
+        ${'data_'.$type} .= "<tr><td style='text-align: center'>".$year."</td>";
+        $total_out = 0;
+        $total_venue = "";
+
+        arsort($venue_year);
+        foreach ($venue_year as $venue=>$total){
+            $total_out += $total;
+            if($venue == "None"){
+                $total_venue = "<i>None</i>";
+            }else{
+                $total_venue .= $venue." (".$total."), ";
+                ${'data_'.$type.'_venue'}[$venue] += $total;
+            }
+
+            ${'data_'.$type.'_total'} += $total;
+        }
+        ${'data_'.$type} .="<td style='text-align: center'>".$total_out."</td><td>".rtrim($total_venue,', ')."</td>";
+
+        ${'data_'.$type} .= "</tr>";
+
+        arsort(${'data_'.$type.'_venue'});
+        $list = "";
+        foreach(${'data_'.$type.'_venue'} as $venue=>$total){
+            $list .= $venue." (".$total."), ";
+        }
+    }
+    ${'data_'.$type} .= "<tr style='background-color: aliceblue'>
+                    <td style='text-align: center'>Total</td>
+                    <td style='text-align: center'>".${'data_'.$type.'_total'}."</td>
+                    <td>".rtrim($list,", ")."</td>
+                </tr>";
+
+    $data = array();
+    $data['content'] = ${"data_".$type};
+    $data['total'] = ${"data_".$type."_total"};
+    return $data;
+}
+
+function implode_key_and_value($array){
+    $output = implode(', ', array_map(
+        function ($v, $k) {return sprintf("%s (%s)", $k, $v);},
+        $array,
+        array_keys($array)
+    ));
+    return $output;
+}
 ?>
