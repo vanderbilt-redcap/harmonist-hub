@@ -936,11 +936,11 @@ function confirmDataUpload(concept, user, conceptId, record){
     $('#user').val(user);
 }
 
-function uploadDataToolkit(data){
+function uploadDataToolkit(data,url){
     //We make the call not asunc to avoid popup blockers
     $.ajax({
         type: "POST",
-        url: "hub/hub_data_upload_security_AJAX.php",
+        url: url,
         data: data,
         async: false,
         error: function (xhr, status, error) {

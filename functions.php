@@ -1233,18 +1233,16 @@ function getDateForHumans($date){
     return $cn;
 }
 
-function getDataCallHeader($person_region,$vote_grid,$option=""){
-    $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
-    $RecordSetRegions = new \Plugin\RecordSet($projectRegions, array('showregion_y' => "1"));
-    $regions = $RecordSetRegions->getDetails();
+function getDataCallHeader($person_region, $vote_grid, $option=""){
+    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
+    $regions = getProjectInfoArray($RecordSetRegions);
     array_sort_by_column($regions, 'region_code');
 
     $header_colgroup = "<colgroup><col><col><col>";
     $header_region = "";
     if($vote_grid == '2' || $vote_grid == '0') {
-        $projectRegions = new \Plugin\Project(IEDEA_REGIONS);
-        $RecordSetMyRegion = new \Plugin\RecordSet($projectRegions, array('record_id' => $person_region));
-        $my_region = $RecordSetMyRegion->getDetails()[0]['region_code'];
+        $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region));
+        $my_region = getProjectInfoArray($RecordSetRegions)[0]['region_code'];
         $header_region .= '<th class="request_grid_icon hidden-sm hidden-xs" style="width:40px" data-sortable="false">' . $my_region . '</th>';
     }else {
         foreach ($regions as $region) {
@@ -1293,7 +1291,7 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
     $data =  "<tr>";
     $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '0');
 
-    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPL, 'array', array('record_id' => $sop['sop_datacontact']));
+    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
     $people = getProjectInfoArray($RecordSetPeople)[0];
     $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']));
     $region_code = getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];

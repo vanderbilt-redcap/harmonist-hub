@@ -367,8 +367,8 @@ if(!empty($homepage)) {
     </div>
     <div class="col-sm-3">
         <?php
-        $RecordSetSOP = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_finalize_y] = 1");
-        $request_dataCall = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+        $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
+        $request_dataCall = getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
         $open_data_calls = 0;
         if(!empty($request_dataCall)) {
             foreach ($request_dataCall as $sop) {

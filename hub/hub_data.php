@@ -31,12 +31,10 @@ $number_downloads = count(getProjectInfoArray($RecordSetDataDownload));
 $RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
 $TBLCenter = getProjectInfoArray($RecordSetTBLCenter);
 
-
 $region_tbl_percent = getTBLCenterUpdatePercentRegions($TBLCenter, $person_region['region_code'], $settings['pastlastreview_dur']);
 
-
-$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = '1' AND [sop_finalize_y] = '1'");
-$request_dataCall = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
+$request_dataCall = getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
 $open_data_calls = 0;
 if(!empty($request_dataCall)) {
     foreach ($request_dataCall as $sop) {
@@ -84,13 +82,13 @@ $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-
         </div>
     </div>
     <?php
-    if($settings['deactivate_datadown'][0] != "1") {
+    if($settings['deactivate_datadown'][1] != "1") {
         ?>
         <div class="col-sm-3">
             <div class="well centerwell data_boxes">
                 <i class="fa fa-2x fa-fw fa-arrow-down" aria-hidden="true"></i>
                 <div class="welltitle"><strong>Retrieve</strong> data uploaded for your project</div>
-                <?php if ($current_user['allowgetdata_y'][0] != "1") { ?>
+                <?php if ($current_user['allowgetdata_y'][1] != "1") { ?>
                     <a href="#" onclick="$('#modal-data-download-no-permissions').modal('show');" class="btn btn-info">Download
                         Data</a>
                 <?php } else if ($current_user['redcap_name'] == '') { ?>
@@ -105,11 +103,11 @@ $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-
         <?php } ?>
 </div>
 <?php
-if($settings['deactivate_datadown'][0] != "1"){
+if($settings['deactivate_datadown'][1] != "1"){
     ?>
 <div class="hidden-xs" style="margin-bottom: 20px;"></div>
 <div class="modal fade" id="modal-data-download-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
-    <form class="form-horizontal" action="index.php?pid=<?=IEDEA_PROJECTS?>&option=dnd" method="post" id='dataDownloadForm'>
+    <form class="form-horizontal" action="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dnd')?>" method="post" id='dataDownloadForm'>
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">

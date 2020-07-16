@@ -112,8 +112,8 @@ if($isEmpty){
 $email_req .= "</ol>".
     "<br><div style='padding: 3px;'><h3><strong>Active  Data Calls</strong></h3></div><ol style='padding-left: 15px;'>";
 
-$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 && [sop_finalize_y] = 1");
-$sops = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
+$sops = getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
 array_sort_by_column($sops, 'sop_due_d',SORT_ASC);
 $isEmpty = true;
 $RecordSetRegions = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
