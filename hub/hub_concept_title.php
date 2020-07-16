@@ -114,7 +114,7 @@ if($concept['revised_y'][0] == '1'){
 <div class="container">
     <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;display: none;" id="succMsgContainer">If you've made any changes, they have been saved.</div>
     <div class="backTo">
-        <a href="index.php?pid=<?=IEDEA_PROJECTS?>&option=cpt">< Back to Concepts</a>
+        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=cpt')?>">< Back to Concepts</a>
     </div>
     <?php if($concept != "") {?>
     <h3 class="concepts-title-title"><?=$concept['concept_id']?></h3>

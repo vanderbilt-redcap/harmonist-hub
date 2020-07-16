@@ -99,7 +99,7 @@
                                     <td><span class="nowrap">'.$req['requestopen_ts'].'</span></td>
                                     <td><strong>'.$request_type_label[$req['request_type']].'</strong><br>'.getReqAssocConceptLink($module, $req['assoc_concept'], "").'</td>
                                     <td><a href="mailto:'.$req['contact_email'].'">'.$req['contact_name'].'</a>'.$region.'</td>
-                                    <td class="hidden-xs"><a href="index.php?option=hub&record='.$req['request_id'].'" target="_blank">'.$req['request_title'].'</a></td>';
+                                    <td class="hidden-xs"><a href="'.$module->getUrl('index.php?option=hub&record='.$req['request_id']).'" target="_blank">'.$req['request_title'].'</a></td>';
 
                             $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "request", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);

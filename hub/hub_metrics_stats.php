@@ -664,7 +664,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="index.php">< Back to Home</a>
+        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS)?>">< Back to Home</a>
     </div>
 </div>
 <div class="container">

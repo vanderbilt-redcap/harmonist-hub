@@ -1,5 +1,5 @@
 <?php
-$back_button = '<a href="index.php">< Back to Home</a>';
+$back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS).'">< Back to Home</a>';
 
 $person_name = "";
 if($_REQUEST['type'] != ""){
