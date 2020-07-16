@@ -1709,6 +1709,18 @@ function adjustColorLightenDarken($color_code,$percentage_adjuster = 0) {
     }
 }
 
+function searchTBLMissingFields($center){
+    $fields = array(0=>'program', 1=>'geocode_lat', 2=>'geocode_lon', 3=>'rural', 4=>'level', 5=>'open_d',
+        6=>'close_d', 7=>'nondes_website', 8=>'region', 9=>'country', 10=>'name');
+    $missing = '';
+    foreach ($fields as $field){
+        if(!in_array($center[$field],$center)){
+            $missing .= $field.", ";
+        }
+    }
+    return rtrim($missing, ', ');
+}
+
 /**
  * Function that searches the armID from a project and returns the data
  * @param $projectID
