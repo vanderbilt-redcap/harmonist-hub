@@ -196,7 +196,7 @@ function getFileLink($module,$edoc, $option, $outer="",$secret_key,$secret_iv,$u
             if($outer == 0){
                 $file_url = APP_PATH_PLUGIN."/downloadFile.php?code=".getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv);
             }else{
-                $file_url = "downloadFile.php?code=".getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv);
+                $file_url = $module->getUrl("downloadFile.php?code=".getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv));
             }
 
             if($option == ''){
@@ -205,6 +205,22 @@ function getFileLink($module,$edoc, $option, $outer="",$secret_key,$secret_iv,$u
             }else{
                 $file_row = "<a href='".$file_url."' target='_blank' title='".$row['doc_name']."'>".getFaIconFile($row['file_extension'])."</a>";
             }
+        }
+    }
+    return $file_row;
+}
+
+function getOtherFilesLink($module, $edoc,$id,$user,$secret_key,$secret_iv,$other_title){
+    $file_row = $other_title;
+    if($edoc != "" and is_numeric($edoc)){
+        $q = $module->query("SELECT stored_name,doc_name,doc_size,file_extension FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
+        while ($row = $q->fetch_assoc()) {
+            $name = urlencode($row['doc_name']);
+            $download = getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&id=".$id."&pid=".$user,'e',$secret_key,$secret_iv);
+            $file_url = $module->getUrl("downloadFile.php?code=".$download);
+
+
+            $file_row = "<a href='".$file_url."'>".getFaIconFile($row['file_extension']).$other_title."</a>";
         }
     }
     return $file_row;
