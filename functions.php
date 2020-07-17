@@ -193,11 +193,9 @@ function getFileLink($module,$edoc, $option, $outer="",$secret_key,$secret_iv,$u
         $q = $module->query("SELECT stored_name,doc_name,doc_size,file_extension FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
         while ($row = $q->fetch_assoc()) {
             $name = urlencode($row['doc_name']);
-            if($outer == 0){
-                $file_url = APP_PATH_PLUGIN."/downloadFile.php?code=".getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv);
-            }else{
-                $file_url = $module->getUrl("downloadFile.php?code=".getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv));
-            }
+
+            $download = getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv);
+            $file_url = $module->getUrl("downloadFile.php?pid=".IEDEA_PROJECTS."&code=".$download);
 
             if($option == ''){
                 $icon = getFaIconFile($row['file_extension']);

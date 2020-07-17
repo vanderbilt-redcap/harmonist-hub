@@ -13,5 +13,5 @@ $row = db_fetch_assoc($q);
 
 <div class="footer">
     <div>Powered by <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=log')?>">Harmonist Hub v<?=$row['version_num']?></a></div>
-    <div><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=abt')?>">About <?=$about['about_title']?></a> | <a href="mailto:<?=$settings['hub_contact_email']?>">Contact us</a> | <a href="index.php?pid=<?=IEDEA_HARMONIST?>&option=bug">Report a bug</a></div>
+    <div><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=abt')?>">About <?=$about['about_title']?></a> | <a href="mailto:<?=$settings['hub_contact_email']?>">Contact us</a> | <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=bug')?>">Report a bug</a></div>
 </div>
