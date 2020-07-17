@@ -58,13 +58,14 @@ $upload_type = $module->getChoiceLabels('upload_type', IEDEA_FILELIBRARY);
         }else{
             ?><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>">< Back to Data</a><?php
         }
+
         ?>
     </div>
     <h3>Document Library</h3>
     <p class="hub-title"><?=$settings['hub_doc_librabry_text']?></p>
     <br>
     <div style="text-align: center">
-        <a href="#" onclick="$('#sop_add_library_file').modal('show');" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add Library File</a>
+        <a href="#" onclick="$('#redcap-new-file-frame').attr('src','<?=APP_PATH_WEBROOT_FULL."/surveys/?s=".IEDEA_SURVEYFILELIBRARY?>');$('#sop_add_library_file').modal('show');" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add Library File</a>
     </div>
     <br>
     <br>
@@ -215,7 +216,7 @@ $upload_type = $module->getChoiceLabels('upload_type', IEDEA_FILELIBRARY);
             </div>
             <div class="modal-body">
                 <input type="hidden" value="0" id="comment_loaded_file">
-                <iframe class="commentsform" id="redcap-new-file-frame" name="redcap-new-file-frame" message="S" src="<?=APP_PATH_WEBROOT_FULL.'/surveys/?s='.IEDEA_SURVEYFILELIBRARY?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                <iframe class="commentsform" id="redcap-new-file-frame" name="redcap-new-file-frame" message="S" src="" style="border: none;height: 810px;width: 100%;"></iframe>
             </div>
 
             <div class="modal-footer">

@@ -61,7 +61,7 @@ array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC)
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="index.php?option=dat">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>">< Back to Data</a>
     </div>
     <h3>Recent Data Activity</h3>
     <p class="hub-title"><?=$settings['hub_recent_data_act_text']?></p>
