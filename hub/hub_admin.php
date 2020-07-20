@@ -545,15 +545,14 @@
             <div id="collapse3" class="table-responsive panel-collapse collapse in" aria-expanded="true">
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                     <?php
-                    $RecordSetProjectsY = \REDCap::getData(IEDEA_PROJECTS, 'array', null,null,null,false,false,false, "[project_show_y] = '1'");
+                    $RecordSetProjectsY = \REDCap::getData(IEDEA_PROJECTS, 'array', null,null,null,null,false,false,false, "[project_show_y] = '1'");
                     $projectsY = getProjectInfoArray($RecordSetProjectsY);
-
                     foreach ($projectsY as $project){
                         $iedea_constant = constant("IEDEA_".$project['project_constant']);
-//                        $project_plugin = new \Plugin\Project($iedea_constant);
+                        $title = $module->getProject($iedea_constant)->getProjectTitle();
                         $project_plugin = $iedea_constant;
                         echo '<tr>'.
-                            '<td><a href="'.APP_PATH_WEBROOT_ALL."Design/online_designer.php?pid=".$iedea_constant.'" target="_blank">'.\REDCap::getProjectTitle($iedea_constant).'</a></td>'.
+                            '<td><a href="'.APP_PATH_WEBROOT_ALL."Design/online_designer.php?pid=".$iedea_constant.'" target="_blank">'.$title.'</a></td>'.
                              '</tr>';
                     }
 
