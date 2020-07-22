@@ -549,13 +549,12 @@
                     $projectsY = getProjectInfoArray($RecordSetProjectsY);
                     foreach ($projectsY as $project){
                         $iedea_constant = constant("IEDEA_".$project['project_constant']);
-                        $title = $module->getProject($iedea_constant)->getProjectTitle();
+                        $title = $module->framework->getProject($iedea_constant)->getProjectTitle();
                         $project_plugin = $iedea_constant;
                         echo '<tr>'.
                             '<td><a href="'.APP_PATH_WEBROOT_ALL."Design/online_designer.php?pid=".$iedea_constant.'" target="_blank">'.$title.'</a></td>'.
                              '</tr>';
                     }
-
                     ?>
                 </table>
             </div>

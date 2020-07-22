@@ -298,31 +298,6 @@ function deleteUpload(recordid){
 }
 
 /**
- * Ajax call that deletes the upload file from the AWS
- * @param data
- * @constructor
- */
-function AWS_deleteFile(data){
-    $.ajax({
-        type: "POST",
-        url: "hub/aws/AWS_deleteFile.php",
-        data: data,
-        error: function (xhr, status, error) {
-            alert(xhr.responseText);
-        },
-        success: function (result) {
-            var url = window.location.href;
-            if(window.location.href.match(/(&message)/)){
-                url = window.location.href = window.location.href.replace( /(&message)/, "&message");
-            }else{
-                url = window.location.href + "&message";
-            }
-            window.location = url;
-        }
-    });
-}
-
-/**
  * Function that Activates/Deactivates continue button depending on which step we are
  * @param step, number of step we are in
  */
