@@ -236,10 +236,6 @@ if($hub_projectname == '' || $hub_profile == ''){
                     {
                         include('sop/sop_data_request_title.php');
                     }
-                    else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'fsa' && !$deactivate_datahub)
-                    {
-                        include('sop/sop_final_archive.php');
-                    }
                     else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dna' && !$deactivate_datahub)
                     {
                         include('sop/sop_news_archive.php');
@@ -303,9 +299,6 @@ if($hub_projectname == '' || $hub_profile == ''){
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'pdc' && !$deactivate_datahub)
                     {
                         include('sop/sop_data_call_archive.php');
-                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'uph' && !$deactivate_datahub)
-                    {
-                        include('hub/hub_data_upload_history.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown'][0] != "1")
                     {
                         include('sop/sop_retrieve_data.php');
@@ -321,9 +314,6 @@ if($hub_projectname == '' || $hub_profile == ''){
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'faq')
                     {
                         include('faq/hub_faq.php');
-                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'arc')
-                    {
-                        include('hub/hub_archive.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'pro')
                     {
                         include('hub/hub_profile.php');

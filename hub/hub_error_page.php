@@ -1,0 +1,1 @@
+<div id='errMsgContainer' class="alert alert-danger" role="alert" style="margin-top:40px;">You don't have permissions to access this page. Please contact an adminitrator for more information.</div>
