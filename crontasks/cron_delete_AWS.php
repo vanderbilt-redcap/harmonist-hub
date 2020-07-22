@@ -2,7 +2,7 @@
 include_once(__DIR__ ."/../projects.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
-require_once "/app001/credentials/iedea_aws_s3.php";
+require_once "/app001/credentials/".IEDEA_PROJECTS."_hubsettings.php";
 
 $credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
 $s3 = new S3Client([
