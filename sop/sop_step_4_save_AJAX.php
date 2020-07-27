@@ -33,7 +33,7 @@ $dataTable = getTablesInfo($module);
 $tableHtml = "";
 if(!empty($dataTable)) {
     # Get selected rows
-    $tableHtml = generateTablesHTML_pdf($dataTable,$sop['sop_tablefields']);
+    $tableHtml = generateTablesHTML_pdf($module, $dataTable,$sop['sop_tablefields']);
     $requested_tables = generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
 
     $dataTable = getTablesInfo($module);

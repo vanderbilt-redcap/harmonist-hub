@@ -108,11 +108,10 @@ function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
  * @param $DocID, the id of the document
  * @return array, the generated array with the data
  */
-function parseCSVtoArray($DocID){
-    $sqlTableCSV = "SELECT * FROM `redcap_edocs_metadata` WHERE doc_id = '".$DocID."'";
-    $qTableCSV = db_query($sqlTableCSV);
+function parseCSVtoArray($module, $DocID){
+    $sqlTableCSV = $module->query("SELECT * FROM `redcap_edocs_metadata` WHERE doc_id = ?",[$DocID]);
     $csv = array();
-    while ($rowTableCSV = db_fetch_assoc($qTableCSV)) {
+    while ($rowTableCSV = $sqlTableCSV->fetch_assoc()) {
         $csv = createArrayFromCSV(EDOC_PATH,$rowTableCSV['stored_name']);
     }
     return $csv;
@@ -465,7 +464,7 @@ function createProject0BJSON($module, $save=""){
 
         }else if($data['code_format'] == '3'){
             $jsonVarContentArray  = array();
-            $csv = parseCSVtoArray($data['code_file']);
+            $csv = parseCSVtoArray($module, $data['code_file']);
             foreach ($csv as $header=>$content){
                 if($header != 0){
                     //Convert to UTF-8 to avoid weird characters
@@ -1932,7 +1931,7 @@ function generateTablesHTML_steps($dataTable){
  * @param $fieldsSelected, the selected fields
  * @return string, the html content
  */
-function generateTablesHTML_pdf($dataTable,$fieldsSelected){
+function generateTablesHTML_pdf($module, $dataTable,$fieldsSelected){
     $fieldsSelected = explode(',',$fieldsSelected);
     $tableHtml = "";
     $table_counter = 0;
@@ -2030,7 +2029,7 @@ function generateTablesHTML_pdf($dataTable,$fieldsSelected){
                             } else if ($codeformat['code_format'] == '3') {
                                 $dataFormat = "Numeric<br/>";
                                 if (array_key_exists('code_file', $codeformat) && $data['codes_print'][$id] =='1') {
-                                    $htmlCodes .= "<table  border ='0' style='width: 100%;display:none' record_id='".$record_varname."'><tr><td><strong>".$data['variable_name'][$id]." code list:</strong><br/></td></tr></table>".getHtmlCodesTable($codeformat['code_file'], $htmlCodes,$record_varname);
+                                    $htmlCodes .= "<table  border ='0' style='width: 100%;display:none' record_id='".$record_varname."'><tr><td><strong>".$data['variable_name'][$id]." code list:</strong><br/></td></tr></table>".getHtmlCodesTable($module, $codeformat['code_file'], $htmlCodes,$record_varname);
                                 }
                             }
                         }
@@ -2065,8 +2064,8 @@ function generateTablesHTML_pdf($dataTable,$fieldsSelected){
  * @param $htmlCodes, the html table with the content
  * @return string, the html table with the content
  */
-function getHtmlCodesTable($code_file,$htmlCodes,$id){
-    $csv = parseCSVtoArray($code_file);
+function getHtmlCodesTable($module, $code_file, $htmlCodes, $id){
+    $csv = parseCSVtoArray($module, $code_file);
     if(!empty($csv)) {
         $htmlCodes = '<table border="1px" style="border-collapse: collapse;display:none;" record_id="'. $id .'">';
         foreach ($csv as $header => $content) {
