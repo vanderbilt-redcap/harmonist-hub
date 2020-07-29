@@ -34,7 +34,13 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
     }
 
     function redcap_save_record($project_id,$record,$instrument,$event_id){
-//        $hub_mapper = $this->getProjectSetting('hub-mapper');
+        echo '<script>';
+        include_once("js/iframe.js");
+        echo '</script>';
+    }
+
+    function redcap_survey_acknowledgement_page($project_id, $record, $instrument, $event_id){
+        //        $hub_mapper = $this->getProjectSetting('hub-mapper');
         $hub_mapper = 366;
         $this->setProjectConstants($hub_mapper);
 
@@ -122,7 +128,7 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
         }else if($cronAttributes['cron_name'] == 'cron_data_upload_notification'){
             include ("crontasks/cron_data_upload_notification.php");
         }else if($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1'){
-           //Every First Monday
+           //Every First Monday of the Month
             include ("crontasks/cron_monthly_digest.php");
         }else if($cronAttributes['cron_name'] == 'cron_publications'){
             include ("crontasks/cron_publications.php");

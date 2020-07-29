@@ -850,19 +850,17 @@ function save_votes(user,region,pi_level,url){
     $('.dropdown-toggle-custom input').each(function() {
         data +=$(this).attr('id')+",";
     });
-    console.log(data)
-    console.log(url)
-    // $.ajax({
-    //     type: "POST",
-    //     url: url,
-    //     data: data,
-    //     error: function (xhr, status, error) {
-    //         alert(xhr.responseText);
-    //     },
-    //     success: function (result) {
-    //         location.reload();
-    //     }
-    // });
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        error: function (xhr, status, error) {
+            alert(xhr.responseText);
+        },
+        success: function (result) {
+            location.reload();
+        }
+    });
 }
 
 function save_status(url,user,region){
@@ -880,7 +878,7 @@ function save_status(url,user,region){
             alert(xhr.responseText);
         },
         success: function (result) {
-            //location.reload();
+            location.reload();
         }
     });
 }
@@ -903,6 +901,7 @@ function confirmMakePrivate(record){
     $('#sop-make-private-confirmation').modal('show');
     $('#record').val(record);
 }
+
 function confirmDataUpload(concept, user, conceptId, record){
     $('#data-submit-concept').text(conceptId);
     $('#modal-data-upload-confirmation').modal('show');

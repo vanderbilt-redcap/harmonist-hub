@@ -6,7 +6,6 @@ $RecordSetComment = \REDCap::getData($project_id, 'array', array('record_id' => 
 $comment = getProjectInfoArray($RecordSetComment)[0];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
-
 if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'comments_and_votes'){
     $data = \REDCap::getData($project_id, 'array',$record,$instrument.'_complete', null,null,false,false,true);
 
@@ -15,9 +14,9 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $date = new DateTime();
         $completion_time = $date->format('Y-m-d H:i:s');
     }
+
     $arrayCV = array();
     $arrayCV[$record][$event_id]['responsecomplete_ts'] = $completion_time;
-
     $recordsRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $comment['response_region']));
     $regions = getProjectInfoArray($recordsRegions)[0];
     if(!empty($regions)){
@@ -51,8 +50,8 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 }
 
                 $Proj = new \Project(IEDEA_RMANAGER);
-                $event_id = $Proj->firstEventId;
-                $array_repeat_instances[$comment['request_id']]['repeat_instances'][$event_id]['dashboard_region_status'][$instanceId] = $aux;
+                $event_id_RM = $Proj->firstEventId;
+                $array_repeat_instances[$comment['request_id']]['repeat_instances'][$event_id_RM]['dashboard_region_status'][$instanceId] = $aux;
                 $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
                 break;
             }
@@ -99,7 +98,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $arrayCV[$record][$event_id]['request_title'] = $request['request_title'];
         $arrayCV[$record][$event_id]['contactnotification_y'] = $request['contactnotification_y'];//checkbox
         $results = \Records::saveData($project_id, 'array', $arrayCV,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-        \Records::addRecordToRecordListCache(IEDEA_RMANAGER, $record,1);
+        \Records::addRecordToRecordListCache(IEDEA_COMMENTSVOTES, $record,1);
         if($request['follow_activity'] != ''){
             $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array');
             $settings = getProjectInfoArray($RecordSetSettings)[0];

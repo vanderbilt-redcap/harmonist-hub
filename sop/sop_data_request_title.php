@@ -82,7 +82,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
         });
         $('#dataUploadForm').submit(function () {
             var data = $('#dataUploadForm').serialize();
-            uploadDataToolkit(data);
+            uploadDataToolkit(data,<?=json_encode($module->getUrl("hub/hub_data_upload_security_AJAX.php"))?>);
             return false;
         });
         $('#changeStatus').submit(function () {
@@ -215,7 +215,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                                 </div>
                                 <div class="modal-body">
                                     <input type="hidden" value="0" id="comment_loaded_finalize">
-                                    <iframe class="commentsform" id="redcap-finalize-frame" name="redcap-finalize-frame"
+                                    <iframe class="commentsform" id="redcap-finalize-frame" message="S" name="redcap-finalize-frame"
                                             src="" style="border: none;height: 500px;width: 100%;"></iframe>
                                 </div>
 
@@ -371,7 +371,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                                 </div>
                                 <div class="modal-body">
                                     <input type="hidden" value="0" id="comment_loaded_closure">
-                                    <iframe class="commentsform" id="redcap-closure-frame" name="redcap-closure-frame"
+                                    <iframe class="commentsform" id="redcap-closure-frame" message="F" name="redcap-closure-frame"
                                             src="" style="border: none;height: 500px;width: 100%;"></iframe>
                                 </div>
 
@@ -460,7 +460,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                         <div class="modal-body">
                             <input type="hidden" value="0" id="comment_loaded_public">
                             <iframe class="commentsform" id="redcap-edit-frame-make-public"
-                                    name="redcap-edit-frame-make-public" src=""
+                                    name="redcap-edit-frame-make-public" message="P" src=""
                                     style="border: none;height: 810px;width: 100%;"></iframe>
                         </div>
 
