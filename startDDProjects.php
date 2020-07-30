@@ -9,7 +9,7 @@ $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
 $module->setProjectSetting('hub-mapper',$project_id);
 
-$path = $module->framework->getModulePath()."csv/PID_data_dictionary.csv";
+$path = $module->framework->getModulePath()."csv/PID.csv";
 $module->framework->importDataDictionary($project_id,$path);
 $custom_record_label = "[project_constant]: [project_id]";
 $module->query("UPDATE redcap_projects SET custom_record_label = ? WHERE project_id = ?",[$custom_record_label,$project_id]);

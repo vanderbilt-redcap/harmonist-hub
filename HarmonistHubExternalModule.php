@@ -36,7 +36,7 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
     function createProjectAndImportDataDictionary($value_constant,$project_title)
     {
         $project_id = $this->framework->createProject($project_title." (".ucfirst(strtolower($value_constant)).")", 0);
-        $path = $this->framework->getModulePath()."csv/".$value_constant."_data_dictionary.csv";
+        $path = $this->framework->getModulePath()."csv/".$value_constant.".csv";
         $this->framework->importDataDictionary($project_id,$path);
 
         return $project_id;
