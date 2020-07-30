@@ -33,6 +33,15 @@ class HarmonistHubExternalModule extends \ExternalModules\AbstractExternalModule
             [$project_id, $eventId, $record, $fieldName, $value]);
     }
 
+    function createProjectAndImportDataDictionary($value_constant,$project_title)
+    {
+        $project_id = $this->framework->createProject($project_title." (".ucfirst(strtolower($value_constant)).")", 0);
+        $path = $this->framework->getModulePath()."csv/".$value_constant."_data_dictionary.csv";
+        $this->framework->importDataDictionary($project_id,$path);
+
+        return $project_id;
+    }
+
     function redcap_save_record($project_id,$record,$instrument,$event_id){
         echo '<script>';
         include_once("js/iframe.js");
