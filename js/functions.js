@@ -1183,3 +1183,41 @@ function runPubsCron(url){
         }
     });
 }
+
+function installMetadata(fields,url) {
+    $("#metadataWarning").removeClass("install-metadata-box-danger");
+    $("#metadataWarning").addClass("install-metadata-box-warning");
+    $("#metadataWarning").html("<em class='fa fa-spinner fa-spin'></em> Installing...");
+    $.post(url, { fields: fields }, function(data) {
+        $("#metadataWarning").removeClass("install-metadata-box-warning");
+        if (!data.match(/Exception/)) {
+            $("#metadataWarning").addClass("install-metadata-box-success");
+            $("#metadataWarning").html("<i class='fa fa-check' aria-hidden='true'></i> Installation Complete");
+            setTimeout(function() {
+                $("#metadataWarning").fadeOut(500);
+            }, 3000);
+        } else {
+            $("#metadataWarning").addClass("install-metadata-box-danger");
+            $("#metadataWarning").html("Error in installation! Metadata not updated. "+JSON.stringify(data));
+        }
+    });
+}
+
+function installRepeatingForms(fields,url) {
+    $("#formsWarning").removeClass("install-metadata-box-danger");
+    $("#formsWarning").addClass("install-metadata-box-warning");
+    $("#formsWarning").html("<em class='fa fa-spinner fa-spin'></em> Installing...");
+    $.post(url, { fields: fields }, function(data) {
+        $("#formsWarning").removeClass("install-metadata-box-warning");
+        if (!data.match(/Exception/)) {
+            $("#formsWarning").addClass("install-metadata-box-success");
+            $("#formsWarning").html("<i class='fa fa-check' aria-hidden='true'></i> Installation Complete");
+            setTimeout(function() {
+                $("#formsWarning").fadeOut(500);
+            }, 3000);
+        } else {
+            $("#formsWarning").addClass("install-metadata-box-danger");
+            $("#formsWarning").html("Error in installation! Repeating Forms not updated. "+JSON.stringify(data));
+        }
+    });
+}

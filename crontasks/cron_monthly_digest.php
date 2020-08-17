@@ -34,7 +34,7 @@ foreach ($requests as $req){
             $date_color_text = "color:#e74c3c";
         }
 
-        $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;'><div>Due: <span style='".$date_color_text."'>".$req['due_d']."</span></div>";
+        $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;'><div><strong>Due: <span style='".$date_color_text."'>".$req['due_d']."</span></strong> </div>";
 
         $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
         if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
@@ -137,7 +137,7 @@ foreach ($sops as $sop){
             $concept_sheet = $concept['concept_id'];
             $concept_title = $concept['concept_title'];
 
-            $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;'><div style='padding: 3px;'><strong>Due:</strong> <span style='$date_color_text'>" . $sop['sop_due_d'] . "</span></span></div>";
+            $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;'><div style='padding: 3px;'><strong>Due: <span style='$date_color_text'>" . $sop['sop_due_d'] . "</span></strong></span></div>";
         }
 
         $email_req .= "<div style='padding: 3px;'><a href='" . $module->getUrl("index.php?pid=" . IEDEA_DATAMODEL . "&option=hub&record=" . $sop['request_id']) . "' target='_blank' alt='concept_link'>" . $sop['request_title'] . "</a></div>";

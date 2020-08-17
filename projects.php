@@ -36,7 +36,25 @@ define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(
 define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
 # Define the projects stored in MAPPER
-$module->setProjectConstants(IEDEA_PROJECTS);
+//$module->setProjectConstants(IEDEA_PROJECTS);
+
+$projects = \REDCap::getData(array('project_id'=>IEDEA_PROJECTS),'array');
+
+$linkedProjects = array();
+foreach ($projects as $event){
+    foreach ($event as $project) {
+        define(ENVIRONMENT . '_IEDEA_' . $project['project_constant'], $project['project_id']);
+        array_push($linkedProjects,"IEDEA_".$project['project_constant']);
+    }
+}
+
+# Define the environment for each project
+foreach($linkedProjects as $projectTitle) {
+    if(defined(ENVIRONMENT."_".$projectTitle)) {
+        define($projectTitle, constant(ENVIRONMENT."_".$projectTitle));
+
+    }
+}
 
 $secret_key="";
 $secret_iv="";
