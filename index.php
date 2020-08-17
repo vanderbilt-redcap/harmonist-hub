@@ -95,6 +95,11 @@ if($hub_projectname == '' || $hub_profile == ''){
         include_once("projects.php");
         $settings = \REDCap::getData(array('project_id' => IEDEA_SETTINGS), 'array')[1][$module->framework->getEventId(IEDEA_SETTINGS)];
 
+        /***
+         * Installation checks to update new/missing variables
+         * -Data Dictionary Variables
+         * -Repeating Forms
+         */
         $module->compareDataDictionaries();
         $module->compareRepeatingForms();
         ?>
