@@ -179,7 +179,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function compareDataDictionaries(){
-        $projects_array = REDCapManagement::getProjectsContantsArray();
+        $projects_array = REDCapManagement::getProjectConstantsArrayWithoutDeactivatedProjects();
         $var_replace_type = array(0 => "additions", 1 => "changed", 3 => "missing");
 
         foreach ($var_replace_type as $type){
@@ -261,7 +261,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function compareRepeatingForms(){
         $projects_array_repeatable = REDCapManagement::getProjectsRepeatableArray();
-        $projects_array = REDCapManagement::getProjectsContantsArray();
+        $projects_array = REDCapManagement::getProjectConstantsArrayWithoutDeactivatedProjects();
 
         $alert = array();
         foreach ($projects_array as $index => $constant) {

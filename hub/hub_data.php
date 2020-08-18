@@ -396,7 +396,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                     <p class="mb-1">Browse the <?=$settings['hub_name']?> Data Exchange Standard.</p>
                 </div>
             </a>
-            <?php if($settings['deactivate_tblcenter'][0] != "1"){?>
+            <?php if($settings['deactivate_tblcenter'][1] != "1"){?>
             <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=tbl')?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
@@ -415,7 +415,7 @@ if($settings['deactivate_datadown'][1] != "1"){
             </a>
             <?php } ?>
 
-            <?php if($settings['deactivate_datametrics'][0] != "1" || $isAdmin){?>
+            <?php if($settings['deactivate_datametrics'][1] != "1" || $isAdmin){?>
             <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=mth')?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div style="display: inline-block;width: 50%;vertical-align:top;padding-right:5px">
                     <div style="font-weight:bold; padding-bottom:20px">

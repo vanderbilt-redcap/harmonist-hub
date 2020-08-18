@@ -6,7 +6,7 @@ require_once(dirname(__FILE__)."/projects.php");
 $missingFields = $_POST['fields'];
 $deletionRegEx = "/___delete$/";
 
-$projects_array = REDCapManagement::getProjectsContantsArray();
+$projects_array = REDCapManagement::getProjectConstantsArrayWithoutDeactivatedProjects();
 foreach ($projects_array as $index => $constant) {
     $metadata = array();
     $project_id = constant("IEDEA_".$constant);

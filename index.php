@@ -96,7 +96,7 @@ if($hub_projectname == '' || $hub_profile == ''){
         $settings = \REDCap::getData(array('project_id' => IEDEA_SETTINGS), 'array')[1][$module->framework->getEventId(IEDEA_SETTINGS)];
 
         /***
-         * Installation checks to update new/missing variables
+         * Installation updates check to update new/missing variables
          * -Data Dictionary Variables
          * -Repeating Forms
          */
@@ -158,16 +158,16 @@ if($hub_projectname == '' || $hub_profile == ''){
         <body>
         <?php
             $deactivate_datahub = false;
-            if($settings['deactivate_datahub'][0] == "1"){
+            if($settings['deactivate_datahub'][1] == "1"){
                 $deactivate_datahub = true;
             }
             $deactivate_tblcenter = false;
-            if($settings['deactivate_tblcenter'][0] == "1"){
+            if($settings['deactivate_tblcenter'][1] == "1"){
                 $deactivate_tblcenter = true;
             }
 
             $deactivate_toolkit = false;
-            if($settings['deactivate_toolkit'][0] == "1"){
+            if($settings['deactivate_toolkit'][1] == "1"){
                 $deactivate_toolkit = true;
             }
 
@@ -305,16 +305,16 @@ if($hub_projectname == '' || $hub_profile == ''){
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'pdc' && !$deactivate_datahub)
                     {
                         include('sop/sop_data_call_archive.php');
-                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown'][0] != "1")
+                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown'][1] != "1")
                     {
                         include('sop/sop_retrieve_data.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'out')
                     {
                         include('hub/hub_publications.php');
-                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'mts' && ($settings['deactivate_metrics'][0] != "1" || $isAdmin))
+                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'mts' && ($settings['deactivate_metrics'][1] != "1" || $isAdmin))
                     {
                         include('hub/hub_metrics_stats.php');
-                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'mth' && ($settings['deactivate_datametrics'][0] != "1" || $isAdmin))
+                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'mth' && ($settings['deactivate_datametrics'][1] != "1" || $isAdmin))
                     {
                         include('hub/hub_metrics_general_stats.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'faq')
@@ -332,7 +332,7 @@ if($hub_projectname == '' || $hub_profile == ''){
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'und' && !$deactivate_datahub)
                     {
                         include('sop/sop_title.php');
-                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'cal' && $settings['calendar_active'][0] == "1")
+                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'cal' && $settings['calendar_active'][1] == "1")
                     {
                         include('hub/hub_calendar.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'abt')

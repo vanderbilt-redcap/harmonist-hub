@@ -11,8 +11,36 @@ class REDCapManagement {
             20=>'FAQDATASUBMISSION',21=>'CHANGELOG',22=>'FILELIBRARY',23=>'FILELIBRARYDOWN',24=>'NEWITEMS',25=>'ABOUT',26=>'EXTRAOUTPUTS',
             27=>'TBLCENTERREVISED',28=>'SETTINGS');
 
-        $projects_array = array(0=>'FAQ');
+        return $projects_array;
+    }
 
+    public static function getProjectConstantsArrayWithoutDeactivatedProjects(){
+        $projects_array = self::getProjectsContantsArray();
+        $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
+        $settings = getProjectInfoArray($RecordSetSettings)[0];
+
+        $deactivatedConstants = array();
+        if($settings['deactivate_toolkit'][1] == '1'){
+            array_push($deactivatedConstants,'DATATOOLUPLOADSECURITY');
+            array_push($deactivatedConstants,'DATATOOLMETRICS');
+        }
+        if($settings['deactivate_datahub'][1] == '1'){
+            array_push($deactivatedConstants,'DATAUPLOAD');
+            array_push($deactivatedConstants,'DATADOWNLOAD');
+            array_push($deactivatedConstants,'SOP');
+            array_push($deactivatedConstants,'SOPCOMMENTS');
+        }
+        if($settings['deactivate_tblcenter'][1] == '1'){
+            array_push($deactivatedConstants,'TBLCENTERREVISED');
+        }
+
+        foreach ($deactivatedConstants as $deactivated){
+            foreach ($projects_array as $index => $constant){
+                if($constant == $deactivated){
+                    unset($projects_array[$index]);
+                }
+            }
+        }
         return $projects_array;
     }
 
