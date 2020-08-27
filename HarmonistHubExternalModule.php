@@ -18,9 +18,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     #If it's not the main PID project hide the Harmonist Hub link
-    public function redcap_module_link_check_display($project_id, $link ) {
+    public function redcap_module_link_check_display($project_id, $link) {
         $hub_projectname = $this->getProjectSetting('hub-projectname');
-        $dd_array = \REDCap::getDataDictionary('array');
 
         if($hub_projectname != ""){
             $link['name'] = $hub_projectname." Hub";
@@ -52,9 +51,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function redcap_survey_acknowledgement_page($project_id, $record, $instrument, $event_id){
-        //        $hub_mapper = $this->getProjectSetting('hub-mapper');
-//        $hub_mapper = 366;
-//        $this->setProjectConstants($hub_mapper);
+        $hub_mapper = $this->getProjectSetting('hub-mapper');
+        $this->setProjectConstants($hub_mapper);
 
         #Depending on the project que add one hook or another
         if($project_id == IEDEA_SOP && $instrument == 'dhwg_review_request') {
@@ -80,33 +78,30 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         }
     }
 
-    function hook_every_page_top($project_id){
-//        $hub_mapper = $this->getProjectSetting('hub-mapper');
-//        $hub_mapper = 366;
-//        $this->setProjectConstants($hub_mapper);
+    function redcap_survey_page_top($project_id){
+        $hub_mapper = $this->getProjectSetting('hub-mapper');
+        $this->setProjectConstants($hub_mapper);
 
         #Add to all projects needed
         if($project_id == IEDEA_HARMONIST){
-            if($_REQUEST['s'] != "" || $_REQUEST['sq'] != ""){
-                echo "<script>
-                    $(document).ready(function() {
-                        $('[name=submit-btn-savereturnlater]').hide();
-                        $('#return_code_completed_survey_div').hide();
-                        $('#surveytitlelogo').hide();
-                        $('.bubbleInfo').hide();
-                        $('#two_factor_verification_code_btn span').show();
-                        $('body').css('background-color','#fff');
-                        $('[name=submit-btn-saverecord]').text('Submit');
-                        $('.questionnum ').hide();
+            echo "<script>
+                $(document).ready(function() {
+                    $('[name=submit-btn-savereturnlater]').hide();
+                    $('#return_code_completed_survey_div').hide();
+                    $('#surveytitlelogo').hide();
+                    $('.bubbleInfo').hide();
+                    $('#two_factor_verification_code_btn span').show();
+                    $('body').css('background-color','#fff');
+                    $('[name=submit-btn-saverecord]').text('Submit');
+                    $('.questionnum ').hide();
 
-                        //For Queue Surveys
-                        $('table#table-survey_queue .hidden').removeClass('hidden').hide().show('fade');
-                        $('.wrap a').parent().parent().parent().parent().hide();
-                        $( 'span:contains(\'Close survey queue\')' ).parent().parent().hide();
-                        $( 'span:contains(\'Close survey\')' ).parent().parent().hide();
-                    });
-                </script>";
-            }
+                    //For Queue Surveys
+                    $('table#table-survey_queue .hidden').removeClass('hidden').hide().show('fade');
+                    $('.wrap a').parent().parent().parent().parent().hide();
+                    $( 'span:contains(\'Close survey queue\')' ).parent().parent().hide();
+                    $( 'span:contains(\'Close survey\')' ).parent().parent().hide();
+                });
+            </script>";
         }else {
             if ($project_id == IEDEA_TBLCENTERREVISED || $project_id == IEDEA_SOPCOMMENTS || $project_id == IEDEA_HOME || $project_id == IEDEA_COMMENTSVOTES || $project_id == IEDEA_RMANAGER || ($project_id == IEDEA_PEOPLE && $_REQUEST['s'] != IEDEA_SURVEYPERSONINFO) || $project_id == IEDEA_SOP && $_REQUEST['s'] != IEDEA_DATARELEASEREQUEST) {
                 echo "<script>
