@@ -1221,3 +1221,24 @@ function installRepeatingForms(fields,url) {
         }
     });
 }
+
+function startUnitTest(url){
+    $("#unitTestbtn").prop("disabled", "true");
+    $("#unitTestMsgContainer").show();
+    $("#unitTestMsgContainer").addClass("install-metadata-box-warning");
+    $("#unitTestMsgContainer").html("<em class='fa fa-spinner fa-spin'></em> Starting Unit Test...");
+    var methodNamesArray = ["cron_data_upload_epiration_reminder", "cron_data_upload_notificarion", "cron_publications", "cron_upload_pending_data_set_data"];
+    // $.post(url, {method:methodName}, function(data) {
+        // $("#unitTestMsgContainer").removeClass("install-metadata-box-warning");
+        // if (!data.match(/Exception/)) {
+        //     $("#unitTestMsgContainer").addClass("install-metadata-box-success");
+        //     $("#unitTestMsgContainer").html("<i class='fa fa-check' aria-hidden='true'></i> Testing Complete");
+        //     setTimeout(function() {
+        //         $("#formsWarning").fadeOut(500);
+        //     }, 3000);
+        // } else {
+        //     $("#unitTestMsgContainer").addClass("install-metadata-box-danger");
+        //     $("#unitTestMsgContainer").html("Error while testing!"+JSON.stringify(data));
+        // }
+    // });
+}

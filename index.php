@@ -181,7 +181,7 @@ if($hub_projectname == '' || $hub_profile == ''){
             session_start();
 
             $token = "";
-            if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd') || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
+            if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd')  || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'iut') || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
                 $_SESSION['token'] = array();
                 $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')] = getToken(USERID);
                 $token = $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')];
@@ -225,6 +225,9 @@ if($hub_projectname == '' || $hub_profile == ''){
                     else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'log')
                     {
                         include('hub/hub_changelog.php');
+                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'iut')
+                    {
+                        include('hub/hub_unit_test.php');
                     } else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'smn' && !$deactivate_datahub)
                     {
                         include('sop/sop_request_data.php');
@@ -331,7 +334,7 @@ if($hub_projectname == '' || $hub_profile == ''){
                         include('hub/hub_request_title.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'und' && !$deactivate_datahub)
                     {
-                        include('sop/sop_title.php');
+                        include('sop/sop_data_request_title.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'cal' && $settings['calendar_active'][1] == "1")
                     {
                         include('hub/hub_calendar.php');

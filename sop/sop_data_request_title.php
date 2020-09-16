@@ -192,7 +192,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                             if($sop['sop_status'] == "1" && $sop['sop_visibility'] == "2" && $sop['sop_finalize_y'][1] == '1' && empty($sop['sop_closed_y'][0])){
                                 $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_SOP, $_REQUEST['record'], "data_call_closure", "");
                                 $survey_link_closure = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
-                                echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-closure\',\'redcap-closure-frame\',\'' . $survey_link_closure . '\');" style="cursor:pointer">Complete Data Call</a></li>';
+                                echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-closure\',\'redcap-closure-frame\',\'' . $survey_link_closure . '\');" style="cursor:pointer">Archive Data Call</a></li>';
                             }
                             ?>
                             <li role="separator" class="divider"></li>
@@ -367,7 +367,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                                 <div class="modal-header">
                                     <button type="button" class="close closeCustomModal" data-dismiss="modal"
                                             aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">Complete Data Request</h4>
+                                    <h4 class="modal-title">Archive Data Call</h4>
                                 </div>
                                 <div class="modal-body">
                                     <input type="hidden" value="0" id="comment_loaded_closure">
@@ -509,7 +509,7 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                         }
                     }
                     if ($sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'][1] == "1") {
-                        $message_text .= " Data Call completed";
+                        $message_text .= " Data Call archived";
                         if ($sop['sop_closed_d'] != "") {
                             $message_text .= " on " . $sop['sop_closed_d'] . ".";
                         } else {

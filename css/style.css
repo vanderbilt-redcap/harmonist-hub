@@ -2,6 +2,11 @@
 .hidden{display: none;}
 .backTo{margin-bottom:10px;}
 .btn:focus{outline:0 !important;}
+.alert-secondary {
+    color: #383d41;
+    background-color: #e2e3e5;
+    border-color: #d6d8db;
+}
 .install-metadata-box-danger{
     color: #a94442;
     background-color: #f2dede;
@@ -196,19 +201,7 @@ span .btn-info:hover{
     color: white;
 
 }
-/***DATA CALLS***/
-/*#hub_view_mixed_votes li.active a{*/
-    /*background-color: #e5e5e5 !important;*/
-/*}*/
-/*#hub_view_mixed_votes li:not(.active) a[data-toggle="tab"]:hover{*/
-    /*background-color: #e5e5e5;*/
-    /*cursor: pointer;*/
-/*}*/
-/*#hub_view_mixed_votes li:not(.active) a[data-toggle="tab"]{*/
-    /*color: #555;*/
-    /*cursor: default;*/
-    /*border: 1px solid #ddd;*/
-/*}*/
+
 .activetab{
     background-color: #8c8c8c;
     color: #fff;

@@ -1,5 +1,4 @@
 <?php
-define('NOAUTH',true);
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $record = $_REQUEST['upload_record'];
