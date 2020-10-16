@@ -4,7 +4,7 @@ include_once(__DIR__ ."/../projects.php");
 
 class AllCrons
 {
-    public static function runCronDataUploadExpirationReminder($module, $upload, $sop, $peopleDown, $extra_days_delete, $extra_days, $extra_days2, $settings, $email = false)
+    public static function runCronDataUploadExpirationReminder($module, $pidsArray, $upload, $sop, $peopleDown, $extra_days_delete, $extra_days, $extra_days2, $settings, $email = false)
     {
         $messageArray = array();
         $expired_date = self::sendEmailToday($upload, $extra_days_delete, $extra_days, $extra_days2);
@@ -17,9 +17,9 @@ class AllCrons
                 $downloadersOrdered = array();
                 foreach ($downloaders as $down) {
                     if($peopleDown == null) {
-                        $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $down));
+                        $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
                         $peopleDownData = getProjectInfoArray($RecordSetPeopleDown)[0];
-                        $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleDown['person_region']));
+                        $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
                         $region_codeDown = getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
                     }else{
                         $region_codeDown = "TT";
@@ -33,13 +33,13 @@ class AllCrons
                 $date->modify("+1 hours");
                 $date_time = $date->format("Y-m-d H:i");
 
-                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $upload['data_upload_person']));
+                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $upload['data_upload_person']));
                 $people = getProjectInfoArray($RecordSetPeople)[0];
                 $name_uploader = $people['firstname'] . " " . $people['lastname'];
-                $RecordSetRegionsUp = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']));
+                $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']));
                 $region_code_uploader = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
 
-                $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $upload['data_assoc_concept']));
+                $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
                 $concepts = getProjectInfoArray($RecordSetConcepts)[0];
                 $concept_id = $concepts['concept_id'];
                 $concept_title = $concepts['concept_title'];
@@ -47,13 +47,13 @@ class AllCrons
                 $messageArray['concept_title'] = $concept_title;
                 $messageArray['sop_id'] = $sop['record_id'];
 
-                $RecordSetDOWN = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null, null, null, null, false, false, false, "[download_id] = " . $upload['record_id']);
+                $RecordSetDOWN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null, null, null, null, false, false, false, "[download_id] = " . $upload['record_id']);
                 $downloads = getProjectInfoArray($RecordSetDOWN);
                 if (empty($downloads)) {
                     foreach ($downloadersOrdered as $down) {
-                        $messageArray = self::sendExpReminder($module, $sop, $down, $upload, $expired_date['reminder'], $expired_date['reminder2'], $expired_date['delete'], $name_uploader, $region_code_uploader, $concept_id, $concept_title, $date_time, $settings, $email, $messageArray);
+                        $messageArray = self::sendExpReminder($module, $pidsArray, $sop, $down, $upload, $expired_date['reminder'], $expired_date['reminder2'], $expired_date['delete'], $name_uploader, $region_code_uploader, $concept_id, $concept_title, $date_time, $settings, $email, $messageArray);
                         if(!$email) {
-                            \REDCap::logEvent("Reminder Sent<br/>Record " . $upload['record_id'], "No downloads yet from any downloaders.\n", null, null, null, IEDEA_DATAUPLOAD);
+                            \REDCap::logEvent("Reminder Sent<br/>Record " . $upload['record_id'], "No downloads yet from any downloaders.\n", null, null, null, $pidsArray['DATAUPLOAD']);
                         }
                     }
                 } else {
@@ -66,7 +66,7 @@ class AllCrons
                         }
                         if (!$email_sent) {
                             #Not downloaded any file
-                            $messageArray = AllCrons::sendExpReminder($module, $sop, $down, $upload, $expired_date['reminder'], $expired_date['reminder2'], $expired_date['delete'], $name_uploader, $region_code_uploader, $concept_id, $concept_title, $date_time, $settings, $email, $messageArray);
+                            $messageArray = AllCrons::sendExpReminder($module, $pidsArray, $sop, $down, $upload, $expired_date['reminder'], $expired_date['reminder2'], $expired_date['delete'], $name_uploader, $region_code_uploader, $concept_id, $concept_title, $date_time, $settings, $email, $messageArray);
                             $messageArray['notdownloaded'] += 1;
                         }
                     }
@@ -76,7 +76,7 @@ class AllCrons
         return $messageArray;
     }
 
-    public static function runCronDataUploadNotification($module, $upload, $sop, $peopleDown, $extra_days, $settings, $email = false)
+    public static function runCronDataUploadNotification($module, $pidsArray, $upload, $sop, $peopleDown, $extra_days, $settings, $email = false)
     {
         $messageArray = array();
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
@@ -84,12 +84,12 @@ class AllCrons
             if(!array_key_exists('emails_sent_y',$upload) || $upload['emails_sent_y'][1] == '0') {
                 if($email) {
                     //Save data on project
-                    $Proj = new \Project(IEDEA_DATAUPLOAD);
+                    $Proj = new \Project($pidsArray['DATAUPLOAD']);
                     $event_id = $Proj->firstEventId;
                     $arraySaveDU = array();
                     $arraySaveDU[$upload['record_id']][$event_id]['emails_sent_y'] = array(1 => "1");//checkbox
-                    $results = \Records::saveData(IEDEA_DATAUPLOAD, 'array', $arraySaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-                    \Records::addRecordToRecordListCache(IEDEA_DATAUPLOAD, $upload['emails_sent_y'], 1);
+                    $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $arraySaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+                    \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $upload['emails_sent_y'], 1);
                 }
 
                 $downloaders_list = "";
@@ -101,9 +101,9 @@ class AllCrons
                     $downloadersOrdered = array();
                     foreach ($downloaders as $down) {
                         if ($peopleDown == null) {
-                            $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $down));
+                            $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
                             $peopleDownData = getProjectInfoArray($RecordSetPeopleDown)[0];
-                            $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleDown['person_region']));
+                            $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
                             $region_codeDown = getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
                         } else {
                             $region_codeDown = "TT";
@@ -120,15 +120,15 @@ class AllCrons
                 }
 
                 #Uploader email
-                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $upload['data_upload_person']));
+                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $upload['data_upload_person']));
                 $people = getProjectInfoArray($RecordSetPeople)[0];
                 $to = $people['email'];
                 $firstname = $people['firstname'];
                 $name_uploader = $people['firstname'] . " " . $people['lastname'];
-                $RecordSetRegionsUp = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']));
+                $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']));
                 $region_code_uploader = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
 
-                $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $upload['data_assoc_concept']));
+                $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
                 $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
 
                 $date = new \DateTime($upload['responsecomplete_ts']);
@@ -139,8 +139,8 @@ class AllCrons
                 if ($email) {
                     $subject = "Successful " . $settings['hub_name'] . " data upload for " . $concept_id;
                     $message = "<div>Dear " . $firstname . ",</div><br/><br/>" .
-                        "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl("index.php?pid=" . IEDEA_PROJECTS . "&option=sop&record=" . $upload['data_assoc_request']) . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
-                        "<div>You may log into the " . $settings['hub_name'] . " Hub and view the <a href='" . $module->getUrl("index.php?pid=" . IEDEA_PROJECTS . "&option=slgd") . "' target='_blank'>Data Activity Log</a> report, track downloads, and delete your dataset. Your dataset will be available for " .
+                        "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=sop&record=" . $upload['data_assoc_request']) . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
+                        "<div>You may log into the " . $settings['hub_name'] . " Hub and view the <a href='" . $module->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=slgd") . "' target='_blank'>Data Activity Log</a> report, track downloads, and delete your dataset. Your dataset will be available for " .
                         "download by the approved data downloaders <strong>until " . $expire_date . " 23:59</strong> ET unless you choose to delete it before then. </div><br/>" .
                         "<div>Approved Data Downloaders:</div>" .
                         $downloaders_list . "<br/>" .
@@ -164,7 +164,7 @@ class AllCrons
                             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
                                 "<div>A new dataset has been submitted to secure cloud storage by <strong>" . $name_uploader . "</strong> from <strong>" . $region_code_uploader . "</strong> in response to \"" . $sop['sop_name'] . "\" for concept <b>" . $concept_id . "</b>. The upload was received at " . $date_time . " Eastern US Time (ET). </div><br/>" .
                                 "<div>The data will be available to download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .
-                                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select <strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?pid=" . IEDEA_PROJECTS . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
+                                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select <strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
                                 "A summary report for the dataset is also available on that page. The dataset will be deleted on " . $expire_date . " 23:59 ET</div><br/>" .
                                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
@@ -177,14 +177,14 @@ class AllCrons
         return $messageArray;
     }
 
-    public static function runCronMonthlyDigest($module, $requests, $requests_hub, $sops, $settings, $email = false){
+    public static function runCronMonthlyDigest($module, $pidsArray, $requests, $requests_hub, $sops, $settings, $email = false){
         $environment = "";
         if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
 
-        $request_type = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
-        $finalize_y = $module->getChoiceLabels('finalize_y', IEDEA_RMANAGER);
+        $request_type = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
+        $finalize_y = $module->getChoiceLabels('finalize_y', $pidsArray['RMANAGER']);
 
         $subject = $settings['hub_name']." Hub – Monthly Summary for ".date("F",strtotime("-1 months"))." ".date("Y",strtotime("-1 months")).$environment;
         $email_req = "<div>".
@@ -216,7 +216,7 @@ class AllCrons
 
                 $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
                 if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
-                    $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array',  array('record_id' => $req['assoc_concept']));
+                    $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array',  array('record_id' => $req['assoc_concept']));
                     $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
                     $concept_sheet = $concept['concept_id'];
                     $concept_title = $concept['concept_title'];
@@ -224,14 +224,14 @@ class AllCrons
                 }
                 $email_req .= ", ".$req['contact_name']."</div>";
 
-                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub&record=".$req['request_id'])."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
+                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&record=".$req['request_id'])."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
                 $votes = array();
                 foreach ($req['region_response_status'] as $region => $vote_status){
                     if($vote_status != 0 && in_array($req['region_vote_status'],$req)){
                         if($region == ""){
                             $region = "1";
                         }
-                        $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array',  array('record_id' => $region));
+                        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array',  array('record_id' => $region));
                         $region_code = getProjectInfoArray($RecordSetRegions)[0]['region_code'];
                         array_push($votes,$region_code);
                     }
@@ -263,7 +263,7 @@ class AllCrons
 
                 $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
                 if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
-                    $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $req['assoc_concept']));
+                    $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $req['assoc_concept']));
                     $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
                     $concept_sheet = $concept['concept_id'];
                     $concept_title = $concept['concept_title'];
@@ -271,7 +271,7 @@ class AllCrons
                 }
                 $email_req .= ", ".$req['contact_name']."</div>";
 
-                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".IEDEA_DATAMODEL."&option=hub&record=".$req['request_id'])."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
+                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".$pidsArray['DATAMODEL']."&option=hub&record=".$req['request_id'])."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
 
                 if($req['finalize_y'] == "1"){
                     $color_text = "color:#5cb85c";
@@ -289,7 +289,7 @@ class AllCrons
             "<br><div style='padding: 3px;'><h3><strong>Active Data Calls</strong></h3></div><ol style='padding-left: 15px;'>";
 
         $isEmpty = true;
-        $RecordSetRegions = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+        $RecordSetRegions = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
         $regions = getProjectInfoArrayRepeatingInstruments($RecordSetRegions);
         foreach ($sops as $sop){
             if((!array_key_exists('sop_closed_y',$sop) || $sop['sop_closed_y'][0] == "") && $sop['sop_due_d'] != ""){
@@ -306,7 +306,7 @@ class AllCrons
                     } else {
                         $date_color_text = "color:#e74c3c";
                     }
-                    $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $sop['sop_concept_id']));
+                    $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $sop['sop_concept_id']));
                     $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
                     $concept_sheet = $concept['concept_id'];
                     $concept_title = $concept['concept_title'];
@@ -314,12 +314,12 @@ class AllCrons
                     $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;'><div style='padding: 3px;'><strong>Due: <span style='$date_color_text'>" . $sop['sop_due_d'] . "</span></strong></span></div>";
                 }
 
-                $email_req .= "<div style='padding: 3px;'><a href='" . $module->getUrl("index.php?pid=" . IEDEA_DATAMODEL . "&option=hub&record=" . $sop['request_id']) . "' target='_blank' alt='concept_link'>" . $sop['request_title'] . "</a></div>";
-                $RecordSetCreator = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_creator']));
+                $email_req .= "<div style='padding: 3px;'><a href='" . $module->getUrl("index.php?pid=" . $pidsArray['DATAMODEL'] . "&option=hub&record=" . $sop['request_id']) . "' target='_blank' alt='concept_link'>" . $sop['request_title'] . "</a></div>";
+                $RecordSetCreator = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator']));
                 $creator = getProjectInfoArray($RecordSetCreator)[0];
-                $RecordSetCreator2 = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_creator2']));
+                $RecordSetCreator2 = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator2']));
                 $creator2 = getProjectInfoArray($RecordSetCreator2)[0];
-                $RecordSetDataContact = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_creator2']));
+                $RecordSetDataContact = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator2']));
                 $datacontact = getProjectInfoArray($RecordSetDataContact)[0];
                 $data_contact = $datacontact['firstname'] . " " . $datacontact['lastname'];
                 $sop_creator = $creator['firstname'] . " " . $creator['lastname'];
@@ -334,7 +334,7 @@ class AllCrons
                 $sop_people_all = implode(', ',array_unique(explode(', ' , $sop_people)));
 
                 $email_req .= "<div style='padding: 3px;'><strong>Data Request for " . $concept_sheet . ", </strong>" . $sop_people_all . "</div>";
-                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=sop&record=".$sop['record_id']). "'>" . $sop['sop_name'] . "</a></div>";
+                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=sop&record=".$sop['record_id']). "'>" . $sop['sop_name'] . "</a></div>";
 
                 $votes = array();
                 foreach ($regions as $region){
@@ -370,7 +370,7 @@ class AllCrons
         return $message;
     }
 
-    public static function runCronDeleteAws($module, $s3, $upload, $sop, $peopleDown, $expired_date, $settings, $email = false){
+    public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $sop, $peopleDown, $expired_date, $settings, $email = false){
         if((!array_key_exists('deleted_y',$upload) || $upload['deleted_y'] != "1") && strtotime($expired_date) <= strtotime(date('Y-m-d'))){
             try {
                 if($email) {
@@ -381,7 +381,7 @@ class AllCrons
                     ));
 
                     //Save data on project
-                    $Proj = new \Project(IEDEA_DATAUPLOAD);
+                    $Proj = new \Project($pidsArray['DATAUPLOAD']);
                     $event_id = $Proj->firstEventId;
                     $recordSaveDU = array();
                     $recordSaveDU[$upload['record_id']][$event_id]['record_id'] = $upload['record_id'];
@@ -391,19 +391,19 @@ class AllCrons
                     $recordSaveDU[$upload['record_id']][$event_id]['deletion_rs'] = "Expired. Deleted automatically";
                     $recordSaveDU[$upload['record_id']][$event_id]['deletion_information_complete'] = "2";
                     $recordSaveDU[$upload['record_id']][$event_id]['deleted_y'] = "1";
-                    $results = \Records::saveData(IEDEA_DATAUPLOAD, 'array', $recordSaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-                    \Records::addRecordToRecordListCache(IEDEA_DATAUPLOAD, $upload['record_id'], 1);
+                    $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $recordSaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+                    \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $upload['record_id'], 1);
 
                     #EMAIL NOTIFICATION
-                    $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $upload['data_assoc_concept']));
+                    $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
                     $concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
                     $concept_id = $concepts['concept_id'];
                     $concept_title = $concepts['concept_title'];
 
-                    $RecordSetPeopleUp = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $upload['data_upload_person']));
+                    $RecordSetPeopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $upload['data_upload_person']));
                     $peopleUp = getProjectInfoArray($RecordSetPeopleUp)[0];
 
-                    $RecordSetRegionsUp = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleUp['person_region']));
+                    $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleUp['person_region']));
                     $region_codeUp = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
 
                     $date = new DateTime($upload['responsecomplete_ts']);
@@ -411,7 +411,7 @@ class AllCrons
                     $date_time = $date->format("Y-m-d H:i");
 
                     #to uploader user
-                    $url = $module->getUrl("index.php?&option=dat=&pid=" . IEDEA_PROJECTS);
+                    $url = $module->getUrl("index.php?&option=dat=&pid=" . $pidsArray['PROJECTS']);
                     $subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
                     $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
                         "<div>The dataset you submitted to secure cloud storage in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
@@ -429,9 +429,9 @@ class AllCrons
                     $downloadersOrdered = array();
                     foreach ($downloaders as $down) {
                         if ($peopleDown == null) {
-                            $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $down));
+                            $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
                             $peopleDownData = getProjectInfoArray($RecordSetPeopleDown)[0];
-                            $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleDown['person_region']));
+                            $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
                             $region_codeDown = getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
                         } else {
                             $region_codeDown = "TT";
@@ -441,7 +441,7 @@ class AllCrons
                     }
                     array_sort_by_column($downloadersOrdered, 'name');
 
-                    $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $upload['data_assoc_concept']));
+                    $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
                     $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
 
                     if($email) {
@@ -458,7 +458,7 @@ class AllCrons
                     $message['code_test'] = "1";
                 }
                 if($email) {
-                    \REDCap::logEvent("Dataset deleted automatically\nRecord " . $upload['record_id'], "Concept ID: " . $concept_id . "\n Draft ID: " . $sop['record_id'], null, null, null, IEDEA_DATAUPLOAD);
+                    \REDCap::logEvent("Dataset deleted automatically\nRecord " . $upload['record_id'], "Concept ID: " . $concept_id . "\n Draft ID: " . $sop['record_id'], null, null, null, $pidsArray['DATAUPLOAD']);
                 }
             } catch (S3Exception $e) {
                 echo $e->getMessage() . "\n";
@@ -467,8 +467,349 @@ class AllCrons
         return $message;
     }
 
-    public static function runCronUploadPendingDataSetData($module){
+    public static function runCronMetrics($module, $pidsArray, $email = false){
+        $date = new \DateTime();
+        $record_id_metrics = "";
+        if($email != false){
+            $record_id_metrics = $module->framework->addAutoNumberedRecord($pidsArray['METRICS']);
+        }
+        $message = "";
 
+        $arrayMetrics = array(array('record_id' => $record_id_metrics));
+        $arrayMetrics[0]['date'] = $date->format('Y-m-d H:i:s');
+
+
+        /***CONCEPTS***/
+        $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
+        $total_concepts = count($RecordSetConcepts);
+        $arrayMetrics[0]['concepts'] = $total_concepts;
+
+        $RecordSetConceptsActive = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[active_y] = 'Y'");
+        $number_concepts_active = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive));
+        $arrayMetrics[0]['concepts_a'] = $number_concepts_active;
+
+        $RecordSetConceptsCompleted = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[concept_outcome] = 1");
+        $number_concepts_completed = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsCompleted));
+        $arrayMetrics[0]['concepts_c'] = $number_concepts_completed;
+
+        $RecordSetConceptsDiscontinued = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[concept_outcome] = 2");
+        $number_concepts_discontinued = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsDiscontinued));
+        $arrayMetrics[0]['concepts_d'] = $number_concepts_discontinued;
+
+        /***REQUESTS***/
+        $RecordSetRequests = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] != 9");
+        $total_requests = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequests));
+        $arrayMetrics[0]['requests'] = $total_requests;
+
+        $RecordSetRequestsApproved = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 1");
+        $number_requests_approved = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequestsApproved));
+        $arrayMetrics[0]['requests_a'] = $number_requests_approved;
+
+        $RecordSetRequestsRejected = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 0");
+        $number_requests_rejected = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequestsRejected));
+        $arrayMetrics[0]['requests_r'] = $number_requests_rejected;
+
+        $RecordSetRequestsDeactivated = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 9");
+        $number_requests_deactivated = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequestsDeactivated));
+        $arrayMetrics[0]['requests_d'] = $number_requests_deactivated;
+
+
+        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null, null, null, null, false, false, false, "[showregion_y] = 1");
+        $regions = getProjectInfoArray($RecordSetRegions);
+
+
+        #PUBLICATIONS AND ABSTRACTS;
+        $publications = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts);
+
+        $number_publications = 0;
+        $number_publications_year = 0;
+        $number_abstracts = 0;
+        $number_abstracts_year = 0;
+        foreach ($publications as $outputs) {
+            foreach ($outputs['output_type'] as $index => $output_type) {
+                if ($output_type == '1') {
+                    $number_publications++;
+                    if ($outputs['output_year'][$index] == $date->format('Y')) {
+                        $number_publications_year++;
+                    }
+                } else if ($output_type == '2') {
+                    $number_abstracts++;
+                    if ($outputs['output_year'][$index] == $date->format('Y')) {
+                        $number_abstracts_year++;
+                    }
+                }
+            }
+        }
+        $arrayMetrics[0]['publications'] = $number_publications;
+        $arrayMetrics[0]['abstracts'] = $number_abstracts;
+        $arrayMetrics[0]['publications_current'] = $number_publications_year;
+        $arrayMetrics[0]['abstracts_current'] = $number_abstracts_year;
+
+        #COMMENTS AND VOTES
+        $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null);
+        $comments = getProjectInfoArray($RecordSetComments);
+        $req_id = array();
+        foreach ($comments as $comments) {
+            if ($comments['request_id'] != '') {
+                array_push($req_id, $comments['request_id']);
+            }
+        }
+        $req_id = array_unique($req_id);
+
+        $query = $module->framework->createQuery();
+        $query->add("SELECT record FROM redcap_data WHERE field_name = ? AND project_id = ? AND 'value' = ?", ["approval_y", $pidsArray['RMANAGER'], "9"]);
+        $query->add('and')->addInClause('record ', $req_id);
+        $query->add('group by record');
+        $q = $query->execute();
+        while ($row = $q->fetch_assoc()) {
+            if (($key = array_search($row['record'], $req_id)) !== false) {
+                unset($req_id[$key]);
+            }
+        }
+
+        $query = $module->framework->createQuery();
+        $query->add("SELECT a.record FROM redcap_data a INNER JOIN redcap_data b on a.record=b.record and a.project_id=b.project_id WHERE a.field_name = ? AND a.project_id = ? ", ["request_id", $pidsArray['COMMENTSVOTES']]);
+        $query->add('and')->addInClause('a.value ', $req_id);
+        $query->add('group by a.record');
+        $q = $query->execute();
+        $total_comments = 0;
+        $comments_id = array();
+        while ($row = $q->fetch_assoc()) {
+            $total_comments++;
+            array_push($comments_id, $row['record']);
+        }
+        $arrayMetrics[0]['comments'] = $total_comments;
+
+        $query = $module->framework->createQuery();
+        $query->add("SELECT * FROM redcap_data WHERE field_name = ? AND project_id = ? ", ["response_pi_level", $pidsArray['COMMENTSVOTES']]);
+        $query->add('and')->addInClause('record ', $comments_id);
+        $query->add('group by record');
+        $q = $query->execute();
+        $number_comments_pi = 0;
+        $number_comments_nonpi = 0;
+        while ($row = $q->fetch_assoc()) {
+            if ($row['value'] == '1') {
+                $number_comments_pi++;
+            } else if ($row['value'] == '0') {
+                $number_comments_nonpi++;
+            }
+        }
+        $arrayMetrics[0]['comments_pi'] = $number_comments_pi;
+        $arrayMetrics[0]['comments_n'] = $number_comments_nonpi;
+
+        $query = $module->framework->createQuery();
+        $query->add("SELECT * FROM redcap_data WHERE field_name = ? AND project_id = ? ", ["pi_vote", $pidsArray['COMMENTSVOTES']]);
+        $query->add('and')->addInClause('record ', $comments_id);
+        $query->add('group by record');
+        $q = $query->execute();
+        $number_votes = 0;
+        $request_ids = array();
+        while ($row = $q->fetch_assoc()) {
+            if ($row['value'] != '') {
+                $number_votes++;
+                array_push($request_ids, $row['record']);
+            }
+        }
+        $arrayMetrics[0]['votes'] = $number_votes;
+
+        $query = $module->framework->createQuery();
+        $query->add("SELECT * FROM redcap_data WHERE field_name = ? AND project_id = ? ", ["vote_now", $pidsArray['COMMENTSVOTES']]);
+        $query->add('and')->addInClause('record ', $comments_id);
+        $query->add('group by record');
+        $q = $query->execute();
+        $number_votes_later = 0;
+        while ($row = $q->fetch_assoc()) {
+            if ($row['value'] != '0') {
+                $number_votes_later++;
+            }
+        }
+        $arrayMetrics[0]['vote_later'] = $number_votes_later;
+
+        $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, "[author_revision_y] = 1");
+        $comments_revision = getProjectInfoArray($RecordSetComments);
+        #get unique values from matrix column request_id (unique request ids)
+        $revisions = 0;
+        foreach ($comments_revision as $comment) {
+            $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
+            $approval_y = getProjectInfoArray($RecordSetRM)[0]['approval_y'];
+            if ($approval_y == '1') {
+                $revisions++;
+            }
+        }
+        $arrayMetrics[0]['revisions'] = $revisions;
+
+        $RecordRequests = \REDCap::getData($pidsArray['RMANAGER'], 'array');
+        $requests = getProjectInfoArrayRepeatingInstruments($RecordRequests, array('approval_y' => '1'));
+
+        $number_votes_completed_before_duedate = 0;
+        $number_votes_completed_after_duedate = 0;
+        $completerequests = 0;
+        $numregions = count($regions);
+        $completed_requests_by_all_regions = array();
+        foreach ($requests as $request) {
+            $votecount = 0;
+            foreach ($regions as $region) {
+                $instance = $region['record_id'];
+
+                if ($request['region_vote_status'][$instance] != "") {
+                    $votecount++;
+                    $request_date = date("Y-m-d", strtotime($request['region_close_ts'][$instance]));
+                    if (strtotime($request['due_d']) <= strtotime($request_date)) {
+                        //if vote submitted before or on due date
+                        $number_votes_completed_before_duedate++;
+                    } else {
+                        $number_votes_completed_after_duedate++;
+                    }
+                }
+
+                if ($votecount == $numregions) {
+                    $completerequests++; //if the number of votes (vote count) equals the number of voting regions, then this request is complete, so increment complete counter
+                    array_push($completed_requests_by_all_regions, $request['request_id']);
+                }
+            }
+        }
+
+        foreach ($completed_requests_by_all_regions as $completed) {
+            $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $completed));
+            $recordRMComplete = getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
+            if ($recordRMComplete['detected_complete'][1] != "1") {
+                $Proj = new \Project($pidsArray['RMANAGER']);
+                $event_id_RM = $Proj->firstEventId;
+                $arrayRM = array();
+                $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete'] = array(1 => "1");//checkbox
+                $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete_ts'] = date('Y-m-d H:i:s');
+                $results = \Records::saveData($pidsArray['RMANAGER'], 'array', $arrayRM, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            }
+        }
+
+        $number_votes = $number_votes_completed_before_duedate + $number_votes_completed_after_duedate;
+        $arrayMetrics[0]['votes_c'] = $number_votes_completed_before_duedate;
+        $number_votes_completed_before_duedate_percent = ($number_votes_completed_before_duedate / $number_votes) * 100;
+        $arrayMetrics[0]['votes_c_percentage'] = round($number_votes_completed_before_duedate_percent, 2);
+
+        $arrayMetrics[0]['votes_late'] = $number_votes_completed_after_duedate;
+        $number_votes_completed_after_duedate_percent = ($number_votes_completed_after_duedate / $number_votes) * 100;
+        $arrayMetrics[0]['votes_late_percentage'] = round($number_votes_completed_after_duedate_percent, 2);
+
+        #REQUESTS COMPLETED
+        $arrayMetrics[0]['requests_c'] = $completerequests;
+
+        #USERS
+        $query = $module->framework->createQuery();
+        $query->add("SELECT count(*) as total_registered_users FROM redcap_data WHERE field_name = ? AND project_id = ? AND value in (1,2,3)", ["harmonist_regperm", $pidsArray['PEOPLE']]);
+        $q = $query->execute();
+        $arrayMetrics[0]['users'] = $q->fetch_assoc()['total_registered_users'];
+
+        $RecordSetUsersPi = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[harmonist_regperm] = 3");
+        $number_users_pi = count(getProjectInfoArray($RecordSetUsersPi));
+        $arrayMetrics[0]['users_pi'] = $number_users_pi;
+
+        $query = $module->framework->createQuery();
+        $query->add("SELECT count(*) as number_users_accesslink FROM redcap_data WHERE field_name = ? AND project_id = ? AND DATEDIFF(NOW(),value) between 0 AND 30", ["last_requested_token_d", $pidsArray['PEOPLE']]);
+        $q = $query->execute();
+        $arrayMetrics[0]['users_access'] = $q->fetch_assoc()['number_users_accesslink'];
+
+        $RecordSetUsersAdmin = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[harmonistadmin_y] = 1");
+        $number_requests_admin = count(getProjectInfoArray($RecordSetUsersAdmin));
+        $arrayMetrics[0]['admins'] = $number_requests_admin;
+
+        $json = json_encode($arrayMetrics);
+        $results = \Records::saveData($pidsArray['METRICS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        if($email != false) {
+            \Records::addRecordToRecordListCache($pidsArray['METRICS'], $record_id_metrics, 1);
+        }
+        $message['metrics'] = 1;
+        return $message;
+    }
+
+    public static function runCronUploadPendingDataSetData($module, $pidsArray, $s3, $bucket, $settings, $email = false){
+        try {
+            $message = array();
+            $message['pending_total'] = 0;
+            //Get list of elements in folder
+            $objects = $s3->getIterator('ListObjects', array(
+                "Bucket" => $bucket,
+                "Prefix" => "pending/"
+            ));
+
+            foreach ($objects as $object) {
+                $file_name = str_replace("pending/", '', $object['Key']);
+                $file_name_extension = explode('.', $file_name)[1];
+                $file_name = explode('.', $file_name)[0];
+
+                if ($file_name_extension == 'json') {
+                    $message['pending_total'] = $message['pending_total'] + 1;
+                    #Get the object
+                    $result = $s3->getObject(array(
+                        'Bucket' => $bucket,
+                        'Key' => $object['Key']
+                    ));
+
+                    $s3->registerStreamWrapper();
+                    $data = file_get_contents('s3://' . $bucket . '/' . $object['Key']);
+                    // Open a stream in read-only mode
+                    if ($stream = fopen('s3://' . $bucket . '/' . $object['Key'], 'r')) {
+                        // While the stream is still open
+                        while (!feof($stream)) {
+                            // Read 1,024 bytes from the stream
+                            $uploadData = json_decode(fread($stream, 1024), true);
+                        }
+                        // Be sure to close the stream resource when you're done with it
+                        fclose($stream);
+                    }
+
+                    if ($uploadData != '') {
+                        if (strpos($file_name, 'test_') !== false) {
+                            #test file
+                            $message['data_assoc_concept'] = $uploadData[0]['data_assoc_concept'];
+                            $message['responsecomplete_ts'] = $uploadData[0]['responsecomplete_ts'];
+                        }else {
+                            $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null, null, null, null, false, false, false,
+                                "[data_assoc_concept] = " . $uploadData[0]['data_assoc_concept'] . " AND [data_assoc_request] = " . $uploadData[0]['data_assoc_request'] .
+                                " AND [data_upload_person] = " . $uploadData[0]['data_upload_person'] . " AND [data_upload_region] = " . $uploadData[0]['data_upload_region']);
+                            $request_DU = getProjectInfoArray($RecordSetUpload)[0];
+
+                            if ($request_DU != "") {
+                                $found = false;
+                                foreach ($request_DU as $upload) {
+                                    if (strtotime($upload['responsecomplete_ts']) == strtotime($uploadData[0]['responsecomplete_ts']) || $upload['responsecomplete_ts'] == "") {
+                                        self::addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settings, $upload['record_id']);
+                                        $found = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!$found) {
+                                    self::addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settings, "");
+                                }
+                            } else {
+                                #Record is missing, create new one
+                                self::addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settings, "");
+                            }
+                        }
+                    }
+
+                    if($email != false) {
+                        #Delete the object after uploading the record
+                        #JSON
+                        $result = $s3->deleteObject(array(
+                            'Bucket' => $bucket,
+                            'Key' => $object['Key']
+                        ));
+
+                        #REPORT
+                        $reportHash = "Report" . str_replace("_details", "", $file_name) . ".pdf";
+                        $result = $s3->deleteObject(array(
+                            'Bucket' => $bucket,
+                            'Key' => 'pending/' . $reportHash
+                        ));
+                    }
+                }
+            }
+            return $message;
+        } catch (S3Exception $e) {
+            echo $e->getMessage() . "\n";
+        }
     }
 
     public static function sendEmailToday($upload, $extra_days_delete, $extra_days, $extra_days2){
@@ -494,7 +835,7 @@ class AllCrons
         return $downloadersOrdered;
     }
 
-    public static function sendExpReminder($module, $sop, $down, $upload, $expired_date_reminder, $expired_date_reminder2, $expired_date_delete, $name_uploader, $region_code_uploader, $concept_id, $concept_title, $date_time, $settings, $email, $messageArray)
+    public static function sendExpReminder($module, $pidsArray, $sop, $down, $upload, $expired_date_reminder, $expired_date_reminder2, $expired_date_delete, $name_uploader, $region_code_uploader, $concept_id, $concept_title, $date_time, $settings, $email, $messageArray)
     {
         if (strtotime($expired_date_reminder) == strtotime(date('Y-m-d'))) {
             $subject = $settings['hub_name'] . " Data Request for " . $concept_id . " download expires on " . $expired_date_delete;
@@ -521,9 +862,97 @@ class AllCrons
 
         if ($email) {
             sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id']);
-            \REDCap::logEvent("Reminder Sent<br/>Record " . $upload['record_id'], $reminder_num . " days reminder \nTo: " . $down['email'] . "\nConcept ID: " . $concept_id . "\n", null, null, null, IEDEA_DATAUPLOAD);
+            \REDCap::logEvent("Reminder Sent<br/>Record " . $upload['record_id'], $reminder_num . " days reminder \nTo: " . $down['email'] . "\nConcept ID: " . $concept_id . "\n", null, null, null, $pidsArray['DATAUPLOAD']);
         }
         return $messageArray;
+    }
+
+    function addUploadRecord($module, $pidsArray, $s3, $uploadData, $file_name, $bucket, $settings, $record = "")
+    {
+        #Email Data
+        $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $uploadData[0]['data_assoc_concept']));
+        $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
+
+        $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $uploadData[0]['data_assoc_request']));
+        $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+
+        $uploader_name = getPeopleName($uploadData[0]['data_upload_person'], "");
+
+        $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $uploadData[0]['data_upload_region']));
+        $region_codeUp = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+
+        $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_status_dashboard.php?pid=" . $pidsArray['DATAUPLOAD'];
+
+
+        if ($record != "") {
+            $recordpdf = $record;
+
+            $RecordSetUpload = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record));
+            $upload = getProjectInfoArrayRepeatingInstruments($RecordSetUpload)[0];
+
+            $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recordpdf;
+            $message = "<div>Dear administrator,</div><br/>" .
+                "<div>A pending upload dataset has been found on the Harmonist Data Toolkit server: </div><br/>" .
+                "<div><strong>\"" . $sop['sop_name'] . "\"</strong> uploaded by <em>" . $uploader_name . "</em> from " . $region_codeUp . " on " . $uploadData[0]['responsecomplete_ts'] . " Eastern US Time (ET).</div><br/>" .
+                "<div>This upload record has now been added to the Hub REDCap project as <a href='" . $link . "'>Record ID " . $recordpdf . "</a>.</div>" .
+                "<div>All associated notification emails have been activated.</div><br/>" .
+                "<div>Click here to view the <a href='" . $gotoredcap . "'>Hub Uploads</a> page.</div>";
+        } else {
+            $recordpdf = $module->framework->addAutoNumberedRecord($pidsArray['DATAUPLOAD']);
+
+            $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recordpdf;
+            $message = "<div>Dear administrator,</div><br/>" .
+                "<div>A pending upload dataset has been found on the Harmonist Data Toolkit server: </div><br/>" .
+                "<div><strong>\"" . $sop['sop_name'] . "\"</strong> uploaded by <em>" . $uploader_name . "</em> from " . $region_codeUp . " on " . $uploadData[0]['responsecomplete_ts'] . " Eastern US Time (ET).</div><br/>" .
+                "<div>A <strong>partial, matching upload record</strong> was found in the Hub REDCap project under <a href='" . $link . "'>Record ID " . $recordpdf . "</a>. This record has now been updated with additional information.</div>" .
+                "<div>All associated notification emails have been activated.</div><br/>" .
+                "<div>Click here to view the <a href='" . $gotoredcap . "'>Hub Uploads</a> page.</div>";
+        }
+
+        $Proj = new \Project($pidsArray['DATAUPLOAD']);
+        $event_id = $Proj->firstEventId;
+        $recordUp = array();
+        $recordUp[$recordpdf][$event_id]['data_assoc_concept'] = $uploadData[0]['data_assoc_concept'];
+        $recordUp[$recordpdf][$event_id]['data_assoc_request'] = $uploadData[0]['data_assoc_request'];
+        $recordUp[$recordpdf][$event_id]['data_upload_person'] = $uploadData[0]['data_upload_person'];
+        $recordUp[$recordpdf][$event_id]['data_upload_region'] = $uploadData[0]['data_upload_region'];
+        $recordUp[$recordpdf][$event_id]['responsecomplete_ts'] = $uploadData[0]['responsecomplete_ts'];
+        $recordUp[$recordpdf][$event_id]['data_upload_bucket'] = $uploadData[0]['data_upload_bucket'];
+        $recordUp[$recordpdf][$event_id]['data_upload_folder'] = $uploadData[0]['data_upload_folder'];
+        $recordUp[$recordpdf][$event_id]['data_upload_zip'] = $uploadData[0]['data_upload_zip'];
+        $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $recordUp, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $recordpdf, 1);
+
+        if (($record != "" && $upload['data_upload_pdf'] == "") || $record == "") {
+            //SAVE PDF ON DB
+            $reportHash = "Report" . str_replace("_details", "", $file_name);
+            $storedName = md5($reportHash);
+            $filePath = EDOC_PATH . $storedName;
+            $s3->registerStreamWrapper();
+            $output = file_get_contents('s3://' . $bucket . '/pending/' . $reportHash . ".pdf");
+            $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
+
+            //Save document on DB
+            $q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)", [$storedName, 'application/octet-stream', $reportHash . ".pdf", $filesize, '.pdf', '0', $pidsArray['DATAUPLOAD'], date('Y-m-d h:i:s')]);
+            $docId = db_insert_id();
+
+            //Add document DB ID to project
+            $jsonConcepts = json_encode(array(array('record_id' => $recordpdf, 'data_upload_pdf' => $docId)));
+            $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'json', $jsonConcepts, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+
+            \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $record, 1);
+
+        }
+
+        #EMAIL NOTIFICATION
+        $subject = "Pending dataset upload found for " . $settings['hub_name'] . " " . $concept_id;
+
+        if ($settings['hub_email_pending_uploads'] != "") {
+            $emails = explode(';', $settings['hub_email_pending_uploads']);
+            foreach ($emails as $email) {
+                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $recordpdf);
+            }
+        }
     }
 }
 

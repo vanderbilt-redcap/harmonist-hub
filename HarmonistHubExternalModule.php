@@ -8,6 +8,8 @@ use ExternalModules\ExternalModules;
 
 require_once(dirname(__FILE__)."/classes/REDCapManagement.php");
 require_once(dirname(__FILE__)."/projects.php");
+require_once(dirname(__FILE__)."/vendor/autoload.php");
+include_once(dirname(__FILE__)."/functions.php");
 
 class HarmonistHubExternalModule extends AbstractExternalModule
 {
@@ -126,20 +128,49 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function cronMethod($cronAttributes){
-        if($cronAttributes['cron_name'] == 'cron_metrics'){
-            include ("crontasks/cron_metrics.php");
-        }else if($cronAttributes['cron_name'] == 'cron_delete'){
-            include ("crontasks/cron_delete_AWS.php");
-        }else if($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder'){
-            include ("crontasks/cron_data_upload_expiration_reminder.php");
-        }else if($cronAttributes['cron_name'] == 'cron_data_upload_notification'){
-            include ("crontasks/cron_data_upload_notification.php");
-        }else if($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1'){
-           //Every First Monday of the Month
-            include ("crontasks/cron_monthly_digest.php");
-        }else if($cronAttributes['cron_name'] == 'cron_publications'){
-            include ("crontasks/cron_publications.php");
+        $sql="SELECT s.project_id FROM redcap_external_modules m, redcap_external_module_settings s WHERE m.external_module_id = s.external_module_id AND s.value = 'true' AND (m.directory_prefix = 'data-model-browser') AND s.`key` = 'enabled'";
+        $q = $this->query($sql);
+
+        if(APP_PATH_WEBROOT[0] == '/'){
+            $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
         }
+        define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
+
+        $originalPid = $_GET['pid'];
+        while($row = db_fetch_assoc($q)) {
+            $project_id = $row['project_id'];
+            if($project_id != "") {
+                $_GET['pid'] = $project_id;
+
+                $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
+                $settingsPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+                if($settingsPID != "") {
+                    $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
+
+                    #Get Projects ID's
+                    $pidsArray = REDCapManagement::getPIDsArray($project_id);
+
+                    #CRONS
+                    if ($settings['des_pdf_regenerate'][1] == '1') {
+                        if($cronAttributes['cron_name'] == 'cron_metrics'){
+                            include ("crontasks/cron_metrics.php");
+                        }else if($cronAttributes['cron_name'] == 'cron_delete'){
+                            include ("crontasks/cron_delete_AWS.php");
+                        }else if($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder'){
+                            include ("crontasks/cron_data_upload_expiration_reminder.php");
+                        }else if($cronAttributes['cron_name'] == 'cron_data_upload_notification'){
+                            include ("crontasks/cron_data_upload_notification.php");
+                        }else if($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1'){
+                            //Every First Monday of the Month
+                            include ("crontasks/cron_monthly_digest.php");
+                        }else if($cronAttributes['cron_name'] == 'cron_publications'){
+                            include ("crontasks/cron_publications.php");
+                        }
+                    }
+                }
+            }
+        }
+        $_GET['pid'] = $originalPid;
     }
 
     function hook_every_page_before_render($project_id=null) {

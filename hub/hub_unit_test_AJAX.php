@@ -1,9 +1,12 @@
 <?php
 require_once dirname(dirname(__FILE__))."/projects.php";
 
+$RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
+$settings = getProjectInfoArray($RecordSetSettings)[0];
 
-$methodName = $_POST['methodName'];
-//call_user_func_array(array($this, $methodName), array($arg1, $arg2, $arg3));
-call_user_func_array(array($this, $methodName), array());
+$timestamp = strtotime(date("Y-m-d H:i:s"));
+$_SESSION[$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')."_unit_test_timestamp"] = $timestamp;
+$codeCrypt = getCrypt("start_".$timestamp,'e',$secret_key,$secret_iv);
 
+echo json_encode($codeCrypt);
 ?>

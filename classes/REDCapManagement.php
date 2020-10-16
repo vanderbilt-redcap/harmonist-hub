@@ -44,6 +44,20 @@ class REDCapManagement {
         return $projects_array;
     }
 
+    public static function getPIDsArray($project_id){
+        $projects_array = self::getProjectsContantsArray();
+        $pidsArray = array();
+        foreach ($projects_array as $constant){
+            $RecordSetHarmonist = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='".$constant."'");
+            $pid = getProjectInfoArray($RecordSetHarmonist)[0]['project_id'];
+            if($pid != ""){
+                $pidsArray[$constant] = $pid;
+            }
+        }
+        $pidsArray['PROJECTS'] = $project_id;
+        return $pidsArray;
+    }
+
     public static function getProjectsRepeatableArray(){
         $projects_array_repeatable = array(
             0=>array(0=>array('status'=>1,'instrument'=>'variable_metadata','params'=>'[variable_name]')),

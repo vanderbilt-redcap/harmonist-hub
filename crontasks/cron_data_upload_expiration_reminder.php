@@ -3,10 +3,10 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once(dirname(__FILE__)."/classes/AllCrons.php");
 include_once(__DIR__ ."/../projects.php");
 
-$RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
+$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
 $request_DU = getProjectInfoArray($RecordSetDU);
 
-$RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
+$RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
 $settings = getProjectInfoArray($RecordSetSettings)[0];
 
 $days_expiration = intval($settings['downloadreminder_dur']);
@@ -20,11 +20,12 @@ $days_expiration_delete = intval($settings['retrievedata_expiration']);
 $extra_days_delete = ' + ' . $days_expiration_delete . " days";
 
 foreach ($request_DU as $upload) {
-    $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $upload['data_assoc_request']));
+    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $upload['data_assoc_request']));
     $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
     $message = AllCrons::runCronDataUploadExpirationReminder(
         $module,
+        $pidsArray,
         $upload,
         $sop,
         null,

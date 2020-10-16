@@ -784,15 +784,19 @@ foreach ($projects_array as $index=>$name){
             $module->addProjectToList($project_id_new, $rowtype['event_id'], 1, 'deactivate_toolkit', 1);
         }else if($hub_profile == 'all'){
             #We show everything
-            $subject = "Data Toolkit activation request for ".$hub_projectname. " Hub";
-            $message = "<div>Dear Administrator,</div><br/>".
-            $message = "<div>A new request has been enabled to activate the Data Toolkit for <strong>".$hub_projectname." Hub </strong>(<em>PID ".$project_id."</em>)</div><br/>".
-                        "<div>The following elements need to be enabled:</div>".
-                        "<ul>".
-                        "<li>Data Toolkit</li>".
-                        "<li>AWS Bucket Credentials</li>".
+            if(SERVER_NAME == 'redcap.vanderbilt.edu') {
+                #We send an email with a list of things to set up only in the Vardebilt server
+                $subject = "Data Toolkit activation request for " . $hub_projectname . " Hub";
+                $message = "<div>Dear Administrator,</div><br/>" .
+                    $message = "<div>A new request has been enabled to activate the Data Toolkit for <strong>" . $hub_projectname . " Hub </strong>(<em>PID " . $project_id . "</em>)</div><br/>" .
+                        "<div>The following elements need to be enabled:</div>" .
+                        "<ul>" .
+                        "<li>Data Toolkit</li>" .
+                        "<li>AWS Bucket name</li>" .
+                        "<li>AWS Bucket Credentials</li>" .
                         "</ul>";
-            sendEmail("harmonist@vumc.org", "noreply@vumc.org", "noreply@vumc.org", $subject, $message, "Not in database");
+                sendEmail("harmonist@vumc.org", "noreply@vumc.org", "noreply@vumc.org", $subject, $message, "Not in database");
+            }
         }
 
         \Records::addRecordToRecordListCache($project_id_new, $record,1);

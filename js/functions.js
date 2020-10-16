@@ -1,4 +1,5 @@
 function startDDProjects(){
+    $('#installbtn').prop('disabled', true);
     $.ajax({
         url: startDDProjects_url,
         data: "&pid="+pid,
@@ -1223,22 +1224,33 @@ function installRepeatingForms(fields,url) {
 }
 
 function startUnitTest(url){
-    $("#unitTestbtn").prop("disabled", "true");
-    $("#unitTestMsgContainer").show();
-    $("#unitTestMsgContainer").addClass("install-metadata-box-warning");
-    $("#unitTestMsgContainer").html("<em class='fa fa-spinner fa-spin'></em> Starting Unit Test...");
-    var methodNamesArray = ["cron_data_upload_epiration_reminder", "cron_data_upload_notificarion", "cron_publications", "cron_upload_pending_data_set_data"];
-    // $.post(url, {method:methodName}, function(data) {
-        // $("#unitTestMsgContainer").removeClass("install-metadata-box-warning");
-        // if (!data.match(/Exception/)) {
-        //     $("#unitTestMsgContainer").addClass("install-metadata-box-success");
-        //     $("#unitTestMsgContainer").html("<i class='fa fa-check' aria-hidden='true'></i> Testing Complete");
-        //     setTimeout(function() {
-        //         $("#formsWarning").fadeOut(500);
-        //     }, 3000);
-        // } else {
-        //     $("#unitTestMsgContainer").addClass("install-metadata-box-danger");
-        //     $("#unitTestMsgContainer").html("Error while testing!"+JSON.stringify(data));
-        // }
-    // });
+    $('#unitTestbtn').prop('disabled',true);
+    $('#unitTestMsgContainer').show();
+    $.ajax({
+        type: "POST",
+        url: url,
+        error: function (xhr, status, error) {
+            alert(xhr.responseText);
+        },
+        success: function (result) {
+            paramValue = jQuery.parseJSON(result);
+            var Newulr = getParamUrl(window.location.href,paramValue);
+            window.location.href = Newulr;
+        }
+    });
+}
+
+function getParamUrl(url, newParam){
+    if (url.substring(url.length-1) == "#")
+    {
+        url = url.substring(0, url.length-1);
+    }
+
+    if(url.match(/(&test=)/)){
+        var oldParam = url.split("&test=")[1];
+        url = url.replace( oldParam, newParam );
+    }else{
+        url = url + "&test="+newParam;
+    }
+    return url;
 }

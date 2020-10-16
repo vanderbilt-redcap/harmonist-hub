@@ -69,7 +69,9 @@ function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
                         }
                     }
                     foreach ($datarepeat as $field=>$datai){
-                        if($array[$index][$field] == ""){
+                        #check if non repeatable value is empty and add repeatable value
+                        #empty value or checkboxes
+                        if($array[$index][$field] == "" || (is_array($array[$index][$field]) && empty($array[$index][$field][1]))){
                             $array[$index][$field] = $datarepeat[$field];
                         }
                     }
@@ -2192,5 +2194,13 @@ function implode_key_and_value($array){
         array_keys($array)
     ));
     return $output;
+}
+
+function startTest($encryptedCode, $secret_key, $secret_iv, $timestamp){
+    $code = getCrypt($encryptedCode,"d",$secret_key,$secret_iv);
+    if($code == "start_".$timestamp){
+        return true;
+    }
+    return false;
 }
 ?>

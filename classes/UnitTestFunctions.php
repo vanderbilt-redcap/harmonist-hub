@@ -9,9 +9,9 @@ use ExternalModules\ExternalModules;
 
 class UnitTestFunctions
 {
-    public function __construct($module){
+    public function __construct($module, $pidsArray){
         $this->module = $module;
-//        parent::__construct();
+        $this->pidsArray = $pidsArray;
     }
 
     function testCrons(){
@@ -19,6 +19,19 @@ class UnitTestFunctions
         self::testCronDataUploadNotification();
         self::testCronMonthlyDigest();
         self::testCronDeleteAws();
+        self::testCronMetrics();
+//        self:testCronUploadPendingDataSetData();
+        self::activateButton();
+    }
+
+    function getS3(){
+        $credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
+        $s3 = new S3Client([
+            'version' => 'latest',
+            'region' => 'us-east-2',
+            'credentials' => $credentials
+        ]);
+        return $s3;
     }
 
     function getRequestDU(){
@@ -88,6 +101,7 @@ class UnitTestFunctions
         foreach (self::getRequestDU() as $upload) {
             $message = AllCrons::runCronDataUploadExpirationReminder(
                 $this->module,
+                $this->pidsArray,
                 $upload,
                 array('sop_downloaders' => '1,2'),
                 self::getPeopleDown(),
@@ -125,6 +139,7 @@ class UnitTestFunctions
 
             $messageArrayRealData = AllCrons::runCronDataUploadExpirationReminder(
                 $this->module,
+                $this->pidsArray,
                 $upload,
                 $sop,
                 null,
@@ -188,6 +203,7 @@ class UnitTestFunctions
         foreach (self::getRequestDU() as $upload) {
             $message = AllCrons::runCronDataUploadNotification(
                 $this->module,
+                $this->pidsArray,
                 $upload,
                 array('sop_downloaders' => '1,2'),
                 self::getPeopleDown(),
@@ -210,11 +226,11 @@ class UnitTestFunctions
     }
 
     function testCronMonthlyDigest(){
-
         $settings = self::getSettings();
 
         $message = AllCrons::runCronMonthlyDigest(
             $this->module,
+            $this->pidsArray,
             self::getDigestRequests(),
             self::getDigestRequests(),
             self::getDigestRequests(),
@@ -240,6 +256,7 @@ class UnitTestFunctions
 
         $message = AllCrons::runCronMonthlyDigest(
             $this->module,
+            $this->pidsArray,
             $requests,
             $requests_hub,
             $sops,
@@ -271,6 +288,7 @@ class UnitTestFunctions
         foreach (self::getRequestDU() as $upload) {
             $message = AllCrons::runCronDeleteAws(
                 $this->module,
+                $this->pidsArray,
                 null,
                 $upload,
                 array('sop_downloaders' => '1,2'),
@@ -292,7 +310,48 @@ class UnitTestFunctions
         }
     }
 
-    function runCronUploadPendingDataSetData(){
+    function testCronMetrics(){
+        foreach (self::getRequestDU() as $upload) {
+            $message = AllCrons::runCronMetrics(
+                $this->module,
+                $this->pidsArray,
+                false
+            );
+        }
+
+        echo $this->getTestOutputMessage('Metrics CRON',1, $message['metrics']);
+
+    }
+
+    function activateButton(){
+        echo "<script>
+                 $('#unitTestMsgContainer').hide();
+                 $('#unitTestbtn').prop('disabled',false);
+               </script>";
+    }
+
+    function testCronUploadPendingDataSetData(){
+        $settings = self::getSettings();
+
+        foreach (self::getRequestDU() as $upload) {
+            $message = AllCrons::runCronUploadPendingDataSetData(
+                $this->module,
+                $this->pidsArray,
+                self::getS3(),
+                $bucket,
+                $settings,
+                false
+            );
+        }
+
+        $succMsg = $this->getTestOutputMessage('Upload Pending Data Set Data CRON',"2020-06-04 10:59:11", $message['responsecomplete_ts']);
+        if($message['data_assoc_concept'] == "116"){
+            echo $succMsg;
+        }
+
+        echo '<div class="alert alert-secondary fade in col-md-12">' .
+            '<span class="fa fa-exclamation-triangle"></span> There are ' . $message['pending_total'] . ' Pending Files.<br>' .
+            '</div>';
 
     }
 
