@@ -24,7 +24,7 @@
     ]
   },
 
-  "no-auth-pages":["configure","downloadFile","startDDProjects","functions"],
+  "no-auth-pages":["configure","downloadFile","startDDProjects","functions", "index"],
 
   "description": "Harmonist Hub",
 

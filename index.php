@@ -310,7 +310,7 @@ if($hub_projectname == '' || $hub_profile == ''){
                         include('sop/sop_data_call_archive.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown'][1] != "1")
                     {
-                        include('sop/sop_retrieve_data.php');
+                        include('sop/sop_download_data.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'out')
                     {
                         include('hub/hub_publications.php');
