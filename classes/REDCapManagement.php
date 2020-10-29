@@ -295,8 +295,9 @@ class REDCapManagement {
     # if present, $fields contains the fields to copy over; if left as an empty array, then it attempts to install all fields
     # $deletionRegEx contains the regular expression that marks fields for deletion
     # places new metadata rows AFTER last match from $existingMetadata
-    public static function mergeMetadataAndUpload($module, $existingMetadata, $newMetadata, $fields = array(), $deletionRegEx = "/___delete$/", $project_id) {
+    public static function mergeMetadataAndUpload($module, $originalMetadata, $newMetadata, $fields = array(), $deletionRegEx = "/___delete$/", $project_id) {
         $fieldsToDelete = self::getFieldsWithRegEx($newMetadata, $deletionRegEx, TRUE);
+        $existingMetadata = $originalMetadata;
 
         if (empty($fields)) {
             $selectedRows = $newMetadata;
@@ -306,7 +307,7 @@ class REDCapManagement {
         $upload = array();
         foreach ($selectedRows as $newRow) {
             if (!in_array($newRow['field_name'], $fieldsToDelete)) {
-                $priorRowField = "record_id";
+                $priorRowField = end($existingMetadata)['field_name'];
                 foreach ($newMetadata as $row) {
                     if ($row['field_name'] == $newRow['field_name']) {
                         break;
@@ -314,6 +315,10 @@ class REDCapManagement {
                         $priorRowField = $row['field_name'];
                     }
                 }
+                if (self::atEndOfMetadata($priorRowField, $selectedRows, $newMetadata)) {
+                    $priorRowField = end($originalMetadata)['field_name'];
+                }
+
                 $tempMetadata = array();
                 $priorNewRowField = "";
                 foreach ($existingMetadata as $row) {
@@ -336,5 +341,25 @@ class REDCapManagement {
         }
         $metadataFeedback = $module->saveMetadata($project_id, $existingMetadata);
         return $metadataFeedback;
+    }
+
+    # returns TRUE if and only if fields in $newMetadata after $priorField are fields in $newRows
+    private static function atEndOfMetadata($priorField, $newRows, $newMetadata) {
+        $newFields = [];
+        foreach ($newRows as $row) {
+            $newFields[] = $row['field_name'];
+        }
+
+        $found = FALSE;
+        foreach ($newMetadata as $row) {
+            if ($found) {
+                if (!in_array($row['field_name'], $newFields)) {
+                    return FALSE;
+                }
+            } else if ($priorField == $row['field_name']) {
+                $found = TRUE;
+            }
+        }
+        return TRUE;
     }
 }
