@@ -1,5 +1,5 @@
 <?php
-namespace Vanderbilt\DataModelBrowserExternalModule;
+namespace Vanderbilt\HarmonistHubExternalModule;
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;

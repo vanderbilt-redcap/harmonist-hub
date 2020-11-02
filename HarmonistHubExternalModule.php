@@ -7,9 +7,8 @@ use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
 require_once(dirname(__FILE__)."/classes/REDCapManagement.php");
-require_once(dirname(__FILE__)."/projects.php");
 require_once(dirname(__FILE__)."/vendor/autoload.php");
-include_once(dirname(__FILE__)."/functions.php");
+//include_once(dirname(__FILE__)."/functions.php");
 
 class HarmonistHubExternalModule extends AbstractExternalModule
 {

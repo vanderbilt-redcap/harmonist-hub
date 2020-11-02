@@ -1,7 +1,8 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+require_once dirname(dirname(__FILE__))."/classes/ExcelFunctions.php";
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 
@@ -161,10 +162,10 @@ $section_headers_leters = array(0=>'A',1=>'B',2=>'C',3=>'D',4=>'E',5=>'F',6=>'G'
 $section_headers_width = array(0=>'14',1=>'20',2=>'30',3=>'10',4=>'25',5=>'15',6=>'15',7=>'15',8=>'15',9=>'30',10=>'30',11=>'10',12=>'20',13=>'20',14=>'20',15=>'20');
 $section_centered = array(0=>'0',1=>'0',2=>'0',3=>'1',4=>'0',5=>'0',6=>'0',7=>'0',8=>'0',9=>'0',10=>'0',11=>'1',12=>'0',13=>'0',14=>'0',15=>'0');
 $row_number = 1;
-$sheet = getExcelHeaders($sheet,$section_headers,$section_headers_leters,$section_headers_width,$row_number);
+$sheet = ExcelFunctions::getExcelHeaders($sheet,$section_headers,$section_headers_leters,$section_headers_width,$row_number);
 $sheet->setAutoFilter('A1:K1');
 $row_number++;
-$sheet = getExcelData($sheet,$multireg_con,$section_headers,$section_headers_leters,$section_centered,$row_number,"1");
+$sheet = ExcelFunctions::getExcelData($sheet,$multireg_con,$section_headers,$section_headers_leters,$section_centered,$row_number,"1");
 
 #Rename sheet
 $sheet->setTitle('MultiReg concepts');
@@ -179,11 +180,11 @@ $section_headers_leters = array(0=>'A',1=>'B',2=>'C',3=>'D',4=>'E',5=>'F',6=>'G'
 $section_headers_width = array(0=>'14',1=>'30',2=>'10',3=>'30',4=>'20',5=>'14',6=>'14',7=>'8',8=>'8');
 $section_centered = array(0=>'0',1=>'0',2=>'1',3=>'0',4=>'0',5=>'0',6=>'0',7=>'1',8=>'1');
 $row_number = 1;
-$sheet = getExcelHeaders($p_sheet,$section_headers,$section_headers_leters,$section_headers_width,$row_number);
+$sheet = ExcelFunctions::getExcelHeaders($p_sheet,$section_headers,$section_headers_leters,$section_headers_width,$row_number);
 $sheet->setAutoFilter('A1:G1');
 $sheet->getRowDimension($row_number)->setRowHeight(40);
 $row_number++;
-$sheet = getExcelData($p_sheet,$multireg_pub,$section_headers,$section_headers_leters,$section_centered,$row_number,"2");
+$sheet = ExcelFunctions::getExcelData($p_sheet,$multireg_pub,$section_headers,$section_headers_leters,$section_centered,$row_number,"2");
 
 
 ///MULTIREG CONF ABSTRACTS///
@@ -196,10 +197,10 @@ $section_headers_leters = array(0=>'A',1=>'B',2=>'C',3=>'D',4=>'E',5=>'F',6=>'G'
 $section_headers_width = array(0=>'14',1=>'15',2=>'10',3=>'30',4=>'40',5=>'14',6=>'14');
 $section_centered = array(0=>'0',1=>'0',2=>'1',3=>'0',4=>'0',5=>'0',6=>'1');
 $row_number = 1;
-$sheet = getExcelHeaders($mca_sheet,$section_headers,$section_headers_leters,$section_headers_width,$row_number);
+$sheet = ExcelFunctions::getExcelHeaders($mca_sheet,$section_headers,$section_headers_leters,$section_headers_width,$row_number);
 $sheet->setAutoFilter('A1:F1');
 $row_number++;
-$sheet = getExcelData($mca_sheet,$multireg_abs,$section_headers,$section_headers_leters,$section_centered,$row_number,"2");
+$sheet = ExcelFunctions::getExcelData($mca_sheet,$multireg_abs,$section_headers,$section_headers_leters,$section_centered,$row_number,"2");
 
 
 $writer = new Xlsx($spreadsheet);

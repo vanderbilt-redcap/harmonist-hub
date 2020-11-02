@@ -1,7 +1,8 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+require_once(dirname(__FILE__)."/classes/ExcelFunctions.php");
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $RecordSetConcetps = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
@@ -85,10 +86,10 @@ $section_headers_leters = array(0=>'A',1=>'B',2=>'C',3=>'D',4=>'E',5=>'F',6=>'G'
 $section_headers_width = array(0=>'14',1=>'50',2=>'50',3=>'10',4=>'10',5=>'25',6=>'15',7=>'25',8=>'10',9=>'10');
 $section_centered = array(0=>'0',1=>'0',2=>'0',3=>'0',4=>'1',5=>'0',6=>'0',7=>'0',8=>'1',9=>'1');
 $row_number = 1;
-$sheet = getExcelHeaders($sheet,$section_headers,$section_headers_leters,$section_headers_width,$row_number);
+$sheet = ExcelFunctions::getExcelHeaders($sheet,$section_headers,$section_headers_leters,$section_headers_width,$row_number);
 $sheet->setAutoFilter('A1:K1');
 $row_number++;
-$sheet = getExcelData($sheet,$excel_data,$section_headers,$section_headers_leters,$section_centered,$row_number,"1");
+$sheet = ExcelFunctions::getExcelData($sheet,$excel_data,$section_headers,$section_headers_leters,$section_centered,$row_number,"1");
 
 #Rename sheet
 $sheet->setTitle('Outputs');
