@@ -58,10 +58,15 @@ foreach($linkedProjects as $projectTitle) {
 
 $secret_key="";
 $secret_iv="";
+
 require_once (__DIR__ . '/vendor/autoload.php');
 include_once(__DIR__ . "/email.php");
 include_once("functions.php");
+include_once(__DIR__ . "/classes/REDCapManagement.php");
+include_once(__DIR__ . "/classes/ArrayFunctions.php");
+include_once(__DIR__ . "/classes/ProjectData.php");
+use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
-$settings = getProjectInfoArray($RecordSetSettings)[0];
+$settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 

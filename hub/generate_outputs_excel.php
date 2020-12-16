@@ -2,17 +2,16 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-require_once(dirname(__FILE__)."/classes/ExcelFunctions.php");
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $RecordSetConcetps = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
-$concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
+$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 
 $RecordSetExtraOutputs = \REDCap::getData(IEDEA_EXTRAOUTPUTS, 'array', null);
-$extra_outputs = getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
+$extra_outputs = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 
-array_sort_by_column($extra_outputs,'output_year',SORT_DESC);
-array_sort_by_column($comments_sevenDaysYoung, 'concept_id',SORT_DESC);
+ArrayFunctions::array_sort_by_column($extra_outputs,'output_year',SORT_DESC);
+ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'concept_id',SORT_DESC);
 
 $abstracts_publications_type = $module->getChoiceLabels('output_type', IEDEA_HARMONIST);
 $excel_data = array();
@@ -51,7 +50,7 @@ foreach ($extra_outputs as $output){
         $excel_data_aux[8] = "MR";
     }else if($output['producedby_region'] == 1){
         $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $output['lead_region']));
-        $my_region = getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
+        $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
         $region = "";
         if($my_region != ""){
             $region = " (".$my_region.")";

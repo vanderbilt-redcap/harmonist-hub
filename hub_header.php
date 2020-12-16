@@ -1,6 +1,9 @@
 <?php
+use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
+use Vanderbilt\HarmonistHubExternalModule\ProjectData;
+
 $RecordSetCurrentUser = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[access_token] = '".$token."'");
-$current_user = getProjectInfoArray($RecordSetCurrentUser)[0];
+$current_user = ProjectData::getProjectInfoArray($RecordSetCurrentUser)[0];
 $name = $current_user['firstname'].' '.$current_user['lastname'];
 
 $isAdmin = false;
@@ -8,11 +11,11 @@ if($current_user['harmonistadmin_y'] == '1'){//$userRights->super_user == "1"
     $isAdmin = true;
 }
 $RecordSetPersonRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
-$person_region = getProjectInfoArray($RecordSetPersonRegion)[0];
+$person_region = ProjectData::getProjectInfoArray($RecordSetPersonRegion)[0];
 
 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array',null);
-$requests = getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
-array_sort_by_column($requests, 'due_d');
+$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
+ArrayFunctions::array_sort_by_column($requests, 'due_d');
 
 $request_type_label = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
 $request_response_person = $module->getChoiceLabels('response_person', IEDEA_RMANAGER);
@@ -21,8 +24,8 @@ $numberOfOpenRequest = numberOfOpenRequest($requests,$current_user['person_regio
 $request_admin = "";
 if($isAdmin) {
     $RecordSetRM_admin = \REDCap::getData(IEDEA_RMANAGER, 'array', null);
-    $request_admin = getProjectInfoArrayRepeatingInstruments($RecordSetRM_admin);
-    array_sort_by_column($request_admin, 'requestopen_ts');
+    $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM_admin);
+    ArrayFunctions::array_sort_by_column($request_admin, 'requestopen_ts');
     $numberOfAdminRequest = numberOfAdminRequest($request_admin);
 }
 ?>

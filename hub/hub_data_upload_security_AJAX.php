@@ -1,4 +1,5 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $record = $_REQUEST['upload_record'];
@@ -9,13 +10,13 @@ $concept_sheet = '';
 $concept_title = '';
 if(!empty($assoc_concept)){
     $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $assoc_concept));
-    $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
     $concept_sheet = $concept['concept_id'];
     $concept_title = $concept['concept_title'];
 }
 
 $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $user));
-$upload_user = getProjectInfoArray($RecordSetPeopleDown)[0];
+$upload_user = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
 
 $token = getRandomIdentifier(12);
 

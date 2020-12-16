@@ -1,17 +1,19 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
-$TBLCenter = getProjectInfoArray($RecordSetTBLCenter);
+$TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
 
 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-$regionstbl = getProjectInfoArray($RecordSetRegions);
-array_sort_by_column($regionstbl, 'region_code');
+$regionstbl = ProjectData::getProjectInfoArray($RecordSetRegions);
+ArrayFunctions::array_sort_by_column($regionstbl, 'region_code');
 
 $region_array = getTBLCenterUpdatePercentRegions($TBLCenter, $regionstbl, $settings['pastlastreview_dur']);
 
 $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 8);
 
 $RecordSetRegionsAll = \REDCap::getData(IEDEA_REGIONS, 'array', null);
-$regions_all = getProjectInfoArray($RecordSetRegionsAll);
+$regions_all = ProjectData::getProjectInfoArray($RecordSetRegionsAll);
 $map_region = $person_region['region_code'];
 foreach($regions_all as $region){
     if($region['record_id'] == $current_user['person_region'] && ($region['region_tbl_option'] != "0" || !array_key_exists('region_tbl_option', $region))){

@@ -1,4 +1,5 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 use Vanderbilt\HarmonistHubExternalModule\AllCrons;
@@ -13,7 +14,7 @@ $s3 = new S3Client([
 ]);
 
 $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$request_DU = getProjectInfoArray($RecordSetDU);
+$request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
 
 $today = date('Y-m-d');
 $days_expiration = intval($settings['retrievedata_expiration']);
@@ -37,7 +38,7 @@ foreach (self::getRequestDU() as $upload) {
 
 #Delete tokens expired on H18 Data Toolkit
 $RecordSetSecurity = \REDCap::getData($pidsArray['DATATOOLUPLOADSECURITY'], 'array', null);
-$securityTokens = getProjectInfoArray($RecordSetSecurity);
+$securityTokens = ProjectData::getProjectInfoArray($RecordSetSecurity);
 $today = strtotime(date("Y-m-d"));
 foreach ($securityTokens as $token){
     if(strtotime($token['tokenexpiration_ts']) <= $today){

@@ -1,9 +1,10 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 
 $q = $module->query("SELECT MAX(record) as record FROM redcap_data WHERE project_id = ?",[IEDEA_METRICS]);
 $row = $q->fetch_assoc();
 $RecordSetMetrics = \REDCap::getData(IEDEA_METRICS, 'array', array('record_id' => $row['record']));
-$metrics = getProjectInfoArray($RecordSetMetrics)[0];
+$metrics = ProjectData::getProjectInfoArray($RecordSetMetrics)[0];
 
 $array_sections = array(0=>'requests',1=>'comments',2=>'users');
 $array_sections_title = array(0=>'requests', 1=>'comments',2=>'users by region');
@@ -20,8 +21,8 @@ $sections_donuts_title = array(0=>'requests', 1=>'comments',2=>'users by region'
  **/
 #REQUESTS
 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = 1");
-$request = getProjectInfoArrayRepeatingInstruments($RecordSetRM);
-array_sort_by_column($request, 'due_d');
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+ArrayFunctions::array_sort_by_column($request, 'due_d');
 
 $instance = $current_user['person_region'];
 if ($instance == 1) {
@@ -52,7 +53,7 @@ foreach ($request as $req){
 
 #USERS
 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array',  null);
-$regions = getProjectInfoArray($RecordSetRegions);
+$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 $array_region = array();
 $array_region_code = array();
 foreach ($regions as $region){
@@ -65,7 +66,7 @@ foreach ($regions as $region){
 }
 
 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array',  null,null,null,null,false,false,false,"[last_requested_token_d] <> ''");
-$people = getProjectInfoArray($RecordSetPeople);
+$people = ProjectData::getProjectInfoArray($RecordSetPeople);
 foreach ($people as $person){
     foreach ($array_region as $region=>$value){
         if($region == $person['person_region']){
@@ -103,16 +104,16 @@ foreach ($array_region_code as $rcode){
  **/
 #FILE ACTIVITY
 $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
-$number_uploads = count(getProjectInfoArray($RecordSetDU));
+$number_uploads = count(ProjectData::getProjectInfoArray($RecordSetDU));
 
 $RecordSetDN = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null);
-$number_downloads = count(getProjectInfoArray($RecordSetDN));
+$number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDN));
 
 $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '2'");
-$number_deletes = count(getProjectInfoArray($RecordSetDU));
+$number_deletes = count(ProjectData::getProjectInfoArray($RecordSetDU));
 
 $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '1'");
-$number_deletes_auto = count(getProjectInfoArray($RecordSetDU));
+$number_deletes_auto = count(ProjectData::getProjectInfoArray($RecordSetDU));
 
 $fileActivity_values = array(0 => $number_uploads,1 => $number_downloads,2 => $number_deletes);
 $fileActivity_total = $number_uploads + $number_downloads;
@@ -128,15 +129,15 @@ $downRegion_colors = array();
 $wg_percent_down = 75;
 $wg_percent_up = 75;
 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-$regions = getProjectInfoArray($RecordSetRegions);
+$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 foreach ($regions as $region){
     array_push($upRegion_labels,$region['region_code']);
     array_push($downRegion_labels,$region['region_code']);
 
     $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[data_upload_region] = '".$region['record_id']."'");
-    array_push($upRegion_values,count(getProjectInfoArray($RecordSetDU)));
+    array_push($upRegion_values,count(ProjectData::getProjectInfoArray($RecordSetDU)));
     $RecordSetDN = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null,null,null,null,false,false,false,"[downloader_region] = '".$region['record_id']."'");
-    array_push($downRegion_values,count(getProjectInfoArray($RecordSetDN)));
+    array_push($downRegion_values,count(ProjectData::getProjectInfoArray($RecordSetDN)));
 
     $color_up = "hsl(120,39%,".$wg_percent_up."%)";
     $color_down = "hsl(210,50%,".$wg_percent_down."%)";
@@ -155,7 +156,7 @@ $fileActivity_colors = array(0 => "#5cb85c",1 => "#337ab7",2 => "#eb6e60");
 #Statistics Data & Data Call timeline
  **/
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = '1'");
-$request_dataCall = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+$request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
 
 #DATA CALL TIMELINE
 $current_year = date('Y');
@@ -216,7 +217,7 @@ foreach ($request_dataCall as $dataCall){
     if($dataCall['sop_closed_y'][1] == '1'){
         $dataCall_closed += 1;
         $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
-        $dataCall_avg_count +=count(getProjectInfoArray($RecordSetDU)[0]);
+        $dataCall_avg_count +=count(ProjectData::getProjectInfoArray($RecordSetDU)[0]);
     }
 
     if($dataCall['sop_downloaders'] != ""){
@@ -229,7 +230,7 @@ foreach ($request_dataCall as $dataCall){
     }
 
     $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
-    if(strtotime($dataCall['sop_due_d']) >= strtotime(getProjectInfoArray($RecordSetDU)[0]['responsecomplete_ts'])){
+    if(strtotime($dataCall['sop_due_d']) >= strtotime(ProjectData::getProjectInfoArray($RecordSetDU)[0]['responsecomplete_ts'])){
         $datasets_up_due++;
     }else{
         $datasets_up_afterdue++;
@@ -276,7 +277,7 @@ $dataCall_avg = round($dataCall_avg_count/$dataCall_closed,2);
  **/
 $harmonist_regperm_labels = $module->getChoiceLabels('harmonist_regperm', IEDEA_PEOPLE);
 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null);
-$people = getProjectInfoArray($RecordSetPeople);
+$people = ProjectData::getProjectInfoArray($RecordSetPeople);
 $array_communications = array();
 $communications_years = array();
 for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++){

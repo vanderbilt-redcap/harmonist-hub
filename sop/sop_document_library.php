@@ -1,6 +1,8 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $RecordSetFileLibrary = \REDCap::getData(IEDEA_FILELIBRARY, 'array');
-$fileLibrary = getProjectInfoArray($RecordSetFileLibrary);
+$fileLibrary = ProjectData::getProjectInfoArray($RecordSetFileLibrary);
 
 $file_tags = $module->getChoiceLabels('file_tags', IEDEA_FILELIBRARY);
 $upload_type = $module->getChoiceLabels('upload_type', IEDEA_FILELIBRARY);
@@ -155,7 +157,7 @@ $upload_type = $module->getChoiceLabels('upload_type', IEDEA_FILELIBRARY);
                             }
 
                             $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $filel['file_uploader']));
-                            $people = getProjectInfoArray($RecordSetPeople)[0];
+                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $file_pdf = (!is_numeric($filel['file'])) ? $filel['file_title'] : getOtherFilesLink($module, $filel['file'], $filel['record_id'], $current_user['record_id'], $secret_key, $secret_iv, $filel['file_title']);

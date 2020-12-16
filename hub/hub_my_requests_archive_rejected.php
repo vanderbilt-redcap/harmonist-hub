@@ -1,4 +1,6 @@
-
+<?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+?>
 <script>
     $(document).ready(function() {
         var person_name = <?=json_encode($person_name)?>;
@@ -62,11 +64,11 @@
         <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
             <?php
             $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array',null,null,null,null,false,false,false,"[approval_y] != 1");
-            $request_reject = getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+            $request_reject = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
             if(!empty($request_reject)) {
                 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                $regions = getProjectInfoArray($RecordSetRegions);
-                array_sort_by_column($regions, 'region_code');
+                $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                 $user_req_header = getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '2','archive');
 

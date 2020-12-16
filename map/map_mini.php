@@ -1,6 +1,5 @@
 <?php
-#this avoids asking to log in in RedCap
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 #Color code & Region names
@@ -34,11 +33,11 @@ foreach($codes as $iso2 => $iso3) {
 
 #Get the data and tranform it to a json
 $RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
-$RecordSetTableTBLC = getProjectInfoArray($RecordSetTBLCenter);
+$RecordSetTableTBLC = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
 $totalLocations = array();
 
 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-$regions = getProjectInfoArray($RecordSetRegions);
+$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 foreach ($regions as $region){
     $totalAreasByRegion[$region['region_code']] = array();
 }

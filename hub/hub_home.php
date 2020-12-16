@@ -1,11 +1,13 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $RecordSetHome = \REDCap::getData(IEDEA_HOME, 'array', null);
-$homepage = getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
+$homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
 $homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', IEDEA_HOME);
 
 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] =1");
-$request = getProjectInfoArrayRepeatingInstruments($RecordSetRM);
-array_sort_by_column($request, 'due_d');
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+ArrayFunctions::array_sort_by_column($request, 'due_d');
 
 $instance = $current_user['person_region'];
 if ($instance == 1) {
@@ -62,8 +64,8 @@ $number_of_quicklinks = $settings['home_number_quicklinks'];
 $number_of_recentactivity = $settings['home_number_recentactivity'];
 
 $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".date('Y-m-d', strtotime("-7 day"))."', \"d\", true) >= 0");
-$comments_sevenDaysYoung = getProjectInfoArray($RecordSetComments);
-array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
+$comments_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetComments);
+ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
 $dealines = array();
 for($i = 1; $i<$number_of_deadlines+1; $i++){
@@ -74,7 +76,7 @@ for($i = 1; $i<$number_of_deadlines+1; $i++){
         array_push($dealines,$event);
     }
 }
-array_sort_by_column($dealines, 'date');
+ArrayFunctions::array_sort_by_column($dealines, 'date');
 
 
 /***GRAPH***/
@@ -261,8 +263,8 @@ if(!empty($homepage)) {
                     <?php
                     if(!empty($requests)) {
                         $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
-                        $regions = getProjectInfoArray($RecordSetRegions);
-                        array_sort_by_column($regions, 'region_code');
+                        $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                        ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                         $user_req_header = getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '1','home');
 
@@ -310,11 +312,11 @@ if(!empty($homepage)) {
                                 echo '<li class="list-group-item">';
 
                                 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $comment['response_person']));
-                                $people = getProjectInfoArray($RecordSetPeople)[0];
+                                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                                 $RecordSetRMComment = \REDCap::getData(IEDEA_RMANAGAER, 'array', array('request_id' => $comment['request_id']));
-                                $requestComment = getProjectInfoArray($RecordSetRMComment)[0];
+                                $requestComment = ProjectData::getProjectInfoArray($RecordSetRMComment)[0];
 
                                 $time = getDateForHumans($comment['responsecomplete_ts']);
 
@@ -368,7 +370,7 @@ if(!empty($homepage)) {
     <div class="col-sm-3">
         <?php
         $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
-        $request_dataCall = getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
+        $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
         $open_data_calls = 0;
         if(!empty($request_dataCall)) {
             foreach ($request_dataCall as $sop) {

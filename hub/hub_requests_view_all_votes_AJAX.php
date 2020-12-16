@@ -1,16 +1,16 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $request_id = $_REQUEST['request_id'];
 $project_id = $_REQUEST['pid'];
 
 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
-$regions = getProjectInfoArray($RecordSetRegions);
-array_sort_by_column($regions, 'region_code');
+$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
 $RecordSetRequest = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $request_id));
-$request = getProjectInfoArrayRepeatingInstruments($RecordSetRequest,null)[0];
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequest,null)[0];
 
 $region_vote_icon_view = array("1" => "fa fa-check", "0" => "fa fa-times", "9" => "fa fa-ban");
 $region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" => "text-default");

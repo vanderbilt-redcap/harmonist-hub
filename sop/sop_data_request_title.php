@@ -1,6 +1,8 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $_REQUEST['record']));
-$sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
 if($sop !="") {
     $sop_status = $module->getChoiceLabels('sop_status', IEDEA_SOP);
@@ -8,18 +10,18 @@ if($sop !="") {
     $status_type = $module->getChoiceLabels('data_response_status', IEDEA_SOP);
 
     $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $sop['sop_concept_id']));
-    $concept_id = getProjectInfoArray($RecordSetConceptSheets)[0]['concept_id'];
+    $concept_id = ProjectData::getProjectInfoArray($RecordSetConceptSheets)[0]['concept_id'];
     $concept = getReqAssocConceptLink($module, $sop['sop_concept_id'], 1);
 
     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_creator']));
-    $people = getProjectInfoArray($RecordSetPeople)[0];
+    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $research_contact = "<em>None</em>";
     if($people['firstname'] != ''){
         $research_contact = $people['firstname'] . ' ' . $people['lastname']." (<a href='mailto:".$people['email']."'>".$people['email']."</a>)";
     }
 
     $RecordSetPeopleDC = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
-    $peopleDC = getProjectInfoArray($RecordSetPeopleDC)[0];
+    $peopleDC = ProjectData::getProjectInfoArray($RecordSetPeopleDC)[0];
     $data_contact = "<em>None</em>";
     if($peopleDC != ''){
         $data_contact = $peopleDC['firstname'] . ' ' . $peopleDC['lastname']." (<a href='mailto:".$peopleDC['email']."'>".$peopleDC['email']."</a>)";
@@ -39,7 +41,7 @@ if($sop !="") {
         $status = 'hidden';
     }
 
-    $date = new DateTime($sop['sop_updated_dt']);
+    $date = new \DateTime($sop['sop_updated_dt']);
     $sop_updated_dt = $date->format('d F Y');
 
     if ($_REQUEST['option'] == 'und' && $_REQUEST['record'] != '') {
@@ -51,7 +53,7 @@ if($sop !="") {
         $recordSaveDU = array();
 
         $RecordSetFollowAct = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $record_id));
-        $follow_activity = getProjectInfoArrayRepeatingInstruments($RecordSetFollowAct)[0]['follow_activity'];
+        $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetFollowAct)[0]['follow_activity'];
         $array_userid = explode(',', $follow_activity);
 
         #UNFOLLOW
@@ -246,8 +248,8 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                                         <tbody>
                                         <?php
                                         $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-                                        $regions = getProjectInfoArray($RecordSetRegions);
-                                        array_sort_by_column($regions, 'region_code');
+                                        $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                                        ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                                         $status_type = $module->getChoiceLabels('data_response_status', IEDEA_SOP);
                                         $status_icon_color = array(0=>"label-default_light",1=>"label-warning",2=>"label-approved",3=>"label-default",4=>"label-default",9=>"label-other");
@@ -592,15 +594,15 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                             $downloadersOrdered = array();
                             foreach ($downloaders as $down) {
                                 $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $down));
-                                $peopleDown = getProjectInfoArray($RecordSetPeopleDown)[0];
+                                $peopleDown = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
                                 $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleDown['person_region']));
-                                $region_codeDown = getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                                $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
 
                                 $downloadersOrdered[$down]['name'] = $peopleDown['firstname'] . " " . $peopleDown['lastname'];
                                 $downloadersOrdered[$down]['email'] = $peopleDown['email'];
                                 $downloadersOrdered[$down]['region_code'] = "(" . $region_codeDown . ")";
                             }
-                            array_sort_by_column($downloadersOrdered,'name');
+                            ArrayFunctions::array_sort_by_column($downloadersOrdered,'name');
 
                             $count = 0;
                             foreach ($downloadersOrdered as $downO) {
@@ -709,8 +711,8 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                     </colgroup>
                     <?php
                     $RecordSetUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$_REQUEST['record']."'");
-                    $uploads = getProjectInfoArray($RecordSetUpload);
-                    array_sort_by_column($uploads, 'responsecomplete_ts',SORT_DESC);
+                    $uploads = ProjectData::getProjectInfoArray($RecordSetUpload);
+                    ArrayFunctions::array_sort_by_column($uploads, 'responsecomplete_ts',SORT_DESC);
                     if (!empty($uploads)){
                     ?>
 
@@ -729,11 +731,11 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                     foreach ($uploads as $up) {
                         if($settings['dataupload_dur'] > $count) {
                             $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $up['data_upload_person']));
-                            $people = getProjectInfoArray($RecordSetPeople)[0];
+                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                             $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
                             $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $up['data_upload_region']));
-                            $region_code = getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+                            $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
                             $status = '<span class="badge label-updated">Available</span>';
                             if ($up['deleted_y'] == '1') {
@@ -780,19 +782,19 @@ $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
                     <tbody>
                     <?php
                     $RecordSetComments = \REDCap::getData(IEDEA_SOPCOMMENTS, 'array', null,null,null,null,false,false,false,"[sop_id] = '".$_REQUEST['record']."'");
-                    $comments = getProjectInfoArray($RecordSetComments);
+                    $comments = ProjectData::getProjectInfoArray($RecordSetComments);
                     krsort($comments);
                     if (!empty($comments)) {
                         foreach ($comments as $comment) {
                             $comment_time = "";
                             if (!empty($comment['responsecomplete_ts'])) {
-                                $dateComment = new DateTime($comment['responsecomplete_ts']);
+                                $dateComment = new \DateTime($comment['responsecomplete_ts']);
                                 $dateComment->modify("+1 hours");
                                 $comment_time = $dateComment->format("Y-m-d H:i:s");
                             }
 
                             $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $comment['response_person']));
-                            $people = getProjectInfoArray($RecordSetPeople)[0];
+                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $gd_files = "";

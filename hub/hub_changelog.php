@@ -1,7 +1,8 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 $RecordSetChangelog = \REDCap::getData(IEDEA_CHANGELOG, 'array', null);
-$changelog = getProjectInfoArray($RecordSetChangelog);
-array_sort_by_column($changelog,'release_d',SORT_DESC);
+$changelog = ProjectData::getProjectInfoArray($RecordSetChangelog);
+ArrayFunctions::array_sort_by_column($changelog,'release_d',SORT_DESC);
 ?>
 
 <div class="optionSelect">

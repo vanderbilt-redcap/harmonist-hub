@@ -1,8 +1,9 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 $wg_type = $_REQUEST['type'];
 $concepts_table = "";
 $RecordSetConcetps = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
-$concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
+$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 if (!empty($concepts)) {
     $concepts_table .= '<table class="table table_requests sortable-theme-bootstrap concepts-table" data-sortable id="sortable_table">'.
         '<colgroup>'.
@@ -39,7 +40,7 @@ if (!empty($concepts)) {
         #Only check if they are final
         $row = "";
         $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $concept['record_id']));
-        $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
         if(!empty($sop["status"]) && in_array('1',$sop["status"]) && !empty($sop["pdf_file"])) {
             #SOP Files from Builder SOP project
             $edoc_data = $sop["pdf_file"];
@@ -62,7 +63,7 @@ if (!empty($concepts)) {
     $concepts_table = '<div class="concepts-table-notfound">No concepts found.</div>';
 }
 
-$date = new DateTime();
+$date = new \DateTime();
 $export_name = "concepts_".$date->format('Y-m-d H:i:s');
 
 $harmonist_perm_new_concept = hasUserPermissions($current_user['harmonist_perms'], 2);
@@ -405,8 +406,8 @@ if(array_key_exists('message', $_REQUEST)){
                     <option value="">Select All</option>
                     <?php
                     $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', null);
-                    $wgroups = getProjectInfoArray($RecordSetGroups);
-                    array_sort_by_column($wgroups,'group_abbr');
+                    $wgroups = ProjectData::getProjectInfoArray($RecordSetGroups);
+                    ArrayFunctions::array_sort_by_column($wgroups,'group_abbr');
                     if (!empty($wgroups)) {
                         foreach ($wgroups as $wg){
                             $selected = '';

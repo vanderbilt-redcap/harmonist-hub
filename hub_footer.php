@@ -1,6 +1,8 @@
 <?php
+use Vanderbilt\HarmonistHubExternalModule\ProjectData;
+
 $RecordSetAbout = \REDCap::getData(IEDEA_ABOUT, 'array', null);
-$about = getProjectInfoArray($RecordSetAbout)[0];
+$about = ProjectData::getProjectInfoArray($RecordSetAbout)[0];
 
 $sql = "SELECT MAX(CAST(record AS Int)) as record FROM redcap_data WHERE project_id='".db_escape(IEDEA_CHANGELOG)."'";
 $q = db_query($sql);

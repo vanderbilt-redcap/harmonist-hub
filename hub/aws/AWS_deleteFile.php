@@ -1,4 +1,5 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../projects.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
@@ -13,7 +14,7 @@ $user = $exploded['idu'];
 $deletion_rs = $_REQUEST['deletion_rs'];
 
 $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', array('record_id' => $record_id));
-$request_DU = getProjectInfoArray($RecordSetDU)[0];
+$request_DU = ProjectData::getProjectInfoArray($RecordSetDU)[0];
 
 $credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
 $s3 = new S3Client([
@@ -37,7 +38,7 @@ try {
         $recordSaveDU[$record_id][$event_id]['record_id'] = $record_id;
         $recordSaveDU[$record_id][$event_id]['deletion_type'] = "2";
         $recordSaveDU[$record_id][$event_id]['deletion_hubuser'] = $user;
-        $date = new DateTime();
+        $date = new \DateTime();
         $recordSaveDU[$record_id][$event_id]['deletion_ts'] = $date->format('Y-m-d H:i:s');
         $recordSaveDU[$record_id][$event_id]['deletion_rs'] = $deletion_rs;
         $recordSaveDU[$record_id][$event_id]['deletion_information_complete'] = "2";
@@ -47,25 +48,25 @@ try {
 
         #EMAIL NOTIFICATION
         $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $request_DU['data_assoc_concept']));
-        $concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+        $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
         $concept_id = $concepts['concept_id'];
         $concept_title = $concepts['concept_title'];
 
         $RecordSetPeopleUp = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $request_DU['data_upload_person']));
-        $peopleUp = getProjectInfoArray($RecordSetPeopleUp)[0];
+        $peopleUp = ProjectData::getProjectInfoArray($RecordSetPeopleUp)[0];
 
         $RecordSetRegionsUp = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleUp['person_region']));
-        $region_codeUp = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+        $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
 
-        $date = new DateTime($request_DU['responsecomplete_ts']);
+        $date = new \DateTime($request_DU['responsecomplete_ts']);
         $date->modify("+1 hours");
         $date_time = $date->format("Y-m-d H:i");
 
         $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $request_DU['data_assoc_request']));
-        $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
         $RecordSetPeopleDelete = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $user));
-        $delete_user = getProjectInfoArray($RecordSetPeopleDelete)[0];
+        $delete_user = ProjectData::getProjectInfoArray($RecordSetPeopleDelete)[0];
         $delete_user_fullname = $delete_user['firstname'] . " " . $delete_user['lastname'];
         $delete_user_name = $delete_user['firstname'];
 
@@ -105,9 +106,9 @@ try {
             $downloadersOrdered = array();
             foreach ($downloaders as $down) {
                 $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $down));
-                $peopleDown = getProjectInfoArray($RecordSetPeopleDown)[0];
+                $peopleDown = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
                 $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleDown['person_region']));
-                $region_codeDown = getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
 
                 $downloadersOrdered[$down]['name'] = $peopleDown['firstname'] . " " . $peopleDown['lastname'];
                 $downloadersOrdered[$down]['email'] = $peopleDown['email'];
@@ -115,23 +116,23 @@ try {
                 $downloadersOrdered[$down]['id'] = $peopleDown['record_id'];
                 $downloadersOrdered[$down]['firstname'] = $peopleDown['firstname'];
             }
-            array_sort_by_column($downloadersOrdered, 'name');
+            ArrayFunctions::array_sort_by_column($downloadersOrdered, 'name');
 
-            $date = new DateTime($request_DU['responsecomplete_ts']);
+            $date = new \DateTime($request_DU['responsecomplete_ts']);
             $date->modify("+1 hours");
             $date_time = $date->format("Y-m-d H:i");
             $extra_days = ' + ' . $settings['retrievedata_expiration'] . " days";
             $expire_date = date('Y-m-d', strtotime($date_time . $extra_days));
 
             $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $request_DU['data_upload_person']));
-            $person = getProjectInfoArray($RecordSetPeopleDown)[0];
+            $person = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
             $firstname = $person['firstname'];
             $name_uploader = $person['firstname'] . " " . $person['lastname'];
             $RecordSetRegionsUp = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person['person_region']));
-            $region_code_uploader = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+            $region_code_uploader = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
 
             $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $request_DU['data_assoc_concept']));
-            $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+            $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
 
             $subject = "Notification of ".$settings['hub_name']." " . $concept_id . " dataset deletion";
             foreach ($downloadersOrdered as $down) {

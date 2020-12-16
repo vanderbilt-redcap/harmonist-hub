@@ -1,3 +1,6 @@
+<?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+?>
 <script>
     $(document).ready(function() {
         Sortable.init();
@@ -89,7 +92,7 @@
                         if ($req['approval_y'] == '' || $req['approval_y'] == null) {
                             $any_request_found = true;
                             $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']));
-                            $person_region_code = getProjectInfoArray($RecordSetRegions)[0]['region_code'];
+                            $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
                             $region = "";
                             if($person_region_code != ""){
                                 $region = " (".$person_region_code.")";
@@ -141,8 +144,8 @@
             <table class="table table_requests sortable-theme-bootstrap admin-table" data-sortable>
                 <?php
                 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = '1' AND [detected_complete(1)] = '1'");
-                $requests = getProjectInfoArrayRepeatingInstruments($RecordSetRM);
-                array_sort_by_column($requests,"due_d");
+                $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+                ArrayFunctions::array_sort_by_column($requests,"due_d");
                 $any_request_found = false;
                 if($requests != "") {
                     echo '<colgroup>
@@ -178,7 +181,7 @@
                             $array_dates = getNumberOfDaysLeftButtonHTML($req['due_d'], '', 'float:right', '0');
 
                             $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']));
-                            $person_region_code = getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                            $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
                             $region = "";
                             if ($person_region_code != "") {
                                 $region = " (" . $person_region_code . ")";
@@ -246,8 +249,8 @@
             <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                 <?php
                 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[finalize_y] = '1' AND [approval_y] = '1'");
-                $requests = getProjectInfoArrayRepeatingInstruments($RecordSetRM);
-                array_sort_by_column($requests,"due_d");
+                $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+                ArrayFunctions::array_sort_by_column($requests,"due_d");
                 $any_request_found = false;
                 if($requests != "") {
                     echo '<colgroup>
@@ -282,7 +285,7 @@
                             $req_type = getReqAssocConceptLink($module, $req['assoc_concept'], "");
 
                             $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']));
-                            $person_region_code = getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                            $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
                             $region = "";
                             if ($person_region_code != "") {
                                 $region = " (" . $person_region_code . ")";
@@ -499,10 +502,10 @@
                             foreach ($logins as $login){
                                 if($login['active_y'] != "0") {
                                     $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $login['person_region']));
-                                    $region_code = getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+                                    $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
                                     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $login['record']));
-                                    $people = getProjectInfoArray($RecordSetPeople)[0];
+                                    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 
                                     $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_PEOPLE . "&arm=1&id=" . $login['record'];
 
@@ -546,7 +549,7 @@
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                     <?php
                     $RecordSetProjectsY = \REDCap::getData(IEDEA_PROJECTS, 'array', null,null,null,null,false,false,false, "[project_show_y] = '1'");
-                    $projectsY = getProjectInfoArray($RecordSetProjectsY);
+                    $projectsY = ProjectData::getProjectInfoArray($RecordSetProjectsY);
                     foreach ($projectsY as $project){
                         $iedea_constant = constant("IEDEA_".$project['project_constant']);
                         $title = $module->framework->getProject($iedea_constant)->getTitle();

@@ -1,10 +1,10 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 $request_id = $_REQUEST['request_id'];
 
 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $request_id));
-$request = getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
 
 $Proj = new \Project(IEDEA_RMANAGER);
 $event_id_RM = $Proj->firstEventId;
@@ -18,7 +18,7 @@ foreach ($region_vote_values as $votes_info){
     $vote = (explode('_',$votes_info)[1] == "none")? "":explode('_',$votes_info)[1];
 
     if($request['region_vote_status'][$region] != $vote && $vote != ""){
-        $date = new DateTime();
+        $date = new \DateTime();
         $timestamp = $date->format('Y-m-d H:i:s');
         if ($region != "") {
             $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_region_status'][$region]['region_vote_status'] = $vote;
@@ -45,11 +45,11 @@ foreach ($region_vote_values as $votes_info){
         $comments[$comments_id][$event_id_comments]['responsecomplete_ts'] = $timestamp;
 
         $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $_REQUEST['region']));
-        $regions = getProjectInfoArrayRepeatingInstruments($RecordSetRegion)[0];
+        $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegion)[0];
         $comments[$comments_id][$event_id_comments]['response_regioncode'] = $regions['region_code'];
 
         $RecordSetRegionComment = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $region));
-        $regions_comment = getProjectInfoArrayRepeatingInstruments($RecordSetRegionComment)[0];
+        $regions_comment = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegionComment)[0];
         $comment = "Vote submitted for region (".$regions_comment['region_code'].") by Admin";
         $comments[$comments_id][$event_id_comments]['comments'] = $comment;
         $comments[$comments_id][$event_id_comments]['comments_and_votes_complete'] = "2";

@@ -1,8 +1,10 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
-$request_DU = getProjectInfoArray($RecordSetDU);
+$request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
 krsort($request_DU);
-array_sort_by_column($request_DU,'responsecomplete_ts',SORT_DESC);
+ArrayFunctions::array_sort_by_column($request_DU,'responsecomplete_ts',SORT_DESC);
 
 $array_downloads_by_concept = array();
 foreach ($request_DU as $down){
@@ -49,16 +51,16 @@ foreach ($request_DU as $down){
         foreach ($array_downloads_by_concept as $concept_id => $concept_table) {
             foreach ($concept_table as $sop_id => $AllDataUp) {
                 $RecordSetTable = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $concept_id));
-                $concept = getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0];
+                $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0];
                 $concept_sheet = $concept['concept_id'];
                 $concept_title = $concept['concept_title'];
 
                 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $sop_id));
-                $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+                $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
                 $array_userid = explode(',', $sop['sop_downloaders']);
 
                 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
-                $person_info = getProjectInfoArray($RecordSetPeople)[0];
+                $person_info = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                 if($person_info != ""){
                     $contact_concept_person = $person_info['firstname'] . " " . $person_info['lastname'] . " (<a href='mailto:" . $person_info['email'] . "'>" . $person_info['email'] . "</a>)";
                 }else{
@@ -82,14 +84,14 @@ foreach ($request_DU as $down){
                         $assoc_concept = getReqAssocConceptLink($module, $data_up['data_assoc_concept']);
 
                         $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $data_up['data_assoc_request']));
-                        $assoc_request = getProjectInfoArray($RecordSetRM)[0]['request_title'];
+                        $assoc_request = ProjectData::getProjectInfoArray($RecordSetRM)[0]['request_title'];
 
                         $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $data_up['data_upload_person']));
-                        $person_info = getProjectInfoArray($RecordSetPeople)[0];
+                        $person_info = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                         $contact_person = "<a href='mailto:" . $person_info['email'] . "'>" . $person_info['firstname'] . " " . $person_info['lastname'] . "</a>";
 
                         $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $data_up['data_upload_region']));
-                        $region_code = getProjectInfoArrayRepeatingInstruments($RecordSetRegion)[0]['region_code'];
+                        $region_code = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegion)[0]['region_code'];
 
                         $file_pdf = ($data_up['data_upload_pdf'] == "") ? "" : getFileLink($data_up['data_upload_pdf'], '1','',$secret_key,$secret_iv,$current_user['record_id'],"");
 
@@ -107,7 +109,7 @@ foreach ($request_DU as $down){
                         } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != ""){
                             if($data_up['deletion_type'] == '2'){
                                 $RecordSetPeopleDelete = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $data_up['deletion_hubuser']));
-                                $person_info_delete = getProjectInfoArray($RecordSetPeopleDelete)[0];
+                                $person_info_delete = ProjectData::getProjectInfoArray($RecordSetPeopleDelete)[0];
                                 $contact_person_delete = "<a href='mailto:" . $person_info['email'] . "'>" . $person_info_delete['firstname'] . " " . $person_info_delete['lastname'] . "</a>";
 
                                 $deleted = '<div><i>File deleted by ' . $contact_person_delete . ' on '.$data_up['deletion_ts'].'</i></div>';

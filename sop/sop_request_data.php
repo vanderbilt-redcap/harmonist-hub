@@ -1,4 +1,6 @@
-
+<?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+?>
 <script language="JavaScript">
     $(document).ready(function() {
         $('#makePrivate').submit(function () {
@@ -55,8 +57,8 @@
                     <table class="table sortable-theme-bootstrap sop_discuss" data-sortable>
                     <?php
                     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_status] = '0' AND [sop_active] = '1' AND [sop_visibility] = '2'");
-                    $sop_drafts = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
-                    array_sort_by_column($sop_drafts,'sop_updated_dt',SORT_DESC);
+                    $sop_drafts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+                    ArrayFunctions::array_sort_by_column($sop_drafts,'sop_updated_dt',SORT_DESC);
                     if(!empty($sop_drafts)) {?>
                         <colgroup>
                             <col><col><col>
@@ -99,8 +101,8 @@
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable="" id="" data-sortable-initialized="true">
                     <?php
                     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_hubuser] = '".$current_user['record_id']."' AND [sop_active] = '1' AND [sop_status] = '0'");
-                    $sop_drafts = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
-                    array_sort_by_column($sop_drafts,'sop_updated_dt',SORT_DESC);
+                    $sop_drafts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+                    ArrayFunctions::array_sort_by_column($sop_drafts,'sop_updated_dt',SORT_DESC);
                     if(!empty($sop_drafts)) {?>
                         <colgroup>
                             <col><col><col><col><col><col>

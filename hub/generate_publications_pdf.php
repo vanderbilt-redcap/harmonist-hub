@@ -1,10 +1,10 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $RecordSetConcetps = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
-$concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
-array_sort_by_column($concepts, 'concept_id',SORT_DESC);
+$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
+ArrayFunctions::array_sort_by_column($concepts, 'concept_id',SORT_DESC);
 
 $years = array();
 foreach ($concepts as $concept) {
@@ -39,7 +39,7 @@ foreach ($years as $year){
     }
 }
 
-$date = new DateTime();
+$date = new \DateTime();
 $download_date = $date->format('d M Y');
 
 $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }</style>';

@@ -1,5 +1,5 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $request_id = $_REQUEST['request_id'];
@@ -7,11 +7,11 @@ $region_id = $_REQUEST['region_id'];
 $project_id = $_REQUEST['pid'];
 
 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
-$regions = getProjectInfoArray($RecordSetRegions);
-array_sort_by_column($regions, 'region_code');
+$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
 $RecordSetRequest = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $request_id));
-$request = getProjectInfoArrayRepeatingInstruments($RecordSetRequest)[0];
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequest)[0];
 
 $region_vote_icon_view = array("1" => "fa fa-check", "0" => "fa fa-times", "9" => "fa fa-ban");
 $region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" => "text-default");
@@ -24,7 +24,7 @@ foreach ($regions as $region){
     $votes_text = '<div style="padding-top: 20px"><h4>Votes for <strong>'.$region['region_name'].' ('.$region['region_code'].')</strong></h4></div><div><p>Here you will find all votes submitted for this request.</p></div>';
 
     $RecordSetVoters = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[harmonist_regperm] = 3 and [person_region] =".$region['record_id']);
-    $total_voters = getProjectInfoArray($RecordSetVoters);
+    $total_voters = ProjectData::getProjectInfoArray($RecordSetVoters);
 
     $votes_text .='<div style="padding-bottom: 20px">There are currently <strong>'.$total_voters.' voters</strong> for this region.</div>';
     $active = "";
@@ -39,7 +39,7 @@ foreach ($regions as $region){
     }
 
     $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array("request_id" => $request_id),null,null,null,false,false,false,"[response_region] =".$region['record_id']);
-    $votes = getProjectInfoArray($RecordSetComments);
+    $votes = ProjectData::getProjectInfoArray($RecordSetComments);
     $response_person = $module->getChoiceLabels('response_person', IEDEA_COMMENTSVOTES);
     $region_row = '';
     $total_votes = 0;

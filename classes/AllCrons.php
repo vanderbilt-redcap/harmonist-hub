@@ -18,29 +18,29 @@ class AllCrons
                 foreach ($downloaders as $down) {
                     if($peopleDown == null) {
                         $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
-                        $peopleDownData = getProjectInfoArray($RecordSetPeopleDown)[0];
+                        $peopleDownData = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
                         $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
-                        $region_codeDown = getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                        $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
                     }else{
                         $region_codeDown = "TT";
                         $peopleDownData = $peopleDown[$down];
                     }
                     $downloadersOrdered = self::getDownloadersOrdered($down, $downloadersOrdered, $peopleDownData, $region_codeDown);
                 }
-                array_sort_by_column($downloadersOrdered, 'name');
+                ArrayFunctions::array_sort_by_column($downloadersOrdered, 'name');
 
                 $date = new \DateTime($upload['responsecomplete_ts']);
                 $date->modify("+1 hours");
                 $date_time = $date->format("Y-m-d H:i");
 
                 $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $upload['data_upload_person']));
-                $people = getProjectInfoArray($RecordSetPeople)[0];
+                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                 $name_uploader = $people['firstname'] . " " . $people['lastname'];
                 $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']));
-                $region_code_uploader = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+                $region_code_uploader = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
 
                 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-                $concepts = getProjectInfoArray($RecordSetConcepts)[0];
+                $concepts = ProjectData::getProjectInfoArray($RecordSetConcepts)[0];
                 $concept_id = $concepts['concept_id'];
                 $concept_title = $concepts['concept_title'];
 
@@ -48,7 +48,7 @@ class AllCrons
                 $messageArray['sop_id'] = $sop['record_id'];
 
                 $RecordSetDOWN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null, null, null, null, false, false, false, "[download_id] = " . $upload['record_id']);
-                $downloads = getProjectInfoArray($RecordSetDOWN);
+                $downloads = ProjectData::getProjectInfoArray($RecordSetDOWN);
                 if (empty($downloads)) {
                     foreach ($downloadersOrdered as $down) {
                         $messageArray = self::sendExpReminder($module, $pidsArray, $sop, $down, $upload, $expired_date['reminder'], $expired_date['reminder2'], $expired_date['delete'], $name_uploader, $region_code_uploader, $concept_id, $concept_title, $date_time, $settings, $email, $messageArray);
@@ -102,16 +102,16 @@ class AllCrons
                     foreach ($downloaders as $down) {
                         if ($peopleDown == null) {
                             $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
-                            $peopleDownData = getProjectInfoArray($RecordSetPeopleDown)[0];
+                            $peopleDownData = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
                             $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
-                            $region_codeDown = getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                            $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
                         } else {
                             $region_codeDown = "TT";
                             $peopleDownData = $peopleDown[$down];
                         }
                         $downloadersOrdered = self::getDownloadersOrdered($down, $downloadersOrdered, $peopleDownData, $region_codeDown);
                     }
-                    array_sort_by_column($downloadersOrdered, 'name');
+                    ArrayFunctions::array_sort_by_column($downloadersOrdered, 'name');
 
                     foreach ($downloadersOrdered as $downO) {
                         $downloaders_list .= "<li>" . $downO['name'] . " " . $downO['region_code'] . ", <a href='mailto:" . $downO['email'] . "'>" . $downO['email'] . "</a></li>";
@@ -121,15 +121,15 @@ class AllCrons
 
                 #Uploader email
                 $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $upload['data_upload_person']));
-                $people = getProjectInfoArray($RecordSetPeople)[0];
+                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                 $to = $people['email'];
                 $firstname = $people['firstname'];
                 $name_uploader = $people['firstname'] . " " . $people['lastname'];
                 $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']));
-                $region_code_uploader = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+                $region_code_uploader = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
 
                 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-                $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+                $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
 
                 $date = new \DateTime($upload['responsecomplete_ts']);
                 $date->modify("+1 hours");
@@ -217,7 +217,7 @@ class AllCrons
                 $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
                 if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
                     $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array',  array('record_id' => $req['assoc_concept']));
-                    $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
+                    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
                     $concept_sheet = $concept['concept_id'];
                     $concept_title = $concept['concept_title'];
                     $email_req .= ", ".$concept_sheet;
@@ -232,7 +232,7 @@ class AllCrons
                             $region = "1";
                         }
                         $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array',  array('record_id' => $region));
-                        $region_code = getProjectInfoArray($RecordSetRegions)[0]['region_code'];
+                        $region_code = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
                         array_push($votes,$region_code);
                     }
                 }
@@ -264,7 +264,7 @@ class AllCrons
                 $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
                 if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
                     $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $req['assoc_concept']));
-                    $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
+                    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
                     $concept_sheet = $concept['concept_id'];
                     $concept_title = $concept['concept_title'];
                     $email_req .= ", ".$concept_sheet;
@@ -290,7 +290,7 @@ class AllCrons
 
         $isEmpty = true;
         $RecordSetRegions = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-        $regions = getProjectInfoArrayRepeatingInstruments($RecordSetRegions);
+        $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegions);
         foreach ($sops as $sop){
             if((!array_key_exists('sop_closed_y',$sop) || $sop['sop_closed_y'][0] == "") && $sop['sop_due_d'] != ""){
                 $message['active_data_calls'] = $message['active_data_calls'] + 1;
@@ -307,7 +307,7 @@ class AllCrons
                         $date_color_text = "color:#e74c3c";
                     }
                     $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $sop['sop_concept_id']));
-                    $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
+                    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
                     $concept_sheet = $concept['concept_id'];
                     $concept_title = $concept['concept_title'];
 
@@ -316,11 +316,11 @@ class AllCrons
 
                 $email_req .= "<div style='padding: 3px;'><a href='" . $module->getUrl("index.php?pid=" . $pidsArray['DATAMODEL'] . "&option=hub&record=" . $sop['request_id']) . "' target='_blank' alt='concept_link'>" . $sop['request_title'] . "</a></div>";
                 $RecordSetCreator = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator']));
-                $creator = getProjectInfoArray($RecordSetCreator)[0];
+                $creator = ProjectData::getProjectInfoArray($RecordSetCreator)[0];
                 $RecordSetCreator2 = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator2']));
-                $creator2 = getProjectInfoArray($RecordSetCreator2)[0];
+                $creator2 = ProjectData::getProjectInfoArray($RecordSetCreator2)[0];
                 $RecordSetDataContact = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator2']));
-                $datacontact = getProjectInfoArray($RecordSetDataContact)[0];
+                $datacontact = ProjectData::getProjectInfoArray($RecordSetDataContact)[0];
                 $data_contact = $datacontact['firstname'] . " " . $datacontact['lastname'];
                 $sop_creator = $creator['firstname'] . " " . $creator['lastname'];
                 $sop_creator2 = $creator2['firstname'] . " " . $creator2['lastname'];
@@ -386,7 +386,7 @@ class AllCrons
                     $recordSaveDU = array();
                     $recordSaveDU[$upload['record_id']][$event_id]['record_id'] = $upload['record_id'];
                     $recordSaveDU[$upload['record_id']][$event_id]['deletion_type'] = "1";
-                    $date = new DateTime();
+                    $date = new \DateTime();
                     $recordSaveDU[$upload['record_id']][$event_id]['deletion_ts'] = $date->format('Y-m-d H:i:s');
                     $recordSaveDU[$upload['record_id']][$event_id]['deletion_rs'] = "Expired. Deleted automatically";
                     $recordSaveDU[$upload['record_id']][$event_id]['deletion_information_complete'] = "2";
@@ -396,17 +396,17 @@ class AllCrons
 
                     #EMAIL NOTIFICATION
                     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-                    $concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+                    $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
                     $concept_id = $concepts['concept_id'];
                     $concept_title = $concepts['concept_title'];
 
                     $RecordSetPeopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $upload['data_upload_person']));
-                    $peopleUp = getProjectInfoArray($RecordSetPeopleUp)[0];
+                    $peopleUp = ProjectData::getProjectInfoArray($RecordSetPeopleUp)[0];
 
                     $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleUp['person_region']));
-                    $region_codeUp = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+                    $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
 
-                    $date = new DateTime($upload['responsecomplete_ts']);
+                    $date = new \DateTime($upload['responsecomplete_ts']);
                     $date->modify("+1 hours");
                     $date_time = $date->format("Y-m-d H:i");
 
@@ -430,19 +430,19 @@ class AllCrons
                     foreach ($downloaders as $down) {
                         if ($peopleDown == null) {
                             $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
-                            $peopleDownData = getProjectInfoArray($RecordSetPeopleDown)[0];
+                            $peopleDownData = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
                             $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
-                            $region_codeDown = getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                            $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
                         } else {
                             $region_codeDown = "TT";
                             $peopleDownData = $peopleDown[$down];
                         }
                         $downloadersOrdered = self::getDownloadersOrdered($down, $downloadersOrdered, $peopleDownData, $region_codeDown);
                     }
-                    array_sort_by_column($downloadersOrdered, 'name');
+                    ArrayFunctions::array_sort_by_column($downloadersOrdered, 'name');
 
                     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-                    $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+                    $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
 
                     if($email) {
                         $subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
@@ -485,41 +485,41 @@ class AllCrons
         $arrayMetrics[0]['concepts'] = $total_concepts;
 
         $RecordSetConceptsActive = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[active_y] = 'Y'");
-        $number_concepts_active = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive));
+        $number_concepts_active = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive));
         $arrayMetrics[0]['concepts_a'] = $number_concepts_active;
 
         $RecordSetConceptsCompleted = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[concept_outcome] = 1");
-        $number_concepts_completed = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsCompleted));
+        $number_concepts_completed = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsCompleted));
         $arrayMetrics[0]['concepts_c'] = $number_concepts_completed;
 
         $RecordSetConceptsDiscontinued = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[concept_outcome] = 2");
-        $number_concepts_discontinued = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsDiscontinued));
+        $number_concepts_discontinued = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsDiscontinued));
         $arrayMetrics[0]['concepts_d'] = $number_concepts_discontinued;
 
         /***REQUESTS***/
         $RecordSetRequests = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] != 9");
-        $total_requests = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequests));
+        $total_requests = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequests));
         $arrayMetrics[0]['requests'] = $total_requests;
 
         $RecordSetRequestsApproved = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 1");
-        $number_requests_approved = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequestsApproved));
+        $number_requests_approved = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsApproved));
         $arrayMetrics[0]['requests_a'] = $number_requests_approved;
 
         $RecordSetRequestsRejected = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 0");
-        $number_requests_rejected = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequestsRejected));
+        $number_requests_rejected = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsRejected));
         $arrayMetrics[0]['requests_r'] = $number_requests_rejected;
 
         $RecordSetRequestsDeactivated = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 9");
-        $number_requests_deactivated = count(getProjectInfoArrayRepeatingInstruments($RecordSetRequestsDeactivated));
+        $number_requests_deactivated = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsDeactivated));
         $arrayMetrics[0]['requests_d'] = $number_requests_deactivated;
 
 
         $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null, null, null, null, false, false, false, "[showregion_y] = 1");
-        $regions = getProjectInfoArray($RecordSetRegions);
+        $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 
 
         #PUBLICATIONS AND ABSTRACTS;
-        $publications = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts);
+        $publications = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts);
 
         $number_publications = 0;
         $number_publications_year = 0;
@@ -547,7 +547,7 @@ class AllCrons
 
         #COMMENTS AND VOTES
         $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null);
-        $comments = getProjectInfoArray($RecordSetComments);
+        $comments = ProjectData::getProjectInfoArray($RecordSetComments);
         $req_id = array();
         foreach ($comments as $comments) {
             if ($comments['request_id'] != '') {
@@ -626,12 +626,12 @@ class AllCrons
         $arrayMetrics[0]['vote_later'] = $number_votes_later;
 
         $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, "[author_revision_y] = 1");
-        $comments_revision = getProjectInfoArray($RecordSetComments);
+        $comments_revision = ProjectData::getProjectInfoArray($RecordSetComments);
         #get unique values from matrix column request_id (unique request ids)
         $revisions = 0;
         foreach ($comments_revision as $comment) {
             $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
-            $approval_y = getProjectInfoArray($RecordSetRM)[0]['approval_y'];
+            $approval_y = ProjectData::getProjectInfoArray($RecordSetRM)[0]['approval_y'];
             if ($approval_y == '1') {
                 $revisions++;
             }
@@ -639,7 +639,7 @@ class AllCrons
         $arrayMetrics[0]['revisions'] = $revisions;
 
         $RecordRequests = \REDCap::getData($pidsArray['RMANAGER'], 'array');
-        $requests = getProjectInfoArrayRepeatingInstruments($RecordRequests, array('approval_y' => '1'));
+        $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordRequests, array('approval_y' => '1'));
 
         $number_votes_completed_before_duedate = 0;
         $number_votes_completed_after_duedate = 0;
@@ -671,7 +671,7 @@ class AllCrons
 
         foreach ($completed_requests_by_all_regions as $completed) {
             $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $completed));
-            $recordRMComplete = getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
+            $recordRMComplete = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
             if ($recordRMComplete['detected_complete'][1] != "1") {
                 $Proj = new \Project($pidsArray['RMANAGER']);
                 $event_id_RM = $Proj->firstEventId;
@@ -701,7 +701,7 @@ class AllCrons
         $arrayMetrics[0]['users'] = $q->fetch_assoc()['total_registered_users'];
 
         $RecordSetUsersPi = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[harmonist_regperm] = 3");
-        $number_users_pi = count(getProjectInfoArray($RecordSetUsersPi));
+        $number_users_pi = count(ProjectData::getProjectInfoArray($RecordSetUsersPi));
         $arrayMetrics[0]['users_pi'] = $number_users_pi;
 
         $query = $module->framework->createQuery();
@@ -710,7 +710,7 @@ class AllCrons
         $arrayMetrics[0]['users_access'] = $q->fetch_assoc()['number_users_accesslink'];
 
         $RecordSetUsersAdmin = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[harmonistadmin_y] = 1");
-        $number_requests_admin = count(getProjectInfoArray($RecordSetUsersAdmin));
+        $number_requests_admin = count(ProjectData::getProjectInfoArray($RecordSetUsersAdmin));
         $arrayMetrics[0]['admins'] = $number_requests_admin;
 
         $json = json_encode($arrayMetrics);
@@ -767,7 +767,7 @@ class AllCrons
                             $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null, null, null, null, false, false, false,
                                 "[data_assoc_concept] = " . $uploadData[0]['data_assoc_concept'] . " AND [data_assoc_request] = " . $uploadData[0]['data_assoc_request'] .
                                 " AND [data_upload_person] = " . $uploadData[0]['data_upload_person'] . " AND [data_upload_region] = " . $uploadData[0]['data_upload_region']);
-                            $request_DU = getProjectInfoArray($RecordSetUpload)[0];
+                            $request_DU = ProjectData::getProjectInfoArray($RecordSetUpload)[0];
 
                             if ($request_DU != "") {
                                 $found = false;
@@ -871,15 +871,15 @@ class AllCrons
     {
         #Email Data
         $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $uploadData[0]['data_assoc_concept']));
-        $concept_id = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
+        $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
 
         $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $uploadData[0]['data_assoc_request']));
-        $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
         $uploader_name = getPeopleName($uploadData[0]['data_upload_person'], "");
 
         $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $uploadData[0]['data_upload_region']));
-        $region_codeUp = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+        $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
 
         $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_status_dashboard.php?pid=" . $pidsArray['DATAUPLOAD'];
 
@@ -888,7 +888,7 @@ class AllCrons
             $recordpdf = $record;
 
             $RecordSetUpload = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record));
-            $upload = getProjectInfoArrayRepeatingInstruments($RecordSetUpload)[0];
+            $upload = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetUpload)[0];
 
             $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recordpdf;
             $message = "<div>Dear administrator,</div><br/>" .
@@ -953,6 +953,263 @@ class AllCrons
                 sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $recordpdf);
             }
         }
+    }
+
+    public static function hasJsoncopyBeenUpdated($module, $type, $settings, $project_id){
+        $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='JSONCOPY'");
+        $jsoncopyPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+        if(ENVIRONMENT == "DEV"){
+            $qtype = $module->query("SELECT MAX(record) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record",[$jsoncopyPID,'type',$type]);
+        }else{
+            $qtype = $module->query("SELECT MAX(CAST(record AS Int)) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record",[$jsoncopyPID,'type',$type]);
+        }
+        $rowtype = $qtype->fetch_assoc();
+
+        $RecordSetJsonCopy = \REDCap::getData($jsoncopyPID, 'array', array('record_id' => $rowtype['record']));
+        $jsoncopy = getProjectInfoArray($RecordSetJsonCopy)[0];
+        $today = date("Y-m-d");
+        if($jsoncopy["jsoncopy_file"] != "" && strtotime(date("Y-m-d",strtotime($jsoncopy['json_copy_update_d']))) == strtotime($today)){
+            return true;
+        }else if(empty($jsoncopy) || strtotime(date("Y-m-d",strtotime($jsoncopy['json_copy_update_d']))) == "" || !array_key_exists('json_copy_update_d',$jsoncopy) || !array_key_exists('des_pdf',$settings) || $settings['des_pdf'] == ""){
+            self::checkAndUpdateJSONCopyProject($module, $type, $rowtype['record'], $jsoncopy, $settings, $project_id);
+            return true;
+        }
+        return false;
+    }
+
+    public static function checkIfJsonOrPDFBlank($module, $settings, $project_id){
+        if($settings['des_pdf'] == "" || !array_key_exists('des_pdf',$settings)){
+            self::createAndSavePDFCron($module, $settings ,$project_id);
+        }
+        if($settings['des_variable_search'] == "" || !array_key_exists('des_variable_search',$settings)){
+            self::createAndSaveJSONCron($module, $project_id);
+        }
+    }
+
+    public static function createAndSavePDFCron($module, $settings, $project_id){
+        error_log("cron - createAndSavePDFCron");
+
+        $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='DATAMODEL'");
+        $dataModelPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+
+        $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
+        $settingsPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+
+        $RecordSetDataModel = \REDCap::getData($dataModelPID, 'array');
+        $dataTable = getProjectInfoArrayRepeatingInstruments($RecordSetDataModel);
+
+        if(!empty($dataTable)) {
+            $tableHtml = generateTablesHTML_pdf($module, $dataTable,false,false, $project_id, $dataModelPID);
+        }
+
+        #FIRST PAGE
+        $first_page = "<tr><td align='center'>";
+        $first_page .= "<p><span style='font-size: 16pt;font-weight: bold;'>".$settings['des_pdf_title']."</span></p>";
+        $first_page .= "<p><span style='font-size: 16pt;font-weight: bold;'>".$settings['des_pdf_subtitle']."</span></p><br/>";
+        $first_page .= "<p><span style='font-size: 14pt;font-weight: bold;'>Version: ".date('d F Y')."</span></p><br/>";
+        $first_page .= "<p><span style='font-size: 14pt;font-weight: bold;'>".$settings['des_pdf_text']."</span></p><br/>";
+        $first_page .= "<span style='font-size: 12pt'>";
+        $first_page .= "</span></td></tr></table>";
+
+        #SECOND PAGE
+        $second_page = "<p><span style='font-size: 12pt'>".$tableHtml[1]."</span></p>";
+
+        $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }a{text-decoration: none;}</style>';
+
+        $img = getFile($module, $settings['des_pdf_logo'],'pdf');
+
+        $html_pdf = "<html><head><meta http-equiv='Content-Type' content='text/html' charset='UTF-8' /><style>* { font-family: DejaVu Sans, sans-serif; }</style></head><body style='font-family:\"Calibri\";font-size:10pt;'>".$page_num
+            ."<div class='footer' style='left: 590px;'><span class='page-number'>Page </span></div>"
+            ."<div class='mainPDF'><table style='width: 100%;'><tr><td align='center'><img src='".$img."' style='width:200px;padding-bottom: 30px;'></td></tr></table></div>"
+            ."<div class='mainPDF' id='page_html_style'><table style='width: 100%;'>".$first_page."<div style='page-break-before: always;'></div>"
+            ."<div class='mainPDF'>".$second_page."<div style='page-break-before: always;'></div>"
+            ."<p><span style='font-size:16pt'><strong>DES Tables</strong></span></p>"
+            .$tableHtml[0]
+            ."</div></div>"
+            . "</body></html>";
+
+        $filename = $settings['des_wkname']."_DES_".date("Y-m-d_hi",time());
+        //SAVE PDF ON DB
+        $reportHash = $filename;
+        $storedName = md5($reportHash);
+
+        //DOMPDF
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html_pdf);
+        $dompdf->setPaper('A4', 'portrait');
+        ob_start();
+        $dompdf->render();
+        #Download option
+        $output = $dompdf->output();
+        $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
+
+        #Save document on DB
+        $q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,mime_type,doc_name,doc_size,file_extension,gzipped,project_id,stored_date) VALUES(?,?,?,?,?,?,?,?)",
+            [$storedName,'application/octet-stream',$reportHash.".pdf",$filesize,'.pdf','0',$settingsPID,date('Y-m-d h:i:s')]);
+        $docId = db_insert_id();
+
+        #Add document DB ID to project
+        $Proj = new \Project($settingsPID);
+        $event_id = $Proj->firstEventId;
+        $json = json_encode(array(array('record_id' => 1, 'des_update_d' => date("Y-m-d H:i:s"),'des_pdf'=>$docId)));
+        $results = \Records::saveData($settingsPID, 'json', $json,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        \Records::addRecordToRecordListCache($settingsPID, 1,$event_id);
+
+        if($settings['des_pdf_notification_email'] != "") {
+            $link = $module->getUrl("downloadFile.php?sname=".$storedName."&file=". $filename.".pdf");
+            $goto = APP_PATH_WEBROOT_ALL . "DataEntry/index.php?pid=".$settingsPID."&page=pdf&id=1";
+
+            $q = $module->query("select app_title from redcap_projects where project_id = ? limit 1",[$settingsPID]);
+            $row = $q->fetch_assoc();
+            $project_title = $row['app_title'];
+
+            $subject = "New PDF Generated in ".$settings['des_doc_title'];
+            $message = "<div>Changes have been detected and a new PDF has been generated in ".$project_title.".</div><br/>".
+                "<div>You can <a href='".$link."'>download the pdf</a> or <a href='".$goto."'>go to the settings project</a>.</div><br/>";
+
+            $environment = "";
+            if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
+                $environment = " - ".ENVIRONMENT;
+            }
+            $sender = $settings['accesslink_sender_email'];
+            if($settings['accesslink_sender_email'] == ""){
+                $sender = "noreply@vumc.org";
+            }
+
+            $attachments = array(
+                $filename.".pdf" => EDOC_PATH.$storedName
+            );
+
+            $emails = explode(';', $settings['des_pdf_notification_email']);
+            foreach ($emails as $email) {
+                \REDCap::email($email, $sender, $subject.$environment, $message,"","",$settings['accesslink_sender_name'],$attachments);
+            }
+        }
+    }
+
+    public static function createAndSaveJSONCron($module, $project_id){
+        error_log("createpdf - createAndSaveJSONCron");
+        $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='DATAMODEL'");
+        $dataModelPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+
+        $RecordSetDataModel = \REDCap::getData($dataModelPID, 'array');
+        $dataTable = getProjectInfoArrayRepeatingInstruments($RecordSetDataModel);
+        $dataFormat = $module->getChoiceLabels('data_format', $dataModelPID);
+
+        foreach ($dataTable as $data) {
+            $jsonVarArrayAux = array();
+            if($data['table_name'] != "") {
+                foreach ($data['variable_order'] as $id => $value) {
+                    if ($data['variable_name'][$id] != '') {
+                        $url = $module->getUrl("browser.php?pid=" . $_GET['pid'] . '&tid=' . $data['record_id'] . '&vid=' . $id . '&option=variableInfo');
+                        $jsonVarArrayAux[trim($data['variable_name'][$id])] = array();
+                        $variables_array = array(
+                            "instance" => $id,
+                            "description" => $data['description'][$id],
+                            "description_extra" => $data['description_extra'][$id],
+                            "code_list_ref" => $data['code_list_ref'][$id],
+                            "data_format" => trim($dataFormat[$data['data_format'][$id]]),
+                            "code_text" => $data['code_text'][$id],
+                            "variable_link" => $url
+                        );
+                        $jsonVarArrayAux[$data['variable_name'][$id]] = $variables_array;
+                    }
+                }
+                $jsonVarArray = $jsonVarArrayAux;
+                $urltid = $module->getUrl("browser.php?pid=" . $_GET['pid'] . '&tid=' . $data['record_id'] . '&option=variables');
+                $jsonVarArray['table_link'] = $urltid;
+                $jsonArray[trim($data['table_name'])] = $jsonVarArray;
+            }
+        }
+        #we save the new JSON
+        if(!empty($jsonArray)){
+            self::saveJSONCopyVarSearch($module, $jsonArray, $project_id);
+        }
+    }
+
+    public static function saveJSONCopyVarSearch($module, $jsonArray, $project_id){
+        error_log("createpdf - saveJSONCopyVarSearch");
+        $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='DATAMODEL'");
+        $settingsPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+
+        #create and save file with json
+        $filename = "jsoncopy_file_variable_search_".date("YmdsH").".txt";
+        $storedName = date("YmdsH")."_pid".$settingsPID."_".getRandomIdentifier(6).".txt";
+
+        $file = fopen(EDOC_PATH.$storedName,"wb");
+        fwrite($file,json_encode($jsonArray,JSON_FORCE_OBJECT));
+        fclose($file);
+
+        $output = file_get_contents(EDOC_PATH.$storedName);
+        $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
+
+        //Save document on DB
+        $q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES(?,?,?,?,?,?,?,?)",
+            [$storedName,$filename,$filesize,'txt','application/octet-stream','0',$settingsPID,date('Y-m-d h:i:s')]);
+        $docId = db_insert_id();
+
+        //Add document DB ID to project
+        $Proj = new \Project($settingsPID);
+        $event_id = $Proj->firstEventId;
+        $json = json_encode(array(array('record_id' => 1, 'des_variable_search' => $docId)));
+        $results = \Records::saveData($settingsPID, 'json', $json,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        \Records::addRecordToRecordListCache($settingsPID, 1,$event_id);
+    }
+
+    public static function checkAndUpdateJSONCopyProject($module, $type, $last_record, $jsoncocpy, $settings, $project_id){
+        $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='JSONCOPY'");
+        $jsoncopyPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+
+        if($jsoncocpy["jsoncopy_file"] != ""){
+            $q = $module->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$jsoncocpy["jsoncopy_file"]]);
+            while ($row = $q->fetch_assoc()) {
+                $path = EDOC_PATH.$row['stored_name'];
+                $strJsonFileContents = file_get_contents($path);
+                $last_array = json_decode($strJsonFileContents, true);
+                $array_data = call_user_func_array("createProject".strtoupper($type)."JSON",array($module, $project_id));
+                $new_array = json_decode($array_data['jsonArray'],true);
+                $result_prev = ArrayFunctions::array_filter_empty(multi_array_diff($last_array,$new_array));
+                $result = ArrayFunctions::array_filter_empty(multi_array_diff($new_array,$last_array));
+                $record = $array_data['record_id'];
+            }
+        }else{
+            $array_data = call_user_func_array("createProject".strtoupper($type)."JSON",array($module, $project_id));
+            $result = json_decode($array_data['jsonArray'],true);
+            $result_prev = "";
+            $record = $array_data['record_id'];
+        }
+
+        if($last_record == ""){
+            $last_record = "<i>None</i>";
+        }
+
+        if(!empty($record)){
+            $environment = "";
+            if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
+                $environment = " ".ENVIRONMENT;
+            }
+
+            $sender = $settings['accesslink_sender_email'];
+            if($settings['accesslink_sender_email'] == ""){
+                $sender = "noreply@vumc.org";
+            }
+
+            $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $jsoncopyPID . "&arm=1&id=" . $record;
+            $subject = "Changes in the DES ".strtoupper($type)." detected ";
+            $message = "<div>The following changes have been detected in the DES ".strtoupper($type)." and a new record #".$record." has been created:</div><br/>".
+                "<div>Last record: ". $last_record."</div><br/>".
+                "<div>To see the record <a href='".$link."'>click here</a></div><br/>".
+                "<ul><pre>".print_r($result,true)."</pre>".
+                "<span style='color:#777'><pre><em>".print_r($result_prev,true)."</em></pre></ul></span>";
+
+            if($settings['des_0a0b_email'] != "") {
+                $emails = explode(';', $settings['des_0a0b_email']);
+                foreach ($emails as $email) {
+                    \REDCap::email($email, $sender, $subject.$environment, $message,"","",$settings['accesslink_sender_name']);
+                }
+            }
+        }
+        return null;
     }
 }
 

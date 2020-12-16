@@ -1,4 +1,6 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS).'">< Back to Home</a>';
 
 $person_name = "";
@@ -103,8 +105,8 @@ if($_REQUEST['type'] != ""){
             <?php
             if(!empty($requests)) {
                 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                $regions = getProjectInfoArray($RecordSetRegions);
-                array_sort_by_column($regions, 'region_code');
+                $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                 $user_req_header = getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '1','archive');
 

@@ -1,24 +1,25 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 /**
 #Consortium Productivity
  **/
 
 $wg_link = $module->getChoiceLabels('wg_link', IEDEA_HARMONIST);
 $Recordwg_link = \REDCap::getData(IEDEA_GROUP, 'array', null);
-$wg_array = getProjectInfoArray($Recordwg_link,'');
+$wg_array = ProjectData::getProjectInfoArray($Recordwg_link,'');
 $wg_link = array();
 foreach ($wg_array as $wg){
     $wg_link[$wg['record_id']] = $wg['group_name'].' ('.$wg['group_abbr'].')';
 }
 
 $RecordSetConceptsALL = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
-$concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConceptsALL,'');
+$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsALL,'');
 $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[active_y] = 'Y'");
-$active_concepts = count(getProjectInfoArrayRepeatingInstruments($RecordSetConcepts));
+$active_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts));
 $RecordSetConceptsIC = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[active_y] = 'N' AND [concept_outcome] = '1'");
-$inactive_complete_concepts = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsIC));
+$inactive_complete_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsIC));
 $RecordSetConceptsID = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[active_y] = 'N' AND [concept_outcome] = '2'");
-$inactive_discontinued_concepts = count(getProjectInfoArrayRepeatingInstruments($RecordSetConceptsID));
+$inactive_discontinued_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsID));
 
 $array_wg = array();
 foreach ($wg_link as $wg){
@@ -48,13 +49,13 @@ $conceptswg_short_label_index[''] = 'No WG';
 array_push($conceptswg_short_label,'No WG');
 
 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null);
-$regions = getProjectInfoArray($RecordSetRegions);
+$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 $conceptsleadregion_values = array();
 $conceptsleadregion_labels = array();
 $requests_array_region = array();
 foreach ($regions as $region){
     $RecordSetConceptsLead = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[lead_region] = '".$region['record_id']."'");
-    $lead_region = getProjectInfoArrayRepeatingInstruments($RecordSetConceptsLead);
+    $lead_region = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsLead);
     array_push($conceptsleadregion_values,count($lead_region));
     array_push($conceptsleadregion_labels,$region['region_code']);
     $requests_array_region[$region['record_id']] = 0;
@@ -89,7 +90,7 @@ $conceptswg_labels[''] = 'No WG';
 
 $concept_type = array(1=>'manuscripts',2=>'abstracts');
 $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
-$conceptsData = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,'');
+$conceptsData = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,'');
 $regionalmrdata = array();
 foreach ($concept_type as $output_type=>$type){
     ${"regionalmrdata_".$type} = getRegionalAndMR($conceptsData,$type, $regionalmrdata,$settings['oldestyear_rmr_'.$type],$output_type);
@@ -140,7 +141,7 @@ foreach ($conceptsData as $concepts){
     }
 }
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_final_d] <> ''");
-$sopData = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+$sopData = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
 foreach ($sopData as $sop){
     $sop_year = date("Y",strtotime($sop['sop_final_d']));
     foreach ($concept_years as $year=>$c_year){
@@ -165,8 +166,8 @@ foreach ($concept_years as $year => $concept){
 #Requests
  **/
 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = '1'");
-$request = getProjectInfoArrayRepeatingInstruments($RecordSetRM);
-array_sort_by_column($request, 'due_d');
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+ArrayFunctions::array_sort_by_column($request, 'due_d');
 
 $instance = $current_user['person_region'];
 if ($instance == 1) {
@@ -796,14 +797,14 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 <div class="container">
     <?php
     $RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
-    $TBLCenter = getProjectInfoArray($RecordSetTBLCenter);
+    $TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
     $country = $module->getChoiceLabels('country', IEDEA_TBLCENTERREVISED);
     $region_name = $module->getChoiceLabels('region', IEDEA_TBLCENTERREVISED);
 
     $tbl_array = array();
     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-    $regions_ordered = getProjectInfoArray($RecordSetRegions);
-    array_sort_by_column($regions_ordered,'region_code');
+    $regions_ordered = ProjectData::getProjectInfoArray($RecordSetRegions);
+    ArrayFunctions::array_sort_by_column($regions_ordered,'region_code');
     //To order the display
     foreach ($regions_ordered as $region){
         $tbl_array[$region['region_code']]['country'] = array();

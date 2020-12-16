@@ -1,5 +1,5 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $userid = $_REQUEST['userid'];
@@ -7,7 +7,7 @@ $option = $_REQUEST['option'];
 $request_id = $_REQUEST['record'];
 
 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $request_id));
-$follow_activity = getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0]['follow_activity'];
+$follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0]['follow_activity'];
 $array_userid = explode(',',$follow_activity);
 
 $Proj = new \Project(IEDEA_RMANAGER);

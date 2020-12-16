@@ -1,30 +1,31 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
 
 $records = \REDCap::getData($project_id, 'array', array('record_id' => $record));
-$sop = getProjectInfoArray($records)[0];
+$sop = ProjectData::getProjectInfoArray($records)[0];
 
 $data = \REDCap::getData($project_id, 'array',$record,$instrument.'_complete', null,null,false,false,true);
 $completion_time = ($sop[$instrument.'_complete'] == '2')?$data[$record][$event_id][$instrument.'_timestamp']:"";
 if(empty($completion_time)){
-    $date = new DateTime();
+    $date = new \DateTime();
     $completion_time = $date->format('Y-m-d H:i:s');
 }
 
 $records = \REDCap::getData(IEDEA_SOPCOMMENTS, 'array', array('sop_id' => $record),null,null,null,false,false,false,"[other_action] = 3");
-$comments_DCStarted = getProjectInfoArray($records)[0];
+$comments_DCStarted = ProjectData::getProjectInfoArray($records)[0];
 $records = \REDCap::getData(IEDEA_SOPCOMMENTS, 'array', array('sop_id' => $record),null,null,null,false,false,false,"[other_action] = 4");
-$comments_DCCompleted = getProjectInfoArray($records)[0];
+$comments_DCCompleted = ProjectData::getProjectInfoArray($records)[0];
 
 if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" && $sop['sop_finalize_y'][1] == '1') || ($instrument == 'dhwg_review_request') || ($instrument == 'data_call_closure' && $comments_DCCompleted == "" && $sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'] == "1")){
     $recordsPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_hubuser']),null,null,null,false,false,false,null);
-    $person_region = getProjectInfoArray($recordsPeople)[0]['person_region'];
+    $person_region = ProjectData::getProjectInfoArray($recordsPeople)[0]['person_region'];
 
     $arrayComments = array(array('record_id' => $module->framework->addAutoNumberedRecord(IEDEA_SOPCOMMENTS),'responsecomplete_ts' => $completion_time, 'sop_id' => $sop['record_id'], 'response_region' => $person_region, 'response_person' => $sop['sop_hubuser']));
 
     $recordsPeople = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region),null,null,null,false,false,false,null);
-    $regions = getProjectInfoArray($recordsPeople)[0];
+    $regions = ProjectData::getProjectInfoArray($recordsPeople)[0];
     if(!empty($regions)) {
         $arrayComments[0]['response_regioncode'] = $regions['region_code'];
     }

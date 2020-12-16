@@ -1,6 +1,7 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 $RecordSetAbout = \REDCap::getData(IEDEA_ABOUT, 'array', null);
-$about = getProjectInfoArrayRepeatingInstruments($RecordSetAbout)[0];
+$about = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetAbout)[0];
 ?>
 
 <div class="container">

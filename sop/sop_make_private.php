@@ -1,5 +1,5 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $record = $_REQUEST['record'];
@@ -13,9 +13,9 @@ $results = \Records::saveData(IEDEA_SOP, 'array', $arraySOP,'overwrite', 'YMD', 
 \Records::addRecordToRecordListCache(IEDEA_SOP, $record,1);
 
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $record));
-$sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-$date = new DateTime();
+$date = new \DateTime();
 $completion_time = $date->format('Y-m-d H:i:s');
 
 $ProjSOPComments = new \Project(IEDEA_SOPCOMMENTS);
@@ -31,11 +31,11 @@ $arraySOPComments[$record_sopcomments][$event_id_sopcomments]['comments'] = "Dat
 $arraySOPComments[$record_sopcomments][$event_id_sopcomments]['comment_ver'] = "0";
 
 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $sop['sop_hubuser']));
-$person_region = getProjectInfoArray($RecordSetPeople)[0]['person_region'];
+$person_region = ProjectData::getProjectInfoArray($RecordSetPeople)[0]['person_region'];
 $arraySOP[$record_sopcomments][$event_id_sopcomments]['response_region'] = $person_region;
 
 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array("record_id" => $person_region));
-$regioncode = getProjectInfoArray($RecordSetRegions)[0]['region_code'];
+$regioncode = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
 if(!empty($regioncode)){
     $arraySOP[$record_sopcomments][$event_id_sopcomments]['response_regioncode'] = $regioncode;
 }

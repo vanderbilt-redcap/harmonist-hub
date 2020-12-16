@@ -1,4 +1,5 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../projects.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
@@ -10,7 +11,7 @@ parse_str($code, $exploded);
 
 $record_id = $exploded['id'];
 $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', array('record_id' => $record_id));
-$request_DU = getProjectInfoArray($RecordSetDU)[0];
+$request_DU = ProjectData::getProjectInfoArray($RecordSetDU)[0];
 
 $credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
 $s3 = new S3Client([
@@ -28,12 +29,12 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && $_SESSION['token'][$s
         ));
 
         $RecordSetPerson = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[redcap_name] = '".USERID."'");
-        $persondown = getProjectInfoArray($RecordSetPerson)[0];
+        $persondown = ProjectData::getProjectInfoArray($RecordSetPerson)[0];
         $downloader = $persondown['record_id'];
         $downloader_region = $persondown['person_region'];
 
         $RecordSetRegionsDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $downloader_region));
-        $region_codeDown = getProjectInfoArray($RecordSetRegionsDown)[0]['region_code'];
+        $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsDown)[0]['region_code'];
         $downloader_all = "<a href='".$persondown['email']."'>".$persondown['firstname']." ".$persondown['lastname']."</a> (".$region_codeDown.")";
         $download_time = date("Y-m-d H:i:s");
 
@@ -51,29 +52,29 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && $_SESSION['token'][$s
         $results = \Records::saveData(IEDEA_DATADOWNLOAD, 'array', $recordSaveDU,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache(IEDEA_DATADOWNLOAD, $record_id,1);
 
-        $date = new DateTime($download_time);
+        $date = new \DateTime($download_time);
         $date->modify("+1 hours");
         $download_time_et = $date->format("Y-m-d H:i");
 
         #EMAIL NOTIFICATION
         $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $request_DU['data_assoc_concept']));
-        $concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+        $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
         $concept_id = $concepts['concept_id'];
 
         $RecordSetPeopleUp = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $request_DU['data_upload_person']));
-        $peopleUp = getProjectInfoArray($RecordSetPeopleUp)[0];
+        $peopleUp = ProjectData::getProjectInfoArray($RecordSetPeopleUp)[0];
 
         $RecordSetRegionsUp = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleUp['person_region']));
-        $region_codeUp = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];;
+        $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];;
 
-        $date = new DateTime($request_DU['responsecomplete_ts']);
+        $date = new \DateTime($request_DU['responsecomplete_ts']);
         $date->modify("+1 hours");
         $date_time = $date->format("Y-m-d H:i");
         $extra_days = ' + ' . $settings['retrievedata_expiration'] . " days";
         $expire_date = date('Y-m-d', strtotime($date_time . $extra_days));
 
         $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $request_DU['data_assoc_request']));
-        $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
         #to uploader user
         $subject = "Your ".$settings['hub_name']." ".$concept_id." dataset was downloaded";
@@ -85,7 +86,7 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && $_SESSION['token'][$s
 
         if($request_DU['data_upload_person'] != $downloader){
             $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $downloader));
-            $peopleDown = getProjectInfoArray($RecordSetPeopleDown)[0];
+            $peopleDown = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
 
             #to downloader
             $subject = "Confirmation of ".$settings['hub_name']." ".$concept_id." dataset download";

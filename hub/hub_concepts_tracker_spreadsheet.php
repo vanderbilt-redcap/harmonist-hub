@@ -2,12 +2,11 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-require_once dirname(dirname(__FILE__))."/classes/ExcelFunctions.php";
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 
 $RecordSetConcetps = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
-$concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
+$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 $multireg_pub = array();
 $multireg_con = array();
 $multireg_abs = array();
@@ -16,7 +15,7 @@ if(!empty($concepts)){
         $group_name = "";
         if($concept['wg_link'] != ""){
             $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $concept['wg_link'] ));
-            $group_name = getProjectInfoArray($RecordSetGroups)[0]['group_name'];
+            $group_name = ProjectData::getProjectInfoArray($RecordSetGroups)[0]['group_name'];
         }
         $ec_approval = "";
         if($concept['ec_approval_d'] != ""){
@@ -29,7 +28,7 @@ if(!empty($concepts)){
             foreach ($concept['person_link'] as $index =>$person){
                 if($concept['person_role'][$index] == "1" || $concept['person_role'][$index] == "2"){
                     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $person));
-                    $people = getProjectInfoArray($RecordSetPeople)[0];
+                    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                     if($concept['person_role'][$index] == "1"){
                         $lead_author .= $people['lastname'].", ".$people['firstname']. " & ";
                     }else if($concept['person_role'][$index] == "2"){
@@ -134,9 +133,9 @@ if(!empty($concepts)){
     }
 }
 
-array_sort_by_column($multireg_con,0);
-array_sort_by_column($multireg_pub,2);
-array_sort_by_column($multireg_abs,2);
+ArrayFunctions::array_sort_by_column($multireg_con,0);
+ArrayFunctions::array_sort_by_column($multireg_pub,2);
+ArrayFunctions::array_sort_by_column($multireg_abs,2);
 
 #EXEL SHEET
 $filename = "Tracker - multiregional - " . date("F Y") . ".xlsx";

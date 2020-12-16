@@ -1,40 +1,42 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $RecordSetHome = \REDCap::getData(IEDEA_HOME, 'array', null);
-$homepage = getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
+$homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
 $homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', IEDEA_HOME);
 $expire_date = date('Y-m-d', strtotime(date('Y-m-d') ."-".$settings['recentdataactivity_dur']." days"));
 
 $RecordSetComments = \REDCap::getData(IEDEA_SOPCOMMENTS, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
-$comments_sevenDaysYoung = getProjectInfoArray($RecordSetComments);
-array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
+$comments_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetComments);
+ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
 $RecordSetDataUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
-$dataUpload_sevenDaysYoung = getProjectInfoArray($RecordSetDataUpload);
-array_sort_by_column($dataUpload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
+$dataUpload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataUpload);
+ArrayFunctions::array_sort_by_column($dataUpload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
 $RecordSetDataDownload = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
-$dataDownload_sevenDaysYoung = getProjectInfoArray($RecordSetDataDownload);
-array_sort_by_column($dataDownload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
+$dataDownload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataDownload);
+ArrayFunctions::array_sort_by_column($dataDownload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
 $all_data_recent_activity = array_merge($comments_sevenDaysYoung, $dataUpload_sevenDaysYoung);
 $all_data_recent_activity = array_merge($all_data_recent_activity, $dataDownload_sevenDaysYoung);
 
-array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
+ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
 $number_of_recentactivity = $settings['number_recentdataactivity'];
 
 $RecordSetDataDownload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
-$number_uploads = count(getProjectInfoArray($RecordSetDataDownload));
+$number_uploads = count(ProjectData::getProjectInfoArray($RecordSetDataDownload));
 
 $RecordSetDataDownload = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null);
-$number_downloads = count(getProjectInfoArray($RecordSetDataDownload));
+$number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDataDownload));
 
 $RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
-$TBLCenter = getProjectInfoArray($RecordSetTBLCenter);
+$TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
 
 $region_tbl_percent = getTBLCenterUpdatePercentRegions($TBLCenter, $person_region['region_code'], $settings['pastlastreview_dur']);
 
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
-$request_dataCall = getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
+$request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
 $open_data_calls = 0;
 if(!empty($request_dataCall)) {
     foreach ($request_dataCall as $sop) {
@@ -48,8 +50,8 @@ if(!empty($request_dataCall)) {
 
 $news_type = $module->getChoiceLabels('news_type', IEDEA_NEWITEMS);
 $RecordSetNewItems = \REDCap::getData(IEDEA_NEWITEMS, 'array', null,null,null,null,false,false,false,"[news_category] = '1'");
-$newItems = getProjectInfoArray($RecordSetNewItems);
-array_sort_by_column($newItems, 'news_d',SORT_DESC);
+$newItems = ProjectData::getProjectInfoArray($RecordSetNewItems);
+ArrayFunctions::array_sort_by_column($newItems, 'news_d',SORT_DESC);
 $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-calendar-o'=>'#ff8080','fa-bell-o'=>'#dff028',
     'fa-list-ol'=>'#b3d9ff','fa-file-o'=>'#a3a3c2','fa-trophy'=>'#9999ff','fa-exclamation-triangle'=>'#a3c2c2');
 ?>
@@ -270,11 +272,11 @@ if($settings['deactivate_datadown'][1] != "1"){
                                 echo '<li class="list-group-item">';
 
                                 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['response_person']));
-                                $people = getProjectInfoArray($RecordSetPeople)[0];
+                                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                                 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $recent_activity['sop_id']));
-                                $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+                                $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
                                 $sop_concept_id = $sop['sop_concept_id'];
                                 $sop_name = $sop['sop_name'];
                                 $assoc_concept = getReqAssocConceptLink($module, $sop_concept_id, "");
@@ -311,13 +313,13 @@ if($settings['deactivate_datadown'][1] != "1"){
                                 echo '<li class="list-group-item">';
 
                                 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['downloader_id']));
-                                $people = getProjectInfoArray($RecordSetPeople)[0];
+                                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                                 $RecordSetUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', array('record_id' => $recent_activity['downloader_id']));
-                                $data_upload_region = getProjectInfoArray($RecordSetUpload)[0]['data_upload_region'];
+                                $data_upload_region = ProjectData::getProjectInfoArray($RecordSetUpload)[0]['data_upload_region'];
                                 $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $data_upload_region));
-                                $region_code = getProjectInfoArray($RecordSetRegion)[0]['region_code'];
+                                $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
                                 $assoc_concept = getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept'], "");
 
@@ -330,11 +332,11 @@ if($settings['deactivate_datadown'][1] != "1"){
                                 echo '<li class="list-group-item">';
 
                                 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['data_upload_person']));
-                                $people = getProjectInfoArray($RecordSetPeople)[0];
+                                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                                 $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $recent_activity['data_upload_region']));
-                                $region_code = getProjectInfoArray($RecordSetRegion)[0]['region_code'];
+                                $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
                                 $assoc_concept = getReqAssocConceptLink($module, $recent_activity['data_assoc_concept'], "");
 
@@ -448,16 +450,16 @@ if($settings['deactivate_datadown'][1] != "1"){
 
 #FILE ACTIVITY
 $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
-$number_uploads = count(getProjectInfoArray($RecordSetDU));
+$number_uploads = count(ProjectData::getProjectInfoArray($RecordSetDU));
 
 $RecordSetDN = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null);
-$number_downloads = count(getProjectInfoArray($RecordSetDN));
+$number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDN));
 
 $RecordSetDU = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '2'");
-$number_deletes = count(getProjectInfoArray($RecordSetDU));
+$number_deletes = count(ProjectData::getProjectInfoArray($RecordSetDU));
 
 $RecordSetDUAuto = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '1'");
-$number_deletes_auto = count(getProjectInfoArray($RecordSetDUAuto));
+$number_deletes_auto = count(ProjectData::getProjectInfoArray($RecordSetDUAuto));
 
 //GRAPH
 $fileActivity_values = array(0 => $number_uploads,1 => $number_downloads,2 => $number_deletes);

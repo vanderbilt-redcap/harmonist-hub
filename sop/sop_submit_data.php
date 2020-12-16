@@ -1,3 +1,6 @@
+<?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+?>
 <script language="JavaScript">
     $(document).ready(function() {
         //To change the text on select
@@ -62,8 +65,8 @@
 
 <?php
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
-$request_dataCall = getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
-array_sort_by_column($request_dataCall,'sop_due_d');
+$request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
+ArrayFunctions::array_sort_by_column($request_dataCall,'sop_due_d');
 $open_data_calls = "";
 $completed_data_calls = "";
 if(!empty($request_dataCall)) {

@@ -1,4 +1,6 @@
-
+<?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+?>
 <script>
     //To filter the data
     $.fn.dataTable.ext.search.push(
@@ -56,8 +58,8 @@
                     <option value="">Select All</option>
                     <?php
                     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null);
-                    $regions = getProjectInfoArray($RecordSetRegions);
-                    array_sort_by_column($regions,'region_code');
+                    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                    ArrayFunctions::array_sort_by_column($regions,'region_code');
                     if (!empty($regions)) {
                         foreach ($regions as $region){
                             echo "<option value='".$region['record_id']."'>".$region['region_code']."</option>";
@@ -91,7 +93,7 @@
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
                 <?php
                 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[active_y] = '1'");
-                $logins = getProjectInfoArray($RecordSetPeople);
+                $logins = ProjectData::getProjectInfoArray($RecordSetPeople);
                 if(!empty($logins)) {
                     echo '<thead>' . '
                             <tr>' . '
@@ -108,10 +110,10 @@
                     $harmonist_perms = $module->getChoiceLabels('harmonist_perms', IEDEA_PEOPLE);
                     foreach ($logins as $login){
                         $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $login['person_region']));
-                        $region_code = getProjectInfoArray($RecordSetRegionsLogin)['region_code'];
+                        $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)['region_code'];
 
                         $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array',  array('record_id' => $login['record_id']));
-                        $people = getProjectInfoArray($RecordSetPeople)[0];
+                        $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 
                         $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_PEOPLE . "&arm=1&id=" . $login['record'];
 

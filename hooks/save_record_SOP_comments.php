@@ -1,9 +1,10 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
 
 $RecordSetComment = \REDCap::getData($project_id, 'array', array('record_id' => $record));
-$comment = getProjectInfoArray($RecordSetComment)[0];
+$comment = ProjectData::getProjectInfoArray($RecordSetComment)[0];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
 
@@ -12,7 +13,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
     $completion_time = ($comment[$instrument.'_complete'] == '2')?$data[$record][$event_id][$instrument.'_timestamp']:"";
     if(empty($completion_time)){
-        $date = new DateTime();
+        $date = new \DateTime();
         $completion_time = $date->format('Y-m-d H:i:s');
     }
 
@@ -20,7 +21,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $arrayCV[$record][$event_id]['responsecomplete_ts'] = $completion_time;
 
     $recordsRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $comment['response_region']));
-    $regions = getProjectInfoArray($recordsRegions)[0];
+    $regions = ProjectData::getProjectInfoArray($recordsRegions)[0];
     if(!empty($regions)){
         $arrayCV[$record][$event_id]['response_regioncode'] = $regions['region_code'];
     }
@@ -28,19 +29,19 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     \Records::addRecordToRecordListCache($project_id, $record,1);
 
     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $comment['sop_id']));
-    $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
     if(!empty($sop)){
         if($sop['follow_activity'] != ''){
             $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array');
-            $settings = getProjectInfoArray($RecordSetSettings)[0];
+            $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
             $array_userid = explode(',',$sop['follow_activity']);
             foreach ($array_userid as $user_id){
                 $RecordSetEmail = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $user_id));
-                $people = getProjectInfoArray($RecordSetEmail)[0];
+                $people = ProjectData::getProjectInfoArray($RecordSetEmail)[0];
 
                 $RecordSetContact = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
-                $data_contact = getProjectInfoArray($RecordSetContact)[0];
+                $data_contact = ProjectData::getProjectInfoArray($RecordSetContact)[0];
 
                 $sender_email = "noreply@vumc.org";
                 if($settings['accesslink_sender_email'] != ""){

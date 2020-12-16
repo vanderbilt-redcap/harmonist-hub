@@ -1,9 +1,9 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
-$settings = getProjectInfoArray($RecordSetSettings)[0];
+$settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
 $result = "";
 $current_record = $_POST['record'];
@@ -15,7 +15,7 @@ $options = array(0=>"map",1=>"sop",2=>"ss1",3=>"cpt",4=>"ttl",5=>"pup",6=>"cup",
 
 if(!empty($_POST['email'])) {
     $RecordSetEmail = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[email] ='".$_POST['email']."'");
-    $people = getProjectInfoArray($RecordSetEmail)[0];
+    $people = ProjectData::getProjectInfoArray($RecordSetEmail)[0];
     if(strtolower($people['email']) == strtolower($_POST['email']) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
         $arrayLogin = array(array('record_id' => $people['record_id']));
 

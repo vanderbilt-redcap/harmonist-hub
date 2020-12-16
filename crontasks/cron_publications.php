@@ -1,4 +1,5 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../projects.php");
 
 $isAdmin = false;
@@ -8,11 +9,11 @@ if(array_key_exists('isAdmin', $_REQUEST) && ($_REQUEST['isAdmin'] == '1')){
 $today = strtotime(date("Y-m-d"));
 if(strtotime($settings['publications_lastupdate']) < $today || $settings['publications_lastupdate'] == "" || $isAdmin) {
     $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[output_year] <> ''");
-    $concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets);
+    $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets);
 
     $RecordSetExtraOut = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'array', null);
-    $extra_outputs = getProjectInfoArray($RecordSetExtraOut);
-    array_sort_by_column($extra_outputs, 'output_year', SORT_DESC);
+    $extra_outputs = ProjectData::getProjectInfoArray($RecordSetExtraOut);
+    ArrayFunctions::array_sort_by_column($extra_outputs, 'output_year', SORT_DESC);
 
     $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
     $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
@@ -75,7 +76,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                 $type = "<span class='badge badge-pill badge-draft'>MR</span>";
             } else if ($output['producedby_region'] == 1) {
                 $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $output['lead_region']));
-                $my_region = getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
+                $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
                 $type = "<span class='badge badge-pill badge-draft'>R</span><div><i>" . $my_region . "</i></div>";
             }
 

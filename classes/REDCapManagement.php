@@ -17,7 +17,7 @@ class REDCapManagement {
     public static function getProjectConstantsArrayWithoutDeactivatedProjects(){
         $projects_array = self::getProjectsContantsArray();
         $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
-        $settings = getProjectInfoArray($RecordSetSettings)[0];
+        $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
         $deactivatedConstants = array();
         if($settings['deactivate_toolkit'][1] == '1'){
@@ -49,7 +49,7 @@ class REDCapManagement {
         $pidsArray = array();
         foreach ($projects_array as $constant){
             $RecordSetHarmonist = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='".$constant."'");
-            $pid = getProjectInfoArray($RecordSetHarmonist)[0]['project_id'];
+            $pid = ProjectData::getProjectInfoArray($RecordSetHarmonist)[0]['project_id'];
             if($pid != ""){
                 $pidsArray[$constant] = $pid;
             }

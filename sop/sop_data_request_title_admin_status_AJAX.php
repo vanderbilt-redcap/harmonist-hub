@@ -1,11 +1,11 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $record_id = $_REQUEST['record_id'];
 
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record_id));
-$sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
 $ProjSOP = new \Project(IEDEA_SOP);
 $event_id_sop = $ProjSOP->firstEventId;
@@ -21,7 +21,7 @@ foreach ($region_vote_values as $votes_info){
     $vote = (explode('_',$votes_info)[1] == "0")? "":explode('_',$votes_info)[1];
 
     if($sop['data_response_status'][$region] != $vote && $vote != ""){
-        $date = new DateTime();
+        $date = new \DateTime();
         $timestamp = $date->format('Y-m-d H:i:s');
 
         $array_repeat_instances = array();
@@ -41,11 +41,11 @@ foreach ($region_vote_values as $votes_info){
         $recordSOPComments[$record_sopcomments][$event_id_sopcomments]['responsecomplete_ts'] = $timestamp;
 
         $RecordSetRegionsUp = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $_REQUEST['region']));
-        $region_code = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+        $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
         $recordSOPComments[$record_sopcomments][$event_id_sopcomments]['response_regioncode'] = $region_code;
 
         $RecordSetRegionsUp = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $region));
-        $region_comment = getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+        $region_comment = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
         $comment = "Status submitted for region (".$region_comment.") by Admin";
         $recordSOPComments[$record_sopcomments][$event_id_sopcomments]['comments'] = $comment;
         $recordSOPComments[$record_sopcomments][$event_id_sopcomments]['sop_comments_complete'] = "2";

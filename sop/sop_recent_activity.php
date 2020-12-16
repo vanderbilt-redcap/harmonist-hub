@@ -1,20 +1,22 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $RecordSetComments = \REDCap::getData(IEDEA_SOPCOMMENTS, 'array');
-$comments = getProjectInfoArray($RecordSetComments);
-array_sort_by_column($comments, 'responsecomplete_ts',SORT_DESC);
+$comments = ProjectData::getProjectInfoArray($RecordSetComments);
+ArrayFunctions::array_sort_by_column($comments, 'responsecomplete_ts',SORT_DESC);
 
 $RecordSetDataUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
-$dataUpload = getProjectInfoArray($RecordSetDataUpload);
-array_sort_by_column($dataUpload, 'responsecomplete_ts',SORT_DESC);
+$dataUpload = ProjectData::getProjectInfoArray($RecordSetDataUpload);
+ArrayFunctions::array_sort_by_column($dataUpload, 'responsecomplete_ts',SORT_DESC);
 
 $RecordSetDataDownload = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null);
-$dataDownload = getProjectInfoArray($RecordSetDataUpload);
-array_sort_by_column($dataDownload, 'responsecomplete_ts',SORT_DESC);
+$dataDownload = ProjectData::getProjectInfoArray($RecordSetDataUpload);
+ArrayFunctions::array_sort_by_column($dataDownload, 'responsecomplete_ts',SORT_DESC);
 
 $all_data_recent_activity = array_merge($comments, $dataUpload);
 $all_data_recent_activity = array_merge($all_data_recent_activity, $dataDownload);
 
-array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
+ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
 ?>
 <script>
     //To filter the data
@@ -76,7 +78,7 @@ array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC)
                     <option value="">Select All</option>
                     <?php
                     $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', null);
-                    $regions = getProjectInfoArray($RecordSetRegionsLoginDown);
+                    $regions = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown);
                     if (!empty($regions)) {
                         foreach ($regions as $region){
                             echo "<option value='".$region['record_id']."'>".$region['region_code']."</option>";
@@ -131,7 +133,7 @@ array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC)
                     foreach ($all_data_recent_activity as $recent_activity) {
                         $comment_time ="";
                         if(!empty($recent_activity['responsecomplete_ts'])){
-                            $dateComment = new DateTime($recent_activity['responsecomplete_ts']);
+                            $dateComment = new \DateTime($recent_activity['responsecomplete_ts']);
                             $dateComment->modify("+1 hours");
                             $comment_time = $dateComment->format("Y-m-d H:i:s");
                         }
@@ -139,17 +141,17 @@ array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC)
                         if($recent_activity['comments'] != '') {
                             #COMMENTS
                             $projectPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['response_person']));
-                            $people = getProjectInfoArray($projectPeople)[0];
+                            $people = ProjectData::getProjectInfoArray($projectPeople)[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $recent_activity['sop_id']));
-                            $sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+                            $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
                             $sop_concept_id = $sop['sop_concept_id'];
                             $sop_name = $sop['sop_name'];
                             $assoc_concept = getReqAssocConceptLink($module, $sop_concept_id);
 
                             $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']),null,null,null,false,false,false,"[showregion_y] = 1");
-                            $region = getProjectInfoArray($RecordSetRegions)[0];
+                            $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
 
                             echo '<tr><td width="170px">'.$comment_time.'</td>'.
                                 '<td width="80px">'.$assoc_concept.'</td>'.
@@ -178,13 +180,13 @@ array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC)
                         }else if($recent_activity['download_id'] != ""){
                             #DOWNLOADS
                             $projectPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['response_person']));
-                            $people = getProjectInfoArray($projectPeople)[0];
+                            $people = ProjectData::getProjectInfoArray($projectPeople)[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $RecordSetDataUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', array('record_id' => $recent_activity['download_id']));
-                            $data_upload_region = getProjectInfoArray($RecordSetDataUpload)[0]['data_upload_region'];
+                            $data_upload_region = ProjectData::getProjectInfoArray($RecordSetDataUpload)[0]['data_upload_region'];
                             $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $data_upload_region));
-                            $region_code = getProjectInfoArray($RecordSetRegion)[0]['region_code'];
+                            $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
                             $assoc_concept = getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept']);
 
@@ -200,11 +202,11 @@ array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC)
                         }else if($recent_activity['data_assoc_request'] != ""){
                             #UPLOADS
                             $projectPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['data_upload_person']));
-                            $people = getProjectInfoArray($projectPeople)[0];
+                            $people = ProjectData::getProjectInfoArray($projectPeople)[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $recent_activity['data_upload_region']));
-                            $region_code = getProjectInfoArray($RecordSetRegion)[0]['region_code'];
+                            $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
                             $assoc_concept = getReqAssocConceptLink($module, $recent_activity['data_assoc_concept']);
 

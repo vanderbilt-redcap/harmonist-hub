@@ -1,4 +1,6 @@
-
+<?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+?>
 <script>
     $(document).ready(function() {
         Sortable.init();
@@ -58,8 +60,8 @@
         <table class="table table_requests sortable-theme-bootstrap" data-sortable id="sortable_table">
             <?php
             $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
-            $request_dataCall_arc = getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
-            array_sort_by_column($request_dataCall_arc,'sop_due_d',SORT_DESC);
+            $request_dataCall_arc = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
+            ArrayFunctions::array_sort_by_column($request_dataCall_arc,'sop_due_d',SORT_DESC);
             if(!empty($request_dataCall_arc)) {
                 echo getDataCallHeader($current_user['person_region'],1);
                 foreach ($request_dataCall_arc as $sop){

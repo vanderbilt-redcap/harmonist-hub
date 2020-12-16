@@ -1,9 +1,10 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
 
 $records = \REDCap::getData($project_id, 'array', array('request_id' => $record));
-$request = getProjectInfoArray($records)[0];
+$request = ProjectData::getProjectInfoArray($records)[0];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
 
@@ -12,14 +13,14 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
     $completion_time = ($request[$instrument.'_complete'] == '2')?$data[$record][$event_id][$instrument.'_timestamp']:"";
     if(empty($completion_time)){
-       $date = new DateTime();
+       $date = new \DateTime();
        $completion_time = $date->format('Y-m-d H:i:s');
     }
 
     $arrayRM = array(array('request_id' => $record,'requestopen_ts' => $completion_time));
 
     $recordsPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $record),null,null,null,false,false,false,"[email] = '".$request['contact_email']."'");
-    $people = getProjectInfoArray($recordsPeople)[0];
+    $people = ProjectData::getProjectInfoArray($recordsPeople)[0];
 
     if(!empty($people)){
         $arrayRM[0]['contactperson_id'] = $people['record_id'];
@@ -39,7 +40,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     }
 
     $recordsRegions = \REDCap::getData(IEDEA_REGIONS, 'array');
-    $regions = getProjectInfoArray($recordsRegions);
+    $regions = ProjectData::getProjectInfoArray($recordsRegions);
     foreach ($regions as $region){
         $instance = $region['record_id'];
         //only if it's the first time we save the info
@@ -61,10 +62,10 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     \Records::addRecordToRecordListCache($project_id, $event_id,1);
 }else if($instrument == 'mr_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
     $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', array('record_id' => '1'));
-    $settings = getProjectInfoArray($RecordSetSettings)[0];
+    $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
     $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[concept_id] = '".$request['mr_assigned']."'");
-    $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
     if (empty($concept)) {
         if($request['final_d'] != ""){
             $start_year = date("Y", strtotime($request['final_d']));
@@ -122,14 +123,14 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $wgroup_name = "<i>None</i>";
         if ($request['wg_name'] != "") {
             $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg_name']));
-            $wgroup = getProjectInfoArray($RecordSetGroups)[0];
+            $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
             $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
 
         $wgroup2_name = "<i>None</i>";
         if ($request['wg2_name'] != "") {
             $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg2_name']));
-            $wgroup = getProjectInfoArray($RecordSetGroups)[0];
+            $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
             $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
 
@@ -156,14 +157,14 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $wgroup_name = "<i>None</i>";
         if ($request['wg_name'] != "") {
             $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg_name']));
-            $wgroup = getProjectInfoArray($RecordSetGroups)[0];
+            $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
             $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
 
         $wgroup2_name = "<i>None</i>";
         if ($request['wg2_name'] != "") {
             $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg2_name']));
-            $wgroup = getProjectInfoArray($RecordSetGroups)[0];
+            $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
             $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
 

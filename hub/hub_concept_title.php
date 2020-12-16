@@ -1,6 +1,7 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 $RecordSetTable = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $_REQUEST['record']));
-$concept = getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0];
+$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0];
 
 $abstracts_publications_type = $module->getChoiceLabels('output_type', IEDEA_HARMONIST);
 $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
@@ -20,13 +21,13 @@ if(!empty($concept)) {
     $name_concept = "<em>Not specified</em>";
     if (!empty($id_people)) {
         $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $id_people));
-        $person_info = getProjectInfoArray($RecordSetPeople,'')[0];
+        $person_info = ProjectData::getProjectInfoArray($RecordSetPeople,'')[0];
         $email = "";
         if (!empty($person_info)) {
             $name_concept = '<a href="mailto:'.$person_info['email'].'">'.$person_info['firstname'] . ' ' . $person_info['lastname'];
             if(!empty($person_info['person_region'])){
                 $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_info['person_region']));
-                $person_region = getProjectInfoArray($RecordSetRegion,'')[0];
+                $person_region = ProjectData::getProjectInfoArray($RecordSetRegion,'')[0];
                 if(!empty($person_region)){
                     $name_concept .= " (".$person_region['region_code'].")";
                 }
@@ -38,7 +39,7 @@ if(!empty($concept)) {
     $id_workingGroup = $concept['wg_link'];
     if (!empty($id_workingGroup)) {
         $RecordSetGroup = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $id_workingGroup));
-        $wgroup = getProjectInfoArray($RecordSetGroup,'')[0];
+        $wgroup = ProjectData::getProjectInfoArray($RecordSetGroup,'')[0];
         $group_name = "";
         if (!empty($wgroup)) {
             $group_name = $wgroup['group_abbr'] . ' - ' . $wgroup['group_name'];
@@ -47,7 +48,7 @@ if(!empty($concept)) {
 
     if (!empty($concept['wg2_link'])) {
         $RecordSetGroup2 = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' =>  $concept['wg2_link']));
-        $wgroup2 = getProjectInfoArray($RecordSetGroup2,'')[0];
+        $wgroup2 = ProjectData::getProjectInfoArray($RecordSetGroup2,'')[0];
     }
     $group_name_total = "<em>Not specified</em>";
     if(!empty($wgroup['group_name'])){
@@ -70,7 +71,7 @@ if(!empty($concept)) {
     if (!empty($concept["status"]) && in_array('1', $concept["status"]) && !empty($concept["pdf_file"])) {
         #SOP Files from Builder SOP project
         $RecordSop = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $concept['record_id']));
-        $pdf_file = getProjectInfoArrayRepeatingInstruments($RecordSop,'')[0]["pdf_file"];
+        $pdf_file = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSop,'')[0]["pdf_file"];
         $q = $module->query("SELECT doc_name,stored_name,file_extension FROM redcap_edocs_metadata WHERE doc_id = ?",[$pdf_file]);
         $row_datasop_file = $q->fetch_assoc();
     }
@@ -209,7 +210,7 @@ if($concept['revised_y'][0] == '1'){
                 if(!empty($concept['participants_complete'])) {
                     foreach ($concept['participants_complete'] as $id => $participant) {
                         $RecordSetParticipant = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $concept['person_link'][$id]));
-                        $participant_info = getProjectInfoArrayRepeatingInstruments($RecordSetParticipant)[0];
+                        $participant_info = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetParticipant)[0];
                         if (!empty($participant_info)) {
                             #get the label from the drop down menu
                             echo '<div><a href="mailto:' . $participant_info['email'] . '">' . $participant_info['firstname'] . ' ' . $participant_info['lastname'] . '</a> (' . $module->getChoiceLabels('person_role', IEDEA_HARMONIST)[$concept['person_role'][$id]]. ')</div>';
@@ -309,9 +310,9 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
             $q = $module->query("SELECT record FROM redcap_data WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$_REQUEST['record'],IEDEA_HARMONIST]);
 
             $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_visibility] = 2 and [sop_concept_id] = ".$_REQUEST['record']);
-            $data_requests = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+            $data_requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
 
-            array_sort_by_column($data_requests,'sop_updated_dt',SORT_DESC);
+            ArrayFunctions::array_sort_by_column($data_requests,'sop_updated_dt',SORT_DESC);
             if(!empty($data_requests) || $q->num_rows > 0) {
                 echo getDataCallConceptsHeader($current_user['person_region'],$settings['vote_grid']);
                 foreach ($data_requests as $sop) {
@@ -319,7 +320,7 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
                 }
                 while ($row = db_fetch_assoc($q)){
                     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$row['record']);
-                    $data_requests_old = getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+                    $data_requests_old = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
                     if(empty($data_requests_old)){
                         echo getDataCallConceptsRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$row['record'],"1");
                     }
@@ -353,7 +354,7 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
                 </colgroup>
                 <?php
                 $RecordSetUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$_REQUEST['record']);
-                $uploads = getProjectInfoArray($RecordSetUpload);
+                $uploads = ProjectData::getProjectInfoArray($RecordSetUpload);
                 if(!empty($uploads)){?>
 
                 <thead>
@@ -369,11 +370,11 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
                 <?php
                 foreach ($uploads as $up){
                     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $up['data_upload_person']));
-                    $people = getProjectInfoArray($RecordSetPeople)[0];
+                    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                     $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
                     $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $up['data_upload_region']));
-                    $region_code = getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+                    $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
                     $status = '<span class="badge label-updated">Available</span>';
                     if($up['deleted_y'] == '1'){
@@ -476,7 +477,7 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
             <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                 <?php
                 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null);
-                $request = getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y' => "1",'assoc_concept' => $concept['record_id']));
+                $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y' => "1",'assoc_concept' => $concept['record_id']));
                 if(!empty($request)){
                     echo getArchiveHeader('Status');
                     ?>

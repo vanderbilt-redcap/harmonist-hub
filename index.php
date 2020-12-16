@@ -100,8 +100,10 @@ if($hub_projectname == '' || $hub_profile == ''){
          * -Data Dictionary Variables
          * -Repeating Forms
          */
-        $module->compareDataDictionaries();
-        $module->compareRepeatingForms();
+        if($isAdmin) {
+            $module->compareDataDictionaries();
+            $module->compareRepeatingForms();
+        }
         ?>
         <!DOCTYPE html>
         <html lang="en">

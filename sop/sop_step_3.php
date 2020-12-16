@@ -1,3 +1,6 @@
+<?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+?>
 <script>
     $(document).ready(function () {
         $(".datepicker_aux").datepicker({
@@ -91,8 +94,8 @@ if($record != ''){?>
     </script>
 <?php }
 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null);
-$people = getProjectInfoArray($RecordSetPeople);
-array_sort_by_column($people,'firstname');
+$people = ProjectData::getProjectInfoArray($RecordSetPeople);
+ArrayFunctions::array_sort_by_column($people,'firstname');
 if (!empty($people)) {
     $select_people = "<option>Select Name</option>";
     foreach ($people as $person){
@@ -172,7 +175,7 @@ if (!empty($people)) {
                 <select class="form-control data-form-control" name="sop_hubuser" id="sop_hubuser" disabled>
                     <?php
                     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null);
-                    $people = getProjectInfoArray($RecordSetPeople);
+                    $people = ProjectData::getProjectInfoArray($RecordSetPeople);
                     if (!empty($people)) {
                         foreach ($people as $person){
                             if($current_user['record_id'] == $person['record_id']){
@@ -190,7 +193,7 @@ if (!empty($people)) {
                 <select class="form-control data-form-control" name="sopCreator_region" id="sopCreator_region" onchange="checkStep(3);" disabled>
                     <?php
                     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null);
-                    $regions = getProjectInfoArray($RecordSetRegions);
+                    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                     if (!empty($regions)) {
                         foreach ($regions as $region){
                             if($current_user['person_region'] == $region['record_id']){
@@ -235,7 +238,7 @@ if (!empty($people)) {
                 <option value="" region="all" selected>All Regions</option>
                 <?php
                 $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null);
-                $regions = getProjectInfoArray($RecordSetRegions);
+                $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                 if (!empty($regions)) {
                     foreach ($regions as $region){
                         echo "<option value='".$region['record_id']."'>".$region['region_name']. "</option>";
@@ -248,8 +251,8 @@ if (!empty($people)) {
             <ul id="sortable1" class="connectedSortable" style="width: 35%;" role="list">
             <?php
             $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[active_y] = '1' AND [redcap_name] <> '' AND [allowgetdata_y(1)] = 1");
-            $people_sop = getProjectInfoArray($RecordSetPeople);
-            array_sort_by_column($people_sop,'firstname');
+            $people_sop = ProjectData::getProjectInfoArray($RecordSetPeople);
+            ArrayFunctions::array_sort_by_column($people_sop,'firstname');
             foreach ($people_sop as $person){
                 if($current_user['person_region'] == $person['person_region']){
                     echo ' <li tabindex="0" class="ui-state-default" id="'.$person['record_id'].'" region="'.$person['person_region'].'">'.$person['firstname'].' '.$person['lastname'].'</li>';

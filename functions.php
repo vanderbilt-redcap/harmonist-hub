@@ -1,109 +1,10 @@
 <?php
 use Carbon\Carbon;
+use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
+use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 require_once 'vendor/autoload.php';
+require_once(dirname(__FILE__)."/classes/ArrayFunctions.php");
 
-function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
-    $sort_col = array();
-    foreach ($arr as $key=> $row) {
-        $sort_col[$key] = $row[$col];
-    }
-    array_multisort($sort_col, $dir, $arr);
-}
-
-/**
- * Function that returns the info array from a specific project
- * @param $project, the project id
- * @param $info_array, array that contains the conditionals
- * @param string $type, if its single or a multidimensional array
- * @return array, the info array
- */
-function getProjectInfoArray($records){
-    $array = array();
-    foreach ($records as $event) {
-        foreach ($event as $data) {
-            array_push($array,$data);
-        }
-    }
-
-    return $array;
-}
-
-function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
-    $array = array();
-    $found = array();
-    $index=0;
-    foreach ($filterLogic as $filterkey => $filtervalue){
-        array_push($found, false);
-    }
-    foreach ($records as $record=>$record_array) {
-        $count = 0;
-        foreach ($filterLogic as $filterkey => $filtervalue){
-            $found[$count] = false;
-            $count++;
-        }
-        foreach ($record_array as $event=>$data) {
-            if($event == 'repeat_instances'){
-                foreach ($data as $eventarray){
-                    $datarepeat = array();
-                    foreach ($eventarray as $instrument=>$instrumentdata){
-                        $count = 0;
-                        foreach ($instrumentdata as $instance=>$instancedata){
-                            foreach ($instancedata as $field_name=>$value){
-                                if(!array_key_exists($field_name,$array[$index])){
-                                    $array[$index][$field_name] = array();
-                                }
-
-                                if($value != ""){
-                                    $datarepeat[$field_name][$instance] = $value;
-                                    $count = 0;
-                                    foreach ($filterLogic as $filterkey => $filtervalue){
-                                        if($value == $filtervalue && $field_name == $filterkey){
-                                            $found[$count] = true;
-                                        }
-                                        $count++;
-                                    }
-                                }
-
-                            }
-                            $count++;
-                        }
-                    }
-                    foreach ($datarepeat as $field=>$datai){
-                        #check if non repeatable value is empty and add repeatable value
-                        #empty value or checkboxes
-                        if($array[$index][$field] == "" || (is_array($array[$index][$field]) && empty($array[$index][$field][1]))){
-                            $array[$index][$field] = $datarepeat[$field];
-                        }
-                    }
-                }
-            }else{
-                $array[$index] = $data;
-                foreach ($data as $fname=>$fvalue) {
-                    $count = 0;
-                    foreach ($filterLogic as $filterkey => $filtervalue){
-                        if($fvalue == $filtervalue && $fname == $filterkey){
-                            $found[$count] = true;
-                        }
-                        $count++;
-                    }
-                }
-            }
-        }
-        $found_total = true;
-        foreach ($found as $fname=>$fvalue) {
-            if($fvalue == false){
-                $found_total = false;
-                break;
-            }
-        }
-        if(!$found_total && $filterLogic != null){
-            unset($array[$index]);
-        }
-
-        $index++;
-    }
-    return $array;
-}
 
 /**
  * Function that searches the file name in the database, parses it and returns an array with the content
@@ -300,7 +201,7 @@ function convertDigit($number, $base) {
  */
 function isTokenCorrect($token){
     $projectPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[access_token] = '".$token."'");
-    $people = getProjectInfoArray($projectPeople)[0];
+    $people = ProjectData::getProjectInfoArray($projectPeople)[0];
     if(!empty($people)){
         if(strtotime($people['token_expiration_d']) > strtotime(date('Y-m-d'))){
             return true;
@@ -311,7 +212,7 @@ function isTokenCorrect($token){
 
 function getToken($userid){
     $projectPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[redcap_name] = '".$userid."'");
-    $people = getProjectInfoArray($projectPeople)[0];
+    $people = ProjectData::getProjectInfoArray($projectPeople)[0];
     if(!empty($people)){
         return $people['access_token'];
     }
@@ -320,7 +221,7 @@ function getToken($userid){
 function getReqAssocConceptLink($module,$assoc_concept, $option=""){
     if(!empty($assoc_concept)){
         $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $assoc_concept));
-        $concepts = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
+        $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
         $concept_sheet = $concepts['concept_id'];
         $concept_title = $concepts['concept_title'];
         if($option == '1'){
@@ -334,7 +235,7 @@ function getReqAssocConceptLink($module,$assoc_concept, $option=""){
 function getPeopleName($people_id,$option=""){
     if(!empty($people_id)){
         $recordsPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $people_id));
-        $people = getProjectInfoArray($recordsPeople)[0];
+        $people = ProjectData::getProjectInfoArray($recordsPeople)[0];
         $name = trim($people['firstname'].' '.$people['lastname']);
         if($option == "email"){
             $name = '<a href="mailto:'.$people['email'].'">'.trim($people['firstname'].' '.$people['lastname']).'</a>';
@@ -344,56 +245,6 @@ function getPeopleName($people_id,$option=""){
     return "";
 }
 
-function checkAndUpdatJSONCopyProject($module, $type){
-    if(ENVIRONMENT == "DEV"){
-        $qtype = $this->query("SELECT MAX(record) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record",[IEDEA_JSONCOPY,'type',$type]);
-    }else{
-        $qtype = $this->query("SELECT MAX(CAST(record AS Int)) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record",[IEDEA_JSONCOPY,'type',$type]);
-    }
-
-    $rowtype = $qtype->db_fetch_assoc();
-    $RecordSetCopy = \REDCap::getData(IEDEA_JSONCOPY, 'array', array('record_id' => $rowtype['record']));
-    $jsoncocpy = getProjectInfoArray($RecordSetCopy)[0];
-
-    if($jsoncocpy["jsoncopy_file"] != ""){
-        $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', array('record_id' => '1'));
-        $settings = getProjectInfoArray($RecordSetSettings)[0];
-
-        $q = $this->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$jsoncocpy["jsoncopy_file"]]);
-
-        while ($row = $q->fetch_assoc()) {
-            $path = EDOC_PATH.$row['stored_name'];
-            $strJsonFileContents = file_get_contents($path);
-            $last_array = json_decode($strJsonFileContents, true);
-            $array_data = call_user_func_array($module, "createProject".strtoupper($type)."JSON",array($this));
-            $new_array = json_decode($array_data['jsonArray'],true);
-
-            $result_prev = array_filter_empty(multi_array_diff($last_array,$new_array));
-            $result = array_filter_empty(multi_array_diff($new_array,$last_array));
-
-            if(!empty($result_prev)){
-                $id = saveJSONCopy($type, $new_array);
-
-                $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_JSONCOPY . "&arm=1&id=" . $id;
-
-                $subject = "Changes in the DES ".strtoupper($type)." detected ";
-                $message = "<div>The following changes have been detected in the DES ".strtoupper($type)." and a new record has been created:</div><br/>".
-                    "<div>Last record:". $rowtype['record']."</div><br/>".
-                    "<div>To see the record <a href='".$link."'>click here</a></div><br/>".
-                    "<ul><pre>".print_r($result,true)."</pre>".
-                    "<span style='color:#777'><pre><em>".print_r($result_prev,true)."</em></pre></ul></span>";
-
-                if($settings['hub_subs_0a0b'] != "") {
-                    $emails = explode(';', $settings['hub_subs_0a0b']);
-                    foreach ($emails as $email) {
-                        sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, "");
-                    }
-                }
-            }
-        }
-    }
-}
-
 /**
  * Function that creates a JSON copy of the Harmonist 0A: Data Model
  * @return string , the JSON
@@ -401,7 +252,7 @@ function checkAndUpdatJSONCopyProject($module, $type){
 function createProject0AJSON($module, $save=""){
     $dataFormat = $module->getChoiceLabels('data_format', IEDEA_DATAMODEL);
     $dataTablerecords = \REDCap::getData(IEDEA_DATAMODEL, 'array');
-    $dataTable = getProjectInfoArray($dataTablerecords);
+    $dataTable = ProjectData::getProjectInfoArrayRepeatingInstruments($dataTablerecords);
     foreach ($dataTable as $data) {
         $jsonVarArray['variables'] = array();
         foreach ($data['variable_order'] as $id => $value) {
@@ -419,21 +270,21 @@ function createProject0AJSON($module, $save=""){
                 $variables_array  = array(
                     "data_format" => trim($dataFormat[$data['data_format'][$id]]),
                     "variable_status" => $data['variable_status'][$id],
-                    "description" => $data['description'][$id],
-                    "variable_required" => $data['variable_required'][$id][0],
-                    "variable_key" => $data['variable_key'][$id][0],
+                    "description" => htmlentities($data['description'][$id]),
+                    "variable_required" => $data['variable_required'][$id][1],
+                    "variable_key" => $data['variable_key'][$id][1],
                     "variable_deprecated_d" => $data['variable_deprecated_d'][$id],
                     "variable_replacedby" => $data['variable_replacedby'][$id],
-                    "variable_deprecatedinfo" => $data['variable_deprecatedinfo'][$id],
+                    "variable_deprecatedinfo" => htmlentities($data['variable_deprecatedinfo'][$id]),
                     "has_codes" => $has_codes,
                     "code_list_ref" => $code_list_ref,
                     "variable_order" => $data['variable_order'][$id],
-                    "variable_missingaction" => $data['variable_missingaction'][$id]
+                    "variable_missingaction" => $data['variable_missingaction'][$id][1]
                 );
                 $jsonVarArray['variables'][$data['variable_name'][$id]] = $variables_array;
             }
         }
-        $jsonVarArray['table_required'] = $data['table_required'][0];
+        $jsonVarArray['table_required'] = $data['table_required'][1];
         $jsonVarArray['table_category'] = $data['table_category'];
         $jsonVarArray['table_order'] = $data['table_order'];
         $jsonArray[trim($data['table_name'])] = $jsonVarArray;
@@ -453,15 +304,15 @@ function createProject0AJSON($module, $save=""){
  */
 function createProject0BJSON($module, $save=""){
     $dataTablerecords = \REDCap::getData(IEDEA_CODELIST, 'array');
-    $dataTable = getProjectInfoArray($dataTablerecords);
+    $dataTable = ProjectData::getProjectInfoArray($dataTablerecords);
     foreach ($dataTable as $data) {
         $jsonArray[$data['record_id']] = array();
         if ($data['code_format'] == '1') {
             $jsonVarContentArray  = array();
             $codeOptions = explode(" | ", $data['code_list']);
             foreach ($codeOptions as $option) {
-                list($key, $val) = explode("=", $option);
-                $jsonVarContentArray[trim($key)] = trim($val);
+                list($key, $val) = explode("=", htmlentities($option));
+                $jsonVarContentArray[htmlentities(trim($key))] = htmlentities(trim($val));
             }
 
         }else if($data['code_format'] == '3'){
@@ -470,8 +321,8 @@ function createProject0BJSON($module, $save=""){
             foreach ($csv as $header=>$content){
                 if($header != 0){
                     //Convert to UTF-8 to avoid weird characters
-                    $value = mb_convert_encoding($content['Definition'], 'UTF-8','HTML-ENTITIES');
-                    $jsonVarContentArray[trim($content['Code'])] = trim($value);
+                    $value = mb_convert_encoding(htmlentities($content['Definition']), 'UTF-8','HTML-ENTITIES');
+                    $jsonVarContentArray[trim($content['Code'])] = htmlentities(trim($value));
                 }
             }
         }
@@ -533,7 +384,7 @@ function saveJSONCopy($module, $type, $jsonArray){
  */
 function returnJSONCopyVersion($type){
     $records = \REDCap::getData(IEDEA_JSONCOPY, 'array',null,null,null,null,false,false,false,"[type] = ".$type);
-    $datatype = getProjectInfoArray($records);
+    $datatype = ProjectData::getProjectInfoArray($records);
     $lastversion = 0;
     $record_id = 0;
     $data = array();
@@ -635,7 +486,7 @@ function getRequestHeader($regions, $person_region, $vote_grid, $option, $type="
         $small_screen_class = 'hidden-sm hidden-xs';
         if ($vote_grid == '2') {
             $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region));
-            $my_region = getProjectInfoArray($RecordSetRegions)[0]['region_code'];
+            $my_region = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
             $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" style="width:150px" data-sortable="false">' . $my_region . '</th>';
         } else {
             foreach ($regions as $region) {
@@ -770,7 +621,7 @@ function showClosedRequest($settings,$req,$instance){
  */
 function showPendingRequest($request_id, $req, $current_region){
     $RecordSetComment = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array('request_id' => $request_id));
-    $comments = getProjectInfoArray($RecordSetComment);
+    $comments = ProjectData::getProjectInfoArray($RecordSetComment);
     foreach ($comments as $comment){
         if($comment['vote_now'] == "0" && $comment['response_region'] == $current_region && (!array_key_exists('finalize_y', $req) || $req['finalize_y'] == "")){
             return true;
@@ -818,7 +669,7 @@ function getPrivateVotesHTML($region_response_status,$small_screen_class){
 
 function getMixVotesHTML($region_vote_status,$region_response_status,$region_id,$req,$small_screen_class){
     $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array("request_id" => $req['request_id']),null,null,null,false,false,false,"[response_region] ='".$region_id."'");
-    $votes = getProjectInfoArray($RecordSetComments);
+    $votes = ProjectData::getProjectInfoArray($RecordSetComments);
     $mix = false;
     foreach ($votes as $vote){
         if($region_vote_status != $vote['pi_vote'] && array_key_exists('pi_vote',$vote) && array_key_exists('region_vote_status',$req) && $region_vote_status != ""){
@@ -918,11 +769,11 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
     $text = "";
     if ($req['revision_counter_total'] != '') {
         $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array('request_id' => $req['request_id']),null,null,null,false,false,false,"[revision_counter] =".$req['revision_counter_total']);
-        $comment = getProjectInfoArray($RecordSetComments)[0];
+        $comment = ProjectData::getProjectInfoArray($RecordSetComments)[0];
 
         $comment_time ="";
         if(!empty($comment['responsecomplete_ts'])){
-            $dateComment = new DateTime($comment['responsecomplete_ts']);
+            $dateComment = new \DateTime($comment['responsecomplete_ts']);
             $dateComment->modify("+1 hours");
             $comment_time = ": ".$dateComment->format("Y-m-d H:i");
         }
@@ -940,7 +791,7 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
         if($req_type != 'home') {
             if ($vote_grid == '2') {
                 $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
-                $my_region = getProjectInfoArray($RecordSetMyRegion)[0];
+                $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0];
                 $current_req_region = getRequestVoteIcon($current_req_region, $vote_grid, $current_user['person_region'], $my_region['record_id'], $vote_visibility, $req, $current_user);
 
             } else {
@@ -1042,7 +893,7 @@ function getArchiveHTML($module,$req,$request_type_label,$person_region, $vote_v
     $current_req .= getReqAssocConceptLink($module,$req['assoc_concept'],"");
 
     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']),null,null,null,false,false,false,"[showregion_y] = 1");
-    $region = getProjectInfoArray($RecordSetRegions)[0];
+    $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
 
     $current_req .= '</td>
                     <td>'.$req['contact_name'].'</td>
@@ -1250,14 +1101,14 @@ function getDateForHumans($date){
 
 function getDataCallHeader($person_region, $vote_grid, $option=""){
     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-    $regions = getProjectInfoArray($RecordSetRegions);
-    array_sort_by_column($regions, 'region_code');
+    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+    ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
     $header_colgroup = "<colgroup><col><col><col>";
     $header_region = "";
     if($vote_grid == '2' || $vote_grid == '0') {
         $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region));
-        $my_region = getProjectInfoArray($RecordSetRegions)[0]['region_code'];
+        $my_region = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
         $header_region .= '<th class="request_grid_icon hidden-sm hidden-xs" style="width:40px" data-sortable="false">' . $my_region . '</th>';
     }else {
         foreach ($regions as $region) {
@@ -1307,9 +1158,9 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
     $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '0');
 
     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
-    $people = getProjectInfoArray($RecordSetPeople)[0];
+    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']));
-    $region_code = getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+    $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
     $contact_person = "";
     if($people != ""){
@@ -1317,13 +1168,13 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
     }
 
     $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $sop['sop_concept_id']));
-    $concept = getProjectInfoArray($RecordSetConceptSheets)[0];
+    $concept = ProjectData::getProjectInfoArray($RecordSetConceptSheets)[0];
     $concept_id = $concept['concept_id'];
     $concept_title = $concept['concept_title'];
 
     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-    $regions = getProjectInfoArray($RecordSetRegions);
-    array_sort_by_column($regions, 'region_code');
+    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+    ArrayFunctions::array_sort_by_column($regions, 'region_code');
     $status_row = "";
     $current_region_status = "";
     $url = "";
@@ -1430,15 +1281,15 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
 }
 function getDataCallConceptsHeader($person_region,$vote_grid){
     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-    $regions = getProjectInfoArray($RecordSetRegions);
-    array_sort_by_column($regions, 'region_code');
+    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+    ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
     $header_colgroup = "<colgroup><col><col><col><col>";
     $header_region = "";
 
     if($vote_grid == '2' || $vote_grid == '0') {
         $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region));
-        $my_region = getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
+        $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
         $header_region .= '<th class="request_grid_icon hidden-sm hidden-xs" style="width:150px" data-sortable="false">' . $my_region . '</th>';
     }else{
         foreach ($regions as $region) {
@@ -1480,9 +1331,9 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
     $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '3');
 
     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
-    $people = getProjectInfoArray($RecordSetPeople)[0];
+    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']));
-    $region_code = getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+    $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
     $contact_person = "<em>Unknown</em>";
     if($people != ""){
@@ -1490,15 +1341,15 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
     }
 
     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-    $regions = getProjectInfoArray($RecordSetRegions);
-    array_sort_by_column($regions, 'region_code');
+    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+    ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
 
     $status_row = "";
     $view_all_votes = "";
     if($vote_grid == '2' || $vote_grid == '0') {
         $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
-        $my_region = getProjectInfoArray($RecordSetMyRegion)[0]['record_id'];
+        $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['record_id'];
 
         $status = $sop['data_response_status'][$my_region];
         $status_row .= "<td style='text-align: center'>";
@@ -1527,7 +1378,7 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
 
     if($option == "1"){
         $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $concept_record));
-        $data_sopfile = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['datasop_file'];
+        $data_sopfile = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['datasop_file'];
 
         $details = "<div><em>Historic (pre-Hub) Data Request";
         if($data_sopfile != ""){
@@ -1694,7 +1545,7 @@ function getTablesInfo($module){
 function generateTableArray($module, $dataTable){
     $dataFormat = $module->getChoiceLabels('data_format', IEDEA_DATAMODEL);
     $RecordSetTable = \REDCap::getData(IEDEA_DATAMODEL, 'array', null);
-    $recordsTable = getProjectInfoArrayRepeatingInstruments($RecordSetTable);
+    $recordsTable = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable);
     $dataTable['data_format_label'] = $dataFormat;
     foreach( $recordsTable as $data ){
         #we sort the variables by value and keep key
@@ -1705,7 +1556,7 @@ function generateTableArray($module, $dataTable){
         }
     }
     #We order the tables
-    array_sort_by_column($dataTable, "table_order");
+    ArrayFunctions::array_sort_by_column($dataTable, "table_order");
 
     return $dataTable;
 }
@@ -1818,7 +1669,7 @@ function generateTablesHTML_steps($dataTable){
                     } else if ($data['has_codes'][$id] == '1') {
                         if (!empty($data['code_list_ref'][$id])) {
                             $dataTablerecords = \REDCap::getData(IEDEA_CODELIST, 'array',array('record_id' => $data['code_list_ref'][$id]));
-                            $codeformat = getProjectInfoArray($dataTablerecords);
+                            $codeformat = ProjectData::getProjectInfoArray($dataTablerecords);
 
                             if ($codeformat['code_format'] == '1') {
                                 $codeOptions = empty($codeformat['code_list']) ? $data['code_text'][$id] : explode(" | ", $codeformat['code_list']);
@@ -1946,7 +1797,7 @@ function generateTablesHTML_pdf($module, $dataTable,$fieldsSelected){
                     } else if ($data['has_codes'][$id] == '1') {
                         if(!empty($data['code_list_ref'][$id])){
                             $dataTablerecords = \REDCap::getData(IEDEA_CODELIST, 'array',array('record_id' => $data['code_list_ref'][$id]));
-                            $codeformat = getProjectInfoArray($dataTablerecords);
+                            $codeformat = ProjectData::getProjectInfoArray($dataTablerecords);
 
                             if ($codeformat['code_format'] == '1') {
                                 $codeOptions = empty($codeformat['code_list']) ? $data['code_text'][$id] : explode(" | ", $codeformat['code_list']);
@@ -2031,10 +1882,10 @@ function getRegionalAndMR($conceptsData,$type, $regionalmrdata,$startyear,$outpu
         array_push(${"years_label_regional_pubs_".$type}, $year);
 
         $RecordSetExtraOutputsSingleReg = \REDCap::getData(IEDEA_EXTRAOUTPUTS, 'array',  null,null,null,null,false,false,false,"[output_year] = '".$year."' AND [output_type] = '".$output_type."' AND [producedby_region] = '1'");
-        array_push($regionalmrdata['r'], count(getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputsSingleReg)));
+        array_push($regionalmrdata['r'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputsSingleReg)));
         $RecordSetExtraOutMultipleReg = \REDCap::getData(IEDEA_EXTRAOUTPUTS, 'array',  null,null,null,null,false,false,false,"[output_year] = '".$year."' AND [output_type] = '".$output_type."' AND [producedby_region] = '2'");
-        array_push($regionalmrdata['mrw'], count(getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg)));
-        ${"outputs_mrw_".$type} = getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg);
+        array_push($regionalmrdata['mrw'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg)));
+        ${"outputs_mrw_".$type} = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg);
 
         $regionalmrdata['mr'][$year] = 0;
         foreach ($conceptsData as $concepts) {

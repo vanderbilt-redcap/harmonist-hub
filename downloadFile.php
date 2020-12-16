@@ -1,5 +1,5 @@
 <?php
-define('NOAUTH',true);
+use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 require_once "projects.php";
 
 $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
@@ -10,7 +10,7 @@ $filename = $exploded['file'];
 $sname = $exploded['sname'];
 
 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $exploded['pid']));
-$current_user = getProjectInfoArray($RecordSetPeople)[0];
+$current_user = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 
 if($current_user != "") {
     $record = $module->framework->addAutoNumberedRecord(IEDEA_FILELIBRARY);

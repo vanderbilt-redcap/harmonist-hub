@@ -1,9 +1,10 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
 
 $RecordSetComment = \REDCap::getData($project_id, 'array', array('record_id' => $record));
-$comment = getProjectInfoArray($RecordSetComment)[0];
+$comment = ProjectData::getProjectInfoArray($RecordSetComment)[0];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
 if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'comments_and_votes'){
@@ -11,20 +12,20 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
     $completion_time = ($comment[$instrument.'_complete'] == '2')?$data[$record][$event_id][$instrument.'_timestamp']:"";
     if(empty($completion_time)){
-        $date = new DateTime();
+        $date = new \DateTime();
         $completion_time = $date->format('Y-m-d H:i:s');
     }
 
     $arrayCV = array();
     $arrayCV[$record][$event_id]['responsecomplete_ts'] = $completion_time;
     $recordsRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $comment['response_region']));
-    $regions = getProjectInfoArray($recordsRegions)[0];
+    $regions = ProjectData::getProjectInfoArray($recordsRegions)[0];
     if(!empty($regions)){
         $arrayCV[$record][$event_id]['response_regioncode'] = $regions['region_code'];
     }
 
     $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $comment['request_id']));
-    $request = getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
+    $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
     if(!empty($request)){
         $all_votes_completed = true;
         foreach ($request['responding_region'] as $instanceId => $resp_region){
@@ -39,7 +40,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                     //Complete
                     $aux['region_response_status'] = '2';
                     $aux['region_vote_status'] = $comment['pi_vote'];
-                    $date = new DateTime();
+                    $date = new \DateTime();
                     $aux['region_close_ts'] = $date->format('Y-m-d H:i:s');
 
                     #Copy votes to Vote Outcomes (temporary)
@@ -57,7 +58,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             }
 
             $RecordSetVotingRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $resp_region));
-            $voting_region = getProjectInfoArray($RecordSetVotingRegion)[0];
+            $voting_region = ProjectData::getProjectInfoArray($RecordSetVotingRegion)[0];
             if($voting_region['voteregion_y'] == "1" && $request['region_vote_status'][$instanceId] == ""){
                 $all_votes_completed = false;
             }
@@ -101,14 +102,14 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         \Records::addRecordToRecordListCache(IEDEA_COMMENTSVOTES, $record,1);
         if($request['follow_activity'] != ''){
             $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array');
-            $settings = getProjectInfoArray($RecordSetSettings)[0];
+            $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
             $request_type_label = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
 
             $array_userid = explode(',',$request['follow_activity']);
             foreach ($array_userid as $user_id){
                 $RecordSetEmail = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' =>$user_id));
-                $people = getProjectInfoArray($RecordSetEmail)[0];
+                $people = ProjectData::getProjectInfoArray($RecordSetEmail)[0];
 
                 $environment = "";
                 if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST') {

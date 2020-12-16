@@ -1,6 +1,8 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $_REQUEST['record']));
-$request = getProjectInfoArrayRepeatingInstruments($RecordSetRM,'')[0];
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,'')[0];
 if($request !="") {
     $request_type_label = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
     $region_response_status = $module->getChoiceLabels('region_response_status', IEDEA_RMANAGER);
@@ -15,14 +17,14 @@ if($request !="") {
     $wg_name = "<em>Not specified</em>";
     if (!empty($request['wg_name'])) {
         $RecordSetWG = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg_name']));
-        $wg_name = getProjectInfoArray($RecordSetWG)[0]['group_name'];
+        $wg_name = ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
         if (!empty($request['wg2_name'])) {
             $RecordSetWG = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg2_name']));
-            $wg_name = ", " . getProjectInfoArray($RecordSetWG)[0]['group_name'];
+            $wg_name = ", " . ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
         }
     } else if (!empty($request['wg2_name'])) {
         $RecordSetWG = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg2_name']));
-        $wg_name = getProjectInfoArray($RecordSetWG)[0]['group_name'];
+        $wg_name = ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
     }
 
     $array_dates = getNumberOfDaysLeftButtonHTML($request['due_d'], $request['region_response_status'][$current_user['person_region']], '', '1');
@@ -37,7 +39,7 @@ if($request !="") {
     $concept = "<em>None</em>";
     if (!empty($request['assoc_concept'])) {
         $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $request['assoc_concept']));
-        $concept_sheet = getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
+        $concept_sheet = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
         $concept = '<a href="i'.$module->getUrl('ndex.php?pid=' . IEDEA_DATAMODEL . '&option=ttl&record=' . $request['assoc_concept']) . '" target="_blank">' . $concept_sheet . '</a>';
     }
 
@@ -46,7 +48,7 @@ if($request !="") {
         $userid = $current_user['record_id'];
 
         $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $request_id));
-        $follow_activity = getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0]['follow_activity'];
+        $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0]['follow_activity'];
         $array_userid = explode(',', $follow_activity);
         $arrayMRmanager = array(array('record_id' => $request_id));
 
@@ -179,8 +181,8 @@ if($request !="") {
                                     <tbody>
                                     <?php
                                     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                                    $regions = getProjectInfoArray($RecordSetRegions);
-                                    array_sort_by_column($regions, 'region_code');
+                                    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                                    ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                                     $region_row = '';
                                     foreach ($regions as $region){
@@ -388,7 +390,7 @@ if($request !="") {
                         <?php
                         $request_time = "";
                         if(!empty($request['requestopen_ts'])){
-                            $date = new DateTime($request['requestopen_ts']);
+                            $date = new \DateTime($request['requestopen_ts']);
                             $date->modify("+1 hours");
                             $request_time = $date->format("Y-m-d H:i:s");
                         }
@@ -408,7 +410,7 @@ if($request !="") {
                         krsort($comments);
 
                         $RecordSetCommentsRecent = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''");
-                        $most_recent_file = getProjectInfoArray($RecordSetCommentsRecent)[0];
+                        $most_recent_file = ProjectData::getProjectInfoArray($RecordSetCommentsRecent)[0];
                         foreach($most_recent_file as $k=>$v)
                         {
                             if($v['responsecomplete_ts']>$max)
@@ -436,12 +438,12 @@ if($request !="") {
                                     }
 
                                     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $comment['response_person']));
-                                    $people = getProjectInfoArray($RecordSetPeople)[0];
+                                    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                     $name = trim($people['firstname'].' '.$people['lastname']);
 
                                     $comment_time ="";
                                     if(!empty($comment['responsecomplete_ts'])){
-                                        $dateComment = new DateTime($comment['responsecomplete_ts']);
+                                        $dateComment = new \DateTime($comment['responsecomplete_ts']);
                                         $dateComment->modify("+1 hours");
                                         $comment_time = $dateComment->format("Y-m-d H:i:s");
                                     }

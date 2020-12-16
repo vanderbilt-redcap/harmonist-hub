@@ -869,8 +869,6 @@ function save_status(url,user,region){
     $('.dropdown-toggle-custom input').each(function() {
         data +=$(this).attr('id')+",";
     });
-    console.log(url)
-    console.log(data)
     $.ajax({
         type: "POST",
         url: url,

@@ -1,7 +1,9 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', null);
-$comments = getProjectInfoArray($RecordSetComments);
-array_sort_by_column($comments, 'responsecomplete_ts',SORT_DESC);
+$comments = ProjectData::getProjectInfoArray($RecordSetComments);
+ArrayFunctions::array_sort_by_column($comments, 'responsecomplete_ts',SORT_DESC);
 
 $region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" => "text-default");
 
@@ -72,8 +74,8 @@ if($person_record != ""){
                     <option value="">Select All</option>
                     <?php
                     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null);
-                    $regions = getProjectInfoArray($RecordSetRegions);
-                    array_sort_by_column($regions,'region_code');
+                    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                    ArrayFunctions::array_sort_by_column($regions,'region_code');
                     if (!empty($regions)) {
                         foreach ($regions as $region){
                             echo "<option value='".$region['record_id']."'>".$region['region_code']."</option>";
@@ -128,18 +130,18 @@ if($person_record != ""){
                     foreach ($comments as $comment) {
                         if($comment['author_revision_y'] == '1' || $comment['pi_vote'] != '' || $comment['comments'] != '') {
                             $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $comment['response_person']));
-                            $people = getProjectInfoArray($RecordSetPeople)[0];
+                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']),null,null,null,false,false,false,"[showregion_y] = 1");
-                            $region = getProjectInfoArray($RecordSetRegions)[0];
+                            $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
 
                             $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $comment['request_id']));
-                            $requestComment = getProjectInfoArray($RecordSetRM)[0];
+                            $requestComment = ProjectData::getProjectInfoArray($RecordSetRM)[0];
 
                             $comment_time ="";
                             if(!empty($comment['responsecomplete_ts'])){
-                                $dateComment = new DateTime($comment['responsecomplete_ts']);
+                                $dateComment = new \DateTime($comment['responsecomplete_ts']);
                                 $dateComment->modify("+1 hours");
                                 $comment_time = $dateComment->format("Y-m-d H:i:s");
                             }
@@ -149,7 +151,7 @@ if($person_record != ""){
                             $concept_id = "";
                             if(!empty($requestComment['assoc_concept'])){
                                 $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $requestComment['assoc_concept']));
-                                $concept = getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+                                $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
                                 $concept_id = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ttl&record='.$concept['record_id']).'">'.$concept['concept_id'].'</a>';
                             }
                             echo '<td width="50px">'.$concept_id.'</td>'.
@@ -184,7 +186,7 @@ if($person_record != ""){
                                  '<td width="450px">';
 
                             $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $comment['request_id']));
-                            $request = getProjectInfoArray($RecordSetRM)[0];
+                            $request = ProjectData::getProjectInfoArray($RecordSetRM)[0];
 
                             $instance = $current_user['person_region'];
 

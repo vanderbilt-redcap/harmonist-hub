@@ -1,7 +1,9 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+
 $record_id = $_REQUEST['record'];
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $_REQUEST['record']));
-$sop = getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
 $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
 ?>
