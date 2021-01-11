@@ -1,99 +1,126 @@
-"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
-record_id,harmonist_settings,,text,"Record ID",,,,,,,,,,,,,
-version_number,harmonist_settings,,text,"Hub Version",,,,,,,,,,,,,
-hub_name,harmonist_settings,,text,"Hub Name",,,,,,,,,,,,,
-hub_name_long,harmonist_settings,,text,"Hub Long name. This name will be displayed in certain places like the Data Call PDF to company the logo or to better describe the Hub name in case of being an acronym.",,,,,,,,,,,,,
-hub_name_title,harmonist_settings,,text,"Hub Name for title tab",,,,,,,,,,,,,
-hub_name_req_email,harmonist_settings,,text,"Hub Name for feedback posted on requests.",,,,,,,,,,,,,
-hub_contact_email,harmonist_settings,,text,"Hub contact email",,,,,,,,,,,,,
-hub_organization,harmonist_settings,,text,"Organization URL",,,,,,,,,,,,,
-hub_logo,harmonist_settings,"Hub Design",file,"Logo Image
-(recommended dimensions (?x??)",,,,,,,,,,,,,
-hub_logo_favicon,harmonist_settings,,file,"Logo Favicon",,,,,,,,,,,,,
-accesslink_sender_email,harmonist_settings,"Access Link",text,"Email Address Sender for Access Link Email",,,email,,,,,,,,,,
-accesslink_sender_name,harmonist_settings,,text,"Sender Name for Access Link Email",,,,,,,,,,,,,
-accesslink_dur,harmonist_settings,,text,"How many days should the Access Link remain valid?",,,integer,,,,,,,,,,
-pastrequest_dur,harmonist_settings,,text,"How long (in days) should Completed Requests remain on the Review Dashboard?",,,integer,,,,,,,,,,
-pastdatarequest_dur,harmonist_settings,,text,"How long (in days) should Data Requests remain on the Upload Data?
-<div style=""font-weight:italic;font-weight:lighter"">NOT USED, CAN DELETE</div>",,,,,,,,,,,,,
-pastsopdatadiscuss_dur,harmonist_settings,,text,"How long (in days) should Data SOPs remain on the Discuss Data?
-<div style=""font-weight:italic;font-weight:lighter"">NOT USED, CAN DELETE</div>",,,,,,,,,,,,,
-uploadlink_dur,harmonist_settings,,text,"How many days should the Data Upload Token remain valid?
-<div style=""font-weight:italic;font-weight:lighter"">NOT USED, CAN DELETE</div>",,,integer,0,,,,,,,,,
-vote_visibility,harmonist_settings,"Dashboard Features",dropdown,"Vote Visibility setting for hub-wide use","1, Private Votes | 2, Public Votes | 3, Mixed Votes",,,,,,,,,,,,
-vote_grid,harmonist_settings,,radio,"Show Request Completion/Voting Grid on Dashboard?","1, Yes, show grid of all regions (advised for < 9 regions) | 0, No, only show status of user's region | 2, No, only show status of user's region and button to view all region votes",,,,,,,,,,,,
-deactivate_datahub,harmonist_settings,"Data Call Features",checkbox,"Hide/Deactivate Data Hub for everyone?","1, YES",,,,,,,,,,,,
-deactivate_datadown,harmonist_settings,,checkbox,"Hide/Deactivate Data Downloads for everyone?","1, YES",,,,,,,,,,,,
-recentdataactivity_dur,harmonist_settings,,text,"How long in days should the Recent Data Activity be updated?",,,,,,,,,,,,,
-pastlastreview_dur,harmonist_settings,,text,"How long in days should the tblCENTERs be updated?",,,,,,,,,,,,,
-retrievedata_expiration,harmonist_settings,,text,"How longs in days should Retrieve Data expire?",,,,,,,,,,,,,
-uploadtokenexpiration_ts,harmonist_settings,,text,"How many days should the Submit Data file remain valid?",,,,,,,,,,,,,
-uploadnotification_dur,harmonist_settings,,text,"How many days should the upload notification be active to send?",,,,,,,,,,,,,
-downloadreminder_dur,harmonist_settings,,text,"How many days should  the FIRST download reminder be sent?",,,,,,,,,,,,,
-downloadreminder2_dur,harmonist_settings,,text,"How many days should  the SECOND download reminder be sent?",,,,,,,,,,,,,
-recentfinalreq_expiration,harmonist_settings,,text,"How Long in days show Recently Finalized Requests expire?",,,,,,,,,,,,,
-dataupload_dur,harmonist_settings,,text,"How many Data Request Uploads should be displayed in the single Data Request page?",,,,,,,,,,,,,
-deactivate_metrics,harmonist_settings,"Metrics Features",checkbox,"Hide/Deactivate Metrics for everyone but Admins?","1, YES",,,,,,,,,,,,
-deactivate_datametrics,harmonist_settings,,checkbox,"Hide/Deactivate Data Metrics for everyone but Admins?","1, YES",,,,,,,,,,,,
-oldestyear_concepts,harmonist_settings,,text,"Concepts oldest year:",,,,,,,,,,,,,
-numberofyears_datacall,harmonist_settings,,text,"Data Call Timeline show last # of years",,,,,,,,,,,,,
-oldestyear_rmr_manuscripts,harmonist_settings,,text,"Regional and MR publications oldest year:",,,,,,,,,,,,,
-oldestyear_rmr_abstracts,harmonist_settings,,text,"Regional and MR abstracts oldest year:",,,,,,,,,,,,,
-oldestyear_communications,harmonist_settings,,text,"Hub Communications oldest year:",,,,,,,,,,,,,
-deactivate_tblcenter,harmonist_settings,tblCENTER,checkbox,"Hide/Deactivate tblCENTER?","1, YES",,,,,,,,,,,,
-publications_lastupdate,harmonist_settings,Publications,text,"Last Update",,,datetime_seconds_ymd,,,,,,,,,,
-publications_json,harmonist_settings,,file,"Publications JSON File",,,,,,,,,,,,,
-hub_login_text,harmonist_text,LOGIN,notes,"Login text",,,,,,,,,,,,,
-hub_login_blue_text,harmonist_text,,notes,"Login blue box text",,,,,,,,,,,,,
-hub_recent_act_text,harmonist_text,HOME,notes,"Recent Activity text",,,,,,,,,,,,,
-hub_statistics_data_text,harmonist_text,,notes,"Data Statistics text",,,,,,,,,,,,,
-hub_statistics_user_text,harmonist_text,,notes,"User Statistics text",,,,,,,,,,,,,
-hub_active_shortcut,harmonist_text,,notes,"Active Data Calls shortcut text",,,,,,,,,,,,,
-hub_req_text,harmonist_text,REQUESTS,notes,"Requests text",,,,,,,,,,,,,
-hub_req_archive_text,harmonist_text,,notes,"Requests Archive text",,,,,,,,,,,,,
-hub_req_arc_rejected_text,harmonist_text,,notes,"Rejected Requests Archive text",,,,,,,,,,,,,
-hub_concept_text,harmonist_text,CONCEPTS,notes,"Concepts text",,,,,,,,,,,,,
-hub_publications_text,harmonist_text,PUBLICATIONS,notes,"Publications text",,,,,,,,,,,,,
-hub_data_hub_text,harmonist_text,"DATA HUB",notes,"Data Hub text",,,,,,,,,,,,,
-hub_req_data_text,harmonist_text,,notes,"Request Data text",,,,,,,,,,,,,
-hub_req_data_text_after,harmonist_text,,notes,"Request Data text after Create button",,,,,,,,,,,,,
-hub_check_submit_text,harmonist_text,,notes,"Check and Submit text",,,,,,,,,,,,,
-hub_download_data_text,harmonist_text,,notes,"Download Data text",,,,,,,,,,,,,
-hub_recent_data_act_text,harmonist_text,,notes,"Recent Data Activity text",,,,,,,,,,,,,
-hub_news_archive_text,harmonist_text,,notes,"News Archive text",,,,,,,,,,,,,
-hub_step1,harmonist_text,"DATA CALL",notes,"Create Data Call Step 1",,,,,,,,,,,,,
-hub_step2,harmonist_text,,notes,"Create Data Call Step 2",,,,,,,,,,,,,
-hub_step3,harmonist_text,,notes,"Create Data Call Step 3",,,,,,,,,,,,,
-hub_step4,harmonist_text,,notes,"Create Data Call Step 4",,,,,,,,,,,,,
-hub_steps_complete_text,harmonist_text,,notes,"Create Data Call Steps Complete text",,,,,,,,,,,,,
-hub_datacall_archive,harmonist_text,,notes,"Data Call Archive text",,,,,,,,,,,,,
-hub_datareq_for_review,harmonist_text,,notes,"Share Data Request for Review Text",,,,,,,,,,,,,
-hub_admin_text,harmonist_text,ADMIN,notes,"Admin text",,,,,,,,,,,,,
-hub_data_activity_text,harmonist_text,OTHER,notes,"Data Activity Log text",,,,,,,,,,,,,
-hub_tbl_center_text,harmonist_text,,notes,"TBL Center text",,,,,,,,,,,,,
-hub_doc_librabry_text,harmonist_text,,notes,"Document Library text",,,,,,,,,,,,,
-hub_des_text,harmonist_text,"Data Exchange Standard (DES)",notes,"DES Text",,,,,,,,,,,,,
-hub_subs_monthly_digest,harmonist_email_subscribers,,notes,"List of email subscribers for Monthly Digest Email 
-<em>(separated by ;)</em>",,,,,,,,,,,,,
-hub_subs_0a0b,harmonist_email_subscribers,,notes,"List of emailsubscribers for 0A/0B Updates Email 
-<em>(separated by ;)</em>",,,,,,,,,,,,,
-hub_email_new_conceptsheet,harmonist_email_subscribers,,notes,"List of emails  to send to administrators when a new concept sheet is created
-<em>(separated by ;)</em>",,,,,,,,,,,,,
-calendar_active,harmonist_calendar,,checkbox,"Activate calendar in Home page?","1, YES",,,,,,,,,,,,
-calendar_title,harmonist_calendar,,text,Titlte,,,,,,,,,,,,,
-calendar_text,harmonist_calendar,,text,Text,,,,,,,,,,,,,
-calendar_iframe,harmonist_calendar,,notes,"Calendar link",,,,,,,,,,,,,
-hub_statistics_text,harmonist_metrics,,notes,"Hub Statistics text",,,,,,,,,,,,,
-hub_stats_consortium,harmonist_metrics,,notes,"Consortium Productivity",,,,,,,,,,,,,
-hub_stats_rmr_publications,harmonist_metrics,,notes,"Regional and MR publications",,,,,,,,,,,,,
-hub_stats_rmr_abstratcs,harmonist_metrics,,notes,"Regional and MR abstracts",,,,,,,,,,,,,
-hub_stats_mr_activity_year,harmonist_metrics,,notes,"IeDEA Multi-regional Activity by Year (concept-linked projectd only)",,,,,,,,,,,,,
-hub_stats_map,harmonist_metrics,,notes,Map,,,,,,,,,,,,,
-hub_stats_site_list,harmonist_metrics,,notes,"Site List",,,,,,,,,,,,,
-hub_statistics_gen_text,harmonist_metrics_general,,notes,"Hub General Statistics text",,,,,,,,,,,,,
-hub_stats_general_usage,harmonist_metrics_general,,notes,"General Hub Usage Stats",,,,,,,,,,,,,
-hub_stats_data,harmonist_metrics_general,,notes,"Statistics data",,,,,,,,,,,,,
-hub_stats_data_exchange,harmonist_metrics_general,,notes,"Data Exchange",,,,,,,,,,,,,
-hub_stats_data_requests,harmonist_metrics_general,,notes,"Statistics data (Requests)",,,,,,,,,,,,,
-hub_stats_datacall_time,harmonist_metrics_general,,notes,"Data Call Timeline",,,,,,,,,,,,,
-hub_stats_comunications,harmonist_metrics_general,,notes,"Hub Communications",,,,,,,,,,,,,
+﻿"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,hub_settings,,text,"Record ID",,,,,,,,,,,,,
+settingsintro_txt,hub_settings,,descriptive,"<div style=""color:black; text-align:center; border: 1px #e67e22; background-color: #f39c12;""><h3 style=""margin:0px; padding:10px"">Hub Configuration</h3></div>",,,,,,,,,,,,,
+record1_txt,hub_settings,,descriptive,"<div class=""red""><b>STOP!</b> Only data in <b>Record ID 1</b> will be used for the Settings project. You are currently in <b>Record ID [record_id].</b></div>",,,,,,,"[record_id] != ""1""",,,,,,
+hub_name,hub_settings,"Consortium Definitions for Hub",text,"Consortium Name (short or acronym)
+<div style=""font-weight:lighter;font-style:italic"">e.g., IeDEA, RePORT, NA-ACCORD, eMERGE</div>",,,,,,,,y,,,,,
+hub_name_long,hub_settings,,text,"Consortium Full Name
+<div style=""font-weight:lighter;font-style:italic"">e.g., International epidemiology Databases to Evaluate AIDS, Regional Prospective Observational Research for Tuberculosis</div>",,,,,,,,y,,,,,
+hub_name_title,hub_settings,,text,"Title for Browser Tab
+<div style=""font-weight:lighter;font-style:italic"">e.g., IeDEA Hub</div>",,,,,,,,y,,,,,
+hub_contact_email,hub_settings,,text,"Contact email for Consortium Hub support 
+<div style=""font-weight:lighter;font-style:italic"">This can be the email of person on the coordinating team or an email address your consortium sets up.</a>",,,email,,,,,y,,,,,
+hub_organization,hub_settings,,text,"Hub Domain Name (URL)
+<div style=""font-weight:lighter;font-style:italic"">e.g., http://sampleconsortiumhub.org</div>",,,,,,,,y,,,,,
+hub_logo,hub_settings,"Consortium Logos for Hub",file,"Logo Image
+<div style=""font-weight:lighter;font-style:italic"">recommended dimensions (100x40px)</div>",,,,,,,,,,,,,
+hub_logo_pdf,hub_settings,,file,"Higher-Resolution Logo Image 
+<div style=""font-weight:lighter;font-style:italic"">recommended dimensions (200px wide). Used for generated PDFs.</div>",,,,,,,,,,,,,
+hub_logo_favicon,hub_settings,,file,"Logo Favicon (browser tab picture)
+<div style=""font-weight:lighter;font-style:italic"">small square image</div>",,,,,,,,,,,,,
+accesslink_info,hub_settings,"Access Link",descriptive,"<div class=""rich-text-field-label""><p>What is an Access Link?</p> <p><span style=""font-weight: normal;"">The Hub uses an Access Link system instead of a traditional username/password combination to improve ease of access. Registered users enter their email addresses into the Login page and receive an email from the REDCap/Hub system that contains a link with an embedded token that auto-logs them into the site. The Access Link is valid for the number of days specified below.</span></p> <p>Access Link Security<br /><span style=""font-weight: normal;"">It is important to recognize the Access Link it is not as secure as a traditional username and password, because anybody who obtains an individual's Access Link can log in as that individual. For this reason, we recommend choosing a short validity for the Access Link.</span></p> <p><span style=""font-weight: normal;""> The Hub designers (the Harmonist team and IeDEA consortium) felt this was a fair tradeoff because the Access Link greatly improved consortium members' access to the Hub as they did not need to remember new usernames and passwords. They also determined the operational information of the consortium, such as concept sheets, draft manuscripts, deadlines, or votes, was not highly sensitive.</span></p> <p>Sensitive Information<br /><span style=""font-weight: normal;"">Sensitive information, such as research datasets and other private files, should not be stored on the general part of the Hub. There are two areas of the Hub designed for Sensitive Information:</span></p> <ul> <li>Data Storage/Downloads</li> <li>Secure Documents (pending)</li> </ul> <p><span style=""font-weight: normal;"">Before accessing these areas, </span>users must complete a second login with their REDCap username and password as well as REDCap two-factor authentication<span style=""font-weight: normal;""> (if enforced on your REDCap system). This is an extra authentication step for the subset of Hub users logging in to access those areas, but it provides an important security boundary around Sensitive Information.</span></p></div>",,,,,,,,,,,,,
+accesslink_sender_email,hub_settings,,text,"Email Address Sender for Access Link Email
+<div style=""font-weight:lighter;font-style:italic"">May default to redcap.services@domain.org depending on mail server settings.</div>",,,,,,,,,,,,,
+accesslink_sender_name,hub_settings,,text,"Sender Name for Access Link Email",,,,,,,,,,,,,
+accesslink_dur,hub_settings,,text,"How many days should the Access Link remain valid?",,,integer,1,30,,,y,,,,," @DEFAULT=""7"""
+home_number_intro,hub_settings,"Home Page Design",descriptive,"<div class=""rich-text-field-label""><p>How many of each of these should be displayed on the Hub Home Page?</p> <table style=""border-collapse: collapse; width: 74.9883%; height: 157px;"" border=""0""> <tbody> <tr> <td style=""width: 4.27219%;""> </td> <td style=""width: 28.2105%;"">Announcements </td> <td style=""width: 63.2798%;"">{home_number_announcements}</td> </tr> <tr> <td style=""width: 4.27219%;""> </td> <td style=""width: 28.2105%;"">Deadlines </td> <td style=""width: 63.2798%;"">{home_number_deadlines}</td> </tr> <tr> <td style=""width: 4.27219%;""> </td> <td style=""width: 28.2105%;"">Quicklinks </td> <td style=""width: 63.2798%;"">{home_number_quicklinks}</td> </tr> <tr> <td style=""width: 4.27219%;""> </td> <td style=""width: 28.2105%;"">Recent Activity</td> <td style=""width: 63.2798%;"">{home_number_recentactivity}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+home_number_announcements,hub_settings,,text,Announcements,,,integer,0,10,,,y,,,,," @DEFAULT=""6"""
+home_number_deadlines,hub_settings,,text,Deadlines,,,integer,0,20,,,y,,,,," @DEFAULT=""6"""
+home_number_quicklinks,hub_settings,,text,Quicklinks,,,integer,0,30,,,y,,,,," @DEFAULT=""10"""
+home_number_recentactivity,hub_settings,,text,"Recent Activity entries",,,integer,0,30,,,y,,,,," @DEFAULT=""10"""
+vote_grid,hub_settings,"Hub Voting/Review Dashboard Settings",radio,"How do you want the Review Grid/Voting Grid to be displayed on the Request Dashboard?","1, Show full grid with one column per research group (recommended for consortia with 1 to 8 voting research groups) | 2, Only show voting status from a single research group (user's assigned group), plus a button to view all votes from all other research groups (recommended for consortia with 9+ voting research groups) | 0, Only show status of user's research group (private mode)",,,,,,,y,LV,,,,
+pastrequest_dur,hub_settings,,text,"How long (in days) should fully Completed Requests remain on the Review Dashboard before they are moved to the Archive?",,,integer,0,,,,y,,,,," @DEFAULT=""30"""
+vote_visibility,hub_settings,,dropdown,"Vote Visibility setting for hub-wide use","1, Private Votes | 2, Public Votes | 3, Mixed Votes",,,,,,,,,,,,
+vote_multiples,hub_settings,,dropdown,"Placeholder for Mixed votes","1, option 1 | 2, option 2",,,,,,,,,,,,
+deactivate_tblcenter,hub_settings,"List and Map of Consortium Sites (Site Census)",checkbox,"Hide/Deactivate Consortium Site List?","1, YES",,,,,,,,,,,,
+pastlastreview_dur,hub_settings,,text,"How frequently should Research Groups update their site list? ",,,,,,,,,,,,,
+hub_login_text,hub_page_text,"Login/Access Link Page",notes,"Login page text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,y,LV,,,," @DEFAULT='<p>Harmonist Hub (<a href=""http://sampleconsortiumhub.org"" target=""_blank"">sampleconsortiumhub.org</a>) is the internal coordination website for the Hub Example Consortium. Please visit <a href=""http://sampleconsortiumhub.org"" target=""_blank"">sampleconsortiumhub.org</a> for our public site.'"
+hub_login_blue_text,hub_page_text,,notes,"Login blue box text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT=""<strong>Check your email for your custom Access Link. </strong> <br />If you haven't received an email within 5 minutes, your email address may not be registered in the system or you may be registered under a different email. Please e-mail <a href=""mailto:inserthelpemail@example.com"">inserthelpemail@example.com</a> to confirm."""
+hub_recent_act_text,hub_page_text,"Home Page",notes,"Recent Activity Page - text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT=""This page lists user comments, votes, and document revisions for Hub requests."""
+hub_statistics_data_text,hub_page_text,,notes,"Data Statistics Page - text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='This page summarizes basic statistics on Data Requests activity. Counts are recalculated and logged every 24 hours. To request new metrics to be added to this page or calculations of changes over time, contact <a href=""mailto:yourcontact@example.org"">yourcontact@example.org</a>.'"
+hub_statistics_user_text,hub_page_text,,notes,"User Statistics Page - text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,,
+hub_active_shortcut,hub_page_text,,notes,"Active Data Calls shortcut text (where is this?)
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,,
+hub_req_text,hub_page_text,REQUESTS,notes,"Requests text",,,,,,,,,,,,,
+hub_req_archive_text,hub_page_text,,notes,"Requests Archive text",,,,,,,,,,,,,
+hub_req_arc_rejected_text,hub_page_text,,notes,"Rejected Requests Archive text",,,,,,,,,,,,,
+hub_concept_text,hub_page_text,CONCEPTS,notes,"Concepts text",,,,,,,,,,,,,
+hub_publications_text,hub_page_text,PUBLICATIONS,notes,"Publications text",,,,,,,,,,,,,
+hub_admin_text,hub_page_text,ADMIN,notes,"Admin text",,,,,,,,,,,,,
+hub_data_activity_text,hub_page_text,OTHER,notes,"Data Activity Log text",,,,,,,,,,,,,
+hub_tbl_center_text,hub_page_text,,notes,"Consortium Site List text",,,,,,,,,,,,,
+hub_doc_librabry_text,hub_page_text,,notes,"Document Library text",,,,,,,,,,,,,
+hub_des_text,hub_page_text,"Data Exchange Standard (DES)",notes,"DES Text",,,,,,,,,,,,,
+hub_subs_monthly_digest,hub_email_subscribers,"List Email Addresses for Notifications specified below",notes,"Monthly Hub Activity Digest
+<div style=""font-weight:lighter;font-style:italic"">Separate email addresses of recipients with semi-colons (;)</div>",,,,,,,,,LV,,,,
+hub_subs_0a0b,hub_email_subscribers,,notes,"Data Model Updated (Harmonist 0A/0B) 
+<div style=""font-weight:lighter;font-style:italic"">Separate email addresses of recipients with semi-colons (;)</div>",,,,,,,,,LV,,,,
+hub_email_new_conceptsheet,hub_email_subscribers,,notes,"New Concept Sheet Created (Harmonist 1)
+<div style=""font-weight:lighter;font-style:italic"">Separate email addresses of recipients with semi-colons (;)</div>",,,,,,,,,LV,,,,
+hub_email_pending_uploads,hub_email_subscribers,,notes,"Partial Data Upload (upload has partially been updated?)
+<div style=""font-weight:lighter;font-style:italic"">Separate email addresses of recipients with semi-colons (;)</div>",,,,,,,,,LV,,,,
+calendar_active,hub_calendar,"Show/Hide Hub Calendar",checkbox,"Enable Google Calendar on Hub Home page?
+<div style=""font-weight:lighter;font-style:italic"">Optional feature. Must configure a separate public Google Calendar and provide the iframe link below.</div>","1, YES",,,,,,,,,,,,
+calendar_title,hub_calendar,"Hub Calendar Settings",text,"Title for Calendar widget on Home Page",,,,,,,,,,,,,
+calendar_text,hub_calendar,,text,"Text for Calendar widget on Hub Home page",,,,,,,,,,,,,
+calendar_iframe,hub_calendar,,notes,"Google Calendar iframe Link
+<div style=""font-weight:lighter;font-style:italic"">Embed an existing Google Calendar on the Hub Home Page. Instructions to obtain an iframe link are here: <a href=""https://support.google.com/calendar/answer/41207?hl=en"">https://support.google.com/calendar/answer/41207?hl=en</a></div>",,,,,,,,,LV,,,,
+deactivate_metrics,hub_metrics_settings,"Show/Hide Metrics Pages",checkbox,"Hide/Deactivate Consortium Metrics for everyone but Hub Admins?
+<div style=""font-weight:lighter;font-style:italic"">Recommended for initial setup, so Hub Admins can properly configure the metrics.</div>","1, YES",,,,,,,,,,,," @DEFAULT=""1"""
+deactivate_datametrics,hub_metrics_settings,,checkbox,"Hide/Deactivate Data Metrics for everyone but Hub Admins?
+<div style=""font-weight:lighter;font-style:italic"">Recommended for initial setup, so Hub Admins can properly configure the metrics. Deactivate Data Metrics if you are not using any data features of the Hub.</div>","1, YES",,,,,,,,,,,," @DEFAULT=""1"""
+oldestyear_concepts,hub_metrics_settings,"Settings for Hub and Consortium Metrics",text,"Concepts oldest year:",,,,,,,,,,,,,
+oldestyear_rmr_manuscripts,hub_metrics_settings,,text,"Regional and MR publications oldest year:",,,,,,,,,,,,,
+oldestyear_rmr_abstracts,hub_metrics_settings,,text,"Regional and MR abstracts oldest year:",,,,,,,,,,,,,
+numberofyears_datacall,hub_metrics_settings,,text,"Data Call Timeline show last # of years",,,,,,,,,,,,,
+oldestyear_communications,hub_metrics_settings,,text,"Hub Communications oldest year:",,,,,,,,,,,,,
+hub_statistics_text,hub_metrics_page_text,,notes,"Hub Statistics text",,,,,,,,,,,,,
+hub_stats_consortium,hub_metrics_page_text,,notes,"Consortium Productivity",,,,,,,,,,,,,
+hub_stats_rmr_publications,hub_metrics_page_text,,notes,"Regional and MR publications",,,,,,,,,,,,,
+hub_stats_rmr_abstratcs,hub_metrics_page_text,,notes,"Regional and MR abstracts",,,,,,,,,,,,,
+hub_stats_mr_activity_year,hub_metrics_page_text,,notes,"Multi-regional Activity by Year (concept-linked projects only)",,,,,,,,,,,,,
+hub_stats_map,hub_metrics_page_text,,notes,Map,,,,,,,,,,,,,
+hub_stats_site_list,hub_metrics_page_text,,notes,"Site List",,,,,,,,,,,,,
+deactivate_datahub,data_hub_settings,,checkbox,"Hide/Deactivate Data Hub for everyone?","1, YES",,,,,,,,,,,,
+deactivate_toolkit,data_hub_settings,,checkbox,"Hide/Deactivate Toolkit for everyone?","1, YES",,,,,,,,,,,,
+deactivate_datadown,data_hub_settings,,checkbox,"Hide/Deactivate Data Downloads for everyone?","1, YES",,,,,,,,,,,,
+pastdatarequest_dur,data_hub_settings,,text,"How long (in days) should Data Requests remain on the Upload Data?",,,,,,,,,,,,,
+pastsopdatadiscuss_dur,data_hub_settings,,text,"How long (in days) should Data Requests remain on the Discuss Data?",,,,,,,,,,,,,
+recentdataactivity_dur,data_hub_settings,,text,"How long in days should the Recent Data Activity be updated?",,,,,,,,,,,,,
+retrievedata_expiration,data_hub_settings,,text,"How longs in days should Retrieve Data expire?",,,,,,,,,,,,,
+uploadtokenexpiration_ts,data_hub_settings,,text,"How many days should the Submit Data file remain valid?",,,,,,,,,,,,,
+uploadnotification_dur,data_hub_settings,,text,"How many days should the upload notification be active to send?",,,,,,,,,,,,,
+downloadreminder_dur,data_hub_settings,,text,"How many days should  the FIRST download reminder be sent?",,,,,,,,,,,,,
+downloadreminder2_dur,data_hub_settings,,text,"How many days should  the SECOND download reminder be sent?",,,,,,,,,,,,,
+recentfinalreq_expiration,data_hub_settings,,text,"How Long in days show Recently Finalized Requests expire?",,,,,,,,,,,,,
+dataupload_dur,data_hub_settings,,text,"How many Data Request Uploads should be displayed in the single Data Request page?",,,,,,,,,,,,,
+number_recentdataactivity,data_hub_settings,,text,"How many Recent Data Activity entries do you want to display in the Home page?",,,,,,,,,,,,,
+hub_data_hub_text,data_hub_page_text,"DATA HUB",notes,"Data Hub text",,,,,,,,,,,,,
+hub_req_data_text,data_hub_page_text,,notes,"Request Data text",,,,,,,,,,,,,
+hub_req_data_text_after,data_hub_page_text,,notes,"Request Data text after Create button",,,,,,,,,,,,,
+hub_check_submit_text,data_hub_page_text,,notes,"Check and Submit text",,,,,,,,,,,,,
+hub_download_data_text,data_hub_page_text,,notes,"Download Data text",,,,,,,,,,,,,
+hub_recent_data_act_text,data_hub_page_text,,notes,"Recent Data Activity text",,,,,,,,,,,,,
+hub_news_archive_text,data_hub_page_text,,notes,"News Archive text",,,,,,,,,,,,,
+temp2,data_hub_page_text,"DATA CALL",text,temp,,,,,,,,,,,,,
+hub_step1,data_hub_page_text,,notes,"Create Data Call Step 1",,,,,,,,,,,,,
+hub_step2,data_hub_page_text,,notes,"Create Data Call Step 2",,,,,,,,,,,,,
+hub_step3,data_hub_page_text,,notes,"Create Data Call Step 3",,,,,,,,,,,,,
+hub_step4,data_hub_page_text,,notes,"Create Data Call Step 4",,,,,,,,,,,,,
+hub_steps_complete_text,data_hub_page_text,,notes,"Create Data Call Steps Complete text",,,,,,,,,,,,,
+hub_datacall_archive,data_hub_page_text,,notes,"Data Call Archive text",,,,,,,,,,,,,
+hub_datareq_for_review,data_hub_page_text,,notes,"Share Data Request for Review Text",,,,,,,,,,,,,
+hub_statistics_gen_text,data_metrics_page_text,,notes,"Hub General Statistics text",,,,,,,,,,,,,
+hub_stats_general_usage,data_metrics_page_text,,notes,"General Hub Usage Stats",,,,,,,,,,,,,
+hub_stats_data,data_metrics_page_text,,notes,"Statistics data",,,,,,,,,,,,,
+hub_stats_data_exchange,data_metrics_page_text,,notes,"Data Exchange",,,,,,,,,,,,,
+hub_stats_data_requests,data_metrics_page_text,,notes,"Statistics data (Requests)",,,,,,,,,,,,,
+hub_stats_datacall_time,data_metrics_page_text,,notes,"Data Call Timeline",,,,,,,,,,,,,
+hub_stats_comunications,data_metrics_page_text,,notes,"Hub Communications",,,,,,,,,,,,,
+publications_lastupdate,backend_variables,"Publications Library",text,"Last Update Date",,,datetime_seconds_ymd,,,,,,,,,," @READONLY"
+publications_json,backend_variables,,file,"Publications JSON File",,,,,,,,,,,,," @READONLY"

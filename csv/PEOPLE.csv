@@ -1,24 +1,31 @@
 "Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
 record_id,person_information,,text,"Record ID",,,,,,,,,,,,,
-active_y,person_information,,radio,"<div style=""color:black; text-align:center; border: 1px #d35400; background-color: #e67e22; padding:6px; max-width:800px;"">Active User Account?</div>","1, Yes | 0, No",,,,,,,,RH,,,," @HIDDEN-SURVEY"
+active_y,person_information,,radio,"<div style=""color:black; text-align:center; border: 1px #d35400; background-color: #e67e22; padding:6px; max-width:800px;"">Active User Account?</div>","1, Yes | 0, No",,,,,,,y,RH,,,," @HIDDEN-SURVEY"
 inactive_d,person_information,,text,"Inactive date",,,datetime_seconds_ymd,,,,"[active_y] = '0'",,,,,,
 user_surveyheader,person_information,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">New User Information</h3></div>",,,,,,,,,,,,," @HIDDEN-FORM"
 user_formheader,person_information,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Required User Information</h3></div>",,,,,,,,,,,,," @HIDDEN-SURVEY"
-firstname,person_information,,text,"First name",,,,,,,,,,,,,
-lastname,person_information,,text,"Last name",,,,,,,,,,,,,
-email,person_information,,text,"Email address",,,email,,,,,,,,,,
-person_region,person_information,,sql,"IeDEA Region","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099  GROUP BY a.record  ORDER BY value",,autocomplete,,,,,,,,,,
-useraccess_header,person_information,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">IeDEA Hub Access</h3></div>",,,,,,,,,,,,,
-harmonist_regperm,person_information,,radio,"IeDEA Hub Permissions
-<div style=""font-weight:lighter;font-style:italic"">What permissions should this user have on the Hub?</div>","0, No Access | 1, View-only access | 2, Submit comments for the region (key investigator access) | 3, Vote for the region (PI-level access)",,,,,,,,,,,,
+firstname,person_information,,text,"First name",,,,,,,,y,,,,,
+lastname,person_information,,text,"Last name",,,,,,,,y,,,,,
+email,person_information,,text,"Email address",,,email,,,,,y,,,,,
+person_region,person_information,,sql,"Research Group","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=795 GROUP BY a.record  ORDER BY value",,autocomplete,,,,,y,,,,,
+useraccess_header,person_information,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Hub Access</h3></div>",,,,,,,,,,,,,
+harmonist_regperm,person_information,,radio,"Hub Permissions
+<div style=""font-weight:lighter;font-style:italic"">What permissions should this user have on the Hub?</div>","0, No Access | 1, View-only access | 2, Submit comments for the research group (key investigator access) | 3, Vote for the research group (PI-level access)",,,,,,,y,,,,,
+admin_notes,person_information,,notes,"Admin notes on User Account",,,,,,,,,LV,,,," @HIDDEN-SURVEY"
 requestor_name,person_information,"Who is making this New User Request?",text,"Your name",,,,,,,,,,,,,
 userrequest_detail,person_information,,notes,"Additional detail about the request",,,,,,,,,,,,,
-do_not_use,person_information,,text,"I want to put these in the project, but don't want to take the risk of emailing any of these people by mistake.",,,,,,,,,,,,," @HIDDEN-SURVEY"
-blockedfields,user_profile,,descriptive,"<span style=""font-weight:lighter; font-style:italic""> These fields are only editable by an IeDEA Hub Admin. Please contact stephany.duda@vanderbilt.edu with CC to your regional PI if you need a change to these fields.</span>
+securedata_txt,harmonist_permissions,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Secure Data Access</h3></div>",,,,,,,,,,,,,
+allowgetdata_y,harmonist_permissions,,checkbox,"Allow user to download secure data
+<div style=""font-weight:lighter;font-style:italic"">If this option is selected, the user will be included in a list of people who can be given access to download patient-level data for specified concept sheets.</div>","1,",,,,,,,,,,,,
+redcap_name,harmonist_permissions,,text,"REDCap username",,,,,,,,,,,,,
+harmonist_txt,harmonist_permissions,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Harmonist Access</h3></div>",,,,,,,,,,,,,
+harmonistadmin_y,harmonist_permissions,,yesno,"Hub System Admin",,,,,,,,,,,,,
+harmonist_perms,harmonist_permissions,,checkbox,"Permissions for regular users","1, Edit/finalize data requests | 2, Create new concept sheets | 3, Edit concept sheets | 4, Edit requests | 5, Upload file revisions | 6, Edit the data model ('Harmonist 0' Projects) | 7, Edit Deadlines & Events (Home page) | 8, Edit Site Census project | 9, Add news items | 10, Edit publications",,,,,,,,,,,,
+blockedfields,user_profile,,descriptive,"<span style=""font-weight:lighter; font-style:italic""> These fields are only editable by an Hub Admin. Please contact your Hub Admin if you need a change to these fields.</span>
 Email: <span style=""font-weight:lighter"">[email]</span>
 REDCap username (optional): <span style=""font-weight:lighter"">[redcap_name]</span>
 Active account?: <span style=""font-weight:lighter"">[active_y]</span>
-Assigned IeDEA region: <span style=""font-weight:lighter"">[person_region]</span>
+Assigned Research Group: <span style=""font-weight:lighter"">[person_region]</span>
 Access level: <span style=""font-weight:lighter"">[harmonist_regperm]</span>",,,,,,,,,,,,,
 userfields_txt,user_profile,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">User Fields</h3></div>",,,,,,,,,,,,,
 pubname,user_profile,,text,"Full Name <u>as preferred for publication</u>
@@ -29,15 +36,7 @@ institution,user_profile,,text,Organization,,,,,,,,,,,,,
 settings_txt,user_profile,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Website Settings</h3></div>",,,,,,,,,,,,,
 pendingpanel_y,user_profile,,checkbox,"Use ""Pending"" Panel for ""Vote Later"" Requests","1, Yes",,,,,,"[harmonist_regperm] = '3'",,RH,,,,
 stayrequest_y,user_profile,,checkbox,"Stay on Request page after submitting comments","1, Yes",,,,,,"[harmonist_regperm] = '2' or [harmonist_regperm] = '3' or [harmonistadmin_y] = '1'",,,,,,
-securedata_txt,harmonist_permissions,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Secure Data Access</h3></div>",,,,,,,,,,,,,
-allowgetdata_y,harmonist_permissions,,checkbox,"Allow user to download secure data
-<div style=""font-weight:lighter;font-style:italic"">If this option is selected, the user will be included in a list of people who can be given access to download patient-level data for specified concept sheets.</div>","1,",,,,,,,,,,,,
-redcap_name,harmonist_permissions,,text,"REDCap username",,,,,,,,,,,,,
-harmonist_txt,harmonist_permissions,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Harmonist Access</h3></div>",,,,,,,,,,,,,
-harmonistadmin_y,harmonist_permissions,,yesno,"Harmonist System Admin",,,,,,,,,,,,,
-harmonist_perms,harmonist_permissions,,checkbox,"Permissions for regular users","1, Edit/Finalize data requests | 2, Create new concept sheets | 3, Edit concept sheets | 4, Edit requests | 5, Upload file revisions | 6, Edit the data model ('Harmonist 0' Projects) | 7, Edit Deadlines & Events (Home page) | 8, Edit tblCENTER | 9, Add news items | 10, Edit publications",,,,,,,,,,,,
-harmonist_role,harmonist_permissions,"Other Permissions (not currently in use)",checkbox,"Harmonist Roles","1, Voting Director (e.g., Principal Investigator) | 2, Non-Voting Director (e.g., non-voting PI, key co-I) | 3, Co-Investigator | 4, Admin Team | 5, Data Team",,,,,,,,,,,," @HIDDEN"
 access_token,access_link,"These Fields are set automatically with a REDCap Hook.",text,"Access Token",,,,,,,,,,,,," @READONLY"
-token_expiration_d,access_link,,text,"Token expiration date",,,date_ymd,,,,,,,,,," @READONLY"
-first_ever_login_d,access_link,,text,"First Ever Login",,,datetime_seconds_ymd,,,,,,,,,,
-last_requested_token_d,access_link,,text,"Last Time Token was Requested",,,datetime_seconds_ymd,,,,,,,,,," @READONLY"
+token_expiration_d,access_link,,text,"Token expiration date",,,date_ymd,,,,,,,,,,
+first_ever_login_d,access_link,,text,"First Hub login date (first Token request)",,,datetime_seconds_ymd,,,,,,,,,," @READONLY"
+last_requested_token_d,access_link,,text,"Last Hub login date (most recent Token request)",,,datetime_seconds_ymd,,,,,,,,,," @READONLY"

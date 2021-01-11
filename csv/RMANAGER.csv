@@ -1,76 +1,56 @@
 "Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
 request_id,request,,text,"Request ID",,,,,,,,,,,,,
-request_type,request,"Request Submission Form",dropdown,"What are you submitting for EC review?","1, Concept Sheet | 2, Abstract | 3, Manuscript | 4, Poster | 5, Fast Track | 9, Data Request | 99, Other",,,,,,,y,LV,,,," @HIDECHOICE='9'"
-version_txt,request,,descriptive,"<div class=""blue"">Check that you are using the <b>most recent version of the Concept Sheet template</b>. You can find the current template file on the public IeDEA site: <a href=""https://www.iedea.org/resources/"">https://www.iedea.org/resources/</a></div>",,,,,,,"[request_type] = '1'",,,,,,
-request_conf,request,,text,"What conference are you submitting to? 
-<div style=""font-weight:lighter;font-style:italic"">(if applicable, e.g., IAS, CROI, IWHOD)</div>",,,,,,,"[request_type] = '2' or [request_type] = '4' or [request_type] = '99'",,LV,,,,
-concept_category,request,,radio,"Is this a new concept proposal or is it an extension of a previously approved IeDEA concept?","1, New concept | 2, Extension of previous concept",,,,,,"[request_type] = '1'",,LV,,,,
-assoc_concept,request,,sql,"Associated concept
-<div style=""font-weight:lighter;font-style:italic"">(Typing words from the concept title will filter the list. Select MR000 for no concept mapping.)</div>","SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 58325 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = 58325 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value",,autocomplete,,,,"[concept_category] <> '1'",,LV,,,,
-wg_y,request,"Working Group",yesno,"Is there an IeDEA Working Group associated with this concept?",,,,,,,,,LV,,,,
-wg_name,request,,sql,"Which IeDEA Working Group?","SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=62646 GROUP BY a.record ORDER BY value",,,,,,"[wg_y] = '1'",,LV,,,,
-wg2_name,request,,sql,"Secondary Working Group (if applicable)","SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=62646 GROUP BY a.record ORDER BY value",,,,,,"[wg_y] = '1'",,LV,,,,
-wg_status,request,,radio,"Has the Working Group reviewed this document?","1, Yes, they have reviewed and approved. | 2, They are currently reviewing. | 3, No",,,,,,"[wg_y] = '1'",,LV,,,,
+request_type,request,"Request Submission Form",dropdown,"What are you submitting for review?","1, Concept Sheet | 5, Fast Track Concept | 2, Abstract | 3, Manuscript | 4, Poster | 99, Other",,,,,,,y,LV,,,,
+version_txt,request,,descriptive,"<div class=""blue"">Check that you are using the <b>most recent version of the Concept Sheet template</b> (see attachment).",,,,,,,"[request_type] = '1'",,,,,,
+request_conf,request,,text,"What conference are you submitting to? <div style=""font-weight:lighter;font-style:italic"">(if applicable, e.g., TB Union, IAS, CROI,  AMIA)</div>",,,,,,,"[request_type] = '2' or [request_type] = '4' or [request_type] = '99'",,LV,,,,
+concept_category,request,,radio,"Is this a new concept proposal or is it an extension of a previously approved concept?","1, New concept | 2, Extension of previous concept",,,,,,"[request_type] = '1'",,LV,,,,
+assoc_concept,request,,sql,"Associated concept","SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 792 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = 792 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value",,autocomplete,,,,"[concept_category] <> '1'",,LV,,,,
+wg_y,request,"Working Group",yesno,"Is there a Working Group associated with this concept?",,,,,,,,,LV,,,,
+wg_name,request,,sql,"Which Working Group?","SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=797 GROUP BY a.record ORDER BY value",,,,,,"[wg_y] = '1'",,LV,,,,
+wg2_name,request,,sql,"Secondary Working Group (if applicable)","SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=797 GROUP BY a.record ORDER BY value",,,,,,"[wg_y] = '1'",,LV,,,,
+wg_status,request,,radio,"Has the Working Group reviewed this document?","1, Yes, they have reviewed and approved.|2, They are currently reviewing.|3, No",,,,,,"[wg_y] = '1'",,LV,,,,
 wg_noreview,request,,notes,"Why has the Working Group not reviewed the document?",,,,,,,"[wg_status] = '3'",,LV,,,,
 writeg_y,request,"Writing Group",yesno,"Is there a Writing Group associated with this concept?",,,,,,,"[request_type] = '2' or [request_type] = '3' or [request_type] = '99' or [request_type] = '4'",,LV,,,,
-writeg_status,request,,radio,"Has the Writing Group reviewed this document?","1, Yes, they have reviewed and approved. | 2, They are currently reviewing. | 3, No",,,,,,"[writeg_y] = '1'",,LV,,,,
+writeg_status,request,,radio,"Has the Writing Group reviewed this document?","1, Yes, they have reviewed and approved.|2, They are currently reviewing.|3, No",,,,,,"[writeg_y] = '1'",,LV,,,,
 writeg_noreview,request,,notes,"Why has the Writing Group not reviewed the document?",,,,,,,"[writeg_status] = '3'",,LV,,,,
 confirm_content,request,"Document Contents",radio,"Does your document include the following items?
-
 (1) Author names
 (2) Author affiliations
 (3) Acknowledgments
-(4) Grant numbers","1, Yes | 0, No | 9, Not applicable",,,,,,"[request_type] = '2' or [request_type] = '3' or [request_type] = '4'",,LV,,,," @HIDDEN"
-document_items,request,,descriptive,"Does your document include the following items?",,,,,,,"[request_type] = '2' or [request_type] = '3' or [request_type] = '4'",,,,,,
-authors,request,,radio,"Author Names:","1, Complete | 2, Incomplete | 3, Not applicable",,,,,,"[request_type] = '2' or [request_type] = '3' or [request_type] = '4'",,LV,,,,
-authors_incomplete,request,,notes,"Please explain why the author list is incomplete:",,,,,,,"[authors] = '2'",,LV,,,,
-affiliations,request,,radio,"Author affiliations:","1, Complete | 2, Incomplete | 3, Not applicable",,,,,,"[request_type] = '2' or [request_type] = '3' or [request_type] = '4'",,LV,,,,
-affiliations_incomplete,request,,notes,"Please explain why the author affiliations are incomplete:",,,,,,,"[affiliations] = '2'",,LV,,,,
-acknowlegements,request,,radio,"Acknowledgements:
-
-For an abstract: Inclusion of ""IeDEA"" as a co-author; e.g., ""...on behalf of IeDEA""
-For a manuscript or poster: Inclusion of standard funding and investigator/ leadership acknowledgements.
-","1, Complete | 2, Incomplete | 3, Not applicable",,,,,,"[request_type] = '2' or [request_type] = '3' or [request_type] = '4'",,LV,,,,
-acknowledgements_incomplete,request,,notes,"Please explain why the acknowledgements are incomplete:",,,,,,,"[acknowlegements] = '2'",,LV,,,,
-grant_numbers,request,,radio,"Grant numbers:","1, Complete | 2, Incomplete | 3, Not Applicable",,,,,,"[request_type] = '2' or [request_type] = '3' or [request_type] = '4'",,LV,,,,
-grant_numbers_incomplete,request,,notes,"Please explain why the grant numbers are incomplete:",,,,,,,"[grant_numbers] = '2'",,LV,,,,
+(4) Grant numbers","1, Yes | 0, No | 9, Not applicable",,,,,,"[request_type] = '2' or [request_type] = '3' or [request_type] = '4'",,LV,,,,
 content_warning,request,,descriptive,"<div class='red'><strong>The EC needs to review these fields in order to approve a publication. </strong> Please revise your document to include this information, or upload a second document below that includes this information.</div>",,,,,,,"[confirm_content] = '0'",,,,,,
 editable_txt,request,"Request File(s)",descriptive,"<div class='blue'>Please upload a copy of your file in <strong>editable format</strong> (e.g., MS Word for Concept Sheets and Manuscripts, MS PowerPoint for Slides and Posters).</div>",,,,,,,,,,,,,
 request_file,request,,file,"Upload your [request_type] file
 <div style=""font-weight:lighter;font-style:italic"">If the file is associated with a concept, rename the file to include the concept number at the beginning of the filename. <br />(e.g., MR001_abstract_Jan2017.docx)</div>",,,,,,,,y,LV,,,,
 extra_file1,request,,file,"Extra file #1
 <div style=""font-weight:lighter;font-style:italic"">Optional file upload for additional documents, separate manuscript tables (if applicable), etc.</div>",,,,,,,,,LV,,,,
-extra_file2,request,,file,"Extra file #2
-",,,,,,,"[extra_file1] <> ''",,LV,,,,
-extra_file3,request,,file,"Extra file #3
-",,,,,,,"[extra_file2] <> ''",,LV,,,,
-extra_file4,request,,file,"Extra file #4
-",,,,,,,"[extra_file3] <> ''",,LV,,,,
-extra_file5,request,,file,"Extra file #5
-",,,,,,,"[extra_file4] <> ''",,LV,,,,
-extra_file6,request,,file,"Extra file #6
-",,,,,,,"[extra_file5] <> ''",,LV,,,,
-request_title,request,"Request Description",notes,"Title of your [request_type] document
-<div style=""font-weight:lighter;font-style:italic"">Copy and paste the full title of your concept sheet proposal, manuscript, abstract, or other submission. This title will be used to identify your request for the EC. (e.g.,  Site Capacity to Screen, Prevent, Diagnose, and Manage NCDs in Low- to Middle-Income Countries.)</div>",,,,,,,,y,LV,,,,
-request_description,request,,notes,"Description of request / Message to the EC
-<div style=""font-weight:lighter;font-style:italic"">(This text will be displayed to the EC reviewers.)</div>",,,,,,,,,LH,,,,
+extra_file2,request,,file,"Extra file #2",,,,,,,"[extra_file1] <> ''",,LV,,,,
+extra_file3,request,,file,"Extra file #3",,,,,,,"[extra_file2] <> ''",,LV,,,,
+extra_file4,request,,file,"Extra file #4",,,,,,,"[extra_file3] <> ''",,LV,,,,
+extra_file5,request,,file,"Extra file #5",,,,,,,"[extra_file4] <> ''",,LV,,,,
+extra_file6,request,,file,"Extra file #6",,,,,,,"[extra_file5] <> ''",,LV,,,,
+request_title,request,"Request Description",notes,"Title of your [request_type] document<div style=""font-weight:lighter;font-style:italic"">Copy and paste the full title of your concept sheet proposal, manuscript, abstract, or other submission. This title will be used to identify your request for the Consortium. (e.g.,  Site Capacity to Screen, Prevent, Diagnose, and Manage NCDs in Low- to Middle-Income Countries.)</div>",,,,,,,,y,LV,,,,
+request_description,request,,notes,"Description of request / Message to the Reviewers<div style=""font-weight:lighter;font-style:italic"">(This text will be displayed to the reviewers.)</div>",,,,,,,,,LH,,,,
 contact_txt,request,"Request Contact Person",descriptive,"<div style=""font-weight:lighter;"">This person will be listed as the point of contact for the request and any resulting responses. <br />Please designate one person.</div>",,,,,,,,,,,,,
 contact_name,request,,text,"Contact name",,,,,,,,y,LV,,,,
 contact_email,request,,text,"Contact email",,,email,,,,,y,LV,,,,
-contact_region,request,,sql,"IeDEA Region","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099  GROUP BY a.record  ORDER BY value",,,,,,,y,LV,,,,
-nextsteps_txt,request,"Next Steps",descriptive,"<div style=""font-weight:lighter"">Once you submit this request, the Contact Person named above will receive a confirmation email. The IeDEA Coordinating Team also will receive an automatic email notification of a new request submission.
-<br />Next, your request will be reviewed and processed. <b>The IeDEA Coordinating Team will assign a due date to your request based on IeDEA review protocols</b> (e.g., 14 days for manuscripts).  
-<br /><b>The Contact Person will be copied once the Request is approved.</b></div>",,,,,,,,,,,,,
+contact_region,request,,sql,"Contact's Research Group","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=795  GROUP BY a.record  ORDER BY value",,,,,,,y,LV,,,,
+nextsteps_txt,request,"Next Steps",descriptive,"<div style=""font-weight:lighter"">Once you submit this request, the Contact Person named above will receive a confirmation email. Your Consortium Coordinating Team also will receive an automatic email notification of a new request submission.
+<br />Next, your request will be reviewed and processed. <b>The Coordinating Team will assign a due date to your request based on consortium review protocols</b>.  
+<br /><b>The Contact Person will be copied once the Request is posted for review on the Hub.</b></div>",,,,,,,,,,,,,
 suggest_d,request,,text,"Suggested due date for request",,,date_ymd,,,,,,LV,,,,
-contactnotification_y,request,,checkbox,"Receive email notifications when EC reviewers post comments, files, and votes on your request?
-<div style=""font-weight:lighter;font-style:italic"">(Only available if [contact_email] matches an active Hub account.)</div>","1, Yes",,,,,,,,LV,,,," @HIDDEN @DEFAULT='1'"
-request_txt,request,,notes,"Private message for IeDEA Hub Admins
-<div style=""font-weight:lighter;font-style:italic"">(Optional comments for the admins who will review the request. These comments will not be displayed to the EC.) </div>",,,,,,,,,LV,,,,
+contactnotification_y,request,,checkbox,"Receive email notifications when reviewers post comments, files, and votes on your request?
+<div style=""font-weight:lighter;font-style:italic"">(Only available if [contact_email] matches an active Hub account.)</div>","1, Yes",,,,,,,,LV,,,," @DEFAULT='1'"
+request_txt,request,,notes,"Private message for Hub Admins
+<div style=""font-weight:lighter;font-style:italic"">(Optional comments for the admins who will review and post the request. These comments will not be displayed to the reviewers.) </div>",,,,,,,,,LV,,,,
 request_summary,admin_review,"Request Summary",descriptive,"<div style=""font-weight:lighter""><b>Contact Person:</b> 
 [contact_name], <a href=""mailto:[contact_email]"">[contact_email]</a>
 
 <b>Review Type:</b> 
 [request_type]
+
+<b>Title:</b> 
+[request_title]
 
 <b>Request Description:</b>
  [request_description]
@@ -84,87 +64,85 @@ request_summary,admin_review,"Request Summary",descriptive,"<div style=""font-we
 contactperson_id,admin_review,"Confirm this Setting",sql,"Contact Person:
 <span style=""font-weight:lighter;"">[contact_name], <a href=""mailto:[contact_email]"">[contact_email]</a></span>
 
-If blank, map this person to official IeDEA List
-<div style=""font-weight:lighter;font-style:italic"">(Find the name above in the official list. If it doesn't exist, you can add this person (<a href=""https://redcap.vanderbilt.edu/redcap_v8.2.1/DataEntry/record_home.php?pid=59097"">via REDCap</a>) or list their PI's name instead.)</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,LV,,,,
+If blank, map this person to official Hub Members List
+<div style=""font-weight:lighter;font-style:italic"">(Find the name above in the official list. If it doesn't exist, you can add this person (<a href=""https://redcap.vanderbilt.edu/redcap_v8.2.1/DataEntry/record_home.php?pid=798"">via REDCap</a>) or list their PI's name instead.)</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=798 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,LV,,,,
 admin_txt,admin_review,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Complete Fields Below</h3></div>",,,,,,,,,,,,,
-reviewer_id,admin_review,,sql,"Reviewer Username","SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM redcap_data WHERE project_id = 59097 AND field_name = 'firstname') a JOIN (SELECT record, value FROM redcap_data where project_id = 59097 and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from redcap_data where project_id = 59097 and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",,,,,,,,LV,,,," @DEFAULT='11'"
-due_d,admin_review,,text,"Assign due date for EC review",,,date_ymd,,,,,y,LV,,,," @DEFAULT='[suggest_d]'"
+reviewer_id,admin_review,,sql,"Reviewer Username","SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM redcap_data WHERE project_id = 798 AND field_name = 'firstname') a JOIN (SELECT record, value FROM redcap_data where project_id = 798 and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from redcap_data where project_id = 798 and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",,,,,,,,LV,,,,
+due_d,admin_review,,text,"Assign due date for Consortium review",,,date_ymd,,,,,y,LV,,,," @DEFAULT='[suggest_d]'"
+mr_temporary,admin_review,,text,"Assign Tracking Number
+<div style=""font-weight:lighter;font-style:italic"">Ignore or hide this field if your consortium does not assign a tracking number at this point.</div>",,,,,,,,,LV,,,,
 admin_internal_notes,admin_review,,notes,"Internal Tracking Notes 
 <div style=""font-weight:lighter;font-style:italic"">(Admin reference only)</div>",,,,,,,,,LV,,,,
 approval_y,admin_review,,radio,"<div class=""blue""><b>Approve Request?</b>
-<span style=""font-weight:lighter;font-style:italic"">(Once this request is approved, it will be posted to the EC Requests Dashboard. A notice will be sent to the Contact Person.)</span></div>","1, <span style=""color:#1F8B4D; font-weight:bold;"">Approve</span> | 0, <span style=""color:#e74c3c; font-weight:bold;"">Reject</span> | 9, Deactivate Request <i>(will hide from system,  e.g., duplicates, testing requests)</i>",,,,,,,,LV,,,,
-admin_noemail,admin_review,,checkbox,"Do not email Contact Person","1,",,,,,,"[approval_y] = '1'",,,,,,
-admin_review_notes,admin_review,,notes,"Admin Announcement to EC
-<div style=""font-weight:lighter;font-style:italic"">(These notes will be displayed on the EC Requests Dashboard along with the message from the Contact Person.)</div>",,,,,,,"[approval_y] = '1'",,LV,,,,
-responding_region,dashboard_region_status,,sql,Region,"SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099  GROUP BY a.record  ORDER BY value",,,,,,,,,,,,
-region_response_status,dashboard_region_status,,dropdown,"Request Status","0, Not Started | 1, In Progress | 2, Complete",,,,,,,,,,,,
-region_vote_status,dashboard_region_status,,dropdown,"Vote Status","1, Approved | 0, Not Approved | 9, Abstained/Not applicable",,,,,,,,,,,,
-region_update_ts,dashboard_region_status,,text,"Last Update Timestamp",,,datetime_seconds_ymd,,,,,,,,,,
-region_close_ts,dashboard_region_status,,text,"Region Completion Timestamp",,,datetime_seconds_ymd,,,,,,,,,,
-finalizerequest_txt,finalization_of_request,"EC Voting Complete - Finalize Request",descriptive,"<div style=""font-weight:lighter""><b>[request_type]</b>, [request_title]
+<span style=""font-weight:lighter;font-style:italic"">(Once this request is approved, it will be posted to the Consortium Review Dashboard.)</span></div>","1, <span style=""color:#27ae60; font-weight:bold;"">Approve</span> | 0, <span style=""color:#e74c3c; font-weight:bold;"">Reject</span> | 9, Deactivate Request <i>(will hide from system,  e.g., duplicates, testing requests)</i>",,,,,,,,LV,,,,
+admin_noemail,admin_review,,radio,"Do not email Contact Person","1,",,,,,,"[approval_y] = '1'",,,,,,
+admin_review_notes,admin_review,,notes,"Admin Announcement to Consortium Reviewers
+<div style=""font-weight:lighter;font-style:italic"">(These notes will be displayed on the Consortium Requests Dashboard along with the message from the Contact Person.)</div>",,,,,,,"[approval_y] = '1'",,LV,,,,
+status_usage_txt,dashboard_voting_status,,descriptive,"<div style=""font-weight:lighter"">This is a <b>repeating form</b>. One copy of this form will be stored for each Research Group participating in voting. The ""repeat instance"" IDs will correspond to the record IDs of the voting regions, as stored in the corresponding ""Research Groups"" REDCap project. 
+
+For example, if Vanderbilt is record ID #1 in the Research Groups project and is designated as a voting region, then repeat instance #1 of this form will store voting data for Vanderbilt.</div>",,,,,,,,,,,,,
+responding_region,dashboard_voting_status,,sql,"Research Group","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=795  GROUP BY a.record  ORDER BY value",,,,,,,,,,,,
+region_response_status,dashboard_voting_status,,dropdown,"Request Status","0, Not Started|1, In Progress|2, Complete",,,,,,,,,,,,
+region_vote_status,dashboard_voting_status,,dropdown,"Vote Status","1, Approved | 0, Not Approved | 9, Abstained/Not applicable",,,,,,,,,,,,
+region_update_ts,dashboard_voting_status,,text,"Last Update Timestamp",,,datetime_seconds_ymd,,,,,,,,,,
+region_close_ts,dashboard_voting_status,,text,"Research Group Completion Timestamp",,,datetime_seconds_ymd,,,,,,,,,,
+finalizerequest_txt,finalization_of_request,"Voting Complete - Finalize Request",descriptive,"<div style=""font-weight:lighter""><b>[request_type]</b>, [request_title]
 [contact_name], <a href=""mailto:[contact_email]"">[contact_email]</a>
 </div>",,,,,,,,,,,,,
 finalize_y,finalization_of_request,,radio,"Finalize this Request
 <div style=""font-weight:lighter;font-style:italic"">It is OK to finalize a request before the system detects all votes complete.</div>","1, <span style=""color:#1F8B4D;font-weight:bold"">Approved</span> | 2, <span style=""color:#e74c3c; font-weight:bold;"">Rejected</span>",,,,,,,y,LV,,,,
-final_d,finalization_of_request,,text,"Request finalization date (EC approval date)
-<div style=""font-weight:lighter;font-style:italic"">It is OK to backdate this to the actual EC approval date.</div>",,,date_ymd,,,,,y,LV,,,,
-finalizer_id,finalization_of_request,,sql,"Finalizing Person","SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM redcap_data WHERE project_id = 59097 AND field_name = 'firstname') a JOIN (SELECT record, value FROM redcap_data where project_id = 59097 and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from redcap_data where project_id = 59097 and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",,,,,,,,LV,,,,
+final_d,finalization_of_request,,text,"Request finalization date (Approval date)
+<div style=""font-weight:lighter;font-style:italic"">It is OK to backdate this to the actual approval date.</div>",,,date_ymd,,,,,y,LV,,,,
+finalizer_id,finalization_of_request,,sql,"Finalizing Person","SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM redcap_data WHERE project_id = 798 AND field_name = 'firstname') a JOIN (SELECT record, value FROM redcap_data where project_id = 798 and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from redcap_data where project_id = 798 and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",,,,,,,,LV,,,,
 detected_complete,finalization_of_request,,checkbox,"All votes complete (auto-detected)
 <div style=""font-weight:lighter;font-style:italic"">This automatic check runs every time a new vote is submitted. </div>","1, YES",,,,,,,,,,,," @HIDDEN-SURVEY @READONLY"
 detected_complete_ts,finalization_of_request,,text,"Auto-detection Time
-<div style=""font-weight:lighter;font-style:italic"">This automatic check runs once per day, in the early AM U.S. time.</div>",,,datetime_seconds_ymd,,,,,,,,,," @HIDDEN-SURVEY @READONLY"
-postfinalization_txt,finalization_of_request,"Next Steps",descriptive,"<span style=""font-weight:lighter"">The Hub will send ""next step"" emails to the author after a request is finalized.</span>",,,,,,,,,,,,,
+<div style=""font-weight:lighter;font-style:italic"">This automatic check runs once per day, according to your server settings.</div>",,,datetime_seconds_ymd,,,,,,,,,," @HIDDEN-SURVEY @READONLY"
+postfinalization_txt,finalization_of_request,"Next Steps",descriptive,"<span style=""font-weight:lighter"">The Hub will send ""next step"" emails to the author after a request is finalized.
+
+See Email Alerts module email settings to configure the contents of these emails.
+</span>
+",,,,,,,,,,,,,
+showauthoremail_y,finalization_of_request,,checkbox,"Show text of email to author 
+<div style=""font-weight:lighter;font-style:italic"">Actual text is in Email Alerts module - this is a copy that needs to be updated if changes to the Alerts are made.</div>","1, Show text",,,,,,,,LV,,,,
 custom_note,finalization_of_request,,notes,"Custom note to include in email",,,,,,,,,LV,,,,
-show_ccs,finalization_of_request,,checkbox,"Copy other email addresses on notification","1, Show email CC fields",,,,,,,,LV,,,," @HIDDEN-SURVEY"
-cc_email1,finalization_of_request,,text,"Email CC address 1",,,email,,,,"[show_ccs(1)] = '1'",,LV,,,,
-cc_email2,finalization_of_request,,text,"Email CC address 2",,,email,,,,"[show_ccs(1)] = '1'",,LV,,,,
-finalize_noemail,finalization_of_request,,radio,"Skip Contact notification ","1, Do not send notification email (the author will not receive an email notifying them of a completed EC review and requesting followup documents)",,,,,,,,LV,,,,
+authoremail_txt,finalization_of_request,,descriptive,"<div style=""font-weight:lighter;font-style:italic"">Insert text from your Email Alerts module email settings.</div>",,,,,,,"[showauthoremail_y(1)] = '1'",,,,,,
+finalize_noemail,finalization_of_request,,radio,"<div style=""font-weight:lighter;font-style:italic"">For Admin Use (action must be configured in Email Alerts):</div>
+Skip Contact notification ","1, Do not send notification email (the author will not receive an email notifying them of a completed review and requesting followup documents)",,,,,,,,LV,,,,
 finaldocs_concept_txt,final_docs_request_survey,Instructions,descriptive,"<div style=""font-weight:lighter;""><b>Concept:</b> [request_title]</div>
-<div style=""font-weight:lighter;""><b>Upload a ""final"" version of your concept sheet</b><ul><li>Include all EC-requested changes</li><li>Remove any document comments or change tracking</li></ul></div><div style=""font-weight:lighter"">Submitting this form will trigger an email to the IeDEA concept sheet management team. You will receive a notification email when they assign a multiregional tracking number (MR###). </div>
-<div class=""green"">You must complete this form to receive an <b>IeDEA multiregional tracking number</b> for your Concept Sheet.</div>",,,,,,,"[request_type] = '1' or [request_type] = '5'",,,,,,
+<div style=""font-weight:lighter;""><b>Upload a ""final"" version of your concept sheet</b><ul><li>Include all changes requested by the reviewers</li><li>Remove any document comments or change tracking</li></ul></div><div style=""font-weight:lighter"">Submitting this form will trigger an email to the concept sheet management team. You will receive a notification email when they assign a concept tracking number. </div>
+<div class=""green"">You must complete this form to receive an <b> tracking number</b> for your Concept Sheet.</div>",,,,,,,"[request_type] = '1' or [request_type] = '5'",,,,,,
 finaldocs_txt,final_docs_request_survey,,descriptive,"For logging purposes, please upload a final copy of your  [request_type].
-<div style=""font-weight:lighter;font-style:italic"">In this ""final"" version of your document<ul><li>Include all EC-requested changes</li><li>Remove any document comments or change tracking</li></ul></div>",,,,,,,"[request_type] <> '1' and [request_type] <> '5'",,,,,,
+<div style=""font-weight:lighter;font-style:italic"">In this ""final"" version of your document<ul><li>Include all reviewer-requested changes</li><li>Remove any document comments or change tracking</li></ul></div>",,,,,,,"[request_type] <> '1' and [request_type] <> '5'",,,,,,
 author_doc,final_docs_request_survey,"File Upload",file,"Word Document (DOC/DOCX) - final version",,,,,,,,y,LV,,,,
-finaldocs_noemail,final_docs_request_survey,,radio,"Skip Follow-up Emails","1, Do not send notification email (the MR team will not receive an email notifying them that the documents have been uploaded)",,,,,,,,LV,,,," @HIDDEN-SURVEY"
-summary_txt,mr_assignment_survey,"New Concept Summary",descriptive,"Type: <span style=""font-weight:lighter"">[request_type]</span>
+finaldocs_noemail,final_docs_request_survey,,radio,"Skip Follow-up Emails","1, Do not send notification email (the Admin team will not receive an email notifying them that the documents have been uploaded)",,,,,,,,LV,,,," @HIDDEN-SURVEY"
+summary_txt,tracking_number_assignment_survey,"New Concept Summary",descriptive,"Type: <span style=""font-weight:lighter"">[request_type]</span>
 
 Title: <span style=""font-weight:lighter"">[request_title]</span>
 
 Contact: <span style=""font-weight:lighter"">[contact_name], <a href=""mailto:[contact_email]"">[contact_email]</a></span>
 
-<span style=""font-weight:lighter; font-style:italic"">See email attachment for concept sheet file. (Files can't be piped across forms in REDCap, alas!)</span>",,,,,,,,,,,,,
-mr_assigned,mr_assignment_survey,"Steps to Finalize the Concept Approval",text,"1. Assign an MR#
-<div style=""font-weight:lighter;font-style:italic"">Format should be MR123, or MR123-F1 for Fast Track concepts.</div>",,,,,,,,y,LV,,,,
-mr_existing,mr_assignment_survey,,sql,"<div style=""margin:20px; font-style:italic"">View list of already-assigned MR numbers in the Hub
-<div style=""font-weight:lighter;"">For reference, sorted alphabetically by MR</div></div>","SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 58325 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = 58325 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",,,,,,,,,,,,
-filesteps_txt,mr_assignment_survey,,descriptive,"2. Update the Concept File <div style=""font-weight:lighter""><ul><li>Download the Word document attached to the email.</li><li>Add the <b>EC approval date ([final_d])</b> and <b>assigned MR number ([mr_assigned]).</b> </li><li>Save and rename the <b>Word document</b> to include the MR number. </li><li>Save a <b>PDF version</b> of the same document. (This PDF version will be displayed on the Hub and sent out to all regional project managers).</li></div>",,,,,,,,,,,,,
-finalconcept_doc,mr_assignment_survey,,file,"3. Upload the Concept Word Document (DOC/DOCX)
+<span style=""font-weight:lighter; font-style:italic"">See email attachment for concept sheet file.</span>",,,,,,,,,,,,,
+mr_assigned,tracking_number_assignment_survey,"Steps to Finalize the Concept Approval",text,"1. Assign a Concept Tracking Number
+<div style=""font-weight:lighter;font-style:italic"">Edit this text to provide an example of your format.</div>",,,,,,,,y,LV,,,," @DEFAULT=""[mr_temporary]"""
+filesteps_txt,tracking_number_assignment_survey,,descriptive,"2. Update the Concept File <div style=""font-weight:lighter""><ul><li><i>Revise these instructions to match your consorium workflow.</i></li><li>Download the Word document attached to the email.</li><li>Add the <b>EC approval date ([final_d])</b> and <b>assigned MR number ([mr_assigned]).</b> </li><li>Save and rename the <b>Word document</b> to include the MR number. </li><li>Save a <b>PDF version</b> of the same document.</li></div>",,,,,,,,,,,,,
+finalconcept_doc,tracking_number_assignment_survey,,file,"3. Upload the Concept Word Document (DOC/DOCX)
 ",,,,,,,,y,LV,,,,
-finalconcept_pdf,mr_assignment_survey,,file,"4. Upload the PDF version.
+finalconcept_pdf,tracking_number_assignment_survey,,file,"4. Upload the PDF version.
 <div style=""font-weight:lighter;font-style:italic"">The Hub requires a PDF version to display the concept in-line on the webpage.</div>",,,,,,,,y,LV,,,,
-mr_copy_ok,mr_assignment_survey,"Next Steps (optional)",checkbox,"Copy this information into the Concept Sheets list <div style=""font-weight:lighter;font-style:italic"">(create new REDCap record with this MR number, title, contact person, EC approval date, and associated files)</div>","1, Yes, create <b>[mr_assigned]</b>",,,,,,,,LV,,,," @DEFAULT='1'"
-mr_noemail,mr_assignment_survey,,checkbox,"Skip Notifications","1, Do not send notification to <b>contact person</b> (the author will not receive an email notifying them of the assigned MR number) | 2, Do not send notification email to <b>PMs list</b> (the project managers mailing list will not receive an email notifying them of the new concept)",,,,,,,,LV,,,,
-request_status,logging_variables,"Automatically Calculated Variables",dropdown,"Current Status of Request","0, Open | 1, Open - Revised | 2, Closed",,,,,,,,,,,,
+mr_copy_ok,tracking_number_assignment_survey,"Next Steps (optional)",checkbox,"Copy this information into the Concept Sheets list <div style=""font-weight:lighter;font-style:italic"">(create new REDCap record with this Concept Tracking Number, title, contact person, approval date, and associated files)</div>","1, Yes, create <b>[mr_assigned]</b>",,,,,,,,LV,,,," @DEFAULT='1'"
+mr_noemail,tracking_number_assignment_survey,,checkbox,"Skip Notifications","1, Do not send notification to <b>contact person</b> (the author will not receive an email notifying them of the assigned Tracking Number) | 2, Do not send <b>secondary notification email</b> (e.g., project managers' mailing list), if one has been configured in the Email Alerts tool.",,,,,,,,LV,,,,
+request_status,logging_variables,"Automatically Calculated Variables",dropdown,"Current Status of Request","0, Open | 1, Open - Revised | 2, Closed",,,,,,,,,,,," @READONLY"
 requestopen_ts,logging_variables,,text,"Request Open Timestamp
-<span style=""font-weight:lighter;font-style:italic"">(pull from survey timestamp)</span>",,,,,,,,,,,,,
-review_d,logging_variables,,text,"Request review date",,,date_ymd,,,,,,,,,,
+<span style=""font-weight:lighter;font-style:italic"">(pull from survey timestamp)</span>",,,,,,,,,,,,," @READONLY"
+review_d,logging_variables,,text,"Request review date",,,date_ymd,,,,,,,,,," @HIDDEN-SURVEY @TODAY @READONLY"
 requestclose_d,logging_variables,,text,"Close Date
-<span style=""font-weight:lighter;font-style:italic"">(calculate from vote status)</span>",,,date_ymd,,,,,,,,,,
+<span style=""font-weight:lighter;font-style:italic"">(calculate from vote status)</span>",,,date_ymd,,,,,,,,,," @READONLY"
 workflowcomplete_d,logging_variables,,text,"Workflow Completion Date
-<span style=""font-weight:lighter;font-style:italic"">(set with hook after Request Workflow. Workflow depends on Request Type category.)</span>",,,date_ymd,,,,,,,,,,
-edit_d_v2,logging_variables,,text,"Last Edit Date",,,date_ymd,,,,,,,,,,
+<span style=""font-weight:lighter;font-style:italic"">(set with hook after Request Workflow. Workflow depends on Request Type category.)</span>",,,date_ymd,,,,,,,,,," @READONLY"
+edit_d_v2,logging_variables,,text,"Last Edit Date",,,date_ymd,,,,,,,,,," @READONLY"
 revision_counter_total,logging_variables,,text,"Revision Counter Total
 <span style=""font-weight:lighter;font-style:italic"">(auto-calculated number of times this request has been revised by the author)</span>",,,,,,,,,,,,,
 request_contact_display,logging_variables,,text,"User Display Name
-<span style=""font-weight:lighter;font-style:italic"">(either mapped name from Harmonist 5 or user-entered name)</span>",,,,,,,,,,,,,
-follow_activity,logging_variables,,notes,"List of User IDs Following Activity",,,,,,,,,,,,,
-whycopy_txt,vote_outcomes_temporary,,descriptive,"<div style=""font-weight:lighter;font-style:italic"">These fields are being automatically populated by a hook. The only reason these fields exist is because REDCap has not yet added functionality to address individual instances in a repeating series, so we cannot use the email trigger to send reminders to only those regions that have not completed a vote by the due date. This feature is in the REDCap roadplan, but not yet implemented as of July 2018.
-
-This is a workaround solution.</div>",,,,,,,,,,,,,
-vote_ap,vote_outcomes_temporary,,dropdown,"Asia Pacific (AP)","1, Approved | 0, Not Approved | 9, Abstained/Not applicable",,,,,,,,,,,,
-vote_ca,vote_outcomes_temporary,,dropdown,"Central Africa (CA)","1, Approved | 0, Not Approved | 9, Abstained/Not applicable",,,,,,,,,,,,
-vote_cn,vote_outcomes_temporary,,dropdown,"CCASAnet (CN)","1, Approved | 0, Not Approved | 9, Abstained/Not applicable",,,,,,,,,,,,
-vote_ea,vote_outcomes_temporary,,dropdown,"East Africa (EA)","1, Approved | 0, Not Approved | 9, Abstained/Not applicable",,,,,,,,,,,,
-vote_na,vote_outcomes_temporary,,dropdown,"NA-ACCORD (NA)","1, Approved | 0, Not Approved | 9, Abstained/Not applicable",,,,,,,,,,,,
-vote_sa,vote_outcomes_temporary,,dropdown,"Southern Africa (SA)","1, Approved | 0, Not Approved | 9, Abstained/Not applicable",,,,,,,,,,,,
-vote_wa,vote_outcomes_temporary,,dropdown,"West Africa (WA)","1, Approved | 0, Not Approved | 9, Abstained/Not applicable",,,,,,,,,,,,
+<span style=""font-weight:lighter;font-style:italic"">(either mapped name from Harmonist 5 or user-entered name)</span>",,,,,,,,,,,,," @READONLY"
+follow_activity,logging_variables,,notes,"List of User IDs Following Activity",,,,,,,,,,,,," @READONLY"

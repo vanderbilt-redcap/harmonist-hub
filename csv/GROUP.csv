@@ -1,11 +1,14 @@
 "Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
 record_id,group_information,,text,"Record ID",,,,,,,,,,,,,
-group_txt,group_information,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Group Information</h3></div>",,,,,,,,,,,,,
-active_y,group_information,,radio,"<div style=""color:black; text-align:center; border: 1px #d35400; background-color: #e67e22; padding:6px; max-width:800px;"">Active Group?</div>","Y, Yes | N, No",,,,,,,,RH,,,,
-group_name,group_information,,text,"Group name",,,,,,,,,,,,,
-group_abbr,group_information,,text,"Group abbreviation",,,,,,,,,,,,,
-group_otherfields,group_information,,descriptive,"Other group fields (not created yet)",,,,,,,,,,,,,
-meeting_d,meetings,,text,"Meeting date",,,date_ymd,,,,,,,,,,
-minutes,meetings,,file,"Meeting minutes",,,,,,,,,,,,,
-files_other,meetings,,file,"Other meeting files
-<div style=""font-weight:lighter; font-style: italic"">(Combine or Zip if necessary.)</div>",,,,,,,,,,,,,
+group_txt,group_information,,descriptive,"<div style=""color:white; text-align:center; border: 1px #2c2c54; background-color: #40407a;""><h3 style=""margin:0px; padding:10px"">Working Group Information</h3></div>",,,,,,,,,,,,,
+active_y,group_information,,radio,"<div style=""color:black; text-align:center; border: 1px #d35400; background-color: #e67e22; padding:6px; max-width:800px;"">Active Working Group?</div>","Y, Yes | N, No",,,,,,,y,RH,,,,
+group_name,group_information,,text,"Working Group name
+<div style=""font-weight:lighter;font-style:italic"">(e.g., Pediatric Working Group, Data Harmonization Working Group)</div>",,,,,,,,y,,,,,
+group_abbr,group_information,,text,"Working Group abbreviation
+<div style=""font-weight:lighter;font-style:italic"">(e.g., PWG, DHWG)</div>",,,,,,,,y,,,,,
+mtgheader_txt,meetings,,descriptive,"<div style=""color:white; text-align:center; border: 1px #2c2c54; background-color: #40407a;""><h3 style=""margin:0px; padding:10px"">Meeting Record: [group_abbr]</h3></div>",,,,,,,,,,,,,
+meeting_d,meetings,,text,"Working Group meeting date",,,date_ymd,,,,,y,LV,,,,
+meeting_description,meetings,,notes,"Working Group meeting description (brief)",,,,,,,,,LV,,,,
+minutes,meetings,,file,"Working Group meeting minutes",,,,,,,,,LV,,,,
+file_other1,meetings,,file,"Other meeting file #1<div style=""font-weight:lighter; font-style: italic"">(Combine or Zip if necessary.)</div>",,,,,,,,,,,,,
+file_other2,meetings,,file,"Other meeting file #2<div style=""font-weight:lighter; font-style: italic"">(Combine or Zip if necessary.)</div>",,,,,,,,,,,,,

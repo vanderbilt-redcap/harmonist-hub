@@ -1,29 +1,27 @@
 "Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
 record_id,comments_and_votes,,text,"Record ID",,,,,,,,,,,,,
-request_id,comments_and_votes,,text,"Request ID
+request_id,comments_and_votes,"This form is autopopulated from your Hub interface. You do not need to edit these fields. ",text,"Request ID
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>",,,,,,,,,LV,,,," @HIDDEN-SURVEY"
-response_person,comments_and_votes,,sql,"Person ID
-<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
-response_region,comments_and_votes,,sql,"Region ID of User
-<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099  GROUP BY a.record  ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
+response_person,comments_and_votes,,sql,"Person ID of User
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=798 GROUP BY a.record ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
+response_region,comments_and_votes,,sql,"Research Group ID of User
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=795  GROUP BY a.record  ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
 response_pi_level,comments_and_votes,,yesno,"PI Level of User
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>",,,,,,,,,LV,,,," @HIDDEN-SURVEY"
 author_revision_y,comments_and_votes,,yesno,"File Revision by Author
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub interface</div>",,,,,,,,,LV,,,," @HIDDEN-SURVEY"
 revision_counter,comments_and_votes,,text,"Revision Number (Counter)
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>",,,,,,,,,LV,,,," @HIDDEN-SURVEY"
-revision_txt,comments_and_votes,,descriptive,"<div style=""color:#2980b9"">You have Author Status on this Request. </div> The files uploaded below will be flagged as ""New Author Revisions"" in the Hub interface.</div>",,,,,,,"[author_revision_y] = '1'",,,,,,
+revision_txt,comments_and_votes,,descriptive,"<div style=""color:#2980b9"">You have Author Status on this Request. </div> The files uploaded below will be flagged as ""New Author Revisions"" in the Hub interface.</div>","1, Yes, these are REVISED FILE(S).",,,,,,"[author_revision_y] = '1'",,,,,,
 comments,comments_and_votes,,notes,"Comments and Feedback",,,,,,,,,LV,,,,
 revised_file,comments_and_votes,,file,"Revised File",,,,,,,,,LV,,,,
-extra_revfile1,comments_and_votes,,file,"Extra file #1
-<div style=""font-weight:lighter;font-style:italic"">Additional documents, manuscript tables, etc.</div>",,,,,,,"[revised_file] <> """"",,LV,,,,
+extra_revfile1,comments_and_votes,,file,"Extra file #1<div style=""font-weight:lighter;font-style:italic"">Additional documents, manuscript tables, etc.</div>",,,,,,,"[revised_file] <> """"",,LV,,,,
 extra_revfile2,comments_and_votes,,file,"Extra file #2",,,,,,,"[extra_revfile1] <> """"",,LV,,,,
-vote_now,comments_and_votes,,radio,"Are you ready to vote on this request?","1, <b>Vote Now</b> | 0, Vote Later <span style=""font-weight:lighter;font-style:italic"">(Request will be moved to ""Pending"" status if enabled.)</span>",,,,,,"[response_pi_level] = '1'",,LV,,,,
-pi_vote,comments_and_votes,,radio,"Do you <u>approve this item</u> on behalf of your IeDEA Region?","1, <span style=""color:#27ae60; font-weight:bold;"">Approve</span> | 0, <span style=""color:#e74c3c; font-weight:bold;"">Do Not Approve</span> | 9, Abstain/Not applicable",,,,,,"[response_pi_level] = '1' and [vote_now] = '1'",,LV,,,,
-response_regioncode,data_redundancy,"These fields will be filled by a redcap_survey_complete hook",text,"2-letter Region Code 
-(from Harmonist 4)",,,,,,,,,,,,,
+vote_now,comments_and_votes,,radio,"Are you ready to vote on this request?","1, <b>Vote Now</b> | 0, Vote Later <span style=""font-weight:lighter;font-style:italic"">(Request will be moved to ""Pending"" status if enabled.)</span>",,,,,,"[response_pi_level] = '1' and [author_revision_y] <> '1'",,LV,,,,
+pi_vote,comments_and_votes,,radio,"Do you approve this item on behalf of your Research Group?","1, <span style=""color:#27ae60; font-weight:bold;"">Approve</span> | 0, <span style=""color:#e74c3c; font-weight:bold;"">Do Not Approve</span> | 9, Abstain/Not applicable",,,,,,"[response_pi_level] = '1' and [vote_now] = '1'",,LV,,,,
+response_regioncode,data_redundancy,"These fields will be filled by a redcap_survey_complete hook, you do not need to complete them. ",text,"2-letter Research Group Code (from Harmonist 4)",,,,,,,,,,,,,
 responsecomplete_ts,data_redundancy,,text,"Survey Completion Timestamp
 <span style=""font-weight:lighter;font-style:italic"">(completion_time from redcap_surveys_response  table)</span>",,,,,,,,,,,,,
 contactnotification_y,data_redundancy,"These fields are filled by a redcap_survey_complete hook and <u>used for author email notifications.</u>",checkbox,"Request contact wants to receive activity notifications","1, Yes",,,,,,,,LV,,,,
-contact_email,data_redundancy,,text,"Email Address for Contact",,,,,,,,,LV,,,,
+contact_email,data_redundancy,,text,"Email Address for Contact",,,email,,,,,,LV,,,,
 request_title,data_redundancy,,notes,"Request Title (copied from Harmonist 2)",,,,,,,,,LV,,,,
