@@ -49,7 +49,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             $aux = array();
             $aux['region_response_status'] = '0';
             $aux['responding_region'] = $region['record_id'];
-            $aux['dashboard_region_status_complete'] = '1';
+            $aux['dashboard_voting_status_complete'] = '1';
 
             $array_repeat_instances[$record]['repeat_instances'][$event_id]['dashboard_region_status'][$instance] = $aux;
             $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');

@@ -67,7 +67,7 @@ class REDCapManagement {
                 1=>array('status'=>1,'instrument'=>'admin_update','params'=>'[adminupdate_d]'),
                 2=>array('status'=>1,'instrument'=>'quarterly_update_survey','params'=>'[update_d]')
             ),
-            3=>array(0=>array('status'=>1,'instrument'=>'dashboard_region_status','params'=>'[responding_region]')),
+            3=>array(0=>array('status'=>1,'instrument'=>'dashboard_voting_status','params'=>'[responding_region]')),
             4=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),
             5=>array(0=>array('status'=>1,'instrument'=>'region_participation_status','params'=>'[data_region], [data_response_status]')),
             6=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),

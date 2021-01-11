@@ -21,10 +21,10 @@ foreach ($region_vote_values as $votes_info){
         $date = new \DateTime();
         $timestamp = $date->format('Y-m-d H:i:s');
         if ($region != "") {
-            $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_region_status'][$region]['region_vote_status'] = $vote;
-            $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_region_status'][$region]['region_response_status'] = "2";
-            $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_region_status'][$region]['region_update_ts'] = $timestamp;
-            $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_region_status'][$region]['region_close_ts'] = $timestamp;
+            $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$region]['region_vote_status'] = $vote;
+            $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$region]['region_response_status'] = "2";
+            $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$region]['region_update_ts'] = $timestamp;
+            $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$region]['region_close_ts'] = $timestamp;
         } else {
             $recordRM[$request_id][$event_id_RM]['region_vote_status'] = $vote;
             $recordRM[$request_id][$event_id_RM]['region_response_status'] = "2";

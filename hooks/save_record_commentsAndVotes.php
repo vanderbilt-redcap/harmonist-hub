@@ -52,7 +52,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
                 $Proj = new \Project(IEDEA_RMANAGER);
                 $event_id_RM = $Proj->firstEventId;
-                $array_repeat_instances[$comment['request_id']]['repeat_instances'][$event_id_RM]['dashboard_region_status'][$instanceId] = $aux;
+                $array_repeat_instances[$comment['request_id']]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$instanceId] = $aux;
                 $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
                 break;
             }
