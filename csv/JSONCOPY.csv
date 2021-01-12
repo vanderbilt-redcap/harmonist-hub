@@ -1,7 +1,9 @@
 "Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
-record_id,data_standard_json,,text,"Record ID",,,,,,,,,,,,,
-type,data_standard_json,,text,"Project Type",,,,,,,,,,,,,
-version,data_standard_json,,text,"Project Version",,,,,,,,,,,,,
-json_copy_update_d,data_standard_json,,text,"Last update",,,datetime_seconds_ymd,,,,,,,,,,
-jsoncopy,data_standard_json,,notes,Json,,,,,,,,,,,,,
-jsoncopy_file,data_standard_json,,file,"Json File",,,,,,,,,,,,,
+record_id,data_model_json,,text,"Record ID",,,,,,,,,,,,,
+type,data_model_json,,text,"REDCap sub-project
+<div style=""font-weight:lighter"">e.g., Data Model, Code List</div>",,,,,,,,,,,,,
+version,data_model_json,,text,"JSON version for this sub-project
+<div style=""font-weight:lighter"">A counter for how many times the sub-project JSON file has been updated and regenerated. Indicates the 4th version of the Data Model, or the 2nd version of the Code List.</div>",,,,,,,,,,,,,
+json_copy_update_d,data_model_json,,text,"Datetime of last update",,,datetime_seconds_ymd,,,,,,,,,,
+jsoncopy_file,data_model_json,,file,"JSON File of the Data Model
+<div style=""font-weight:lighter"">A machine-readable summary of either the data model or the code lists project in JavaScript Object Notation (JSON) format. These JSON files can be used as input for scripts and external software. They also serve to archive prior states of the data model.</div>",,,,,,,,,,,,,
