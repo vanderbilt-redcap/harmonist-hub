@@ -135,7 +135,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function cronMethod($cronAttributes){
-        $sql="SELECT s.project_id FROM redcap_external_modules m, redcap_external_module_settings s WHERE m.external_module_id = s.external_module_id AND s.value = 'true' AND (m.directory_prefix = 'data-model-browser') AND s.`key` = 'enabled'";
+        $sql="SELECT s.project_id FROM redcap_external_modules m, redcap_external_module_settings s WHERE m.external_module_id = s.external_module_id AND s.value = 'true' AND (m.directory_prefix = 'harmonist-hub') AND s.`key` = 'enabled'";
         $q = $this->query($sql);
 
         if(APP_PATH_WEBROOT[0] == '/'){
@@ -348,7 +348,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function createpdf(){
-        $sql="SELECT s.project_id FROM redcap_external_modules m, redcap_external_module_settings s WHERE m.external_module_id = s.external_module_id AND s.value = 'true' AND (m.directory_prefix = 'data-model-browser') AND s.`key` = 'enabled'";
+        $sql="SELECT s.project_id FROM redcap_external_modules m, redcap_external_module_settings s WHERE m.external_module_id = s.external_module_id AND s.value = 'true' AND (m.directory_prefix = 'harmonist-hub') AND s.`key` = 'enabled'";
         $q = $this->query($sql);
 
         if(APP_PATH_WEBROOT[0] == '/'){
@@ -383,7 +383,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function regeneratepdf(){
-        $sql="SELECT s.project_id FROM redcap_external_modules m, redcap_external_module_settings s WHERE m.external_module_id = s.external_module_id AND s.value = 'true' AND (m.directory_prefix = 'data-model-browser') AND s.`key` = 'enabled'";
+        $sql="SELECT s.project_id FROM redcap_external_modules m, redcap_external_module_settings s WHERE m.external_module_id = s.external_module_id AND s.value = 'true' AND (m.directory_prefix = 'harmonist-hub') AND s.`key` = 'enabled'";
         $q = $this->query($sql);
 
         if(APP_PATH_WEBROOT[0] == '/'){
