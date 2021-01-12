@@ -855,86 +855,266 @@ include_once("projects.php");
 
 $projects_array_sql = array(
     IEDEA_DATAMODEL=>array(
-        'variable_replacedby' => "SELECT CONCAT(a.record, ':', b.instance), CONCAT(a.value, ':', b.value) FROM (SELECT record,value FROM redcap_data WHERE project_id=".IEDEA_DATAMODEL." AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM redcap_data WHERE project_id=".IEDEA_DATAMODEL." AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance",
-        'code_list_ref' => "select record, value from redcap_data where project_id = ".IEDEA_CODELIST." and field_name = 'list_name' order by value asc"
+        'variable_replacedby' => array (
+            'query' => "SELECT CONCAT(a.record, ':', b.instance), CONCAT(a.value, ':', b.value) FROM (SELECT record,value FROM redcap_data WHERE project_id=".IEDEA_DATAMODEL." AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM redcap_data WHERE project_id=".IEDEA_DATAMODEL." AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'code_list_ref' =>  array (
+            'query' => "select record, value from redcap_data where project_id = ".IEDEA_CODELIST." and field_name = 'list_name' order by value asc",
+            'autocomplete' => '0',
+            'label' => ""
+        )
     ),
     IEDEA_HARMONIST=>array(
-        'contact_link' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'wg_link' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=".IEDEA_GROUP." GROUP BY a.record ORDER BY value",
-        'wg2_link' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=".IEDEA_GROUP." GROUP BY a.record ORDER BY value",
-        'lead_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS." GROUP BY a.record  ORDER BY value",
-        'person_link' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value"
-    ),
+        'contact_link' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'wg_link' => array (
+            'query' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=".IEDEA_GROUP." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'wg2_link' => array (
+            'query' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=".IEDEA_GROUP." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'lead_region' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS." GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+            ),
+        'person_link' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        )
+     ),
     IEDEA_RMANAGER=>array(
-        'assoc_concept' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_HARMONIST." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_HARMONIST." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value ",
-        'contact_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
-        'contactperson_id' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'reviewer_id' => "SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_PEOPLE." AND field_name = 'firstname') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_PEOPLE." and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from redcap_data where project_id = ".IEDEA_PEOPLE." and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",
-        'responding_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
-        'finalizer_id' => "SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_PEOPLE." AND field_name = 'firstname') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_PEOPLE." and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from redcap_data where project_id = ".IEDEA_PEOPLE." and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",
-        'mr_existing' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_HARMONIST." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_HARMONIST." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value"
+        'assoc_concept' => array (
+            'query' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_HARMONIST." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_HARMONIST." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value ",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'contact_region' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'contactperson_id' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '1',
+            'label' => "Contact Person:
+                                  <span style='font-weight:lighter;'>[contact_name], <a href='mailto:[contact_email]'>[contact_email]</a></span>
+
+                                    If blank, map this person to official Hub Members List
+                                    <div style='font-weight:lighter;font-style:italic'>(Find the name above in the official list. If it doesn't exist, you can add this person (<a href='https://redcap.vanderbilt.edu/redcap_v8.2.1/DataEntry/record_home.php?pid=".IEDEA_PEOPLE."'>via REDCap</a>) or list their PI's name instead.)</div>"
+        ),
+        'reviewer_id' => array (
+            'query' => "SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_PEOPLE." AND field_name = 'firstname') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_PEOPLE." and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from redcap_data where project_id = ".IEDEA_PEOPLE." and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'responding_region' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'finalizer_id' => array (
+            'query' => "SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_PEOPLE." AND field_name = 'firstname') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_PEOPLE." and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from redcap_data where project_id = ".IEDEA_PEOPLE." and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",
+            'autocomplete' => '0',
+            'label' => ""
+        )
     ),
     IEDEA_COMMENTSVOTES=>array(
-        'response_person' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'response_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value"
+        'response_person' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'response_region' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        )
     ),
     IEDEA_SOP=>array(
-        'sop_hubuser' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'sop_creator' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'sop_creator2' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'sop_datacontact' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'sop_concept_id' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_HARMONIST." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_HARMONIST." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",
-        'sop_finalize_person' => "SELECT DISTINCT a.record, CONCAT(a.value, ' ', b.value) AS VALUE FROM redcap_data a LEFT JOIN redcap_data b on b.project_id = ".IEDEA_PEOPLE." and b.record = a.record and b.field_name = 'lastname' LEFT JOIN redcap_data c on c.project_id = ".IEDEA_PEOPLE." and c.record = a.record WHERE a.field_name = 'firstname' and a.project_id = ".IEDEA_PEOPLE." and ((c.field_name = 'harmonist_perms' AND c.value = '1') OR (c.field_name = 'harmonistadmin_y' AND c.value = '1')) ORDER BY a.value, b.value",
-        'data_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS." GROUP BY a.record  ORDER BY value"
+        'sop_hubuser' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'sop_creator' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'sop_creator2' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'sop_datacontact' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'sop_concept_id' => array (
+            'query' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_HARMONIST." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_HARMONIST." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'sop_finalize_person' => array (
+            'query' => "SELECT DISTINCT a.record, CONCAT(a.value, ' ', b.value) AS VALUE FROM redcap_data a LEFT JOIN redcap_data b on b.project_id = ".IEDEA_PEOPLE." and b.record = a.record and b.field_name = 'lastname' LEFT JOIN redcap_data c on c.project_id = ".IEDEA_PEOPLE." and c.record = a.record WHERE a.field_name = 'firstname' and a.project_id = ".IEDEA_PEOPLE." and ((c.field_name = 'harmonist_perms' AND c.value = '1') OR (c.field_name = 'harmonistadmin_y' AND c.value = '1')) ORDER BY a.value, b.value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'data_region' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS." GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        )
     ),
     IEDEA_SOPCOMMENTS=>array(
-        'response_person' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'response_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value"
+        'response_person' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'response_region' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
     ),
     IEDEA_PEOPLE=>array(
-        'person_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value"
+        'person_region' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        )
     ),
     IEDEA_DATAUPLOAD=>array(
-        'data_assoc_concept' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_HARMONIST." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_HARMONIST." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",
-        'data_assoc_request' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_SOP." AND field_name = 'record_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_SOP." and field_name = 'sop_name') b ON b.record=a.record ORDER BY a.value, b.value",
-        'data_upload_person' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'data_upload_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
-        'deletion_hubuser' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value"
+        'data_assoc_concept' => array (
+            'query' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_HARMONIST." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_HARMONIST." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'data_assoc_request' => array (
+            'query' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_SOP." AND field_name = 'record_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_SOP." and field_name = 'sop_name') b ON b.record=a.record ORDER BY a.value, b.value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'data_upload_person' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'data_upload_region' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'deletion_hubuser' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        )
     ),
     IEDEA_DATADOWNLOAD=>array(
-        'downloader_assoc_concept' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_HARMONIST." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_HARMONIST." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",
-        'downloader_id' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'downloader_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
-        'download_id' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'record_id', a.value, NULL)),    ' (',   max(if(a.field_name = 'responsecomplete_ts', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_DATAUPLOAD."  GROUP BY a.record  ORDER BY value"
+        'downloader_assoc_concept' => array (
+            'query' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_HARMONIST." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_HARMONIST." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'downloader_id' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'downloader_region' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'download_id' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'record_id', a.value, NULL)),    ' (',   max(if(a.field_name = 'responsecomplete_ts', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_DATAUPLOAD."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
     ),
     IEDEA_DATAAVAILABILITY=>array(
-        'available_table' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'table_name', a.value, NULL)),    ' () ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_DATAMODEL."  GROUP BY a.record  ORDER BY value",
-        'available_variable' => "SELECT CONCAT(a.record, '|', b.instance), CONCAT(a.value, ' | ', b.value) FROM (SELECT record,value FROM redcap_data WHERE project_id=".IEDEA_DATAMODEL." AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM redcap_data WHERE project_id=".IEDEA_DATAMODEL." AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance"
+        'available_table' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'table_name', a.value, NULL)),    ' () ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_DATAMODEL."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'available_variable' => array (
+            'query' => "SELECT CONCAT(a.record, '|', b.instance), CONCAT(a.value, ' | ', b.value) FROM (SELECT record,value FROM redcap_data WHERE project_id=".IEDEA_DATAMODEL." AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM redcap_data WHERE project_id=".IEDEA_DATAMODEL." AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
     ),
     IEDEA_DATATOOLMETRICS=>array(
-        'userregion_id' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value"
+        'userregion_id' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
     ),
     IEDEA_FILELIBRARY=>array(
-        'file_uploader' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value"
+        'file_uploader' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
     ),
     IEDEA_FILELIBRARYDOWN=>array(
-        'library_download_person' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
-        'library_download_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value"
+        'library_download_person' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_PEOPLE." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'library_download_region' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
     ),
     IEDEA_NEWITEMS=>array(
-        'news_person' => "SELECT DISTINCT a.record, CONCAT(a.value, ' ', b.value) AS  VALUE  FROM redcap_data a  LEFT JOIN redcap_data b on b.project_id = ".IEDEA_PEOPLE." and b.record = a.record and b.field_name = 'lastname'  LEFT JOIN redcap_data c on c.project_id = ".IEDEA_PEOPLE." and c.record = a.record  WHERE a.field_name = 'firstname' and a.project_id = ".IEDEA_PEOPLE." and ((c.field_name = 'harmonist_perms' AND c.value = '9') OR (c.field_name = 'harmonistadmin_y' AND c.value = '1'))  ORDER BY     a.value,      b.value"
+        'news_person' =>  array (
+            'query' => "SELECT DISTINCT a.record, CONCAT(a.value, ' ', b.value) AS  VALUE  FROM redcap_data a  LEFT JOIN redcap_data b on b.project_id = ".IEDEA_PEOPLE." and b.record = a.record and b.field_name = 'lastname'  LEFT JOIN redcap_data c on c.project_id = ".IEDEA_PEOPLE." and c.record = a.record  WHERE a.field_name = 'firstname' and a.project_id = ".IEDEA_PEOPLE." and ((c.field_name = 'harmonist_perms' AND c.value = '9') OR (c.field_name = 'harmonistadmin_y' AND c.value = '1'))  ORDER BY     a.value,      b.value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
     ),
     IEDEA_EXTRAOUTPUTS=>array(
-        'lead_region' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS." GROUP BY a.record  ORDER BY value"
+        'lead_region' =>  array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS." GROUP BY a.record  ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
     )
 );
 
-foreach ($projects_array_sql as $projectid=>$project){
-    foreach ($project as $var=>$sql){
-        $module->query("UPDATE redcap_metadata SET element_enum = ? WHERE project_id = ? AND field_name=?",[$sql,$projectid,$var]);
+foreach ($projects_array_sql as $projectid=>$projects){
+    foreach ($projects as $varid=>$options){
+        foreach ($options as $optionid=>$value){
+            if($optionid == 'query') {
+                $module->query("UPDATE redcap_metadata SET element_enum = ? WHERE project_id = ? AND field_name=?",[$value,$projectid,$varid]);
+            }
+            if($optionid == 'autocomplete' && $value == '1'){
+                $module->query("UPDATE redcap_metadata SET element_validation_type= ? WHERE project_id = ? AND field_name=?",["autocomplete",$projectid,$varid]);
+            }
+            if($optionid == 'label' && $value != "") {
+                $module->query("UPDATE redcap_metadata SET element_label= ? WHERE project_id = ? AND field_name=?", [$value, $projectid, $varid]);
+            }
+        }
     }
 }
-
 
 echo json_encode(array(
         'status' =>'success'
