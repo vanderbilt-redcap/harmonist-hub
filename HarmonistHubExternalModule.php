@@ -32,6 +32,17 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         return parent::redcap_module_link_check_display($project_id,$link);
     }
 
+    function setPIDMapperProject($project_id){
+        $hub_projectname = $this->getProjectSetting('hub-projectname');
+        $newProjectTitle = strip_tags($hub_projectname." Hub: Parent Project (MAP)");
+        $path = $this->framework->getModulePath()."csv/PID.csv";
+        $custom_record_label = "[project_constant]: [project_id]";
+
+        $this->framework->importDataDictionary($project_id,$path);
+        $this->query("UPDATE redcap_projects SET custom_record_label = ? WHERE project_id = ?",[$custom_record_label,$project_id]);
+        $this->query("UPDATE redcap_projects SET app_title = ? WHERE project_id = ?",[$newProjectTitle,$project_id]);
+    }
+
     function addProjectToList($project_id, $eventId, $record, $fieldName, $value){
         $this->query("INSERT INTO redcap_data (project_id, event_id, record, field_name, value) VALUES (?, ?, ?, ?, ?)",
             [$project_id, $eventId, $record, $fieldName, $value]);
@@ -39,7 +50,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function createProjectAndImportDataDictionary($value_constant,$project_title)
     {
-        $project_id = $this->framework->createProject($project_title." (".ucfirst(strtolower($value_constant)).")", 0);
+        $project_id = $this->framework->createProject($project_title, 0);
         $path = $this->framework->getModulePath()."csv/".$value_constant.".csv";
         $this->framework->importDataDictionary($project_id,$path);
 

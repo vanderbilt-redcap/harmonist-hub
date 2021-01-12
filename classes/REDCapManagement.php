@@ -5,13 +5,25 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 class REDCapManagement {
 
     public static function getProjectsContantsArray(){
-        $projects_array = array(0=>'DATAMODEL',1=>'CODELIST',2=>'HARMONIST',3=>'RMANAGER',4=>'COMMENTSVOTES',5=>'SOP',6=>'SOPCOMMENTS',
+        $projects_array = array(28=>'SETTINGS', 0=>'DATAMODEL',1=>'CODELIST',2=>'HARMONIST',3=>'RMANAGER',4=>'COMMENTSVOTES',5=>'SOP',6=>'SOPCOMMENTS',
             7=>'REGIONS',8=>'PEOPLE',9=>'GROUP', 10=>'FAQ',11=>'HOME',12=>'DATAUPLOAD',13=>'DATADOWNLOAD',
             14=>'JSONCOPY',15=>'METRICS',16=>'DATAAVAILABILITY',17=>'ISSUEREPORTING',18=>'DATATOOLMETRICS',19=>'DATATOOLUPLOADSECURITY',
             20=>'FAQDATASUBMISSION',21=>'CHANGELOG',22=>'FILELIBRARY',23=>'FILELIBRARYDOWN',24=>'NEWITEMS',25=>'ABOUT',26=>'EXTRAOUTPUTS',
-            27=>'TBLCENTERREVISED',28=>'SETTINGS');
+            27=>'TBLCENTERREVISED');
 
         return $projects_array;
+    }
+
+    public static function getProjectsTitlesArray(){
+        $projects_array_title= array(0=>'Data Model (0A)',1=>'Code Lists (0B)',2=>'Concept Sheets (1)',3=>'Request Manager (2)',
+            4=>'Comments and Votes (2B)',5=>'Data Requests (3)',6=>'Data Request Comments (3B)', 7=>'Research Groups (4)',8=>'People (5)',
+            9=>'Working Groups (6)', 10=>'Hub FAQ (7)',11=>'Homepage Content (8)',12=>'Data Upload Log (9)',13=>'Data Download Log (10)',
+            14=>'Data Model JSON (11)',15=>'Metrics (12)',16=>'Data Availability (13)',17=>'Issue Reporting (14)',
+            18=>'Toolkit Usage Metrics (15)',19=>'Toolkit Upload Security (16)',20=>'Toolkit FAQ (17)', 21=>'Changelog (18)',
+            22=>'File Library (19)',23=>'File Library Log (20)',24=>'News Items (21)',25=>'About (22)',26=>'Extra Outputs (23)',
+            27=>'Consortium Site List (24)',28=>'Settings (99)');
+
+        return $projects_array_title;
     }
 
     public static function getProjectConstantsArrayWithoutDeactivatedProjects(){

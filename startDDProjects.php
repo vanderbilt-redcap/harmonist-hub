@@ -10,12 +10,11 @@ $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
 $module->setProjectSetting('hub-mapper',$project_id);
 
-$path = $module->framework->getModulePath()."csv/PID.csv";
-$module->framework->importDataDictionary($project_id,$path);
-$custom_record_label = "[project_constant]: [project_id]";
-$module->query("UPDATE redcap_projects SET custom_record_label = ? WHERE project_id = ?",[$custom_record_label,$project_id]);
+#PID MAPPER
+$module->setPIDMapperProject($project_id);
 
 $projects_array = REDCapManagement::getProjectsContantsArray();
+$projects_titles_array = REDCapManagement::getProjectsTitlesArray();
 $projects_array_repeatable = REDCapManagement::getProjectsRepeatableArray();
 
 $projects_array_surveys = array(
@@ -75,12 +74,6 @@ $projects_array_show = array(0=>'1',1=>'1',2=>'1',3=>'1',4=>'1',5=>'0',6=>'1',
     7=>'1',8=>'1',9=>'1', 10=>'1',11=>'1',12=>'1',13=>'1',
     14=>'0',15=>'0',16=>'0',17=>'1',18=>'0',19=>'0',
     20=>'0',21=>'1',22=>'0',23=>'0',24=>'0',25=>'0',26=>'0',27=>'0',28=>'1');
-
-$projects_array_name = array(0=>'0A: Data Model',1=>'0B: Code Lists',2=>'1: Concept Sheets',3=>'2: Request Manager',4=>'2B: Comments and Votes',5=>'3: Data Specifications',6=>'3B: SOP Comments',
-                        7=>'4: Regions',8=>'5: People',9=>'6: Groups', 10=>'7: FAQ',11=>'8: Homepage Content',12=>'9: Data Uploads',13=>'10: Data Download Logging',
-                        14=>'11: Data Standards JSON Copy',15=>'12: Metrics',16=>'13: Data Availability Worksheet',17=>'14: Issue Reporting Survey',
-                        18=>'15: Data Toolkit Usage Metrics',19=>'16: Toolkit Data Upload Security',20=>'17: FAQ Data Toolkit',
-                        21=>'18: Changelog',22=>'19: File Library',23=>'20: File Library Download Logging',24=>'21: News Items',25=>'22: About',26=>'23: Extra Outputs',27=>'24: tblCENTER',28=>'99: Settings');
 
 $custom_record_label_array = array(0=>"[table_name]",1=>"[list_name]",2=>'<span style=\'color:#[dashboard_color]\'><b>[concept_id]</b> [contact_link]</span>',
                         3=>'[contact_name], [request_type] (Due: [due_d])',4=>"[request_id], [response_person]",5=>'[sop_hubuser]',6=>'',
@@ -756,7 +749,7 @@ $projects_array_surveys_hash = array(
 
 $record = 1;
 foreach ($projects_array as $index=>$name){
-    $project_title = $hub_projectname." Hub ".$projects_array_name[$index];
+    $project_title = $hub_projectname." Hub: ".$projects_titles_array[$index];
     $project_id_new = $module->createProjectAndImportDataDictionary($name,$project_title);
     $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'record_id', $record);
     $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_id', $project_id_new);
