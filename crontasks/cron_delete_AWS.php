@@ -1,8 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+require_once(dirname(dirname(__FILE__))."/classes/AllCrons.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
-use Vanderbilt\HarmonistHubExternalModule\AllCrons;
 
 require_once "/app001/credentials/".$pidsArray['PROJECTS']."_hubsettings.php";
 

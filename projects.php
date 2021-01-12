@@ -61,7 +61,7 @@ $secret_iv="";
 
 require_once (__DIR__ . '/vendor/autoload.php');
 include_once(__DIR__ . "/email.php");
-include_once("functions.php");
+include_once(__DIR__."functions.php");
 include_once(__DIR__ . "/classes/REDCapManagement.php");
 include_once(__DIR__ . "/classes/ArrayFunctions.php");
 include_once(__DIR__ . "/classes/ProjectData.php");

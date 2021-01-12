@@ -135,49 +135,39 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function cronMethod($cronAttributes){
-        $sql="SELECT s.project_id FROM redcap_external_modules m, redcap_external_module_settings s WHERE m.external_module_id = s.external_module_id AND s.value = 'true' AND (m.directory_prefix = 'harmonist-hub') AND s.`key` = 'enabled'";
-        $q = $this->query($sql);
-
         if(APP_PATH_WEBROOT[0] == '/'){
             $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
         }
         define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 
-        $originalPid = $_GET['pid'];
-        while($row = db_fetch_assoc($q)) {
-            $project_id = $row['project_id'];
-            if($project_id != "") {
-                $_GET['pid'] = $project_id;
+        foreach ($this->getProjectsWithModuleEnabled() as $project_id){
+            $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
+            $settingsPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+            error_log($settingsPID);
+            if($settingsPID != "") {
+                $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
 
-                $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
-                $settingsPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
-                if($settingsPID != "") {
-                    $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
+                #Get Projects ID's
+                $pidsArray = REDCapManagement::getPIDsArray($project_id);
 
-                    #Get Projects ID's
-                    $pidsArray = REDCapManagement::getPIDsArray($project_id);
-
-                    #CRONS
-
-                    if($cronAttributes['cron_name'] == 'cron_metrics'){
-                        include ("crontasks/cron_metrics.php");
-                    }else if($cronAttributes['cron_name'] == 'cron_delete'){
-                        include ("crontasks/cron_delete_AWS.php");
-                    }else if($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder'){
-                        include ("crontasks/cron_data_upload_expiration_reminder.php");
-                    }else if($cronAttributes['cron_name'] == 'cron_data_upload_notification'){
-                        include ("crontasks/cron_data_upload_notification.php");
-                    }else if($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1'){
-                        //Every First Monday of the Month
-                        include ("crontasks/cron_monthly_digest.php");
-                    }else if($cronAttributes['cron_name'] == 'cron_publications'){
-                        include ("crontasks/cron_publications.php");
-                    }
-
+                #CRONS
+                if($cronAttributes['cron_name'] == 'cron_metrics'){
+                    include ("crontasks/cron_metrics.php");
+                }else if($cronAttributes['cron_name'] == 'cron_delete'){
+                    include ("crontasks/cron_delete_AWS.php");
+                }else if($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder'){
+                    include ("crontasks/cron_data_upload_expiration_reminder.php");
+                }else if($cronAttributes['cron_name'] == 'cron_data_upload_notification'){
+                    include ("crontasks/cron_data_upload_notification.php");
+                }else if($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1'){
+                    //Every First Monday of the Month
+                    include ("crontasks/cron_monthly_digest.php");
+                }else if($cronAttributes['cron_name'] == 'cron_publications'){
+                    include ("crontasks/cron_publications.php");
                 }
+
             }
         }
-        $_GET['pid'] = $originalPid;
     }
 
     function hook_every_page_before_render($project_id=null) {
@@ -348,78 +338,60 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function createpdf(){
-        $sql="SELECT s.project_id FROM redcap_external_modules m, redcap_external_module_settings s WHERE m.external_module_id = s.external_module_id AND s.value = 'true' AND (m.directory_prefix = 'harmonist-hub') AND s.`key` = 'enabled'";
-        $q = $this->query($sql);
-
         if(APP_PATH_WEBROOT[0] == '/'){
             $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
         }
         define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 
-        $originalPid = $_GET['pid'];
-        while($row = db_fetch_assoc($q)) {
-            $project_id = $row['project_id'];
-            if($project_id != "") {
-                $_GET['pid'] = $project_id;
-                error_log("createpdf - project_id:" . $project_id);
+        foreach ($this->getProjectsWithModuleEnabled() as $project_id){
+            error_log("createpdf - project_id:" . $project_id);
 
-                $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
-                $settingsPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
-                if($settingsPID != "") {
-                    $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
+            $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
+            $settingsPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+            if($settingsPID != "") {
+                $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
 
-                    $hasJsoncopyBeenUpdated0a = $this->hasJsoncopyBeenUpdated('0a', $settings, $project_id);
-                    $hasJsoncopyBeenUpdated0b = $this->hasJsoncopyBeenUpdated('0b', $settings, $project_id);
-                    if ($hasJsoncopyBeenUpdated0a || $hasJsoncopyBeenUpdated0b) {
-                        $this->createAndSavePDFCron($settings, $project_id);
-                        $this->createAndSaveJSONCron($project_id);
-                    } else {
-                        $this->checkIfJsonOrPDFBlank($settings, $project_id);
-                    }
+                $hasJsoncopyBeenUpdated0a = $this->hasJsoncopyBeenUpdated('0a', $settings, $project_id);
+                $hasJsoncopyBeenUpdated0b = $this->hasJsoncopyBeenUpdated('0b', $settings, $project_id);
+                if ($hasJsoncopyBeenUpdated0a || $hasJsoncopyBeenUpdated0b) {
+                    $this->createAndSavePDFCron($settings, $project_id);
+                    $this->createAndSaveJSONCron($project_id);
+                } else {
+                    $this->checkIfJsonOrPDFBlank($settings, $project_id);
                 }
             }
         }
-        $_GET['pid'] = $originalPid;
     }
 
     function regeneratepdf(){
-        $sql="SELECT s.project_id FROM redcap_external_modules m, redcap_external_module_settings s WHERE m.external_module_id = s.external_module_id AND s.value = 'true' AND (m.directory_prefix = 'harmonist-hub') AND s.`key` = 'enabled'";
-        $q = $this->query($sql);
-
         if(APP_PATH_WEBROOT[0] == '/'){
             $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
         }
         define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 
         require_once(dirname(__FILE__)."/vendor/autoload.php");
-        $originalPid = $_GET['pid'];
-        while($row = db_fetch_assoc($q)) {
-            $project_id = $row['project_id'];
-            if($project_id != "") {
-                $_GET['pid'] = $project_id;
-                error_log("Generate PDF - project_id:" . $project_id);
+        foreach ($this->getProjectsWithModuleEnabled() as $project_id){
+            error_log("Generate PDF - project_id:" . $project_id);
 
-                $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
-                $settingsPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
-                if($settingsPID != "") {
-                    $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
+            $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
+            $settingsPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+            if($settingsPID != "") {
+                $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
 
-                    if ($settings['des_pdf_regenerate'][1] == '1') {
-                        $this->createAndSavePDFCron($settings, $project_id);
-                        $this->createAndSaveJSONCron($project_id);
+                if ($settings['des_pdf_regenerate'][1] == '1') {
+                    $this->createAndSavePDFCron($settings, $project_id);
+                    $this->createAndSaveJSONCron($project_id);
 
-                        #Uncheck variable
-                        $Proj = new \Project($settingsPID);
-                        $event_id = $Proj->firstEventId;
-                        $arrayRM = array();
-                        $arrayRM[1][$event_id]['des_pdf_regenerate'] = array(1 => "");//checkbox
-                        $results = \Records::saveData($settingsPID, 'array', $arrayRM, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-                        \Records::addRecordToRecordListCache($settingsPID, 1, $event_id);
-                    }
+                    #Uncheck variable
+                    $Proj = new \Project($settingsPID);
+                    $event_id = $Proj->firstEventId;
+                    $arrayRM = array();
+                    $arrayRM[1][$event_id]['des_pdf_regenerate'] = array(1 => "");//checkbox
+                    $results = \Records::saveData($settingsPID, 'array', $arrayRM, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+                    \Records::addRecordToRecordListCache($settingsPID, 1, $event_id);
                 }
             }
         }
-        $_GET['pid'] = $originalPid;
     }
 
     function hasJsoncopyBeenUpdated($type,$settings, $project_id){
