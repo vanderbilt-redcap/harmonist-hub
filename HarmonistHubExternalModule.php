@@ -143,7 +143,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         foreach ($this->getProjectsWithModuleEnabled() as $project_id){
             $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
             $settingsPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
-            error_log($settingsPID);
+
             if($settingsPID != "") {
                 $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
 
