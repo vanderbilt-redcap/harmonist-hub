@@ -1,9 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once(dirname(dirname(__FILE__))."/classes/AllCrons.php");
-error_log("****1");
 include_once(__DIR__ ."/../projects.php");
-error_log("****1");
+
 $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
 $request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
 $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
