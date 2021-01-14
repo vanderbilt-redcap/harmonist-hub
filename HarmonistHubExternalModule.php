@@ -168,7 +168,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                             include("crontasks/cron_publications.php");
                         }
                     } catch (S3Exception $e) {
-//                        \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org',"Mailer Error", $e->getMessage());
+                        \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org',"Mailer Error", $e->getMessage());
                     }
                 }
             }

@@ -115,14 +115,14 @@ if($hub_projectname == '' || $hub_profile == ''){
             <meta name="author" content="">
             <meta http-equiv="Cache-control" content="public">
             <meta name="theme-color" content="#fff">
-            <link rel="icon" href="<?=getFile($module,$settings['hub_logo_favicon'],'url')?>">
+            <?php if($settings['hub_logo_favicon'] != ""){ ?>
+                <link rel="icon" href="<?=getFile($module,$settings['hub_logo_favicon'],'url')?>">
+            <?php } ?>
+
 
             <title><?= $settings['des_doc_title'] ?></title>
 
             <script type='text/javascript'>
-                var app_path_webroot = '<?=APP_PATH_WEBROOT?>';
-                var app_path_webroot_full = '<?=APP_PATH_WEBROOT_FULL?>';
-                var app_path_images = '<?=APP_PATH_IMAGES?>';
                 $(document).ready(function() {
                     Sortable.init();
                     $('[data-toggle="tooltip"]').tooltip();
