@@ -760,7 +760,6 @@ foreach ($projects_array as $index=>$name){
     if($custom_record_label_array[$index] != ''){
         $module->query("UPDATE redcap_projects SET custom_record_label = ? WHERE project_id = ?",[$custom_record_label_array[$index],$project_id_new]);
     }
-
     if($name == 'SETTINGS'){
         #Create first record
         $qtype = $module->query("SELECT b.event_id FROM  redcap_events_arms a LEFT JOIN redcap_events_metadata b ON(a.arm_id = b.arm_id) where a.project_id =?",[$project_id_new]);
@@ -811,6 +810,7 @@ foreach ($projects_array as $index=>$name){
         $module->enableModule($project_id_new, "harmonist-hub");
         $module->setProjectSetting('hub-mapper',$project_id, $project_id_new);
     }
+
     if(array_key_exists($index,$projects_array_module_emailalerts)){
         #enable modules to certain projects
         $module->enableModule($project_id_new,"vanderbilt_emailTrigger");
@@ -827,7 +827,7 @@ foreach ($projects_array as $index=>$name){
     if(array_key_exists($index,$projects_array_surveys)){
         foreach ($projects_array_surveys[$index] as $survey){
             $formName = ucwords(str_replace("_"," ",$survey));
-            $module->query("INSERT INTO redcap_surveys (project_id,form_name,survey_enabled,save_and_return,save_and_return_code_bypass,edit_completed_response,title) VALUES (?,?,?,?,?)",[$project_id_new,$survey,1,1,1,$formName]);
+            $module->query("INSERT INTO redcap_surveys (project_id,form_name,survey_enabled,save_and_return,save_and_return_code_bypass,edit_completed_response,title) VALUES (?,?,?,?,?,?,?)",[$project_id_new,$survey,1,1,1,1,$formName]);
         }
     }
     if(array_key_exists($index,$projects_array_surveys_hash)){
