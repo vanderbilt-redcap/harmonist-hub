@@ -546,6 +546,25 @@ $projects_array_module_emailalerts = array(
         ),
         "email-deleted" => array
         (
+            0 => 0,
+            1 => 0,
+            2 => 0,
+            3 => 0,
+            4 => 0,
+            5 => 0,
+            6 => 0,
+            7 => 0,
+            8 => 0,
+            9 => 0,
+            10 => 0,
+            11 => 0,
+            12 => 0,
+            13 => 0,
+            14 => 0,
+            15 => 0
+        ),
+        "email-deactivate" => array
+        (
             0 => 1,
             1 => 1,
             2 => 1,
@@ -731,7 +750,8 @@ $projects_array_module_emailalerts = array(
             14 => "To PMs: notification of new concept",
             15 => "To Author: non-concept approved by EC",
         )
-    ));
+    )
+);
 
 $projects_array_surveys_hash = array(
     1=>array('constant'=>'ANALYTICS','instrument' => ''),
