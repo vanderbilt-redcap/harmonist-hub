@@ -849,13 +849,29 @@ foreach ($projects_array as $index=>$name){
         foreach ($projects_array_surveys[$index] as $survey){
             $formName = ucwords(str_replace("_"," ",$survey));
             $module->query("INSERT INTO redcap_surveys (project_id,form_name,survey_enabled,save_and_return,save_and_return_code_bypass,edit_completed_response,title) VALUES (?,?,?,?,?,?,?)",[$project_id_new,$survey,1,1,1,1,$formName]);
+            $surveyId = db_insert_id();
+            $hash = $module->generateUniqueRandomSurveyHash();
+            $Proj = new \Project($project_id_new);
+            $event_id = $Proj->firstEventId;
+
+            $module->query("INSERT INTO redcap_surveys_participants (survey_id,hash,event_id) VALUES (?,?,?)",[$surveyId,$hash,$event_id]);
+
+            if($index != 1 && (array_key_exists($index,$projects_array_surveys_hash) && $survey == $projects_array_surveys_hash[$index]['instrument'])){
+                $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'record_id', $record);
+                $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_id', $hash);
+                $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_constant', $projects_array_surveys_hash[$index]['constant']);
+                $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_show_y', 0);
+                $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_info_complete', 2);
+
+                \Records::addRecordToRecordListCache($project_id, $record,1);
+                $record++;
+            }
         }
     }
-    if(array_key_exists($index,$projects_array_surveys_hash)){
-        $hash = ($projects_array_surveys_hash[$index]['instrument'] == "")? "" : $module->getPublicSurveyHash($project_id_new);
-
+    #We add the analytics
+    if($index == 1){
         $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'record_id', $record);
-        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_id', $hash);
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_id', '');
         $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_constant', $projects_array_surveys_hash[$index]['constant']);
         $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_show_y', 0);
         $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_info_complete', 2);
@@ -863,6 +879,7 @@ foreach ($projects_array as $index=>$name){
         \Records::addRecordToRecordListCache($project_id, $record,1);
         $record++;
     }
+
 }
 #Upload SQL fields to projects
 include_once("projects.php");
