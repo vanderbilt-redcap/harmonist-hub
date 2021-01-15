@@ -70,7 +70,7 @@ ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete
 $dealines = array();
 for($i = 1; $i<$number_of_deadlines+1; $i++){
     if(!empty($homepage['deadline_text'.$i]) || !empty($homepage['deadline_date'.$i])){
-        $array_dates = getNumberOfDaysLeftButtonHTML($homepage['deadline_date'.$i],'','float:right','0');
+        $array_dates = \Functions\getNumberOfDaysLeftButtonHTML($homepage['deadline_date'.$i],'','float:right','0');
         $event['date'] = $homepage['deadline_date'.$i];
         $event['print'] = '<tr><td>'.$array_dates['text'].' '.$array_dates['button'].'</td><td>'.$homepage['deadline_text'.$i].'</td></tr>';
         array_push($dealines,$event);
@@ -199,7 +199,7 @@ if(!empty($homepage)) {
                         <h3 class="panel-title">
                             Deadlines and Events
                             <?php
-                            if($isAdmin || hasUserPermissions($current_user['harmonist_perms'], 7)){ ?>
+                            if($isAdmin || \Functions\hasUserPermissions($current_user['harmonist_perms'], 7)){ ?>
                             <a href="#" onclick="javascript:$('#deadlines_survey').modal('show');" style="cursor: pointer"><span class="fa fa-cog" style="float: right;padding-right: 10px;"></span></a>
                             <?php } ?>
                         </h3>
@@ -266,11 +266,11 @@ if(!empty($homepage)) {
                         $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                         ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-                        $user_req_header = getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '1','home');
+                        $user_req_header = \Functions\getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '1','home');
 
                         $requests_counter = 0;
                         foreach ($requests as $req) {
-                            $user_req_body .= getHomeRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
+                            $user_req_body .= \Functions\getHomeRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
                             if($user_req_body != ""){
                                 $requests_counter++;
                             }
@@ -318,7 +318,7 @@ if(!empty($homepage)) {
                                 $RecordSetRMComment = \REDCap::getData(IEDEA_RMANAGAER, 'array', array('request_id' => $comment['request_id']));
                                 $requestComment = ProjectData::getProjectInfoArray($RecordSetRMComment)[0];
 
-                                $time = getDateForHumans($comment['responsecomplete_ts']);
+                                $time = \Functions\getDateForHumans($comment['responsecomplete_ts']);
 
                                 $title = substr($requestComment['request_title'], 0, 50) . '...';
 

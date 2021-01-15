@@ -83,7 +83,7 @@ if(!empty($concept)) {
     $start_date = (empty($concept['ec_approval_d']))? "<em>Not specified</em>" : $concept['ec_approval_d'];
 }
 
-$harmonist_perm_edit_concept = hasUserPermissions($current_user['harmonist_perms'], 3);
+$harmonist_perm_edit_concept = \Functions\hasUserPermissions($current_user['harmonist_perms'], 3);
 
 $revised = "";
 if($concept['revised_y'][0] == '1'){
@@ -250,7 +250,7 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
                         echo '<tr>';
                         echo  '<td style="width: 10%;">' . $value. '</td>';
                         echo  '<td>' . $concept['admin_update'][$index]. '</td>';
-                        echo  '<td style="width: 5%;">' . getFileLink($module, $concept['adminupdate_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],""). '</td>';
+                        echo  '<td style="width: 5%;">' . \Functions\getFileLink($module, $concept['adminupdate_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],""). '</td>';
                         echo '</tr>';
                     }
                     echo '</tbody></table>';
@@ -272,10 +272,10 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
                     $extension = ($row_concept_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
                     $pdf_path = APP_PATH_PLUGIN."/loadPDF.php?edoc=".$concept["concept_file"]."#page=1&zoom=100";
 
-                    $file_icon = getFileLink($module, $concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                    $file_icon = \Functions\getFileLink($module, $concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                     ?>
                     <span style="float: right;padding-right: 15px;"><?=$file_icon;?></span>
-                    <a href="downloadFile.php?code=<?=getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv)?>" target="_blank" style="float: right;padding-right: 10px;"><span class="hidden-sm hidden-xs">Download </span>PDF </a>
+                    <a href="downloadFile.php?code=<?=\Functions\getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv)?>" target="_blank" style="float: right;padding-right: 10px;"><span class="hidden-sm hidden-xs">Download </span>PDF </a>
                 <?php }?>
             </h3>
         </div>
@@ -314,15 +314,15 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
 
             ArrayFunctions::array_sort_by_column($data_requests,'sop_updated_dt',SORT_DESC);
             if(!empty($data_requests) || $q->num_rows > 0) {
-                echo getDataCallConceptsHeader($current_user['person_region'],$settings['vote_grid']);
+                echo \Functions\getDataCallConceptsHeader($current_user['person_region'],$settings['vote_grid']);
                 foreach ($data_requests as $sop) {
-                        echo getDataCallConceptsRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'','');
+                        echo \Functions\getDataCallConceptsRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'','');
                 }
                 while ($row = db_fetch_assoc($q)){
                     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$row['record']);
                     $data_requests_old = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
                     if(empty($data_requests_old)){
-                        echo getDataCallConceptsRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$row['record'],"1");
+                        echo \Functions\getDataCallConceptsRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$row['record'],"1");
                     }
                 }
             }else{?>
@@ -453,7 +453,7 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
 
                         $file ='';
                         if($concept['output_file'][$index] != ""){
-                            $file = getFileLink($module, $concept['output_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                            $file = \Functions\getFileLink($module, $concept['output_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                         }
                         echo '<td>'.$file.'</td></tr>';
                     }
@@ -479,12 +479,12 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
                 $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null);
                 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y' => "1",'assoc_concept' => $concept['record_id']));
                 if(!empty($request)){
-                    echo getArchiveHeader('Status');
+                    echo \Functions\getArchiveHeader('Status');
                     ?>
                     <tbody>
                     <?php
                     foreach ($request as $req) {
-                        echo getArchiveHTML($module, $req, $request_type_label, $current_user['person_region'],$settings['vote_visibility']);
+                        echo \Functions\getArchiveHTML($module, $req, $request_type_label, $current_user['person_region'],$settings['vote_visibility']);
                     }
                 }else{?>
                     <tbody>

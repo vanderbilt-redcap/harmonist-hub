@@ -20,7 +20,7 @@ $url = json_encode($module->getUrl("hub/hub_unit_test_AJAX.php?pid=".IEDEA_PROJE
     <div class="alert fade in col-md-12 alert-info" style="display:none" id="unitTestMsgContainer"><i class="fa fa-spinner fa-spin"></i> Test in progress...</div>
 </div>
 <?php
-if(!empty($_GET['test']) && startTest($_GET['test'], $secret_key, $secret_iv, $_SESSION[$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')."_unit_test_timestamp"])) {
+if(!empty($_GET['test']) && \Functions\startTest($_GET['test'], $secret_key, $secret_iv, $_SESSION[$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')."_unit_test_timestamp"])) {
     #Get Projects ID's
     $pidsArray = array();
     $pidsArray['HARMONIST'] = IEDEA_HARMONIST;

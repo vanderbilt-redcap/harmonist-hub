@@ -71,11 +71,11 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             <th class="sorting_disabled" data-sortable="false">Actions</th></tr>
                         </thead>
                         <?php
-                        $harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
+                        $harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms'], 1);
 
                         $data = "";
                         foreach ($sop_drafts as $draft){
-                            $data .= getDataCallRow($module,$draft,$isAdmin,$current_user,$secret_key,$secret_iv,0,'p',$harmonist_perm);
+                            $data .= \Functions\getDataCallRow($module,$draft,$isAdmin,$current_user,$secret_key,$secret_iv,0,'p',$harmonist_perm);
                         }
                         echo $data;
                     }else{?>
@@ -119,7 +119,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                     <?php
                         $data = "";
                         foreach ($sop_drafts as $draft){
-                            $data .= getDataCallRow($module,$draft,$isAdmin,$current_user,$secret_key,$secret_iv,0,'m',$harmonist_perm);
+                            $data .= \Functions\getDataCallRow($module,$draft,$isAdmin,$current_user,$secret_key,$secret_iv,0,'m',$harmonist_perm);
                         }
                         echo $data;
                     }else{?>

@@ -9,12 +9,12 @@ $record_id = $_REQUEST['record'];
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record_id));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-$dataTable = getTablesInfo($module);
+$dataTable = \Functions\getTablesInfo($module);
 $tableHtml = "";
 if(!empty($dataTable)) {
     # Get selected rows
-    $tableHtml = generateTablesHTML_pdf($module, $dataTable,$sop['sop_tablefields']);
-    $requested_tables = generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
+    $tableHtml = \Functions\generateTablesHTML_pdf($module, $dataTable,$sop['sop_tablefields']);
+    $requested_tables = \Functions\generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
 }
 
 
@@ -101,7 +101,7 @@ if($sop['sop_notes'] != ""){
 $second_page .= "<p><span style='font-size:16pt'><strong>5. List of Requested Tables</strong></span></p>";
 $second_page .= "<p><span style='font-size: 12pt'>".$requested_tables."</span></p>";
 
-$img = base64_encode(file_get_contents(getFile($module, $settings['hub_logo_pdf'],'pdf')));
+$img = base64_encode(file_get_contents(\Functions\getFile($module, $settings['hub_logo_pdf'],'pdf')));
 
 $page_num = '<style>a{text-decoration: none;}</style>';
 

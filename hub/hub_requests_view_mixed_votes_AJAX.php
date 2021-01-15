@@ -46,7 +46,7 @@ foreach ($regions as $region){
     foreach ($votes as $vote){
         if(array_key_exists('pi_vote',$vote)){
             $region_time = $vote['responsecomplete_ts'];
-            $name = getPeopleName($vote['response_person'],"");
+            $name = \Functions\getPeopleName($vote['response_person'],"");
 
             $region_row .= '<tr>'.
                 '<td><span class="'.$region_vote_icon_view[$vote['pi_vote']].' '.$region_vote_icon_text[$vote['pi_vote']].'" aria-hidden="true"></span><span class="'.$region_vote_icon_text[$vote['pi_vote']].'"> '.$vote_text[$vote['pi_vote']].'</span></td>'.

@@ -18,7 +18,7 @@ if(!empty($assoc_concept)){
 $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $user));
 $upload_user = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
 
-$token = getRandomIdentifier(12);
+$token = \Functions\getRandomIdentifier(12);
 
 $Proj = new \Project(IEDEA_DATATOOLUPLOADSECURITY);
 $event_id = $Proj->firstEventId;
@@ -43,7 +43,7 @@ $recordSecurity[$token][$event_id]['uploadregion_id'] = $upload_user['person_reg
 $results = \Records::saveData(IEDEA_DATATOOLUPLOADSECURITY, 'array', $recordSecurity,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 \Records::addRecordToRecordListCache(IEDEA_DATATOOLUPLOADSECURITY, $token, 1);
 
-$tokendt = getCrypt($token,'e',$secret_key,$secret_iv);
+$tokendt = \Functions\getCrypt($token,'e',$secret_key,$secret_iv);
 
 echo json_encode($tokendt);
 ?>

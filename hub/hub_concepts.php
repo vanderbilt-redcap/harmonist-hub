@@ -27,7 +27,7 @@ if (!empty($concepts)) {
         $id_people = $concept['contact_link'];
         $name = "";
         if(!empty($id_people)){
-            $name = getPeopleName($id_people);
+            $name = \Functions\getPeopleName($id_people);
         }
         $concepts_table .= '<tr wg_id="'.$concept['wg_link'].'">'.
             '<td style="" data-order="'.$concept['concept_id'].'"><strong>' . $concept['concept_id'].'</strong></td>' .
@@ -52,7 +52,7 @@ if (!empty($concepts)) {
 
         $file_concept ='';
         if($concept["concept_file"] != ""){
-            $file_concept = getFileLink($module, $concept["concept_file"],'1','', $secret_key, $secret_iv, $current_user['record_id'],"");
+            $file_concept = \Functions\getFileLink($module, $concept["concept_file"],'1','', $secret_key, $secret_iv, $current_user['record_id'],"");
         }
         $concepts_table .= '<td style="text-align: center;">'.$file_concept.'</td>';
 
@@ -66,7 +66,7 @@ if (!empty($concepts)) {
 $date = new \DateTime();
 $export_name = "concepts_".$date->format('Y-m-d H:i:s');
 
-$harmonist_perm_new_concept = hasUserPermissions($current_user['harmonist_perms'], 2);
+$harmonist_perm_new_concept = \Functions\hasUserPermissions($current_user['harmonist_perms'], 2);
 ?>
 
 <?php

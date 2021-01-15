@@ -108,11 +108,11 @@ if($_REQUEST['type'] != ""){
                 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-                $user_req_header = getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '1','archive');
+                $user_req_header = \Functions\getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '1','archive');
 
                 $requests_counter = 0;
                 foreach ($requests as $req) {
-                    $user_req_body .= getHomeRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
+                    $user_req_body .= \Functions\getHomeRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
                     if($user_req_body != ""){
                         $requests_counter++;
                     }

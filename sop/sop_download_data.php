@@ -72,7 +72,7 @@ foreach ($request_DU as $down){
                 $concept_header = '<a href="'.$module->getUrl('index.php?pid=' . IEDEA_DATAMODEL . '&option=ttl&record=' . $concept_id) . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_sheet . '</a> | <a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . '</a>';
                 $concept_header = $concept_sheet . ' | Data Request #' . $sop_id;
 
-                $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1');
+                $array_dates = \Functions\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1');
 
                 $downloads_active = 0;
                 $body = '';
@@ -81,7 +81,7 @@ foreach ($request_DU as $down){
                     if ($data_up['data_upload_person'] == $current_user['record_id'] || ($key = array_search($current_user['record_id'], $array_userid)) !== false) {
                         $permission_granted = true;
                         $data_printed = true;
-                        $assoc_concept = getReqAssocConceptLink($module, $data_up['data_assoc_concept']);
+                        $assoc_concept = \Functions\getReqAssocConceptLink($module, $data_up['data_assoc_concept']);
 
                         $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $data_up['data_assoc_request']));
                         $assoc_request = ProjectData::getProjectInfoArray($RecordSetRM)[0]['request_title'];
@@ -93,19 +93,19 @@ foreach ($request_DU as $down){
                         $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $data_up['data_upload_region']));
                         $region_code = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegion)[0]['region_code'];
 
-                        $file_pdf = ($data_up['data_upload_pdf'] == "") ? "" : getFileLink($data_up['data_upload_pdf'], '1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                        $file_pdf = ($data_up['data_upload_pdf'] == "") ? "" : \Functions\getFileLink($data_up['data_upload_pdf'], '1','',$secret_key,$secret_iv,$current_user['record_id'],"");
 
                         $extra_days = ' + ' . $settings['retrievedata_expiration'] . " days";
                         $expire_date = date('Y-m-d', strtotime($data_up['responsecomplete_ts'] . $extra_days));
 
-                        $array_expire_dates = getNumberOfDaysLeftButtonHTML($expire_date, '', '', '2');
+                        $array_expire_dates = \Functions\getNumberOfDaysLeftButtonHTML($expire_date, '', '', '2');
                         $expiration_date = $array_expire_dates['text'] . " " . $array_expire_dates['button'];
 
                         $deleted = "";
                         $buttons = "";
                         if ($data_up['deleted_y'] != '1' && strtotime ($expire_date) >= strtotime(date('Y-m-d'))) {
                             $downloads_active++;
-                            $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php?pid='.IEDEA_PROJECTS.'&code=' . getCrypt("id=". $data_up['record_id']."&pid=".$user,'e',$secret_key,$secret_iv) ). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
+                            $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php?pid='.IEDEA_PROJECTS.'&code=' . \Functions\getCrypt("id=". $data_up['record_id']."&pid=".$user,'e',$secret_key,$secret_iv) ). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
                         } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != ""){
                             if($data_up['deletion_type'] == '2'){
                                 $RecordSetPeopleDelete = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $data_up['deletion_hubuser']));

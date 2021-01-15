@@ -148,7 +148,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
                             $sop_concept_id = $sop['sop_concept_id'];
                             $sop_name = $sop['sop_name'];
-                            $assoc_concept = getReqAssocConceptLink($module, $sop_concept_id);
+                            $assoc_concept = \Functions\getReqAssocConceptLink($module, $sop_concept_id);
 
                             $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']),null,null,null,false,false,false,"[showregion_y] = 1");
                             $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
@@ -172,7 +172,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                                 '<td width="360px"><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=sop&record=' . $recent_activity['sop_id']) . '" target="_blank">'.$sop_name.'</a></td>';
 
                             if($recent_activity['revised_file'] != ''){
-                                echo '<td width="40px">'.getFileLink($module, $recent_activity['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
+                                echo '<td width="40px">'.\Functions\getFileLink($module, $recent_activity['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
                             }else{
                                 echo '<td width="40px"></td>';
                             }
@@ -188,7 +188,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $data_upload_region));
                             $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                            $assoc_concept = getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept']);
+                            $assoc_concept = \Functions\getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept']);
 
                             $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
@@ -208,7 +208,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $recent_activity['data_upload_region']));
                             $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                            $assoc_concept = getReqAssocConceptLink($module, $recent_activity['data_assoc_concept']);
+                            $assoc_concept = \Functions\getReqAssocConceptLink($module, $recent_activity['data_assoc_concept']);
 
                             echo '<tr><td width="170px">'.$comment_time.'</td>'.
                                 '<td width="80px">'.$assoc_concept.'</td>'.

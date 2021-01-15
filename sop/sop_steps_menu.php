@@ -5,7 +5,7 @@ if($_REQUEST['record'] != ""){
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 }
 
-$harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
+$harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms'], 1);
 
 if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id'] ))){
 ?>
@@ -133,7 +133,7 @@ if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmoni
                     if (returnData.status != 'success') {
                         alert(returnData.status+" One or more of the files could not be saved."+JSON.stringify(returnData));
                     }else{
-                        getFileFieldElement(returnData.edoc)
+                    \Functions\getFileFieldElement(returnData.edoc)
                     }
                 }
             });

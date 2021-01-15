@@ -29,14 +29,14 @@ foreach ($regions as $region){
     }
 }
 
-$dataTable = getTablesInfo($module);
+$dataTable = \Functions\getTablesInfo($module);
 $tableHtml = "";
 if(!empty($dataTable)) {
     # Get selected rows
-    $tableHtml = generateTablesHTML_pdf($module, $dataTable,$sop['sop_tablefields']);
-    $requested_tables = generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
+    $tableHtml = \Functions\generateTablesHTML_pdf($module, $dataTable,$sop['sop_tablefields']);
+    $requested_tables = \Functions\generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
 
-    $dataTable = getTablesInfo($module);
+    $dataTable = \Functions\getTablesInfo($module);
     $tablefields = array();
     foreach( $dataTable as $data ) {
         if (!empty($data['record_id'])) {
@@ -147,7 +147,7 @@ $second_page .= "<p><span style='font-size: 12pt'>".$requested_tables."</span></
 
 $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }a{text-decoration: none;}</style>';
 
-$img = getFile($module, $settings['hub_logo_pdf'],'pdf');
+$img = \Functions\getFile($module, $settings['hub_logo_pdf'],'pdf');
 
 $html_pdf = "<html><body style='font-family:\"Calibri\";font-size:10pt;'>".$page_num
     ."<div class='footer'><span left: 0px;>".$concept_id."</span></div>"

@@ -9,7 +9,7 @@ $region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" 
 
 $person_record = $_REQUEST['record'];
 if($person_record != ""){
-    $person_name = getPeopleName($person_record);
+    $person_name = \Functions\getPeopleName($person_record);
 }
 ?>
 <script>
@@ -219,7 +219,7 @@ if($person_record != ""){
 
                             echo    $comment_vote.'<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $requestComment['request_id']) . '" target="_blank">' . $requestComment['request_title'] . '</a></td>';
                             if($comment['revised_file'] != ''){
-                                echo '<td>'.getFileLink($module, $comment['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
+                                echo '<td>'.\Functions\getFileLink($module, $comment['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
                             }else{
                                 echo '<td></td>';
                             }

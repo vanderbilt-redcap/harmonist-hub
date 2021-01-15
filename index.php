@@ -115,10 +115,7 @@ if($hub_projectname == '' || $hub_profile == ''){
             <meta name="author" content="">
             <meta http-equiv="Cache-control" content="public">
             <meta name="theme-color" content="#fff">
-            <?php if($settings['hub_logo_favicon'] != ""){ ?>
-                <link rel="icon" href="<?=getFile($module,$settings['hub_logo_favicon'],'url')?>">
-            <?php } ?>
-
+            <link rel="icon" href="<?=\Functions\getFile($module,$settings['hub_logo_favicon'],'url')?>">
 
             <title><?= $settings['des_doc_title'] ?></title>
 
@@ -185,11 +182,11 @@ if($hub_projectname == '' || $hub_profile == ''){
             $token = "";
             if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd')  || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'iut') || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
                 $_SESSION['token'] = array();
-                $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')] = getToken(USERID);
+                $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')] = \Functions\getToken(USERID);
                 $token = $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')];
-            }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'])){
+            }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Functions\isTokenCorrect($_REQUEST['token'])){
                 $token = $_REQUEST['token'];
-            }else if(!empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])&& isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])) {
+            }else if(!empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])&& \Functions\isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])) {
                 $token = $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')];
             }
 
@@ -206,7 +203,7 @@ if($hub_projectname == '' || $hub_profile == ''){
                     unset($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')]);
                 }
 
-                if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'])) {
+                if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Functions\isTokenCorrect($_REQUEST['token'])) {
                     $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')] = $_REQUEST['token'];
                 }
 
@@ -220,7 +217,7 @@ if($hub_projectname == '' || $hub_profile == ''){
                     include('hub/hub_login.php');
                 }else if($current_user['active_y'] == "0"){
                     include('hub/hub_login.php');
-                }else if(!empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')]) && isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])){
+                }else if(!empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')]) && \Functions\isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])){
                     if( !array_key_exists('option', $_REQUEST)){
                         include('hub/hub_home.php');
                     }

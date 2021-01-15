@@ -257,7 +257,7 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
                             $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array',array('record_id' => $recent_activity['downloader_region']));
                             $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                            $assoc_concept = getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept']);
+                            $assoc_concept = \Functions\getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept']);
 
                             $RecordSetDataUploadReq = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', array('record_id' => $recent_activity['download_id']));
                             $data_request = ProjectData::getProjectInfoArray($RecordSetDataUploadReq)[0]['data_assoc_request'];
@@ -291,17 +291,17 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
                             $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array',array('record_id' => $recent_activity['data_upload_region']));
                             $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                            $assoc_concept = getReqAssocConceptLink($module, $recent_activity['data_assoc_concept']);
+                            $assoc_concept = \Functions\getReqAssocConceptLink($module, $recent_activity['data_assoc_concept']);
 
                             $file = "";
                             $buttons = "";
                             $activity_hidden = "upload";
                             $activity = '<i class="fa fa-fw fa-arrow-up text-success" aria-hidden="true"></i> upload ';
                             if($current_user['person_region'] == $recent_activity['data_upload_region'] || $isAdmin) {
-                                $file = getFileLink($module, $recent_activity['data_upload_pdf'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                                $file = \Functions\getFileLink($module, $recent_activity['data_upload_pdf'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                             }
                             if($recent_activity['deleted_y'] != "1" && ($recent_activity['data_upload_person'] == $current_user['record_id'] || $isAdmin)){
-                                    $crypt = getCrypt("&id=".$recent_activity['record_id']."&idu=".$current_user['record_id'],'e',$secret_key,$secret_iv);
+                                    $crypt = \Functions\getCrypt("&id=".$recent_activity['record_id']."&idu=".$current_user['record_id'],'e',$secret_key,$secret_iv);
                                     $buttons = "<a href='#' onclick='$(\"#deleted_record\").val(\"".$crypt."\");$(\"#modal-data-download-confirmation\").modal(\"show\");' class='fa fa-trash' style='color: #000;cursor:pointer;text-decoration: none;' title='delete'></a>";
                             }
 

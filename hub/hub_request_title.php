@@ -27,7 +27,7 @@ if($request !="") {
         $wg_name = ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
     }
 
-    $array_dates = getNumberOfDaysLeftButtonHTML($request['due_d'], $request['region_response_status'][$current_user['person_region']], '', '1');
+    $array_dates = \Functions\getNumberOfDaysLeftButtonHTML($request['due_d'], $request['region_response_status'][$current_user['person_region']], '', '1');
 
     $conference_info = "";
     if (!empty($request_type_label[$request['request_type']]) && ($request_type_label[$request['request_type']] == 'Other' || $request_type_label[$request['request_type']] == 'Abstract' || $request_type_label[$request['request_type']] == 'Poster')) {
@@ -397,12 +397,12 @@ if($request !="") {
 
                         for($i = 1; $i<7 ; $i++){
                             if(!empty($request['extra_file'.$i])){
-                                echo "<tr>".getFileRow($module,$request['extra_file'.$i], $request['contact_name'],"Original", $request_time,$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
+                                echo "<tr>".\Functions\getFileRow($module,$request['extra_file'.$i], $request['contact_name'],"Original", $request_time,$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
                             }
                         }
 
                         if(!empty($request['request_file'])) {
-                            echo "<tr class='info'>" . getFileRow($module,$request['request_file'], $request['contact_name'], "Original", $request_time, $secret_key, $secret_iv, $current_user['record_id'], "");
+                            echo "<tr class='info'>" . \Functions\getFileRow($module,$request['request_file'], $request['contact_name'], "Original", $request_time, $secret_key, $secret_iv, $current_user['record_id'], "");
                         }
 
                         $parameter = '[request_id] = "'.$request['request_id'].'"';
@@ -450,19 +450,19 @@ if($request !="") {
 
                                     $gd_files = "";
                                     if(!empty($comment['revised_file'])){
-                                        echo "<tr class='".$revised_class."'>" . getFileRow($module,$comment['revised_file'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
+                                        echo "<tr class='".$revised_class."'>" . \Functions\getFileRow($module,$comment['revised_file'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
                                         if(!empty($comment['comments'])){
                                             $gd_files .= "<div style='padding-top:10px'>";
                                         }
-                                        $gd_files .= getFileLink($module,$comment['revised_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
+                                        $gd_files .= \Functions\getFileLink($module,$comment['revised_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
                                     }
                                     if(!empty($comment['extra_revfile1'])){
-                                        echo "<tr class='".$revised_class."'>" . getFileRow($module,$comment['extra_revfile1'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
-                                        $gd_files .= "<div style='padding-top:10px'>".getFileLink($module,$comment['extra_revfile1'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
+                                        echo "<tr class='".$revised_class."'>" . \Functions\getFileRow($module,$comment['extra_revfile1'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
+                                        $gd_files .= "<div style='padding-top:10px'>".\Functions\getFileLink($module,$comment['extra_revfile1'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
                                     }
                                     if(!empty($comment['extra_revfile2'])){
-                                        echo "<tr class='".$revised_class."'>" . getFileRow($module,$comment['extra_revfile2'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
-                                        $gd_files .= "<div style='padding-top:10px'>".getFileLink($module,$comment['extra_revfile2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
+                                        echo "<tr class='".$revised_class."'>" . \Functions\getFileRow($module,$comment['extra_revfile2'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
+                                        $gd_files .= "<div style='padding-top:10px'>".\Functions\getFileLink($module,$comment['extra_revfile2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
                                     }
 
                                     /*** GROUP DISCUSION ***/

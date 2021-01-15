@@ -73,9 +73,9 @@ if(!empty($request_dataCall)) {
     foreach ($request_dataCall as $sop) {
         if ($sop['sop_closed_y'][1] != "1") {
             if($sop['data_response_status'][$current_user['person_region']] == "0" || $sop['data_response_status'][$current_user['person_region']] == "1" || $sop['data_response_status'][$current_user['person_region']] == ""){
-                $open_data_calls .= getDataCallRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'s');
+                $open_data_calls .= \Functions\getDataCallRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'s');
             }else{
-                $completed_data_calls .= getDataCallRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'s');
+                $completed_data_calls .= \Functions\getDataCallRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'s');
             }
         }
     }
@@ -121,7 +121,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
             <table class="table sortable-theme-bootstrap" data-sortable>
                 <?php
                 if(!empty($open_data_calls)) {
-                    echo getDataCallHeader($current_user['person_region'],$settings['vote_grid']);
+                    echo \Functions\getDataCallHeader($current_user['person_region'],$settings['vote_grid']);
                     echo $open_data_calls;
                 }else{?>
                     <tbody>
@@ -148,7 +148,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
             <table class="table sortable-theme-bootstrap" data-sortable>
                 <?php
                 if(!empty($completed_data_calls)) {
-                    echo getDataCallHeader($current_user['person_region'],$settings['vote_grid']);
+                    echo \Functions\getDataCallHeader($current_user['person_region'],$settings['vote_grid']);
                     echo $completed_data_calls;
                 }else{?>
                     <tbody>

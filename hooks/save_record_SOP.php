@@ -44,7 +44,7 @@ if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" &
         while ($row = $q->fetch_assoc()) {
             $arraySOP[0]["sop_exclusion"] = "doc name:".$row['doc_name'];
 
-            $storedName = date("YmdsH")."_pid".IEDEA_HARMONIST."_".getRandomIdentifier(6);
+            $storedName = date("YmdsH")."_pid".IEDEA_HARMONIST."_".\Functions\getRandomIdentifier(6);
             $output=file_get_contents(EDOC_PATH.$row['stored_name']);
             $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
             $q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',IEDEA_HARMONIST,date('Y-m-d h:i:s')]);

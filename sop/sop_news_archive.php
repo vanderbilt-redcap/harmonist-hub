@@ -9,7 +9,7 @@ ArrayFunctions::array_sort_by_column($newItems, 'news_d',SORT_DESC);
 $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-calendar-o'=>'#ff8080','fa-bell-o'=>'#dff028',
     'fa-list-ol'=>'#b3d9ff','fa-file-o'=>'#a3a3c2','fa-trophy'=>'#9999ff','fa-exclamation-triangle'=>'#a3c2c2');
 
-$harmonist_perm_news= hasUserPermissions($current_user['harmonist_perms'], 9);
+$harmonist_perm_news= \Functions\hasUserPermissions($current_user['harmonist_perms'], 9);
 
 if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
     ?>
@@ -263,13 +263,13 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
                             '<td width="8%">'.$news['news_d'].'</td>'.
                             '<td>'.$news_type[$news['news_type']].'</td>'.
                             '<td>'.$news['news_category'].'</td>'.
-                            '<td width="13%">'.getPeopleName($news['news_person'], 'email').' ('.$region_code.')</td>'.
+                            '<td width="13%">'.\Functions\getPeopleName($news['news_person'], 'email').' ('.$region_code.')</td>'.
                             '<td style="width: 60%">'.
                                         '<div><span class="label news-label-tiny" style="background-color:'.$news_icon_color[$news['news_type']].';margin-right: 10px;" title="'.$news_type[$news['news_type']].'"><i class="fa '.$news['news_type'].'"></i></span></div>'.
                                         '<div style="padding-bottom: 10px;"><strong>'.$news['news_title'].'</strong></div>'.
                                         '<div class="more">'.$news['news']." ".'</div></td>'.
-                            '<td style="width: 15%;word-break: break-all"><div>'.getFileLink($module, $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").'</div>'.
-                            '<div>'.getFileLink($module, $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").' </div></td>';
+                            '<td style="width: 15%;word-break: break-all"><div>'.\Functions\getFileLink($module, $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").'</div>'.
+                            '<div>'.\Functions\getFileLink($module, $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").' </div></td>';
                         if($isAdmin || $harmonist_perm_news){
                             $edit = "";
                             if($isAdmin || $news['news_person'] == $current_user['record_id']){

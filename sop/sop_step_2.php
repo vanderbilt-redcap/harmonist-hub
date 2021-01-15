@@ -1,7 +1,7 @@
 <?PHP
 namespace Vanderbilt\HarmonistHubExternalModule;
 #We get the Tables and Variables information
-$dataTable = getTablesInfo($module);
+$dataTable = \Functions\getTablesInfo($module);
 $first_table = 0;
 
 $type_status = $module->getChoiceLabels('available_status', IEDEA_DATAAVAILABILITY);

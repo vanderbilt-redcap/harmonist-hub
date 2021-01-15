@@ -66,24 +66,27 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     function redcap_survey_acknowledgement_page($project_id, $record, $instrument, $event_id){
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $this->setProjectConstants($hub_mapper);
-
-        #Depending on the project que add one hook or another
-        if($project_id == IEDEA_SOP && $instrument == 'dhwg_review_request') {
-            include_once("sop/sop_make_public_request_AJAX.php?record=".$record);
-            echo '<script>parent.location.href = '.json_encode($this->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=smn&record='.$record.'&message=P")).'</script>';
-        }else{
-            if($project_id == IEDEA_SOP){
-                include_once("hooks/save_record_SOP.php");
-            }else if($project_id == IEDEA_RMANAGER){
-                include_once("hooks/save_record_requestManager.php");
-            }else if($project_id == IEDEA_COMMENTSVOTES){
-                include_once("hooks/save_record_commentsAndVotes.php");
-            }else if($project_id == IEDEA_SOPCOMMENTS){
-                include_once("hooks/save_record_SOP_comments.php");
+        try {
+            #Depending on the project que add one hook or another
+            if ($project_id == IEDEA_SOP && $instrument == 'dhwg_review_request') {
+                include_once("sop/sop_make_public_request_AJAX.php?record=" . $record);
+                echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php?pid=" . IEDEA_PROJECTS . "&option=smn&record='.$record.'&message=P")) . '</script>';
+            } else {
+                if ($project_id == IEDEA_SOP) {
+                    include_once("hooks/save_record_SOP.php");
+                } else if ($project_id == IEDEA_RMANAGER) {
+                    include_once("hooks/save_record_requestManager.php");
+                } else if ($project_id == IEDEA_COMMENTSVOTES) {
+                    include_once("hooks/save_record_commentsAndVotes.php");
+                } else if ($project_id == IEDEA_SOPCOMMENTS) {
+                    include_once("hooks/save_record_SOP_comments.php");
+                }
+                echo '<script>';
+                include_once("js/iframe.js");
+                echo '</script>';
             }
-            echo '<script>';
-            include_once("js/iframe.js");
-            echo '</script>';
+        }catch (S3Exception $e) {
+            \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Hook Error", $e->getMessage());
         }
     }
 
@@ -168,7 +171,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                             include("crontasks/cron_publications.php");
                         }
                     } catch (S3Exception $e) {
-                        \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org',"Mailer Error", $e->getMessage());
+                        \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org',"Cron Error", $e->getMessage());
                     }
                 }
             }
@@ -443,7 +446,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $dataTable = getProjectInfoArrayRepeatingInstruments($RecordSetDataModel);
 
         if(!empty($dataTable)) {
-            $tableHtml = generateTablesHTML_pdf($this, $dataTable,false,false, $project_id, $dataModelPID);
+            $tableHtml = \Functions\generateTablesHTML_pdf($this, $dataTable,false,false, $project_id, $dataModelPID);
         }
 
         #FIRST PAGE
@@ -460,7 +463,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
         $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }a{text-decoration: none;}</style>';
 
-        $img = getFile($this, $settings['des_pdf_logo'],'pdf');
+        $img = \Functions\getFile($this, $settings['des_pdf_logo'],'pdf');
 
         $html_pdf = "<html><head><meta http-equiv='Content-Type' content='text/html' charset='UTF-8' /><style>* { font-family: DejaVu Sans, sans-serif; }</style></head><body style='font-family:\"Calibri\";font-size:10pt;'>".$page_num
             ."<div class='footer' style='left: 590px;'><span class='page-number'>Page </span></div>"
@@ -578,7 +581,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
         #create and save file with json
         $filename = "jsoncopy_file_variable_search_".date("YmdsH").".txt";
-        $storedName = date("YmdsH")."_pid".$settingsPID."_".getRandomIdentifier(6).".txt";
+        $storedName = date("YmdsH")."_pid".$settingsPID."_".\Functions\getRandomIdentifier(6).".txt";
 
         $file = fopen(EDOC_PATH.$storedName,"wb");
         fwrite($file,json_encode($jsonArray,JSON_FORCE_OBJECT));
@@ -610,14 +613,14 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 $path = EDOC_PATH.$row['stored_name'];
                 $strJsonFileContents = file_get_contents($path);
                 $last_array = json_decode($strJsonFileContents, true);
-                $array_data = call_user_func_array("createProject".strtoupper($type)."JSON",array($this, $project_id));
+                $array_data = call_user_func_array("\Functions\createProject".strtoupper($type)."JSON",array($this, $project_id));
                 $new_array = json_decode($array_data['jsonArray'],true);
                 $result_prev = array_filter_empty(multi_array_diff($last_array,$new_array));
                 $result = array_filter_empty(multi_array_diff($new_array,$last_array));
                 $record = $array_data['record_id'];
             }
         }else{
-            $array_data = call_user_func_array("createProject".strtoupper($type)."JSON",array($this, $project_id));
+            $array_data = call_user_func_array("\Functions\createProject".strtoupper($type)."JSON",array($this, $project_id));
             $result = json_decode($array_data['jsonArray'],true);
             $result_prev = "";
             $record = $array_data['record_id'];

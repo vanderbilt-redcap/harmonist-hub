@@ -5,7 +5,7 @@ use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 require_once "/app001/credentials/".IEDEA_PROJECTS."_hubsettings.php";
 
-$code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
+$code = \Functions\getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 $exploded = array();
 parse_str($code, $exploded);
 

@@ -5,7 +5,7 @@ $record_id = $_REQUEST['record'];
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $_REQUEST['record']));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-$harmonist_perm = hasUserPermissions($current_user['harmonist_perms'], 1);
+$harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms'], 1);
 ?>
 <br>
 <?php
@@ -91,7 +91,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
                 $extension = ($row_sop_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
                 $pdf_path = $module->getUrl("loadPDF.php?pid=".IEDEA_PROJECTS."&edoc=" . $sop["sop_finalpdf"]);
 
-                $file_icon = getFileLink($module, $sop["sop_finalpdf"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                $file_icon = \Functions\getFileLink($module, $sop["sop_finalpdf"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                 ?>
 
                     <span style="float: right;padding-right: 15px;color:#333 !important;cursor:pointer"><a href="#" onclick="$('#form_steps_generate_zip').submit();" target='_blank'><i class='fa fa-file-o' aria-hidden='true'></i></a></span>

@@ -1,4 +1,5 @@
 <?php
+namespace Functions;
 use Carbon\Carbon;
 use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
@@ -15,7 +16,7 @@ function parseCSVtoArray($module, $DocID){
     $sqlTableCSV = $module->query("SELECT * FROM `redcap_edocs_metadata` WHERE doc_id = ?",[$DocID]);
     $csv = array();
     while ($rowTableCSV = $sqlTableCSV->fetch_assoc()) {
-        $csv = createArrayFromCSV(EDOC_PATH,$rowTableCSV['stored_name']);
+        $csv = \Functions\createArrayFromCSV(EDOC_PATH,$rowTableCSV['stored_name']);
     }
     return $csv;
 }
@@ -96,14 +97,14 @@ function getFileLink($module,$edoc, $option, $outer="",$secret_key,$secret_iv,$u
         while ($row = $q->fetch_assoc()) {
             $name = urlencode($row['doc_name']);
 
-            $download = getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv);
+            $download = \Functions\getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv);
             $file_url = $module->getUrl("downloadFile.php?pid=".IEDEA_PROJECTS."&code=".$download);
 
             if($option == ''){
-                $icon = getFaIconFile($row['file_extension']);
+                $icon = \Functions\getFaIconFile($row['file_extension']);
                 $file_row = "<i class='fa ".$icon."' aria-hidden='true'></i> <a href='".$file_url."' target='_blank'>".$row['doc_name']."</a>";
             }else{
-                $file_row = "<a href='".$file_url."' target='_blank' title='".$row['doc_name']."'>".getFaIconFile($row['file_extension'])."</a>";
+                $file_row = "<a href='".$file_url."' target='_blank' title='".$row['doc_name']."'>".\Functions\getFaIconFile($row['file_extension'])."</a>";
             }
         }
     }
@@ -116,11 +117,11 @@ function getOtherFilesLink($module, $edoc,$id,$user,$secret_key,$secret_iv,$othe
         $q = $module->query("SELECT stored_name,doc_name,doc_size,file_extension FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
         while ($row = $q->fetch_assoc()) {
             $name = urlencode($row['doc_name']);
-            $download = getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&id=".$id."&pid=".$user,'e',$secret_key,$secret_iv);
+            $download = \Functions\getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&id=".$id."&pid=".$user,'e',$secret_key,$secret_iv);
             $file_url = $module->getUrl("downloadFile.php?code=".$download);
 
 
-            $file_row = "<a href='".$file_url."'>".getFaIconFile($row['file_extension']).$other_title."</a>";
+            $file_row = "<a href='".$file_url."'>".\Functions\getFaIconFile($row['file_extension']).$other_title."</a>";
         }
     }
     return $file_row;
@@ -149,7 +150,7 @@ function getRandomIdentifier($length = 6) {
 
         # Generate a number between 32^5 and 32^6, then convert to a 6 digit string
         $randNum = mt_rand($startNum,$endNum);
-        $randAlphaNum = numberToBase($randNum,32);
+        $randAlphaNum = \Functions\numberToBase($randNum,32);
 
         if($length >= 6) {
             $output .= $randAlphaNum;
@@ -167,7 +168,7 @@ function numberToBase($number, $base) {
     $newString = "";
     while($number > 0) {
         $lastDigit = $number % $base;
-        $newString = convertDigit($lastDigit, $base).$newString;
+        $newString = \Functions\convertDigit($lastDigit, $base).$newString;
         $number -= $lastDigit;
         $number /= $base;
     }
@@ -292,7 +293,7 @@ function createProject0AJSON($module, $save=""){
 
     #we save the new JSON
     if(!empty($jsonArray) && $save == ""){
-        saveJSONCopy($module, '0a', $jsonArray);
+        \Functions\saveJSONCopy($module, '0a', $jsonArray);
     }
 
     return json_encode($jsonArray,JSON_FORCE_OBJECT);
@@ -317,7 +318,7 @@ function createProject0BJSON($module, $save=""){
 
         }else if($data['code_format'] == '3'){
             $jsonVarContentArray  = array();
-            $csv = parseCSVtoArray($module, $data['code_file']);
+            $csv = \Functions\parseCSVtoArray($module, $data['code_file']);
             foreach ($csv as $header=>$content){
                 if($header != 0){
                     //Convert to UTF-8 to avoid weird characters
@@ -331,7 +332,7 @@ function createProject0BJSON($module, $save=""){
 
     #we save the new JSON
     if(!empty($jsonArray) && $save == ""){
-        saveJSONCopy($module,'0b', $jsonArray);
+        \Functions\saveJSONCopy($module,'0b', $jsonArray);
     }
 
     return json_encode($jsonArray,JSON_FORCE_OBJECT);
@@ -351,7 +352,7 @@ function saveJSONCopy($module, $type, $jsonArray){
 
     #create and save file with json
     $filename = "jsoncopy_file_".$type."_".date("YmdsH").".txt";
-    $storedName = date("YmdsH")."_pid".IEDEA_JSONCOPY."_".getRandomIdentifier(6).".txt";
+    $storedName = date("YmdsH")."_pid".IEDEA_JSONCOPY."_".\Functions\getRandomIdentifier(6).".txt";
 
     $file = fopen(EDOC_PATH.$storedName,"wb");
     fwrite($file,json_encode($jsonArray,JSON_FORCE_OBJECT));
@@ -366,7 +367,7 @@ function saveJSONCopy($module, $type, $jsonArray){
     $jsoncopy[0]['json_copy_update_d'] = date("Y-m-d H:i:s");
 
     #we check the version
-    $data = returnJSONCopyVersion($type);
+    $data = \Functions\returnJSONCopyVersion($type);
     $lastversion = $data['lastversion'] + 1;
     $jsoncopy[0]['version'] = $lastversion;
 
@@ -759,7 +760,7 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
                     <td '.$width[1].'>
                         <strong>'.$request_type_label[$req['request_type']].'</strong><br>';
 
-    $current_req .= getReqAssocConceptLink($module,$req['assoc_concept'],"");
+    $current_req .= \Functions\getReqAssocConceptLink($module,$req['assoc_concept'],"");
 
     if($req_type != 'home'){
         $current_req .= '</td>
@@ -792,11 +793,11 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
             if ($vote_grid == '2') {
                 $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
                 $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0];
-                $current_req_region = getRequestVoteIcon($current_req_region, $vote_grid, $current_user['person_region'], $my_region['record_id'], $vote_visibility, $req, $current_user);
+                $current_req_region = \Functions\getRequestVoteIcon($current_req_region, $vote_grid, $current_user['person_region'], $my_region['record_id'], $vote_visibility, $req, $current_user);
 
             } else {
                 foreach ($regions as $region) {
-                    $current_req_region = getRequestVoteIcon($current_req_region, $vote_grid, $current_user['person_region'], $region['record_id'], $vote_visibility, $req, $current_user);
+                    $current_req_region = \Functions\getRequestVoteIcon($current_req_region, $vote_grid, $current_user['person_region'], $region['record_id'], $vote_visibility, $req, $current_user);
                     if ($vote_grid == "0") {
                         break;
                     }
@@ -837,7 +838,7 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
         }
     }else {
         if ($req['reviewer_id'] != ''){
-            $reviewer = getPeopleName(array('record_id' => $req['reviewer_id']),"");
+            $reviewer = \Functions\getPeopleName(array('record_id' => $req['reviewer_id']),"");
             if ($reviewer != '') {
                 $reviewer = ' by ' . $reviewer;
             }
@@ -890,7 +891,7 @@ function getArchiveHTML($module,$req,$request_type_label,$person_region, $vote_v
                     <td>
                         <strong>'.$request_type_label[$req['request_type']].'</strong><br>';
 
-    $current_req .= getReqAssocConceptLink($module,$req['assoc_concept'],"");
+    $current_req .= \Functions\getReqAssocConceptLink($module,$req['assoc_concept'],"");
 
     $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']),null,null,null,false,false,false,"[showregion_y] = 1");
     $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
@@ -909,13 +910,13 @@ function getArchiveHTML($module,$req,$request_type_label,$person_region, $vote_v
 
     if($vote_visibility == "" || $vote_visibility =="1") {
         //PRIVATE VOTES
-        $current_req_region .= getPrivateVotesHTML($req['region_response_status'][$instance],'');
+        $current_req_region .= \Functions\getPrivateVotesHTML($req['region_response_status'][$instance],'');
     }else{
         if ($req['region_response_status'][$instance] == "2") {
             //PUBLIC VOTES
-            $current_req_region .= getPublicVotesHTML($req['region_response_status'][$instance],$req['region_vote_status'][$instance],'');
+            $current_req_region .= \Functions\getPublicVotesHTML($req['region_response_status'][$instance],$req['region_vote_status'][$instance],'');
         }else{
-            $current_req_region .= getPrivateVotesHTML($req['region_response_status'][$instance],'');
+            $current_req_region .= \Functions\getPrivateVotesHTML($req['region_response_status'][$instance],'');
         }
     }
 
@@ -941,16 +942,16 @@ function getRequestVoteIcon($current_req_region,$vote_grid,$person_region,$recor
 
     if($vote_visibility == "" || $vote_visibility =="1") {
         //PRIVATE VOTES
-        $current_req_region .= getPrivateVotesHTML($req['region_response_status'][$instance], $small_screen_class);
+        $current_req_region .= \Functions\getPrivateVotesHTML($req['region_response_status'][$instance], $small_screen_class);
     }else if($vote_visibility =="3"){
         //MIX VOTES
-        $current_req_region .= getMixVotesHTML($req['region_vote_status'][$instance],$req['region_response_status'][$instance], $record_id, $req, $small_screen_class);
+        $current_req_region .= \Functions\getMixVotesHTML($req['region_vote_status'][$instance],$req['region_response_status'][$instance], $record_id, $req, $small_screen_class);
     }else{
         if ($req['region_response_status'][$instance] == "2") {
             //PUBLIC VOTES
-            $current_req_region .= getPublicVotesHTML($req['region_response_status'][$instance],$req['region_vote_status'][$instance],$small_screen_class);
+            $current_req_region .= \Functions\getPublicVotesHTML($req['region_response_status'][$instance],$req['region_vote_status'][$instance],$small_screen_class);
         }else{
-            $current_req_region .= getPrivateVotesHTML($req['region_response_status'][$instance],$small_screen_class);
+            $current_req_region .= \Functions\getPrivateVotesHTML($req['region_response_status'][$instance],$small_screen_class);
         }
     }
     return $current_req_region;
@@ -974,7 +975,7 @@ function getHomeRequestHTML($module, $req, $regions, $request_type_label, $curre
         $due_date_time = date('Y-m-d', strtotime($req['due_d'] . $extra_days));
         $today = date('Y-m-d');
         if ((strtotime($due_date_time) > strtotime($today))|| $request_duration == "none") {
-            return getRequestHTML($module, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $type);
+            return \Functions\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $type);
         }
     }
 }
@@ -1064,11 +1065,11 @@ function getFileRow($module,$edoc, $contact_name, $text, $datetime,$secret_key,$
     if($edoc != "") {
         $q = $module->query("SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
         while ($row = $q->fetch_assoc()) {
-            $file_row = "<td><a href='downloadFile.php?code=" . getCrypt("sname=" . $row['stored_name'] . "&file=" . urlencode($row['doc_name']) . "&edoc=" . $edoc . "&pid=" . $user . "&id=" . $lid, 'e', $secret_key, $secret_iv) . "' target='_blank'>" . $row['doc_name'] . "</a></td>";
+            $file_row = "<td><a href='downloadFile.php?code=" . \Functions\getCrypt("sname=" . $row['stored_name'] . "&file=" . urlencode($row['doc_name']) . "&edoc=" . $edoc . "&pid=" . $user . "&id=" . $lid, 'e', $secret_key, $secret_iv) . "' target='_blank'>" . $row['doc_name'] . "</a></td>";
             $file_row .= "<td>" . $text . "</td>";
             $file_row .= "<td>" . $contact_name . "</td>";
             $file_row .= "<td>" . $datetime . "</td>";
-            $file_row .= "<td>" . convertToReadableSize($row['doc_size']) . "</td>";
+            $file_row .= "<td>" . \Functions\convertToReadableSize($row['doc_size']) . "</td>";
         }
     }
     return $file_row;
@@ -1155,7 +1156,7 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
     $status_type = $module->getChoiceLabels('data_response_status', IEDEA_SOP);
 
     $data =  "<tr>";
-    $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '0');
+    $array_dates = \Functions\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '0');
 
     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
@@ -1183,7 +1184,7 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
     if($vote_grid == '2' || $vote_grid == '0') {
         $status = $sop['data_response_status'][$current_user['person_region']];
         $status_row .= "<td style='text-align: center'>";
-        $status_icons = getDataCallStatusIcons($status);
+        $status_icons = \Functions\getDataCallStatusIcons($status);
         $status_row .= $status_icons."</td>";
     }else {
         foreach ($regions as $region) {
@@ -1194,7 +1195,7 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
             }
 
             $status_row .= "<td style='text-align: center'>";
-            $status_icons = getDataCallStatusIcons($status);
+            $status_icons = \Functions\getDataCallStatusIcons($status);
             if ($region['record_id'] == $current_user['person_region']) {
                 $current_region_status = htmlentities($status_icons . '<span class="status-text"> ' . $status_text . '</span>');
             }
@@ -1268,7 +1269,7 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
 
     $file_data ='';
     if($sop['sop_finalpdf'] != ""){
-        $file_data = " | ".getFileLink($module, $sop['sop_finalpdf'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+        $file_data = " | ".\Functions\getFileLink($module, $sop['sop_finalpdf'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
     }
 
     $data .=    "<td><div><strong>" . $concept_id . "</strong> ".$sop_visibility."</div><div>" . $concept_title . "</div><div><em>Draft ID: ".$sop['record_id']."</em></div><div></div><a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=sop&record=".$sop['record_id'].$url)."'>Data Request </a> | <a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=ttl&record=".$sop['sop_concept_id'])."'>".$concept_id." Concept</a>".$file_data."</td>" .
@@ -1328,7 +1329,7 @@ function getDataCallConceptsHeader($person_region,$vote_grid){
 
 function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_key, $secret_iv, $vote_grid, $concept_record, $option = ""){
     $data =  "<tr>";
-    $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '3');
+    $array_dates = \Functions\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '3');
 
     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
@@ -1353,7 +1354,7 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
 
         $status = $sop['data_response_status'][$my_region];
         $status_row .= "<td style='text-align: center'>";
-        $status_icons = getDataCallStatusIcons($status);
+        $status_icons = \Functions\getDataCallStatusIcons($status);
         $status_row .= $status_icons."</td>";
 
         if($vote_grid == '2') {
@@ -1369,7 +1370,7 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
 
             $status = $sop['data_response_status'][$region['record_id']];
             $status_row .= "<td style='text-align: center' class='".$small_screen_class."'>";
-            $status_icons = getDataCallStatusIcons($status);
+            $status_icons = \Functions\getDataCallStatusIcons($status);
             $status_row .= $status_icons."</td>";
         }
     }
@@ -1382,7 +1383,7 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
 
         $details = "<div><em>Historic (pre-Hub) Data Request";
         if($data_sopfile != ""){
-            $details .= ": ".getFileLink($module, $data_sopfile,'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+            $details .= ": ".\Functions\getFileLink($module, $data_sopfile,'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
         }
         $details .= "</em></div>";
 
@@ -1529,7 +1530,7 @@ function getTablesInfo($module){
     while ($row = $q->fetch_assoc()){
         $qTable = $module->query("SELECT * FROM `redcap_events_metadata` WHERE arm_id = ?",[$row['arm_id']]);
         while ($rowTable = $qTable->fetch_assoc()){
-            $dataTable = generateTableArray($module,$dataTable);
+            $dataTable = \Functions\generateTableArray($module,$dataTable);
         }
     }
     return $dataTable;
@@ -1813,7 +1814,7 @@ function generateTablesHTML_pdf($module, $dataTable,$fieldsSelected){
                             } else if ($codeformat['code_format'] == '3') {
                                 $dataFormat = "Numeric<br/>";
                                 if (array_key_exists('code_file', $codeformat) && $data['codes_print'][$id] =='1') {
-                                    $htmlCodes .= "<table  border ='0' style='width: 100%;display:none' record_id='".$record_varname."'><tr><td><strong>".$data['variable_name'][$id]." code list:</strong><br/></td></tr></table>".getHtmlCodesTable($module, $codeformat['code_file'], $htmlCodes,$record_varname);
+                                    $htmlCodes .= "<table  border ='0' style='width: 100%;display:none' record_id='".$record_varname."'><tr><td><strong>".$data['variable_name'][$id]." code list:</strong><br/></td></tr></table>".\Functions\getHtmlCodesTable($module, $codeformat['code_file'], $htmlCodes,$record_varname);
                                 }
                             }
                         }
@@ -1849,7 +1850,7 @@ function generateTablesHTML_pdf($module, $dataTable,$fieldsSelected){
  * @return string, the html table with the content
  */
 function getHtmlCodesTable($module, $code_file, $htmlCodes, $id){
-    $csv = parseCSVtoArray($module, $code_file);
+    $csv = \Functions\parseCSVtoArray($module, $code_file);
     if(!empty($csv)) {
         $htmlCodes = '<table border="1px" style="border-collapse: collapse;display:none;" record_id="'. $id .'">';
         foreach ($csv as $header => $content) {
@@ -1979,7 +1980,7 @@ function implode_key_and_value($array){
 }
 
 function startTest($encryptedCode, $secret_key, $secret_iv, $timestamp){
-    $code = getCrypt($encryptedCode,"d",$secret_key,$secret_iv);
+    $code = \Functions\getCrypt($encryptedCode,"d",$secret_key,$secret_iv);
     if($code == "start_".$timestamp){
         return true;
     }
