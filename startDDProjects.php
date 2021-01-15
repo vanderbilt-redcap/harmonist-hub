@@ -845,6 +845,7 @@ foreach ($projects_array as $index=>$name){
 
    #we create the surveys
     if(array_key_exists($index,$projects_array_surveys)){
+        $module->query("UPDATE redcap_projects SET surveys_enabled = ? WHERE project_id = ?",["1",$project_id_new]);
         foreach ($projects_array_surveys[$index] as $survey){
             $formName = ucwords(str_replace("_"," ",$survey));
             $module->query("INSERT INTO redcap_surveys (project_id,form_name,survey_enabled,save_and_return,save_and_return_code_bypass,edit_completed_response,title) VALUES (?,?,?,?,?,?,?)",[$project_id_new,$survey,1,1,1,1,$formName]);
