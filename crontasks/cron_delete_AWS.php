@@ -23,7 +23,7 @@ $extra_days = ' + ' . $days_expiration. " days";
 foreach (self::getRequestDU() as $upload) {
     $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
     $message = AllCrons::runCronDeleteAws(
-        $module,
+        $this->module,
         $pidsArray,
         null,
         $upload,

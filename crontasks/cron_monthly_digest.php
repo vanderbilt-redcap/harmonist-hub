@@ -18,7 +18,7 @@ $sops = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array
 ArrayFunctions::array_sort_by_column($sops, 'sop_due_d',SORT_ASC);
 
 $message = AllCrons::runCronMonthlyDigest(
-    $module,
+    $this->module,
     $pidsArray,
     $requests,
     $requests_hub,

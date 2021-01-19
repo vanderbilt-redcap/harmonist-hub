@@ -16,7 +16,7 @@ foreach ($request_DU as $upload) {
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
     $message = AllCrons::runCronDataUploadNotification(
-        $module,
+        $this->module,
         $pidsArray,
         $upload,
         $sop,
