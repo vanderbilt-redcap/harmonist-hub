@@ -3,10 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../projects.php");
 $date = new \DateTime();
 
-$RecordSetmetrics = \REDCap::getData($pidsArray['METRICS'], 'array', null,null,null,null,false,false,false,"[project_constant]='Metrics'");
-$metricsPID = ProjectData::getProjectInfoArray($RecordSetmetrics)[0]['project_id'];
-
-$record_id_metrics = $module->framework->addAutoNumberedRecord($metricsPID);
+$record_id_metrics = $module->framework->addAutoNumberedRecord($pidsArray['METRICS']);
 $arrayMetrics = array(array('record_id' => $record_id_metrics));
 $arrayMetrics[0]['date'] = $date->format('Y-m-d H:i:s');
 
