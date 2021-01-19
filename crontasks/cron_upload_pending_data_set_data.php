@@ -18,7 +18,7 @@ if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
 
     foreach (self::getRequestDU() as $upload) {
         $message = AllCrons::runCronUploadPendingDataSetData(
-            $this->module,
+            $this,
             $pidsArray,
             $s3,
             $bucket,

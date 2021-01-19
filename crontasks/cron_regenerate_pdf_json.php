@@ -18,8 +18,8 @@ foreach ($this->getProjectsWithModuleEnabled() as $project_id){
         $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
 
         if ($settings['des_pdf_regenerate'][1] == '1') {
-            AllCrons::createAndSavePDFCron($this->module, $settings, $project_id);
-            AllCrons::createAndSaveJSONCron($this->module, $project_id);
+            AllCrons::createAndSavePDFCron($this, $settings, $project_id);
+            AllCrons::createAndSaveJSONCron($this, $project_id);
 
             #Uncheck variable
             $Proj = new \Project($settingsPID);

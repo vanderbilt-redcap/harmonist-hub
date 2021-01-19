@@ -24,7 +24,7 @@ foreach ($request_DU as $upload) {
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
     $message = AllCrons::runCronDataUploadExpirationReminder(
-        $this->module,
+        $this,
         $pidsArray,
         $upload,
         $sop,
