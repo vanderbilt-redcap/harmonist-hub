@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 $date = new \DateTime();
 
 error_log("Harmonist Hub - METRICS PID: ".$pidsArray['METRICS']);
-if($pidsArray['METRICS'] == "") {
+if($pidsArray['METRICS'] != "") {
     $record_id_metrics = $this->framework->addAutoNumberedRecord($pidsArray['METRICS']);
     $arrayMetrics = array(array('record_id' => $record_id_metrics));
     $arrayMetrics[0]['date'] = $date->format('Y-m-d H:i:s');
