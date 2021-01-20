@@ -159,11 +159,11 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                         #CRONS
                         if ($cronAttributes['cron_name'] == 'cron_metrics') {
                             include("crontasks/cron_metrics.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_delete' && ($settings['deactivate_datadown'] != "1" || $settings['deactivate_datahub'] != "1")) {
+                        } else if ($cronAttributes['cron_name'] == 'cron_delete' && ($settings['deactivate_datadown'][1] != "1" || $settings['deactivate_datahub'][1] != "1")) {
                             include("crontasks/cron_delete_AWS.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder' && ($settings['deactivate_datadown'] != "1" || $settings['deactivate_datahub'] != "1")) {
+                        } else if ($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder' && ($settings['deactivate_datadown'][1] != "1" || $settings['deactivate_datahub'][1] != "1")) {
                             include("crontasks/cron_data_upload_expiration_reminder.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown'] != "1" || $settings['deactivate_datahub'] != "1")) {
+                        } else if ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown'][1] != "1" || $settings['deactivate_datahub'][1] != "1")) {
                             include("crontasks/cron_data_upload_notification.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1') {
                             //Every First Monday of the Month
