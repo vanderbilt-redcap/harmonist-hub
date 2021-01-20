@@ -181,8 +181,13 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function hook_every_page_before_render($project_id=null) {
         if (PAGE == "ProjectSetup/index.php") {
-//            echo "<script src='".CareerDev::link("/js/jquery.min.js")."'></script>\n";   // change this line to ensure that jquery is included
+            echo "<script type='text/javascript' src='".$this->getUrl('js/jquery-3.3.1.min.js')."'></script>\n";
             echo "
+            <style>
+                .chklisttext {
+                    font-size: 13px;
+                }
+            </style>
             <script>
                 $(document).ready(function() { $('.chklist.round:eq(6)').hide(); });
             </script>\n";
