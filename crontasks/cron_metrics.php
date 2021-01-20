@@ -4,7 +4,7 @@ $date = new \DateTime();
 
 error_log("Harmonist Hub - METRICS PID: ".$pidsArray['METRICS']);
 if($pidsArray['METRICS'] == "") {
-    $record_id_metrics = $module->framework->addAutoNumberedRecord($pidsArray['METRICS']);
+    $record_id_metrics = $this->framework->addAutoNumberedRecord($pidsArray['METRICS']);
     $arrayMetrics = array(array('record_id' => $record_id_metrics));
     $arrayMetrics[0]['date'] = $date->format('Y-m-d H:i:s');
 
@@ -86,7 +86,7 @@ if($pidsArray['METRICS'] == "") {
     }
     $req_id = array_unique($req_id);
 
-    $query = $module->framework->createQuery();
+    $query = $this->framework->createQuery();
     $query->add("SELECT record FROM redcap_data WHERE field_name = ? AND project_id = ? AND 'value' = ?", ["approval_y", $pidsArray['RMANAGER'], "9"]);
     $query->add('and')->addInClause('record ', $req_id);
     $query->add('group by record');
@@ -97,7 +97,7 @@ if($pidsArray['METRICS'] == "") {
         }
     }
 
-    $query = $module->framework->createQuery();
+    $query = $this->framework->createQuery();
     $query->add("SELECT a.record FROM redcap_data a INNER JOIN redcap_data b on a.record=b.record and a.project_id=b.project_id WHERE a.field_name = ? AND a.project_id = ? ", ["request_id", $pidsArray['COMMENTSVOTES']]);
     $query->add('and')->addInClause('a.value ', $req_id);
     $query->add('group by a.record');
@@ -110,7 +110,7 @@ if($pidsArray['METRICS'] == "") {
     }
     $arrayMetrics[0]['comments'] = $total_comments;
 
-    $query = $module->framework->createQuery();
+    $query = $this->framework->createQuery();
     $query->add("SELECT * FROM redcap_data WHERE field_name = ? AND project_id = ? ", ["response_pi_level", $pidsArray['COMMENTSVOTES']]);
     $query->add('and')->addInClause('record ', $comments_id);
     $query->add('group by record');
@@ -127,7 +127,7 @@ if($pidsArray['METRICS'] == "") {
     $arrayMetrics[0]['comments_pi'] = $number_comments_pi;
     $arrayMetrics[0]['comments_n'] = $number_comments_nonpi;
 
-    $query = $module->framework->createQuery();
+    $query = $this->framework->createQuery();
     $query->add("SELECT * FROM redcap_data WHERE field_name = ? AND project_id = ? ", ["pi_vote", $pidsArray['COMMENTSVOTES']]);
     $query->add('and')->addInClause('record ', $comments_id);
     $query->add('group by record');
@@ -142,7 +142,7 @@ if($pidsArray['METRICS'] == "") {
     }
     $arrayMetrics[0]['votes'] = $number_votes;
 
-    $query = $module->framework->createQuery();
+    $query = $this->framework->createQuery();
     $query->add("SELECT * FROM redcap_data WHERE field_name = ? AND project_id = ? ", ["vote_now", $pidsArray['COMMENTSVOTES']]);
     $query->add('and')->addInClause('record ', $comments_id);
     $query->add('group by record');
@@ -225,7 +225,7 @@ if($pidsArray['METRICS'] == "") {
     $arrayMetrics[0]['requests_c'] = $completerequests;
 
 #USERS
-    $query = $module->framework->createQuery();
+    $query = $this->framework->createQuery();
     $query->add("SELECT count(*) as total_registered_users FROM redcap_data WHERE field_name = ? AND project_id = ? AND value in (1,2,3)", ["harmonist_regperm", $pidsArray['PEOPLE']]);
     $q = $query->execute();
     $arrayMetrics[0]['users'] = $q->fetch_assoc()['total_registered_users'];
@@ -234,7 +234,7 @@ if($pidsArray['METRICS'] == "") {
     $number_users_pi = count(ProjectData::getProjectInfoArray($RecordSetUsersPi));
     $arrayMetrics[0]['users_pi'] = $number_users_pi;
 
-    $query = $module->framework->createQuery();
+    $query = $this->framework->createQuery();
     $query->add("SELECT count(*) as number_users_accesslink FROM redcap_data WHERE field_name = ? AND project_id = ? AND DATEDIFF(NOW(),value) between 0 AND 30", ["last_requested_token_d", $pidsArray['PEOPLE']]);
     $q = $query->execute();
     $arrayMetrics[0]['users_access'] = $q->fetch_assoc()['number_users_accesslink'];
