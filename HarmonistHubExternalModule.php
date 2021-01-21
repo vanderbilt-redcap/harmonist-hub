@@ -8,6 +8,7 @@ use ExternalModules\ExternalModules;
 include_once(__DIR__ . "/classes/REDCapManagement.php");
 include_once(__DIR__ . "/classes/ArrayFunctions.php");
 include_once(__DIR__ . "/classes/ProjectData.php");
+include_once(__DIR__ . "functions.php");
 
 require_once(dirname(__FILE__)."/vendor/autoload.php");
 
@@ -361,7 +362,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             error_log("createpdf - project_id:" . $project_id);
 
             $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
-            $settingsPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+            $settingsPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
             if($settingsPID != "") {
                 $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
 
@@ -388,7 +389,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             error_log("Generate PDF - project_id:" . $project_id);
 
             $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
-            $settingsPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+            $settingsPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
             if($settingsPID != "") {
                 $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
 
@@ -410,7 +411,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function hasJsoncopyBeenUpdated($type,$settings, $project_id){
         $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='JSONCOPY'");
-        $jsoncopyPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+        $jsoncopyPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
         if(ENVIRONMENT == "DEV"){
             $qtype = $this->query("SELECT MAX(record) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record",[$jsoncopyPID,'type',$type]);
         }else{
@@ -419,7 +420,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $rowtype = $qtype->fetch_assoc();
 
         $RecordSetJsonCopy = \REDCap::getData($jsoncopyPID, 'array', array('record_id' => $rowtype['record']));
-        $jsoncopy = getProjectInfoArray($RecordSetJsonCopy)[0];
+        $jsoncopy = ProjectData::getProjectInfoArray($RecordSetJsonCopy)[0];
         $today = date("Y-m-d");
         if($jsoncopy["jsoncopy_file"] != "" && strtotime(date("Y-m-d",strtotime($jsoncopy['json_copy_update_d']))) == strtotime($today)){
             return true;
@@ -443,13 +444,13 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         error_log("cron - createAndSavePDFCron");
 
         $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='DATAMODEL'");
-        $dataModelPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+        $dataModelPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
 
         $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
-        $settingsPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+        $settingsPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
 
         $RecordSetDataModel = \REDCap::getData($dataModelPID, 'array');
-        $dataTable = getProjectInfoArrayRepeatingInstruments($RecordSetDataModel);
+        $dataTable = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetDataModel);
 
         if(!empty($dataTable)) {
             $tableHtml = \Functions\generateTablesHTML_pdf($this, $dataTable,false,false, $project_id, $dataModelPID);
@@ -543,10 +544,10 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     function createAndSaveJSONCron($project_id){
         error_log("createpdf - createAndSaveJSONCron");
         $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='DATAMODEL'");
-        $dataModelPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+        $dataModelPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
 
         $RecordSetDataModel = \REDCap::getData($dataModelPID, 'array');
-        $dataTable = getProjectInfoArrayRepeatingInstruments($RecordSetDataModel);
+        $dataTable = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetDataModel);
         $dataFormat = $this->getChoiceLabels('data_format', $dataModelPID);
 
         foreach ($dataTable as $data) {
@@ -583,7 +584,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     function saveJSONCopyVarSearch($jsonArray, $project_id){
         error_log("createpdf - saveJSONCopyVarSearch");
         $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='DATAMODEL'");
-        $settingsPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+        $settingsPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
 
         #create and save file with json
         $filename = "jsoncopy_file_variable_search_".date("YmdsH").".txt";
@@ -611,7 +612,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function checkAndUpdateJSONCopyProject($type, $last_record, $jsoncocpy, $settings, $project_id){
         $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='JSONCOPY'");
-        $jsoncopyPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+        $jsoncopyPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
 
         if($jsoncocpy["jsoncopy_file"] != ""){
             $q = $this->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$jsoncocpy["jsoncopy_file"]]);
