@@ -15,7 +15,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $extra_outputs = ProjectData::getProjectInfoArray($RecordSetExtraOut);
     ArrayFunctions::array_sort_by_column($extra_outputs, 'output_year', SORT_DESC);
 
-    $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
+    $abstracts_publications_type = $this->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
     $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
     $abstracts_publications_badge_text = array("1" => "badge-manuscript-text", "2" => "badge-abstract-text", "3" => "badge-poster-text", "4" => "badge-presentation-text", "5" => "badge-report-text", "99" => "badge-other-text");
 
@@ -45,16 +45,16 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
                 $file = '';
                 if ($concept['output_file'][$index] != "") {
-                    $file = \Functions\getFileLink($module, $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                    $file = \Functions\getFileLink($this, $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                 }
 
-                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "output_record", "");
-                $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                $passthru_link = $this->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "output_record", "");
+                $survey_link = $this->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                 $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
                 $table_aux = array();
-                $table_aux['concept'] = '<a href="'.$module->getUrl('index.php?pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']) . '">' . $concept['concept_id'] . '</a>';
+                $table_aux['concept'] = '<a href="'.$this->getUrl('index.php?pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']) . '">' . $concept['concept_id'] . '</a>';
                 $table_aux['year'] = '<strong>' . $concept['output_year'][$index] . '</strong>';
                 $table_aux['region'] = '<span class="badge badge-pill badge-draft">MR</span>';
                 $table_aux['conf'] = $concept['output_venue'][$index];
@@ -92,11 +92,11 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
             $file = '';
             if ($output['output_file'] != "") {
-                $file = \Functions\getFileLink($module, $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                $file = \Functions\getFileLink($this, $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
             }
 
-            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
-            $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+            $passthru_link = $this->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
+            $survey_link = $this->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
             $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
             $table_aux = array();
@@ -129,7 +129,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $output = file_get_contents(EDOC_PATH . $storedName);
     $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
     //Save document on DB
-    $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$filename,$filesize,'txt','application/octet-stream','0',$pidsArray['SETTINGS'], date('Y-m-d h:i:s')]);
+    $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$filename,$filesize,'txt','application/octet-stream','0',$pidsArray['SETTINGS'], date('Y-m-d h:i:s')]);
     $docId = db_insert_id();
 
     //Add document DB ID to project
