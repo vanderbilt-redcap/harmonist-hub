@@ -2,7 +2,7 @@
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 require_once "projects.php";
 
-$code = \Functions\getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
+$code = \Vanderbilt\HarmonistHubExternalModule\getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 $exploded = array();
 parse_str($code, $exploded);
 

@@ -7,7 +7,7 @@ $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
 $timestamp = strtotime(date("Y-m-d H:i:s"));
 $_SESSION[$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')."_unit_test_timestamp"] = $timestamp;
-$codeCrypt = \Functions\getCrypt("start_".$timestamp,'e',$secret_key,$secret_iv);
+$codeCrypt = \Vanderbilt\HarmonistHubExternalModule\getCrypt("start_".$timestamp,'e',$secret_key,$secret_iv);
 
 echo json_encode($codeCrypt);
 ?>

@@ -19,14 +19,14 @@ ArrayFunctions::array_sort_by_column($requests, 'due_d');
 
 $request_type_label = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
 $request_response_person = $module->getChoiceLabels('response_person', IEDEA_RMANAGER);
-$numberOfOpenRequest = \Functions\numberOfOpenRequest($requests,$current_user['person_region']);
+$numberOfOpenRequest = \Vanderbilt\HarmonistHubExternalModule\numberOfOpenRequest($requests,$current_user['person_region']);
 
 $request_admin = "";
 if($isAdmin) {
     $RecordSetRM_admin = \REDCap::getData(IEDEA_RMANAGER, 'array', null);
     $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM_admin);
     ArrayFunctions::array_sort_by_column($request_admin, 'requestopen_ts');
-    $numberOfAdminRequest = \Functions\numberOfAdminRequest($request_admin);
+    $numberOfAdminRequest = \Vanderbilt\HarmonistHubExternalModule\numberOfAdminRequest($request_admin);
 }
 ?>
 
@@ -41,7 +41,7 @@ if($isAdmin) {
             </button>
             <div class="imgNavbar">
                 <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS)?>" style="text-decoration: none;float:left">
-                    <img src='<?=\Functions\getFile($module,$settings['hub_logo'], 'src');?>' style='width:100px;height:40px;' class='wiki_logo_img' alt="IeDEA Logo">
+                    <img src='<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module,$settings['hub_logo'], 'src');?>' style='width:100px;height:40px;' class='wiki_logo_img' alt="IeDEA Logo">
                 </a>
                     <?php if(empty($token) || array_key_exists('sout', $_REQUEST)){ ?>
                         <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS)?>" style="text-decoration: none;float:left" class="hub_header_title">

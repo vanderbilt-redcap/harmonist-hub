@@ -22,7 +22,7 @@ $about = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetAbout)[0
 
             echo '<div class="col-sm-6 col-md-2">'.
             '<div class="thumbnail">'.
-                '<img src="'.\Functions\getFile($module,$about['about_photo'][$id],'src').'" alt="'.$about['about_firstname'][$id].' '.$about['about_lastname'][$id].'" class="about_portrait">'.
+                '<img src="'.\Vanderbilt\HarmonistHubExternalModule\getFile($module,$about['about_photo'][$id],'src').'" alt="'.$about['about_firstname'][$id].' '.$about['about_lastname'][$id].'" class="about_portrait">'.
                 '<div class="caption" style="text-align: center">'.
                     '<h4 style="min-height: 50px;">'.$about['about_firstname'][$id].' '.$about['about_lastname'][$id].$degree.'</h4>'.
                     '<p>'.$about['about_project_title'][$id].'</p>'.

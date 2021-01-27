@@ -453,7 +453,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $dataTable = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetDataModel);
 
         if(!empty($dataTable)) {
-            $tableHtml = \Functions\generateTablesHTML_pdf($this, $dataTable,false,false, $project_id, $dataModelPID);
+            $tableHtml = \Vanderbilt\HarmonistHubExternalModule\generateTablesHTML_pdf($this, $dataTable,false,false, $project_id, $dataModelPID);
         }
 
         #FIRST PAGE
@@ -470,7 +470,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
         $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }a{text-decoration: none;}</style>';
 
-        $img = \Functions\getFile($this, $settings['des_pdf_logo'],'pdf');
+        $img = \Vanderbilt\HarmonistHubExternalModule\getFile($this, $settings['des_pdf_logo'],'pdf');
 
         $html_pdf = "<html><head><meta http-equiv='Content-Type' content='text/html' charset='UTF-8' /><style>* { font-family: DejaVu Sans, sans-serif; }</style></head><body style='font-family:\"Calibri\";font-size:10pt;'>".$page_num
             ."<div class='footer' style='left: 590px;'><span class='page-number'>Page </span></div>"
@@ -588,7 +588,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
         #create and save file with json
         $filename = "jsoncopy_file_variable_search_".date("YmdsH").".txt";
-        $storedName = date("YmdsH")."_pid".$settingsPID."_".\Functions\getRandomIdentifier(6).".txt";
+        $storedName = date("YmdsH")."_pid".$settingsPID."_".\Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6).".txt";
 
         $file = fopen(EDOC_PATH.$storedName,"wb");
         fwrite($file,json_encode($jsonArray,JSON_FORCE_OBJECT));
@@ -620,14 +620,14 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 $path = EDOC_PATH.$row['stored_name'];
                 $strJsonFileContents = file_get_contents($path);
                 $last_array = json_decode($strJsonFileContents, true);
-                $array_data = call_user_func_array("\Functions\createProject".strtoupper($type)."JSON",array($this, $project_id));
+                $array_data = call_user_func_array("\Vanderbilt\HarmonistHubExternalModule\createProject".strtoupper($type)."JSON",array($this, $project_id));
                 $new_array = json_decode($array_data['jsonArray'],true);
                 $result_prev = array_filter_empty(multi_array_diff($last_array,$new_array));
                 $result = array_filter_empty(multi_array_diff($new_array,$last_array));
                 $record = $array_data['record_id'];
             }
         }else{
-            $array_data = call_user_func_array("\Functions\createProject".strtoupper($type)."JSON",array($this, $project_id));
+            $array_data = call_user_func_array("\Vanderbilt\HarmonistHubExternalModule\createProject".strtoupper($type)."JSON",array($this, $project_id));
             $result = json_decode($array_data['jsonArray'],true);
             $result_prev = "";
             $record = $array_data['record_id'];

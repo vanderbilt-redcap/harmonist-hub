@@ -5,7 +5,7 @@ $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null
 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-$header =  \Functions\getRequestHeader($regions,$current_user['person_region'],$settings['vote_grid'],'0');
+$header =  \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions,$current_user['person_region'],$settings['vote_grid'],'0');
 
 $title = "Requests";
 $link_all_requests = '';
@@ -19,16 +19,16 @@ $pending_req = '';
 
 foreach ($requests as $req){
     if (($_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || $_REQUEST['type'] == "") {
-        if (!\Functions\hideRequestForNonVoters($settings, $req, $person_region)) {
-            if (\Functions\showClosedRequest($settings, $req, $current_user['person_region'])) {
+        if (!\Vanderbilt\HarmonistHubExternalModule\hideRequestForNonVoters($settings, $req, $person_region)) {
+            if (\Vanderbilt\HarmonistHubExternalModule\showClosedRequest($settings, $req, $current_user['person_region'])) {
                 //COMPLETED REQUESTS
-                $completed_req .= \Functions\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
-            } else if (\Functions\showPendingRequest($req['request_id'], $req, $current_user['person_region']) && $current_user['pendingpanel_y'][0] == '1' && $req['region_response_status'][$current_user['person_region']] != '2') {
+                $completed_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
+            } else if (\Vanderbilt\HarmonistHubExternalModule\showPendingRequest($req['request_id'], $req, $current_user['person_region']) && $current_user['pendingpanel_y'][0] == '1' && $req['region_response_status'][$current_user['person_region']] != '2') {
                 //PENDING REQUESTS
-                $pending_req .= \Functions\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
-            } else if (\Functions\showOpenRequest($req, $current_user['person_region']) && $req['region_response_status'][$current_user['person_region']] != '2') {
+                $pending_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+            } else if (\Vanderbilt\HarmonistHubExternalModule\showOpenRequest($req, $current_user['person_region']) && $req['region_response_status'][$current_user['person_region']] != '2') {
                 //OPEN REQUESTS
-                $current_req .= \Functions\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $current_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
             }
         }
     }

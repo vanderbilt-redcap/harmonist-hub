@@ -63,9 +63,9 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             $request_dataCall_arc = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
             ArrayFunctions::array_sort_by_column($request_dataCall_arc,'sop_due_d',SORT_DESC);
             if(!empty($request_dataCall_arc)) {
-                echo \Functions\getDataCallHeader($current_user['person_region'],1);
+                echo \Vanderbilt\HarmonistHubExternalModule\getDataCallHeader($current_user['person_region'],1);
                 foreach ($request_dataCall_arc as $sop){
-                    echo \Functions\getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret_iv,1,'a');
+                    echo \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret_iv,1,'a');
                 }
             }else{?>
                 <tbody>

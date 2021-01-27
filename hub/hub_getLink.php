@@ -19,7 +19,7 @@ if(!empty($_POST['email'])) {
     if(strtolower($people['email']) == strtolower($_POST['email']) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
         $arrayLogin = array(array('record_id' => $people['record_id']));
 
-        $token = \Functions\getRandomIdentifier(12);
+        $token = \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(12);
         $send_option = "";
         if(!empty($current_option)){
             foreach ($options as $option){

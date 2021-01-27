@@ -8,9 +8,9 @@ $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null
 $regionstbl = ProjectData::getProjectInfoArray($RecordSetRegions);
 ArrayFunctions::array_sort_by_column($regionstbl, 'region_code');
 
-$region_array = \Functions\getTBLCenterUpdatePercentRegions($TBLCenter, $regionstbl, $settings['pastlastreview_dur']);
+$region_array = \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentRegions($TBLCenter, $regionstbl, $settings['pastlastreview_dur']);
 
-$harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms'], 8);
+$harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 8);
 
 $RecordSetRegionsAll = \REDCap::getData(IEDEA_REGIONS, 'array', null);
 $regions_all = ProjectData::getProjectInfoArray($RecordSetRegionsAll);
@@ -109,7 +109,7 @@ if(array_key_exists('message', $_REQUEST)){
         <div style="float:left">
             <?php
             if($person_region['showregion_y'] == '1') {
-                echo '<ul class="list-inline" style="padding-left: 10px;padding-top: 7px;">Your region: <li><span style="padding-right:5px">' . $map_region . '</span>' . \Functions\getTBLCenterUpdatePercentLabel($region_array[$map_region]) . '</li></ul>';
+                echo '<ul class="list-inline" style="padding-left: 10px;padding-top: 7px;">Your region: <li><span style="padding-right:5px">' . $map_region . '</span>' . \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentLabel($region_array[$map_region]) . '</li></ul>';
             }
             ?>
         </div>
@@ -142,7 +142,7 @@ if(array_key_exists('message', $_REQUEST)){
         <?php
             foreach ($region_array as $pregion => $percent){
                 if($map_region != $pregion){
-                    echo '<li style="margin-right: 15px;"><span style="padding-right:5px">'.$pregion.'</span>'.\Functions\getTBLCenterUpdatePercentLabel($percent).'</li>';
+                    echo '<li style="margin-right: 15px;"><span style="padding-right:5px">'.$pregion.'</span>'.\Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentLabel($percent).'</li>';
                 }
             }
         ?>
@@ -195,7 +195,7 @@ if(array_key_exists('message', $_REQUEST)){
                                     $last_update = "<span class='text-error'>" . $center['last_reviewed_d'] . "</span>";
                                 }
 
-                                $missing_fields = \Functions\searchTBLMissingFields($center);
+                                $missing_fields = \Vanderbilt\HarmonistHubExternalModule\searchTBLMissingFields($center);
 
                                 echo '<tr>
                                         <td width="350px">' . $center['center'] . '</td>' .

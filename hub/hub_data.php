@@ -33,7 +33,7 @@ $number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDataDownloa
 $RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
 $TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
 
-$region_tbl_percent = \Functions\getTBLCenterUpdatePercentRegions($TBLCenter, $person_region['region_code'], $settings['pastlastreview_dur']);
+$region_tbl_percent = \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentRegions($TBLCenter, $person_region['region_code'], $settings['pastlastreview_dur']);
 
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
 $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
@@ -226,15 +226,15 @@ if($settings['deactivate_datadown'][1] != "1"){
                                 echo "<td style='width: 755px;' class='media'>" .
                                     "<span class='label news-label' style='background-color:".$news_icon_color[$event['news_type']].";' title='".$news_type[$event['news_type']]."'><i class='fa ".$event['news_type']."'></i></span>".
                                     "<div style='float:left;padding-left: 10px;width:95%'>".
-                                    "<span>" . \Functions\getPeopleName($event['news_person'], 'email') . " on " . $event['news_d'] ."</span>".
+                                    "<span>" . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($event['news_person'], 'email') . " on " . $event['news_d'] ."</span>".
                                     "<div><strong>".$event['news_title']. "</strong></div>".
                                     "</div>";
                                 echo "<div class='comment more' style='display: inline-block;'>".$event['news']." ";
                                 if($event['news_file'] != "" && $event['news_file2'] == ""){
-                                    echo "<div style='padding-top: 10px;padding-bottom: 10px'>".\Functions\getFileLink($module, $event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
+                                    echo "<div style='padding-top: 10px;padding-bottom: 10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
                                 }else if($event['news_file'] != "" && $event['news_file2'] != ""){
-                                    echo "<div style='padding-top: 10px;'>".\Functions\getFileLink($module, $event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
-                                    echo  "<div style='padding-bottom: 10px'>".\Functions\getFileLink($module, $event['news_file2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
+                                    echo "<div style='padding-top: 10px;'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
+                                    echo  "<div style='padding-bottom: 10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $event['news_file2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
                                 }
                                 echo "</div>";
 
@@ -267,7 +267,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                     $i = 0;
                     foreach ($all_data_recent_activity as $recent_activity) {
                         if ($i < $number_of_recentactivity) {
-                            $time = \Functions\getDateForHumans($recent_activity['responsecomplete_ts']);
+                            $time = \Vanderbilt\HarmonistHubExternalModule\getDateForHumans($recent_activity['responsecomplete_ts']);
                             if($recent_activity['comments'] != '') {
                                 echo '<li class="list-group-item">';
 
@@ -279,7 +279,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                                 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
                                 $sop_concept_id = $sop['sop_concept_id'];
                                 $sop_name = $sop['sop_name'];
-                                $assoc_concept = \Functions\getReqAssocConceptLink($module, $sop_concept_id, "");
+                                $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $sop_concept_id, "");
 
                                 $title = substr($sop_name, 0, 50) . '...';
 
@@ -321,7 +321,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                                 $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $data_upload_region));
                                 $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                                $assoc_concept = \Functions\getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept'], "");
+                                $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept'], "");
 
                                 $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
@@ -338,7 +338,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                                 $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $recent_activity['data_upload_region']));
                                 $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                                $assoc_concept = \Functions\getReqAssocConceptLink($module, $recent_activity['data_assoc_concept'], "");
+                                $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $recent_activity['data_assoc_concept'], "");
 
                                 $icon = '<i class="fa fa-fw fa-arrow-up text-info" aria-hidden="true"></i>';
 
@@ -405,7 +405,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                         <span style="float:left;font-weight: bold">tblCENTER</span>
                         <?php
                         if($person_region['showregion_y'] == '1') {
-                           echo \Functions\getTBLCenterUpdatePercentLabel($region_tbl_percent);
+                           echo \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentLabel($region_tbl_percent);
                         }
                         ?>
                     </h5>

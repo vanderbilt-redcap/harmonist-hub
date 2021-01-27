@@ -93,8 +93,8 @@ $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
 $conceptsData = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,'');
 $regionalmrdata = array();
 foreach ($concept_type as $output_type=>$type){
-    ${"regionalmrdata_".$type} = \Functions\getRegionalAndMR($conceptsData,$type, $regionalmrdata,$settings['oldestyear_rmr_'.$type],$output_type);
-    ${"data_".$type} = \Functions\getDataRMRTable(${"regionalmrdata_".$type}['outputs'],$type);
+    ${"regionalmrdata_".$type} = \Vanderbilt\HarmonistHubExternalModule\getRegionalAndMR($conceptsData,$type, $regionalmrdata,$settings['oldestyear_rmr_'.$type],$output_type);
+    ${"data_".$type} = \Vanderbilt\HarmonistHubExternalModule\getDataRMRTable(${"regionalmrdata_".$type}['outputs'],$type);
 }
 
 $regionalmrpubs_color_manuscripts = ['#aa2600','#d1691f','#f5a549'];
@@ -858,11 +858,11 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
     $consortumcomp = "<tr style='background-color: #f5f5f5'><td><strong>Adult</strong></td>
                            <td width='120px'>".$tbl_adultped_array['adultstotal']."</td>
                            <td>".count($tbl_adultped_array['adultstotalcountry'])."</td>
-                           <td width='419px'><div class='more'>".\Functions\implode_key_and_value($tbl_adultped_array['adultstotalcountry'])."</div></td></tr>";
+                           <td width='419px'><div class='more'>".\Vanderbilt\HarmonistHubExternalModule\implode_key_and_value($tbl_adultped_array['adultstotalcountry'])."</div></td></tr>";
     $consortumcomp .= "<tr style='background-color: #f5f5f5'><td><strong>Pediatric</strong></span></td>
                            <td>".$tbl_adultped_array['pedsstotal']."</td>
                            <td>".count($tbl_adultped_array['pedsstotalcountry'])."</td>
-                           <td width='419px'><div class='more'>".\Functions\implode_key_and_value($tbl_adultped_array['pedsstotalcountry'])."</div></td></tr>";
+                           <td width='419px'><div class='more'>".\Vanderbilt\HarmonistHubExternalModule\implode_key_and_value($tbl_adultped_array['pedsstotalcountry'])."</div></td></tr>";
     $total_countries = 0;
     foreach($tbl_array as $region=>$table ){
         if($region != 'country') {
@@ -871,13 +871,13 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
             $consortumcomp .= "<tr><td width='120px'><strong>" . $region_name[$region] . "</strong></span></td>
                             <td>" . $tbl_array[$region]['sites'] . "</td>
                             <td>" . count($tbl_array[$region]['country']) . "</td>
-                            <td width='419px'><div class='more'>" . \Functions\implode_key_and_value($tbl_array[$region]['country']) . "</div></td></tr>";
+                            <td width='419px'><div class='more'>" . \Vanderbilt\HarmonistHubExternalModule\implode_key_and_value($tbl_array[$region]['country']) . "</div></td></tr>";
         }
     }
     $consortumcomp_all = "<tr style='background-color: aliceblue'><td><strong>Total</strong></td>
                            <td width='120px'>".$tbl_adultped_array['sites']."</td>
                            <td>".$total_countries."</td>
-                           <td width='419px'><div class='more'>".\Functions\implode_key_and_value($tbl_array['country'])."</div></td></tr>";
+                           <td width='419px'><div class='more'>".\Vanderbilt\HarmonistHubExternalModule\implode_key_and_value($tbl_array['country'])."</div></td></tr>";
 
     $consortumcomp = $consortumcomp_all.$consortumcomp;
     ?>

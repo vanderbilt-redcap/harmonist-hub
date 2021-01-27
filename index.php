@@ -89,7 +89,7 @@ $hub_profile = $module->getProjectSetting('hub-profile');
                     <meta name="author" content="">
                     <meta http-equiv="Cache-control" content="public">
                     <meta name="theme-color" content="#fff">
-                    <link rel="icon" href="<?=\Functions\getFile($module,$settings['hub_logo_favicon'],'url')?>">
+                    <link rel="icon" href="<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module,$settings['hub_logo_favicon'],'url')?>">
 
                     <?php include_once("head_scripts.php");?>
 
@@ -158,11 +158,11 @@ $hub_profile = $module->getProjectSetting('hub-profile');
                 $token = "";
                 if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd')  || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'iut') || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
                     $_SESSION['token'] = array();
-                    $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')] = \Functions\getToken(USERID);
+                    $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')] = \Vanderbilt\HarmonistHubExternalModule\getToken(USERID);
                     $token = $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')];
-                }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Functions\isTokenCorrect($_REQUEST['token'])){
+                }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'])){
                     $token = $_REQUEST['token'];
-                }else if(!empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])&& \Functions\isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])) {
+                }else if(!empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])&& \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])) {
                     $token = $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')];
                 }
 
@@ -179,7 +179,7 @@ $hub_profile = $module->getProjectSetting('hub-profile');
                         unset($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')]);
                     }
 
-                    if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Functions\isTokenCorrect($_REQUEST['token'])) {
+                    if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'])) {
                         $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')] = $_REQUEST['token'];
                     }
 
@@ -193,7 +193,7 @@ $hub_profile = $module->getProjectSetting('hub-profile');
                         include('hub/hub_login.php');
                     }else if($current_user['active_y'] == "0"){
                         include('hub/hub_login.php');
-                    }else if(!empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')]) && \Functions\isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])){
+                    }else if(!empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')]) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])){
                         if( !array_key_exists('option', $_REQUEST)){
                             include('hub/hub_home.php');
                         }

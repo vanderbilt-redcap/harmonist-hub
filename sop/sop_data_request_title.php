@@ -11,7 +11,7 @@ if($sop !="") {
 
     $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $sop['sop_concept_id']));
     $concept_id = ProjectData::getProjectInfoArray($RecordSetConceptSheets)[0]['concept_id'];
-    $concept = \Functions\getReqAssocConceptLink($module, $sop['sop_concept_id'], 1);
+    $concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $sop['sop_concept_id'], 1);
 
     $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_creator']));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
@@ -27,7 +27,7 @@ if($sop !="") {
         $data_contact = $peopleDC['firstname'] . ' ' . $peopleDC['lastname']." (<a href='mailto:".$peopleDC['email']."'>".$peopleDC['email']."</a>)";
     }
 
-    $array_dates = \Functions\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1');
+    $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1');
 
     $status = 'badge-draft';
     if ($sop['sop_status'] == '1') {
@@ -67,7 +67,7 @@ if($sop !="") {
     }
 }
 
-$harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms'], 1);
+$harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
 ?>
 <script>
     $(function(){
@@ -172,7 +172,7 @@ $harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms']
                                     <a href="#" onclick="$(\'#hub_view_votes\').modal(\'show\');" >Edit Group Status</a>
                                 </li>';
                             $status = $sop['data_response_status'][$current_user['person_region']];
-                            $status_icons = \Functions\getDataCallStatusIcons($status);
+                            $status_icons = \Vanderbilt\HarmonistHubExternalModule\getDataCallStatusIcons($status);
                             $status_text = $status_type[$sop['data_response_status'][$current_user['person_region']]];
                             if ($sop['data_response_status'][$current_user['person_region']] == "") {
                                 $status_text = $status_type[0];
@@ -268,7 +268,7 @@ $harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms']
                                             }
 
                                             $status = $sop['data_response_status'][$region['record_id']];
-                                            $status_icons = \Functions\getDataCallStatusIcons($status);
+                                            $status_icons = \Vanderbilt\HarmonistHubExternalModule\getDataCallStatusIcons($status);
                                             $status_text = $status_type[$sop['data_response_status'][$region['record_id']]];
                                             if ($sop['data_response_status'][$region['record_id']] == "") {
                                                 $status_text = $status_type[0];
@@ -578,7 +578,7 @@ $harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms']
                         }
 
                         $status_row .= "<td style='text-align: center'>";
-                        $status_icons = \Functions\getDataCallStatusIcons($sop['data_response_status'][$current_user['person_region']]);
+                        $status_icons = \Vanderbilt\HarmonistHubExternalModule\getDataCallStatusIcons($sop['data_response_status'][$current_user['person_region']]);
                         echo $status_icons.'<span class="status-text"> '.$status_text.'</span>';
                         ?>
                     </div>
@@ -646,10 +646,10 @@ $harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms']
                 $extension = ($row_sop_file['file_extension'] == 'pdf') ? "pdf-icon.png" : "word-icon.png";
                 $pdf_path = APP_PATH_PLUGIN . "/loadPDF.php?edoc=" . $sop["sop_finalpdf"];
 
-                $file_icon = \Functions\getFileLink($module, $sop["sop_finalpdf"], '1', '', $secret_key, $secret_iv,$current_user['record_id'],"");
+                $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $sop["sop_finalpdf"], '1', '', $secret_key, $secret_iv,$current_user['record_id'],"");
                 ?>
 
-                <a class="btn btn-default" href="downloadFile.php?code=<?= \Functions\getCrypt("sname=" . $row_sop_file['stored_name'] . "&file=" . urlencode($row_sop_file['doc_name'])."&edoc=".$sop["sop_finalpdf"]."&pid=".$current_user['record_id'], 'e', $secret_key, $secret_iv) ?>" target="_blank">
+                <a class="btn btn-default" href="downloadFile.php?code=<?= \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row_sop_file['stored_name'] . "&file=" . urlencode($row_sop_file['doc_name'])."&edoc=".$sop["sop_finalpdf"]."&pid=".$current_user['record_id'], 'e', $secret_key, $secret_iv) ?>" target="_blank">
                     <span class="fa fa-file-pdf-o"></span> Download PDF
                 </a>
             <?php } ?>
@@ -667,10 +667,10 @@ $harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms']
                         $extension = ($row_sop_file['file_extension'] == 'pdf') ? "pdf-icon.png" : "word-icon.png";
                         $pdf_path = $module->getUrl("loadPDF.php?pid=".IEDEA_PROJECTS."&edoc=" . $sop["sop_finalpdf"]);
 
-                        $file_icon = \Functions\getFileLink($module, $sop["sop_finalpdf"], '1', '', $secret_key, $secret_iv,$current_user['record_id'],"");
+                        $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $sop["sop_finalpdf"], '1', '', $secret_key, $secret_iv,$current_user['record_id'],"");
                         ?>
                         <span style="float: right;padding-right: 15px;"><?= $file_icon; ?></span>
-                        <a href="<?=$module->getUrl('downloadFile.php?code='.\Functions\getCrypt("sname=" . $row_sop_file['stored_name'] . "&file=" . urlencode($row_sop_file['doc_name'])."&edoc=".$sop["sop_finalpdf"]."&pid=".$current_user['record_id'], 'e', $secret_key, $secret_iv)) ?>"
+                        <a href="<?=$module->getUrl('downloadFile.php?code='.\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row_sop_file['stored_name'] . "&file=" . urlencode($row_sop_file['doc_name'])."&edoc=".$sop["sop_finalpdf"]."&pid=".$current_user['record_id'], 'e', $secret_key, $secret_iv)) ?>"
                            target="_blank" style="float: right;padding-right: 10px;">Download PDF </a>
                     <?php } ?>
                 </h3>
@@ -802,7 +802,7 @@ $harmonist_perm = \Functions\hasUserPermissions($current_user['harmonist_perms']
                                 if (!empty($comment['comments'])) {
                                     $gd_files .= "<br/>";
                                 }
-                                $gd_files .= \Functions\getFileLink($module, $comment['revised_file'], '', '', $secret_key, $secret_iv,$current_user['record_id'],"");
+                                $gd_files .= \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $comment['revised_file'], '', '', $secret_key, $secret_iv,$current_user['record_id'],"");
                             }
 
 

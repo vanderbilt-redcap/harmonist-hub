@@ -100,7 +100,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
                             echo '<tr>
                                     <td><span class="nowrap">'.$req['requestopen_ts'].'</span></td>
-                                    <td><strong>'.$request_type_label[$req['request_type']].'</strong><br>'.\Functions\getReqAssocConceptLink($module, $req['assoc_concept'], "").'</td>
+                                    <td><strong>'.$request_type_label[$req['request_type']].'</strong><br>'.\Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "").'</td>
                                     <td><a href="mailto:'.$req['contact_email'].'">'.$req['contact_name'].'</a>'.$region.'</td>
                                     <td class="hidden-xs"><a href="'.$module->getUrl('index.php?option=hub&record='.$req['request_id']).'" target="_blank">'.$req['request_title'].'</a></td>';
 
@@ -177,8 +177,8 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             $passthru_link_mr = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "mr_assignment_survey", "");
                             $survey_link_mr = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_mr['hash']);
 
-                            $req_type = \Functions\getReqAssocConceptLink($module, $req['assoc_concept'], "");
-                            $array_dates = \Functions\getNumberOfDaysLeftButtonHTML($req['due_d'], '', 'float:right', '0');
+                            $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "");
+                            $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($req['due_d'], '', 'float:right', '0');
 
                             $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']));
                             $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
@@ -282,7 +282,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             $passthru_link_mr = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "mr_assignment_survey", "");
                             $survey_link_mr = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_mr['hash']);
 
-                            $req_type = \Functions\getReqAssocConceptLink($module, $req['assoc_concept'], "");
+                            $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "");
 
                             $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']));
                             $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];

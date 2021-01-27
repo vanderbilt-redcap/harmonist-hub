@@ -160,7 +160,7 @@ $upload_type = $module->getChoiceLabels('upload_type', IEDEA_FILELIBRARY);
                             $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                            $file_pdf = (!is_numeric($filel['file'])) ? $filel['file_title'] : \Functions\getOtherFilesLink($module, $filel['file'], $filel['record_id'], $current_user['record_id'], $secret_key, $secret_iv, $filel['file_title']);
+                            $file_pdf = (!is_numeric($filel['file'])) ? $filel['file_title'] : \Vanderbilt\HarmonistHubExternalModule\getOtherFilesLink($module, $filel['file'], $filel['record_id'], $current_user['record_id'], $secret_key, $secret_iv, $filel['file_title']);
 
                             echo '<tr><td width="250x">' .$file_pdf . '</td>' .
                                 '<td width="450px"><div>' . $filel['file_description'] . '</div><div style="padding-top: 10px">'.$tags.'</div></td>' .

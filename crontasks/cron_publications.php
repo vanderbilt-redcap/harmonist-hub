@@ -45,7 +45,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
                 $file = '';
                 if ($concept['output_file'][$index] != "") {
-                    $file = \Functions\getFileLink($this, $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                    $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($this, $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                 }
 
                 $passthru_link = $this->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "output_record", "");
@@ -92,7 +92,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
             $file = '';
             if ($output['output_file'] != "") {
-                $file = \Functions\getFileLink($this, $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($this, $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
             }
 
             $passthru_link = $this->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
@@ -120,7 +120,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
     #create and save file with json
     $filename = "jsoncopy_file_publications_" . date("YmdsH") . ".txt";
-    $storedName = date("YmdsH") . "_pid" . $pidsArray['SETTINGS'] . "_" . \Functions\getRandomIdentifier(6) . ".txt";
+    $storedName = date("YmdsH") . "_pid" . $pidsArray['SETTINGS'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6) . ".txt";
 
     $file = fopen(EDOC_PATH . $storedName, "wb");
     fwrite($file, json_encode($table_array, JSON_HEX_QUOT | JSON_HEX_TAG));

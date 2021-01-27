@@ -67,8 +67,8 @@ foreach( $RecordSetTableTBLC as $data ){
         $areas["region"] = $data['region'];
         $areas["color"] = $colorCountryArray[$data['region']];
         $areas["title"] = $regionCountryArray[$data['region']].' - '.$iso3_to_name[$codes[$data['country']]];
-        $areas["selectedColor"] = \Functions\adjustColorLightenDarken($colorCountryArray[$data['region']],"30");
-        $areas["rollOverColor"] = \Functions\adjustColorLightenDarken($colorCountryArray[$data['region']],"30");
+        $areas["selectedColor"] = \Vanderbilt\HarmonistHubExternalModule\adjustColorLightenDarken($colorCountryArray[$data['region']],"30");
+        $areas["rollOverColor"] = \Vanderbilt\HarmonistHubExternalModule\adjustColorLightenDarken($colorCountryArray[$data['region']],"30");
 
         array_push($totalLocations, $locations);
         array_push($totalAreas, $areas);

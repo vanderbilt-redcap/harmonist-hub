@@ -52,7 +52,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                     $environment = " " . ENVIRONMENT." - ";
                 }
 
-                $name = \Functions\getPeopleName($comment['response_person'],"");
+                $name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($comment['response_person'],"");
 
                 $comment_time ="";
                 if(!empty($completion_time)){
@@ -63,7 +63,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
                 $gd_files = "<ol>";
                 if(!empty($comment['revised_file'])){
-                    $gd_files .= "<li>".\Functions\getFileLink($module,$comment['revised_file'],'',0,$secret_key,$secret_iv,$people['record_id'],"")."</li>";
+                    $gd_files .= "<li>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module,$comment['revised_file'],'',0,$secret_key,$secret_iv,$people['record_id'],"")."</li>";
                 }
                 else{
                     $gd_files .= "<li><i>None</i></li>";

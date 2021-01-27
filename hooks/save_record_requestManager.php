@@ -95,7 +95,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             $docId = "";
             while ($row = $q->fetch_assoc()) {
                 $finalConcept_PDF = $row['doc_name'];
-                $storedName = date("YmdsH") . "_pid" . IEDEA_HARMONIST . "_" . \Functions\getRandomIdentifier(6);
+                $storedName = date("YmdsH") . "_pid" . IEDEA_HARMONIST . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
                 $output = file_get_contents(EDOC_PATH . $row['stored_name']);
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
                 $q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',IEDEA_HARMONIST,date('Y-m-d h:i:s')]);
@@ -110,7 +110,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             $docId = "";
             while ($row = $q->fetch_assoc()) {
                 $finalConcept_PDF = $row['doc_name'];
-                $storedName = date("YmdsH") . "_pid" . IEDEA_HARMONIST . "_" . \Functions\getRandomIdentifier(6);
+                $storedName = date("YmdsH") . "_pid" . IEDEA_HARMONIST . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
                 $output = file_get_contents(EDOC_PATH . $row['stored_name']);
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
                 $q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',IEDEA_HARMONIST,date('Y-m-d h:i:s')]);
@@ -137,7 +137,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $message = "<div>Dear Administrator,</div>" .
             "<div>A new concept sheet <b>" . $request['mr_assigned'] . "</b> has been created in the Hub.</div><br/>" .
             "<div><ul><li><b>Active:</b> Y</li><li><b>Last Update:</b> " . $last_update . "</li><li><b>Concept ID:</b> " . $request['mr_assigned'] . "</li><li><b>Concept Title:</b> " . $request['request_title'] . "</li>" .
-            "<li><b>Contact Link:</b> " . \Functions\getPeopleName($request['contactperson_id']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $request['final_d'] . "</li>" .
+            "<li><b>Contact Link:</b> " . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($request['contactperson_id']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $request['final_d'] . "</li>" .
             "<li><b>WG Link:</b> " . $wgroup_name . "</li><li><b>WG2 Link:</b> " . $wgroup2_name . "</li><li><b>Concept File:</b> " . $finalConcept_PDF . "</li><li><b>Concept Word:</b> " . $finalConcept_DOC . "</li></ul></div><br/>";
 
         $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_HARMONIST . "&arm=1&id=" . $concept['record_id'];
@@ -194,7 +194,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             "<div><span style='color: red'>This concept already exists.</span></div><br/>" .
             "<div>Existing concept sheet data:</div><br/>" .
             "<div><ul><li><b>Active:</b> ".$concept['active_y']."</li><li><b>Last Update:</b> " . $concept['lastupdate_d'] . "</li><li><b>Concept ID:</b> " . $concept['concept_id'] . "</li><li><b>Concept Title:</b> " . $concept['concept_title'] . "</li>" .
-            "<li><b>Contact Link:</b> " . \Functions\getPeopleName($concept['contact_link']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $concept['ec_approval_d'] . "</li>" .
+            "<li><b>Contact Link:</b> " . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($concept['contact_link']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $concept['ec_approval_d'] . "</li>" .
             "<li><b>WG Link:</b> " . $wgroup_name . "</li><li><b>WG2 Link:</b> " . $wgroup2_name . "</li><li><b>Concept File:</b> " . $finalConcept_PDF . "</li><li><b>Concept Word:</b> " . $finalConcept_DOC . "</li></ul></div><br/>".
             "<div>Click <a href='" . $link . "' target='_blank'>this link</a> to see the existing concept sheet.</div><br/>" ;
 
