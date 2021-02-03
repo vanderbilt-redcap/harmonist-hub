@@ -146,7 +146,7 @@ class AllCrons
                         $downloaders_list . "<br/>" .
                         "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
-                    sendEmail($to, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person']);
+                    sendEmail($to, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset submission notification", $pidsArray['DATAUPLOAD']);
 
                 }
                 #Data Downloaders email
@@ -168,7 +168,7 @@ class AllCrons
                                 "A summary report for the dataset is also available on that page. The dataset will be deleted on " . $expire_date . " 23:59 ET</div><br/>" .
                                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
-                            sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id']);
+                            sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset submission notification", $pidsArray['DATAUPLOAD']);
                         }
                     }
                 }
@@ -362,7 +362,7 @@ class AllCrons
             if ($settings['hub_subs_monthly_digest'] != "") {
                 $emails = explode(';', $settings['hub_subs_monthly_digest']);
                 foreach ($emails as $email) {
-                    sendEmail($email, 'noreply@vumc.org', $settings['accesslink_sender_name'], $subject, $email_req, "Not in database");
+                    sendEmail($email, 'noreply@vumc.org', $settings['accesslink_sender_name'], $subject, $email_req, "Not in database","Monthly Digest", $pidsArray['RMANAGER']);
                 }
             }
         }
@@ -417,7 +417,7 @@ class AllCrons
                         "<div>The dataset you submitted to secure cloud storage in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
                         "This dataset will not be available for future downloads. To replace the deleted dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Submit Data on the <a href='" . $url . "' target='_blank'>Data page</a></strong>.</div><br/>" .
                         "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
-                    sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person']);
+                    sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
                 }
 
                 #to downloaders
@@ -452,7 +452,7 @@ class AllCrons
                                 "If you still need to access this dataset, please e-mail <a href='mailto:" . $peopleUp['email'] . "'>" . $peopleUp['email'] . "</a> to request a new dataset.</div><br/>" .
                                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
-                            sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id']);
+                            sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
                         }
                     }
                     $message['code_test'] = "1";
@@ -861,7 +861,7 @@ class AllCrons
         }
 
         if ($email) {
-            sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id']);
+            sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Data Request expiration reminder for " . $concept_id, $pidsArray['DATAUPLOAD']);
             \REDCap::logEvent("Reminder Sent<br/>Record " . $upload['record_id'], $reminder_num . " days reminder \nTo: " . $down['email'] . "\nConcept ID: " . $concept_id . "\n", null, null, null, $pidsArray['DATAUPLOAD']);
         }
         return $messageArray;
@@ -950,7 +950,7 @@ class AllCrons
         if ($settings['hub_email_pending_uploads'] != "") {
             $emails = explode(';', $settings['hub_email_pending_uploads']);
             foreach ($emails as $email) {
-                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $recordpdf);
+                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $recordpdf,"Pending dataset upload notification", $pidsArray['DATAUPLOAD']);
             }
         }
     }

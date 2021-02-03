@@ -44,7 +44,7 @@ if(!empty($_POST['email'])) {
         if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
-        sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $settings['hub_name']." Hub Access Link".$environment, $message,$people['record_id']);
+        sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $settings['hub_name']." Hub Access Link".$environment, $message,$people['record_id'],"Review Hub Access Sent",IEDEA_PEOPLE);
 
         $arrayLogin[0]['access_token'] = $token;
         $arrayLogin[0]['token_expiration_d'] = date('Y-m-d', strtotime("+".$settings['accesslink_dur']." day"));
@@ -64,7 +64,7 @@ if(!empty($_POST['email'])) {
         if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
-        sendEmail(strtolower($_POST['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database");
+        sendEmail(strtolower($_POST['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database","Access denied",IEDEA_PEOPLE);
     }
 }
 

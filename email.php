@@ -2,7 +2,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-function sendEmail($to, $sender_email, $sender_name, $subject, $message,$record_id){
+function sendEmail($to, $sender_email, $sender_name, $subject, $message, $record_id, $action_description="", $pid=""){
 
     if($sender_email == ""){
         $sender_email = " harmonist@vumc.org";
@@ -40,13 +40,12 @@ function sendEmail($to, $sender_email, $sender_name, $subject, $message,$record_
     $mail->DKIM_selector = 'PHPMailer';
     $mail->DKIM_passphrase = ''; //key is not encrypted
     if (!$mail->send()) {
-        \REDCap::email('datacore@vumc.org', 'harmonist@vumc.org',"Mailer Error", "Mailer Error:".$mail->ErrorInfo." in project ".IEDEA_PEOPLE);
+        \REDCap::email('datacore@vumc.org', 'harmonist@vumc.org',"Mailer Error", "Mailer Error:".$mail->ErrorInfo." in project ".$pid);
 
     } else {
         //Add some logs
-        $action_description = "Review Hub Access Sent";
-        $changes_made = "Email Link Sent to [record_id]:".$record_id.", [email]: ".$to;
-        \REDCap::logEvent($action_description,$changes_made,NULL,null,null,IEDEA_PEOPLE);
+        $changes_made = "[record_id]:".$record_id.", [email]: ".$to;
+        \REDCap::logEvent($action_description,$changes_made,NULL,null,null,$pid);
 
     }
     unlink($privatekeyfile);
