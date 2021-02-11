@@ -89,7 +89,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
 
             if(!empty($row_sop_file['doc_name'])) {
                 $extension = ($row_sop_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
-                $pdf_path = $module->getUrl("loadPDF.php?pid=".IEDEA_PROJECTS."&edoc=" . $sop["sop_finalpdf"]);
+                $pdf_path = $module->getUrl("loadPDF.php?pid=".IEDEA_PROJECTS."&edoc=" . $sop["sop_finalpdf"]."#navpanes=0&scrollbar=0");
 
                 $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $sop["sop_finalpdf"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                 ?>

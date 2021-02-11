@@ -665,7 +665,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
 
                     if (!empty($row_sop_file['doc_name'])) {
                         $extension = ($row_sop_file['file_extension'] == 'pdf') ? "pdf-icon.png" : "word-icon.png";
-                        $pdf_path = $module->getUrl("loadPDF.php?pid=".IEDEA_PROJECTS."&edoc=" . $sop["sop_finalpdf"]);
+                        $pdf_path = $module->getUrl("loadPDF.php?pid=".IEDEA_PROJECTS."&edoc=" . $sop["sop_finalpdf"]."#navpanes=0&scrollbar=0");
 
                         $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $sop["sop_finalpdf"], '1', '', $secret_key, $secret_iv,$current_user['record_id'],"");
                         ?>
@@ -679,7 +679,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
             <div id="collapse1" class="table-responsive panel-collapse collapse in" aria-expanded="true">
                 <?php if (!empty($row_sop_file['doc_name'])) { ?>
                     <iframe class="commentsform" id="redcap-frame" src="<?= $pdf_path ?>"
-                            style="border: none;width: 100%;height: 500px;"></iframe>
+                            style="border: none;width: 100%;height: 500px;" frameborder="0"></iframe>
                 <?php } else { ?>
                     <table class="table table-hover table-bordered table-list table-font-size">
                         <tbody>
