@@ -57,9 +57,9 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                 $table_aux['concept'] = '<a href="'.$this->getUrl('index.php?pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']) . '">' . $concept['concept_id'] . '</a>';
                 $table_aux['year'] = '<strong>' . $concept['output_year'][$index] . '</strong>';
                 $table_aux['region'] = '<span class="badge badge-pill badge-draft">MR</span>';
-                $table_aux['conf'] = $concept['output_venue'][$index];
+                $table_aux['conf'] = htmlentities($concept['output_venue'][$index]);
                 $table_aux['type'] = $abstracts_publications_type[$concept['output_type'][$index]];
-                $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$concept['output_type'][$index]] . '">' . $abstracts_publications_type[$concept['output_type'][$index]] . '</span><span style="display:none">.</span> <strong>' . $concept['output_title'][$index] . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . $concept['output_authors'][$index] . '</span>';
+                $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$concept['output_type'][$index]] . '">' . htmlentities($abstracts_publications_type[$concept['output_type'][$index]]) . '</span><span style="display:none">.</span> <strong>' . htmlentities($concept['output_title'][$index]) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($concept['output_authors'][$index]) . '</span>';
                 $table_aux['available'] = $available;
                 $table_aux['file'] = $file;
                 $table_aux['edit'] = $edit;
@@ -103,9 +103,9 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             $table_aux['concept'] = '<i>None</i>';
             $table_aux['year'] = $output['output_year'];
             $table_aux['region'] = $type;
-            $table_aux['conf'] = $output['output_venue'];
+            $table_aux['conf'] = htmlentities($output['output_venue']);
             $table_aux['type'] = $abstracts_publications_type[$output['output_type']];
-            $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$output['output_type']] . '">' . $abstracts_publications_type[$output['output_type']] . '</span><span style="display:none">.</span> <strong>' . $output['output_title'] . '</strong><span style="display:none">.</span> </br><span class=n"abstract_text">' . $output['output_authors'] . '</span>';
+            $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$output['output_type']] . '">' . htmlentities($abstracts_publications_type[$output['output_type']]) . '</span><span style="display:none">.</span> <strong>' . htmlentities($output['output_title']) . '</strong><span style="display:none">.</span> </br><span class=n"abstract_text">' . htmlentities($output['output_authors']) . '</span>';
             $table_aux['available'] = $available;
             $table_aux['file'] = $file;
             $table_aux['edit'] = $edit;
