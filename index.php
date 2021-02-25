@@ -76,7 +76,7 @@ $hub_profile = $module->getProjectSetting('hub-profile');
                  * -Data Dictionary Variables
                  * -Repeating Forms
                  */
-                if($isAdmin) {
+                if($isAdmin && !array_key_exists('sout', $_REQUEST)) {
                     $module->compareDataDictionaries();
                     $module->compareRepeatingForms();
                 }

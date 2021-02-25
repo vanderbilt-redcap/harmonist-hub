@@ -104,7 +104,8 @@ if($isAdmin) {
                             <li><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=pro')?>"><i class="fa fa-user fa-fw" aria-hidden="true"></i> Profile</a></li>
                             <li><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=faq')?>"><i class="fa fa-support fa-fw" aria-hidden="true"></i> Help</a></li>
                             <li class="divider"></li>
-                            <li><a href="#" onclick="destroy_session('index.php?sout')"><i class="fa fa-sign-out fa-fw" aria-hidden="true"></i> Logout</a></li>
+                            <?php $url_logout = $module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&sout');?>
+                            <li><a href="#" onclick="destroy_session(<?="'".$url_logout."'"?>)"><i class="fa fa-sign-out fa-fw" aria-hidden="true"></i> Logout</a></li>
                         </ul>
                     </li>
                 </ul>

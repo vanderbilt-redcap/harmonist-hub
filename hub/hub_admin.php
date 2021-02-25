@@ -564,3 +564,8 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         </div>
     </div>
 </div>
+<?php
+if($settings['session_timeout_popup'] == 2 && $settings['session_timeout_popup'] != ''){
+    include(dirname(dirname(__FILE__))."/logout_popup.php");
+}
+?>
