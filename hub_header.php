@@ -114,3 +114,8 @@ if($isAdmin) {
         <?php } ?>
     </div>
 </nav>
+<?php
+if($settings['session_timeout_popup'] == 1 && $settings['session_timeout_popup'] != ''){
+    include("logout_popup.php");
+}
+?>
