@@ -18,14 +18,14 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             <div class="modal-footer">
                 <?php $url_logout = $module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&sout');?>
                 <a href="#" onclick="destroy_session(<?="'".$url_logout."'"?>)" class="btn btn-default btn-cancel" data-dismiss="modal">Log Out</a>
-                <a type="submit" onclick="" class="btn btn-default btn-success" id='btnStayLoggedIn'>Stay Signed In (<span id="countdownLogOut">15</span>)</a>
+                <a type="submit" onclick="" class="btn btn-default btn-success" id='btnStayLoggedIn'>Stay Signed In (<span id="countdownLogOut">60</span>)</a>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    var timeleft = 15;
+    var timeleft = 60;
     var timeleftcounter = timeleft;
     var showPopup = 1200; //20 min
     var urlLogOut = <?=json_encode($module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&sout'))?>;
