@@ -57,7 +57,6 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         let remTime = Math.floor((dateNowTime-lastActiveTime)/ 1000);
 
         // converting from milliseconds to seconds
-        console.log("Idle since "+remTime+" Seconds Last active at "+this.lastActiveTime)
         if(remTime >= showPopup && !$('#modal-log-out').hasClass('in')){
             $('#modal-log-out').modal('show');
             var downloadTimer = setInterval(function(){
