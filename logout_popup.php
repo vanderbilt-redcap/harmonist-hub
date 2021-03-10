@@ -1,6 +1,15 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
+$timer = 1200;
+if($settings['session_timeout_timer'] != ""){
+    $timer = $settings['session_timeout_timer'];
+}
+
+$countdown = 60;
+if($settings['session_timeout_countdown'] != ""){
+    $countdown = $settings['session_timeout_countdown'];
+}
 ?>
 <!-- MODAL LOGOUT-->
 <div class="modal fade" id="modal-log-out" tabindex="-1" role="dialog" aria-labelledby="Codes">
@@ -25,9 +34,9 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 </div>
 
 <script>
-    var timeleft = 60;
+    var timeleft = <?=json_encode($countdown)?>;
     var timeleftcounter = timeleft;
-    var showPopup = 1200; //20 min
+    var showPopup = <?=json_encode($timer)?>;
     var urlLogOut = <?=json_encode($module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&sout'))?>;
     $(document).ready(function() {
         this.lastActiveTime = new Date();
