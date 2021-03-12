@@ -34,7 +34,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
                 $available = '';
                 if (!empty($concept['output_citation'][$index])) {
-                    $available = $concept['output_citation'][$index] . " ";
+                    $available = htmlentities($concept['output_citation'][$index]) . " ";
                 }
                 if (!empty($concept['output_pmcid'][$index])) {
                     $available .= 'PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/' . $concept['output_pmcid'][$index] . '" target="_blank">' . $concept['output_pmcid'][$index] . '<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';
@@ -82,7 +82,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
             $available = '';
             if (!empty($output['output_citation'])) {
-                $available = $output['output_citation'] . " ";
+                $available = htmlentities($output['output_citation']) . " ";
             }
             if (!empty($output['output_pmcid'])) {
                 $available .= 'PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/' . $output['output_pmcid'] . '" target="_blank">' . $output['output_pmcid'] . '<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';
@@ -123,7 +123,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $storedName = date("YmdsH") . "_pid" . $pidsArray['SETTINGS'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6) . ".txt";
 
     $file = fopen(EDOC_PATH . $storedName, "wb");
-    fwrite($file, json_encode($table_array, JSON_HEX_QUOT | JSON_HEX_TAG));
+    fwrite($file, json_encode($table_array, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_PRETTY_PRINT));
     fclose($file);
 
     $output = file_get_contents(EDOC_PATH . $storedName);
