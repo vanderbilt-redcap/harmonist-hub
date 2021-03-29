@@ -13,6 +13,9 @@ $s3 = new S3Client([
     'credentials' => $credentials
 ]);
 
+$RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
+$settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+
 $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
 $request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
 

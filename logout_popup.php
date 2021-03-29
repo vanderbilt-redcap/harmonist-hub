@@ -38,21 +38,22 @@ if($settings['session_timeout_countdown'] != ""){
     var timeleftcounter = timeleft;
     var showPopup = <?=json_encode($timer)?>;
     var urlLogOut = <?=json_encode($module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&sout'))?>;
+
     $(document).ready(function() {
         this.lastActiveTime = new Date();
-        window.onclick = function () {
+        window.addEventListener("click", () => {
             this.lastActiveTime = new Date();
-        };
-        window.onmousemove = function () {
+        });
+        window.addEventListener("mousemove", () => {
             this.lastActiveTime = new Date();
-        };
-        window.onkeypress = function () {
+        });
+        window.addEventListener("keypress", () => {
             this.lastActiveTime = new Date();
-        };
-        window.onscroll = function () {
+        });
+        window.addEventListener("scroll", () => {
             this.lastActiveTime = new Date();
-        };
-        let idleTimer_k = window.setInterval(CheckIdleTime, 10000);
+        });
+        var idleTimer_k = window.setInterval(CheckIdleTime, 10000);
     });
 
     function CheckIdleTime() {
@@ -61,9 +62,9 @@ if($settings['session_timeout_countdown'] != ""){
             this.lastActiveTime = new Date();
         }
         //returns idle time every 10 seconds
-        let dateNowTime = new Date().getTime();
-        let lastActiveTime = new Date(this.lastActiveTime).getTime();
-        let remTime = Math.floor((dateNowTime-lastActiveTime)/ 1000);
+        var dateNowTime = new Date().getTime();
+        var lastActiveTime = new Date(this.lastActiveTime).getTime();
+        var remTime = Math.floor((dateNowTime-lastActiveTime)/ 1000);
 
         // converting from milliseconds to seconds
         if(remTime >= showPopup && !$('#modal-log-out').hasClass('in')){
@@ -76,6 +77,13 @@ if($settings['session_timeout_countdown'] != ""){
                     timeleftcounter = timeleft;
                     clearInterval(downloadTimer);
                 });
+                $('#modal-log-out').on('hidden.bs.modal', function () {
+                    $('#modal-log-out').modal('hide');
+                    $('#modal-log-out').removeClass('in');
+                    this.lastActiveTime = new Date();
+                    timeleftcounter = timeleft;
+                    clearInterval(downloadTimer);
+                })
                 if(timeleftcounter <= 0 && $('#modal-log-out').hasClass('in')){
                     clearInterval(downloadTimer);
                     $('#modal-log-out').modal('hide');

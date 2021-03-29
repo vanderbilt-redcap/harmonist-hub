@@ -250,9 +250,9 @@ function getPeopleName($people_id,$option=""){
  * Function that creates a JSON copy of the Harmonist 0A: Data Model
  * @return string , the JSON
  */
-function createProject0AJSON($module, $save=""){
-    $dataFormat = $module->getChoiceLabels('data_format', IEDEA_DATAMODEL);
-    $dataTablerecords = \REDCap::getData(IEDEA_DATAMODEL, 'array');
+function createProject0AJSON($module, $pidsArray){
+    $dataFormat = $module->getChoiceLabels('data_format', $pidsArray['DATAMODEL']);
+    $dataTablerecords = \REDCap::getData($pidsArray['DATAMODEL'], 'array');
     $dataTable = ProjectData::getProjectInfoArrayRepeatingInstruments($dataTablerecords);
     foreach ($dataTable as $data) {
         $jsonVarArray['variables'] = array();
@@ -275,7 +275,7 @@ function createProject0AJSON($module, $save=""){
                     "variable_required" => $data['variable_required'][$id][1],
                     "variable_key" => $data['variable_key'][$id][1],
                     "variable_deprecated_d" => $data['variable_deprecated_d'][$id],
-                    "variable_replacedby" => $data['variable_replacedby'][$id],
+                    "variable_replacedby" => htmlentities($data['variable_replacedby'][$id]),
                     "variable_deprecatedinfo" => htmlentities($data['variable_deprecatedinfo'][$id]),
                     "has_codes" => $has_codes,
                     "code_list_ref" => $code_list_ref,
@@ -290,21 +290,19 @@ function createProject0AJSON($module, $save=""){
         $jsonVarArray['table_order'] = $data['table_order'];
         $jsonArray[trim($data['table_name'])] = $jsonVarArray;
     }
-
     #we save the new JSON
-    if(!empty($jsonArray) && $save == ""){
-        \Vanderbilt\HarmonistHubExternalModule\saveJSONCopy($module, '0a', $jsonArray);
+    if(!empty($jsonArray)){
+        $record_id = \Vanderbilt\HarmonistHubExternalModule\saveJSONCopy('0a', $jsonArray, $module, $pidsArray['JSONCOPY']);
     }
-
-    return json_encode($jsonArray,JSON_FORCE_OBJECT);
+    return array('jsonArray' => json_encode($jsonArray,JSON_FORCE_OBJECT),'record_id' =>$record_id);
 }
 
 /**
  * Function that creates a JSON copy of the Harmonist 0A: Data Model
  * @return string, the JSON
  */
-function createProject0BJSON($module, $save=""){
-    $dataTablerecords = \REDCap::getData(IEDEA_CODELIST, 'array');
+function createProject0BJSON($module, $pidsArray){
+    $dataTablerecords = \REDCap::getData($pidsArray['CODELIST'], 'array');
     $dataTable = ProjectData::getProjectInfoArray($dataTablerecords);
     foreach ($dataTable as $data) {
         $jsonArray[$data['record_id']] = array();
@@ -331,28 +329,20 @@ function createProject0BJSON($module, $save=""){
     }
 
     #we save the new JSON
-    if(!empty($jsonArray) && $save == ""){
-        \Vanderbilt\HarmonistHubExternalModule\saveJSONCopy($module,'0b', $jsonArray);
+    if(!empty($jsonArray)){
+        $record_id = \Vanderbilt\HarmonistHubExternalModule\saveJSONCopy('0b', $jsonArray, $module, $pidsArray['JSONCOPY']);
     }
 
-    return json_encode($jsonArray,JSON_FORCE_OBJECT);
+    return array('jsonArray' => json_encode($jsonArray,JSON_FORCE_OBJECT),'record_id' =>$record_id);
 }
 
 /**
  * Function that saves the JSON copy in the database adding the last version number
- * @param $type, the project  type
- * @param $jsonArray, the json data
  */
-function saveJSONCopy($module, $type, $jsonArray){
-    #save the project
-    $jsoncopy_id = $module->framework->addAutoNumberedRecord(IEDEA_JSONCOPY);
-    $jsoncopy = array(array('record_id' => $jsoncopy_id));
-    $jsoncopy[0]['jsoncopy'] = json_encode($jsonArray,JSON_FORCE_OBJECT);
-    $jsoncopy[0]['type'] = $type;
-
+function saveJSONCopy($type, $jsonArray, $module, $jsoncopyPID){
     #create and save file with json
     $filename = "jsoncopy_file_".$type."_".date("YmdsH").".txt";
-    $storedName = date("YmdsH")."_pid".IEDEA_JSONCOPY."_".\Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6).".txt";
+    $storedName = date("YmdsH")."_pid".$jsoncopyPID."_".getRandomIdentifier(6).".txt";
 
     $file = fopen(EDOC_PATH.$storedName,"wb");
     fwrite($file,json_encode($jsonArray,JSON_FORCE_OBJECT));
@@ -360,22 +350,23 @@ function saveJSONCopy($module, $type, $jsonArray){
 
     $output = file_get_contents(EDOC_PATH.$storedName);
     $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
-
-    $q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$filename,$filesize,'txt','application/octet-stream','0',IEDEA_JSONCOPY,date('Y-m-d h:i:s')]);
+    //Save document on DB
+    $q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES(?,?,?,?,?,?,?,?)",
+        [$storedName,$filename,$filesize,'txt','application/octet-stream','0',$jsoncopyPID,date('Y-m-d h:i:s')]);
     $docId = db_insert_id();
-    $jsoncopy[0]['jsoncopy_file'] = $docId;
-    $jsoncopy[0]['json_copy_update_d'] = date("Y-m-d H:i:s");
 
     #we check the version
-    $data = \Vanderbilt\HarmonistHubExternalModule\returnJSONCopyVersion($type);
+    $data = \Vanderbilt\HarmonistHubExternalModule\returnJSONCopyVersion($type, $jsoncopyPID);
     $lastversion = $data['lastversion'] + 1;
-    $jsoncopy[0]['version'] = $lastversion;
+    #save the project
+    $Proj = new \Project($jsoncopyPID);
+    $event_id = $Proj->firstEventId;
+    $record_id = $module->framework->addAutoNumberedRecord($jsoncopyPID);
+    $json = json_encode(array(array('record_id'=>$record_id, 'type'=>$type,'jsoncopy_file'=>$docId,'json_copy_update_d'=>date("Y-m-d H:i:s"),"version" => $lastversion)));
+    $results = \REDCap::saveData($jsoncopyPID, 'json', $json,'normal', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    \Records::addRecordToRecordListCache($jsoncopyPID, $record_id,$event_id);
 
-    $json = json_encode($jsoncopy);
-    $results = \Records::saveData(IEDEA_JSONCOPY, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-    \Records::addRecordToRecordListCache(IEDEA_JSONCOPY, $jsoncopy_id,1);
-
-    return $jsoncopy_id;
+    return $record_id;
 }
 
 /**
@@ -383,9 +374,9 @@ function saveJSONCopy($module, $type, $jsonArray){
  * @param $type, the project type
  * @return int|string, the version
  */
-function returnJSONCopyVersion($type){
-    $records = \REDCap::getData(IEDEA_JSONCOPY, 'array',null,null,null,null,false,false,false,"[type] = ".$type);
-    $datatype = ProjectData::getProjectInfoArray($records);
+function returnJSONCopyVersion($type, $jsoncopyID){
+    $RecordSetJsonCopy = \REDCap::getData($jsoncopyID, 'array', null,null,null,null,false,false,false,"[type]='".$type."'");
+    $datatype = ProjectData::getProjectInfoArray($RecordSetJsonCopy)[0];
     $lastversion = 0;
     $record_id = 0;
     $data = array();
