@@ -43,7 +43,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 $RecordSetContact = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
                 $data_contact = ProjectData::getProjectInfoArray($RecordSetContact)[0];
 
-                $sender_email = "noreply@vumc.org";
+                $sender_email = "noreply.harmonist@vumc.org";
                 if($settings['accesslink_sender_email'] != ""){
                     $sender_email = $settings['accesslink_sender_email'];
                 }

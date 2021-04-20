@@ -363,7 +363,7 @@ class AllCrons
             if ($settings['hub_subs_monthly_digest'] != "") {
                 $emails = explode(';', $settings['hub_subs_monthly_digest']);
                 foreach ($emails as $email) {
-                    sendEmail($email, 'noreply@vumc.org', $settings['accesslink_sender_name'], $subject, $email_req, "Not in database","Monthly Digest", $pidsArray['RMANAGER']);
+                    sendEmail($email, 'noreply.harmonist@vumc.org', $settings['accesslink_sender_name'], $subject, $email_req, "Not in database","Monthly Digest", $pidsArray['RMANAGER']);
                 }
             }
         }
@@ -1109,7 +1109,7 @@ class AllCrons
 
             $sender = $settings['accesslink_sender_email'];
             if($settings['accesslink_sender_email'] == ""){
-                $sender = "noreply@vumc.org";
+                $sender = "noreply.harmonist@vumc.org";
             }
 
             $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $jsoncopyPID . "&arm=1&id=" . $record;

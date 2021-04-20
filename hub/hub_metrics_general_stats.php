@@ -615,7 +615,7 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
                     mode:'index',
                     intersect: false
                 },
-                respondive:true,
+                responsive:true,
                 scales : {
                     xAxes : [{
                         stacked : true

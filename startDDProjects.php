@@ -807,7 +807,7 @@ foreach ($projects_array as $index=>$name){
                         "<li>AWS Bucket name</li>" .
                         "<li>AWS Bucket Credentials</li>" .
                         "</ul>";
-                sendEmail("harmonist@vumc.org", "noreply@vumc.org", "noreply@vumc.org", $subject, $message, "Not in database","New DataTolkit setup needed",$project_id_new);
+                sendEmail("harmonist@vumc.org", "noreply.harmonist@vumc.org", "noreply.harmonist@vumc.org", $subject, $message, "Not in database","New DataTolkit setup needed",$project_id_new);
             }
         }
 
