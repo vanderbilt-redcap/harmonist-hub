@@ -20,91 +20,97 @@ $s3 = new S3Client([
     'credentials' => $credentials
 ]);
 
-if($request_DU['deleted_y'] != '1' && $request_DU != '' && $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')]) {
-    try {
-        #Get the object
-        $result = $s3->getObject(array(
-            'Bucket' => $request_DU['data_upload_bucket'],
-            'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip']
-        ));
+if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])&& isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])) {
+    $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $request_DU['data_assoc_request']));
+    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+    $array_userid = explode(',', $sop['sop_downloaders']);
+    if ($request_DU['data_upload_person'] == $current_user['record_id'] || ($key = array_search($current_user['record_id'], $array_userid)) !== false) {
 
-        $RecordSetPerson = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[redcap_name] = '".USERID."'");
-        $persondown = ProjectData::getProjectInfoArray($RecordSetPerson)[0];
-        $downloader = $persondown['record_id'];
-        $downloader_region = $persondown['person_region'];
+        try {
+            #Get the object
+            $result = $s3->getObject(array(
+                'Bucket' => $request_DU['data_upload_bucket'],
+                'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip']
+            ));
 
-        $RecordSetRegionsDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $downloader_region));
-        $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsDown)[0]['region_code'];
-        $downloader_all = "<a href='".$persondown['email']."'>".$persondown['firstname']." ".$persondown['lastname']."</a> (".$region_codeDown.")";
-        $download_time = date("Y-m-d H:i:s");
+            $RecordSetPerson = \REDCap::getData(IEDEA_PEOPLE, 'array', null, null, null, null, false, false, false, "[redcap_name] = '" . USERID . "'");
+            $persondown = ProjectData::getProjectInfoArray($RecordSetPerson)[0];
+            $downloader = $persondown['record_id'];
+            $downloader_region = $persondown['person_region'];
 
-        $Proj = new \Project(IEDEA_DATADOWNLOAD);
-        $event_id = $Proj->firstEventId;
-        $recordSaveDU = array();
-        $recordSaveDU[$record_id][$event_id]['record_id'] = $record_id;
-        $recordSaveDU[$record_id][$event_id]['downloader_assoc_concept'] = $request_DU['data_assoc_concept'];
-        $recordSaveDU[$record_id][$event_id]['downloader_id'] = $downloader;
-        $recordSaveDU[$record_id][$event_id]['downloader_region'] = $downloader_region;
-        $recordSaveDU[$record_id][$event_id]['downloader_rcuser'] = USERID;
-        $recordSaveDU[$record_id][$event_id]['download_id'] = $record_id;
-        $recordSaveDU[$record_id][$event_id]['download_files'] = $request_DU['data_upload_zip'];
-        $recordSaveDU[$record_id][$event_id]['responsecomplete_ts'] = $download_time;
-        $results = \Records::saveData(IEDEA_DATADOWNLOAD, 'array', $recordSaveDU,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-        \Records::addRecordToRecordListCache(IEDEA_DATADOWNLOAD, $record_id,1);
+            $RecordSetRegionsDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $downloader_region));
+            $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsDown)[0]['region_code'];
+            $downloader_all = "<a href='" . $persondown['email'] . "'>" . $persondown['firstname'] . " " . $persondown['lastname'] . "</a> (" . $region_codeDown . ")";
+            $download_time = date("Y-m-d H:i:s");
 
-        $date = new \DateTime($download_time);
-        $date->modify("+1 hours");
-        $download_time_et = $date->format("Y-m-d H:i");
+            $Proj = new \Project(IEDEA_DATADOWNLOAD);
+            $event_id = $Proj->firstEventId;
+            $recordSaveDU = array();
+            $recordSaveDU[$record_id][$event_id]['record_id'] = $record_id;
+            $recordSaveDU[$record_id][$event_id]['downloader_assoc_concept'] = $request_DU['data_assoc_concept'];
+            $recordSaveDU[$record_id][$event_id]['downloader_id'] = $downloader;
+            $recordSaveDU[$record_id][$event_id]['downloader_region'] = $downloader_region;
+            $recordSaveDU[$record_id][$event_id]['downloader_rcuser'] = USERID;
+            $recordSaveDU[$record_id][$event_id]['download_id'] = $record_id;
+            $recordSaveDU[$record_id][$event_id]['download_files'] = $request_DU['data_upload_zip'];
+            $recordSaveDU[$record_id][$event_id]['responsecomplete_ts'] = $download_time;
+            $results = \Records::saveData(IEDEA_DATADOWNLOAD, 'array', $recordSaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            \Records::addRecordToRecordListCache(IEDEA_DATADOWNLOAD, $record_id, 1);
 
-        #EMAIL NOTIFICATION
-        $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $request_DU['data_assoc_concept']));
-        $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
-        $concept_id = $concepts['concept_id'];
+            $date = new \DateTime($download_time);
+            $date->modify("+1 hours");
+            $download_time_et = $date->format("Y-m-d H:i");
 
-        $RecordSetPeopleUp = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $request_DU['data_upload_person']));
-        $peopleUp = ProjectData::getProjectInfoArray($RecordSetPeopleUp)[0];
+            #EMAIL NOTIFICATION
+            $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $request_DU['data_assoc_concept']));
+            $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+            $concept_id = $concepts['concept_id'];
 
-        $RecordSetRegionsUp = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleUp['person_region']));
-        $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];;
+            $RecordSetPeopleUp = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $request_DU['data_upload_person']));
+            $peopleUp = ProjectData::getProjectInfoArray($RecordSetPeopleUp)[0];
 
-        $date = new \DateTime($request_DU['responsecomplete_ts']);
-        $date->modify("+1 hours");
-        $date_time = $date->format("Y-m-d H:i");
-        $extra_days = ' + ' . $settings['retrievedata_expiration'] . " days";
-        $expire_date = date('Y-m-d', strtotime($date_time . $extra_days));
+            $RecordSetRegionsUp = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleUp['person_region']));
+            $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];;
 
-        $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $request_DU['data_assoc_request']));
-        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+            $date = new \DateTime($request_DU['responsecomplete_ts']);
+            $date->modify("+1 hours");
+            $date_time = $date->format("Y-m-d H:i");
+            $extra_days = ' + ' . $settings['retrievedata_expiration'] . " days";
+            $expire_date = date('Y-m-d', strtotime($date_time . $extra_days));
 
-        #to uploader user
-        $subject = "Your ".$settings['hub_name']." ".$concept_id." dataset was downloaded";
-        $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
-            "<div>The dataset you submitted to secure cloud storage in response to <strong>\"" . $sop['sop_name'] . "\"</strong> on " . $date_time . " Eastern US Time (ET) has been downloaded by <b>".$downloader_all."</b> at ".$download_time_et.".</div><br/>".
-            "<div>Your dataset will remain available for download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>".
-            "<span style='color:#777'>Please email <a href='mailto:".$settings['hub_contact_email']."'>".$settings['hub_contact_email']."</a> with any questions.</span>";
-        sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'],"Dataset downloaded",IEDEA_DATADOWNLOAD);
+            $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $request_DU['data_assoc_request']));
+            $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-        if($request_DU['data_upload_person'] != $downloader){
-            $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $downloader));
-            $peopleDown = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
+            #to uploader user
+            $subject = "Your " . $settings['hub_name'] . " " . $concept_id . " dataset was downloaded";
+            $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
+                "<div>The dataset you submitted to secure cloud storage in response to <strong>\"" . $sop['sop_name'] . "\"</strong> on " . $date_time . " Eastern US Time (ET) has been downloaded by <b>" . $downloader_all . "</b> at " . $download_time_et . ".</div><br/>" .
+                "<div>Your dataset will remain available for download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .
+                "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
+            sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'], "Dataset downloaded", IEDEA_DATADOWNLOAD);
 
-            #to downloader
-            $subject = "Confirmation of ".$settings['hub_name']." ".$concept_id." dataset download";
-            $message = "<div>Dear " . $peopleDown['firstname'] . ",</div><br/><br/>" .
-                "<div>This email serves as your confirmation that at ".$download_time_et." Eastern US Time (ET), you downloaded the dataset submitted by ".$peopleUp['firstname']." ".$peopleUp['lastname'].
-                " from ".$region_codeUp." in response to <strong>\"" . $sop['sop_name'] . "\"</strong> (uploaded on ".$date_time." ET).</div><br/>".
-                "<div>The dataset will remain available for download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>".
-                "<span style='color:#777'>Please email <a href='mailto:".$settings['hub_contact_email']."'>".$settings['hub_contact_email']."</a> with any questions.</span>";
-            sendEmail($peopleDown['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $downloader,"Dataset downloaded",IEDEA_DATADOWNLOAD);
+            if ($request_DU['data_upload_person'] != $downloader) {
+                $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $downloader));
+                $peopleDown = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
+
+                #to downloader
+                $subject = "Confirmation of " . $settings['hub_name'] . " " . $concept_id . " dataset download";
+                $message = "<div>Dear " . $peopleDown['firstname'] . ",</div><br/><br/>" .
+                    "<div>This email serves as your confirmation that at " . $download_time_et . " Eastern US Time (ET), you downloaded the dataset submitted by " . $peopleUp['firstname'] . " " . $peopleUp['lastname'] .
+                    " from " . $region_codeUp . " in response to <strong>\"" . $sop['sop_name'] . "\"</strong> (uploaded on " . $date_time . " ET).</div><br/>" .
+                    "<div>The dataset will remain available for download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .
+                    "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
+                sendEmail($peopleDown['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $downloader, "Dataset downloaded", IEDEA_DATADOWNLOAD);
+            }
+
+
+            #Display the object in the browser
+            header("Content-Type: {$result['ContentType']}");
+            header('Content-Disposition: attachment; filename="' . $request_DU['data_upload_zip'] . '"');
+            echo $result['Body'];
+        } catch (S3Exception $e) {
+            echo $e->getMessage() . "\n";
         }
-
-
-        #Display the object in the browser
-        header("Content-Type: {$result['ContentType']}");
-        header('Content-Disposition: attachment; filename="' . $request_DU['data_upload_zip'] . '"');
-        echo $result['Body'];
-    } catch (S3Exception $e) {
-        echo $e->getMessage() . "\n";
     }
 }
 ?>
