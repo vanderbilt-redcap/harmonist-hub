@@ -4,7 +4,7 @@
 
     <div class="col-md-10">
         <div class="alert alert-info" id="blue-alert" style="display:none">
-            <?=htmlentities($settings['hub_login_blue_text'])?>
+            <?=$settings['hub_login_blue_text']?>
         </div>
         <div class="alert alert-danger" id="hub_error_message" style="display: none;"></div>
         <p></p>
