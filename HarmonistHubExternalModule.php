@@ -361,7 +361,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         //Return warnings and errors from file (and fix any correctable errors)
         list ($errors_array, $warnings_array, $dictionary_array) = \MetaData::error_checking($dictionary_array);
         // Save data dictionary in metadata table
-        $sql_errors = $this->saveMetadataCSV($dictionary_array,$project_id);
+//        $sql_errors = $this->saveMetadataCSV($dictionary_array,$project_id);
+        $sql_errors = \MetaData::save_metadata($dictionary_array,false,false,$project_id);
 
         // Display any failed queries to Super Users, but only give minimal info of error to regular users
         if (count($sql_errors) > 0) {
