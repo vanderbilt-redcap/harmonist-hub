@@ -1,10 +1,10 @@
 <div>
     <div style="padding-left: 15px;font-size: 20px;color: #404040;"><p>Access <?=$settings['hub_name']?> Hub</p></div>
-    <div style="padding-left: 15px;color: #404040;"><?=$settings['hub_login_text']?></p></div>
+    <div style="padding-left: 15px;color: #404040;"><?=htmlentities($settings['hub_login_text'])?></p></div>
 
     <div class="col-md-10">
         <div class="alert alert-info" id="blue-alert" style="display:none">
-            <?=$settings['hub_login_blue_text']?>
+            <?=htmlentities($settings['hub_login_blue_text'])?>
         </div>
         <div class="alert alert-danger" id="hub_error_message" style="display: none;"></div>
         <p></p>
