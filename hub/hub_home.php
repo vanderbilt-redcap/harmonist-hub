@@ -382,7 +382,7 @@ if(!empty($homepage)) {
             }
         }
         ?>
-        <?php if($settings['deactivate_datahub'][0] != "1"){ ?>
+        <?php if($settings['deactivate_datahub'][1] != "1"){ ?>
         <div class="panel panel-default">
             <div class="panel-heading" style="background-color: #5cb85c;color:#fff">
                 <h3 class="panel-title">
