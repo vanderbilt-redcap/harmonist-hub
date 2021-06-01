@@ -382,6 +382,7 @@ if(!empty($homepage)) {
             }
         }
         ?>
+        <?php if($settings['deactivate_datahub'][0] != "1"){ ?>
         <div class="panel panel-default">
             <div class="panel-heading" style="background-color: #5cb85c;color:#fff">
                 <h3 class="panel-title">
@@ -393,6 +394,7 @@ if(!empty($homepage)) {
                 <div style="text-align: center;"><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=upd')?>" class="btn btn-default">View Data Calls</a></div>
             </div>
         </div>
+        <?php } ?>
 
         <div class="panel panel-default">
             <div class="panel-heading">

@@ -357,24 +357,22 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     /****CHANGE LATER TO EM FUNCTIONS WHEN FIXED*****/
     function importDataDictionary($project_id,$path){
         $dictionary_array = $this->dataDictionaryCSVToMetadataArray($path, 'array');
+//        $dictionary_array = \Desgin::excel_to_array($path);
+        print_array($dictionary_array);
 
-        //Return warnings and errors from file (and fix any correctable errors)
+  /*      //Return warnings and errors from file (and fix any correctable errors)
         list ($errors_array, $warnings_array, $dictionary_array) = \MetaData::error_checking($dictionary_array);
         // Save data dictionary in metadata table
-        $sql_errors = $this->saveMetadataCSV($dictionary_array,$project_id);
-//        $sql_errors = \MetaData::save_metadata($dictionary_array,false,false,$project_id);
+//        $sql_errors = $this->saveMetadataCSV($dictionary_array,$project_id);
+        $sql_errors = \MetaData::save_metadata($dictionary_array,false,false,$project_id);
 
         // Display any failed queries to Super Users, but only give minimal info of error to regular users
         if (count($sql_errors) > 0) {
             throw new Exception("There was an error importing ".$path." Data Dictionary");
-        }
+        }*/
     }
 
-//if($project_id === null){
-//$project_id = PROJECT_ID;
-//}
-//
-//$Proj = new \Project($project_id);
+
 
     function dataDictionaryCSVToMetadataArray($csvFilePath, $returnType = null)
     {
