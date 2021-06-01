@@ -38,7 +38,7 @@ foreach ($regions as $region){
         }
     }
     $region_row .= '<tr>'.
-        '<td>'.$region['region_code'].'/'.$region['region_name'].'</td>'.
+        '<td>'.$region['region_code'].' / '.$region['region_name'].'</td>'.
         '<td>
             <div style="float:left;">
                 <ul class="nav navbar-nav navbar-right">

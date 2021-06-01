@@ -24,8 +24,10 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $request_DU['data_assoc_request']));
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
     $array_userid = explode(',', $sop['sop_downloaders']);
+    $token = $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')];
+    $RecordSetCurrentUser = \REDCap::getData(IEDEA_PEOPLE, 'array', array('access_token' => $token));
+    $current_user = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetCurrentUser)[0];
     if ($request_DU['data_upload_person'] == $current_user['record_id'] || ($key = array_search($current_user['record_id'], $array_userid)) !== false) {
-
         try {
             #Get the object
             $result = $s3->getObject(array(
