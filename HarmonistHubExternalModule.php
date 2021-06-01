@@ -358,9 +358,9 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     function importDataDictionary($project_id,$path){
         $dictionary_array = $this->dataDictionaryCSVToMetadataArray($path, 'array');
 //        $dictionary_array = \Desgin::excel_to_array($path);
-        print_array($dictionary_array);
 
-  /*      //Return warnings and errors from file (and fix any correctable errors)
+
+        //Return warnings and errors from file (and fix any correctable errors)
         list ($errors_array, $warnings_array, $dictionary_array) = \MetaData::error_checking($dictionary_array);
         // Save data dictionary in metadata table
 //        $sql_errors = $this->saveMetadataCSV($dictionary_array,$project_id);
@@ -369,7 +369,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         // Display any failed queries to Super Users, but only give minimal info of error to regular users
         if (count($sql_errors) > 0) {
             throw new Exception("There was an error importing ".$path." Data Dictionary");
-        }*/
+        }
     }
 
 
