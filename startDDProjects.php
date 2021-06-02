@@ -930,6 +930,16 @@ $projects_array_sql = array(
             'autocomplete' => '1',
             'label' => ""
         ),
+        'wg_name' => array (
+            'query' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=".IEDEA_GROUP." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'wg2_name' => array (
+            'query' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=".IEDEA_GROUP." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
         'contact_region' => array (
             'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
             'autocomplete' => '0',
