@@ -265,7 +265,7 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
                             $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
                             echo '<tr><td width="150px">'.$comment_time.'</td>'.
-                                '<td width="50px"><i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i> download</td>'.
+                                '<td width="105px"><i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i> download</td>'.
                                 '<td width="220px">'.$name.'</td>'.
                                 '<td width="20px">'.$region_code.'</td>'.
                                 '<td width="80px">'.$assoc_concept.'</td>'.
@@ -306,7 +306,7 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
                             }
 
                             echo '<tr><td width="150px">'.$comment_time.'</td>'.
-                                '<td width="100px">'.$activity.'</td>'.
+                                '<td width="105px">'.$activity.'</td>'.
                                 '<td width="220px">'.$name.'</td>'.
                                 '<td width="20px">'.$region_code.'</td>'.
                                 '<td width="80px">'.$assoc_concept.'</td>'.
@@ -344,7 +344,7 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
                                 }
 
                                 echo '<tr><td width="150px">'.$comment_time.'</td>'.
-                                    '<td width="100px">'.$activity.'</td>'.
+                                    '<td width="105px">'.$activity.'</td>'.
                                     '<td width="220px">'.$name.'</td>'.
                                     '<td width="20px">'.$region_code.'</td>'.
                                     '<td width="80px">'.$assoc_concept.'</td>'.
