@@ -41,7 +41,7 @@ if($isAdmin) {
             </button>
             <div class="imgNavbar">
                 <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS)?>" style="text-decoration: none;float:left">
-                    <img src='<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module,$settings['hub_logo'], 'src');?>' style='width:100px;height:40px;' class='wiki_logo_img' alt="<?=$hub_projectname?> Logo">
+                    <img src='<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module,$settings['hub_logo'], 'src');?>' style='max-width:250px;height:40px;' class='wiki_logo_img' alt="<?=$hub_projectname?> Logo">
                 </a>
                     <?php if(empty($token) || array_key_exists('sout', $_REQUEST)){ ?>
                         <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS)?>" style="text-decoration: none;float:left" class="hub_header_title">
