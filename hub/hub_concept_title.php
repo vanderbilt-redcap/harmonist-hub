@@ -295,8 +295,7 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
         </div>
     </div>
 
-
-
+    <?php if(!$deactivate_datahub){?>
     <div class="panel panel-default" style="margin-bottom: 40px">
         <div class="panel-heading" style="height: 38px">
             <h3 class="panel-title">
@@ -398,6 +397,7 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
             </table>
         </div>
     </div>
+    <?php } ?>
 
     <div class="panel panel-default" style="margin-bottom: 40px">
         <div class="panel-heading">

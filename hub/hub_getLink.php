@@ -46,6 +46,11 @@ if(!empty($_POST['email'])) {
         }
         sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $settings['hub_name']." Hub Access Link".$environment, $message,$people['record_id'],"Review Hub Access Sent",IEDEA_PEOPLE);
 
+        #Default to 7 days if empty
+        if($settings['accesslink_dur'] == ""){
+            $settings['accesslink_dur'] = 7;
+        }
+
         $arrayLogin[0]['access_token'] = $token;
         $arrayLogin[0]['token_expiration_d'] = date('Y-m-d', strtotime("+".$settings['accesslink_dur']." day"));
         $arrayLogin[0]['last_requested_token_d'] = date('Y-m-d H:i:s');
