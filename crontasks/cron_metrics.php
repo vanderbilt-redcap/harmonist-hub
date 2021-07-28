@@ -221,7 +221,7 @@ if($pidsArray['METRICS'] != "") {
 
     //REQUESTS COMPLETED
     $arrayMetrics[0]['requests_c'] = $completerequests;
-    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "INSIDE1");
+
     #USERS
     $query = $this->framework->createQuery();
     $query->add("SELECT count(*) as total_registered_users FROM redcap_data WHERE field_name = ? AND project_id = ? AND value in (1,2,3)", ["harmonist_regperm", $pidsArray['PEOPLE']]);
@@ -240,7 +240,7 @@ if($pidsArray['METRICS'] != "") {
     $RecordSetUsersAdmin = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[harmonistadmin_y] = 1");
     $number_requests_admin = count(ProjectData::getProjectInfoArray($RecordSetUsersAdmin));
     $arrayMetrics[0]['admins'] = $number_requests_admin;
-    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "INSIDE2");
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", json_encode($arrayMetrics));
     $json = json_encode($arrayMetrics);
 //    $results = \Records::saveData($pidsArray['METRICS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 //    \Records::addRecordToRecordListCache($pidsArray['METRICS'], $record_id_metrics, 1);
