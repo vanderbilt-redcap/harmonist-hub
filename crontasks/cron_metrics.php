@@ -2,11 +2,11 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 $date = new \DateTime();
 
+\REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron", "PID: ".$pidsArray['METRICS']);
 if($pidsArray['METRICS'] != "") {
     $record_id_metrics = $this->framework->addAutoNumberedRecord($pidsArray['METRICS']);
     $arrayMetrics = array(array('record_id' => $record_id_metrics));
     $arrayMetrics[0]['date'] = $date->format('Y-m-d H:i:s');
-
 
     /***CONCEPTS***/
     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
@@ -47,7 +47,7 @@ if($pidsArray['METRICS'] != "") {
     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 
 
-#PUBLICATIONS AND ABSTRACTS;
+    #PUBLICATIONS AND ABSTRACTS;
     $publications = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts);
 
     $number_publications = 0;
@@ -74,7 +74,7 @@ if($pidsArray['METRICS'] != "") {
     $arrayMetrics[0]['publications_current'] = $number_publications_year;
     $arrayMetrics[0]['abstracts_current'] = $number_abstracts_year;
 
-#COMMENTS AND VOTES
+    #COMMENTS AND VOTES
     $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null);
     $comments = ProjectData::getProjectInfoArray($RecordSetComments);
     $req_id = array();
@@ -156,7 +156,7 @@ if($pidsArray['METRICS'] != "") {
 
     $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, "[author_revision_y] = 1");
     $comments_revision = ProjectData::getProjectInfoArray($RecordSetComments);
-#get unique values from matrix column request_id (unique request ids)
+    #get unique values from matrix column request_id (unique request ids)
     $revisions = 0;
     foreach ($comments_revision as $comment) {
         $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
@@ -220,10 +220,10 @@ if($pidsArray['METRICS'] != "") {
     $number_votes_completed_after_duedate_percent = ($number_votes_completed_after_duedate / $number_votes) * 100;
     $arrayMetrics[0]['votes_late_percentage'] = round($number_votes_completed_after_duedate_percent, 2);
 
-//REQUESTS COMPLETED
+    //REQUESTS COMPLETED
     $arrayMetrics[0]['requests_c'] = $completerequests;
 
-#USERS
+    #USERS
     $query = $this->framework->createQuery();
     $query->add("SELECT count(*) as total_registered_users FROM redcap_data WHERE field_name = ? AND project_id = ? AND value in (1,2,3)", ["harmonist_regperm", $pidsArray['PEOPLE']]);
     $q = $query->execute();
@@ -245,5 +245,7 @@ if($pidsArray['METRICS'] != "") {
     $json = json_encode($arrayMetrics);
     $results = \Records::saveData($pidsArray['METRICS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($pidsArray['METRICS'], $record_id_metrics, 1);
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON", $json);
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON RESULTS", $results);
 }
 ?>
