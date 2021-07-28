@@ -228,7 +228,7 @@ if($concept['revised_y'][0] == '1'){
     </table>
 
 <?php
-if (!empty($concept) && count($concept['adminupdate_d'])>0) {
+if (!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['adminupdate_d'])>0) {
 ?>
 
     <div class="panel panel-default-archive">
@@ -244,15 +244,20 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
 
                 <tbody>
                 <?php
-                    #sort elements by most recent date
-                    arsort($concept['adminupdate_d']);
-                    foreach ($concept['adminupdate_d'] as $index=>$value){
-                        echo '<tr>';
-                        echo  '<td style="width: 10%;">' . $value. '</td>';
-                        echo  '<td>' . $concept['admin_update'][$index]. '</td>';
-                        echo  '<td style="width: 5%;">' . \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $concept['adminupdate_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],""). '</td>';
-                        echo '</tr>';
+                    if($concept['adminupdate_d'] == ""){
+                        echo '<tr><td colspan="3">No updates available</td></tr>';
+                    }else{
+                        #sort elements by most recent date
+                        arsort($concept['adminupdate_d']);
+                        foreach ($concept['adminupdate_d'] as $index=>$value){
+                            echo '<tr>';
+                            echo  '<td style="width: 10%;">' . $value. '</td>';
+                            echo  '<td>' . $concept['admin_update'][$index]. '</td>';
+                            echo  '<td style="width: 5%;">' . \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $concept['adminupdate_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],""). '</td>';
+                            echo '</tr>';
+                        }
                     }
+
                     echo '</tbody></table>';
                 ?>
                 </tbody>
@@ -335,7 +340,7 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
         </div>
     </div>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default" style="margin-bottom: 40px">
         <div class="panel-heading">
             <h3 class="panel-title">
                 <a data-toggle="collapse" href="#collapse_dataReqUp">Data Uploads</a>
@@ -398,6 +403,7 @@ if (!empty($concept) && count($concept['adminupdate_d'])>0) {
         </div>
     </div>
     <?php } ?>
+
 
     <div class="panel panel-default" style="margin-bottom: 40px">
         <div class="panel-heading">
