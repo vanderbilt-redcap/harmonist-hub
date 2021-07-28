@@ -158,7 +158,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 if(!empty($pidsArray) && !empty($settings)) {
                     try {
                         if ($cronAttributes['cron_name'] == 'cron_data_upload_notification'){
-//                            include("crontasks/cron_metrics.php");
+                            include("crontasks/cron_metrics.php");
                         }
 
                         #CRONS

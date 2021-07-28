@@ -213,12 +213,21 @@ if($pidsArray['METRICS'] != "") {
 
     $number_votes = $number_votes_completed_before_duedate + $number_votes_completed_after_duedate;
     $arrayMetrics[0]['votes_c'] = $number_votes_completed_before_duedate;
-    $number_votes_completed_before_duedate_percent = ($number_votes_completed_before_duedate / $number_votes) * 100;
-    $arrayMetrics[0]['votes_c_percentage'] = round($number_votes_completed_before_duedate_percent, 2);
+    if($number_votes_completed_before_duedate == 0){
+        $arrayMetrics[0]['votes_c_percentage'] = 0;
+    }else{
+        $number_votes_completed_before_duedate_percent = ($number_votes_completed_before_duedate / $number_votes) * 100;
+        $arrayMetrics[0]['votes_c_percentage'] = round($number_votes_completed_before_duedate_percent, 2);
+    }
+
 
     $arrayMetrics[0]['votes_late'] = $number_votes_completed_after_duedate;
-    $number_votes_completed_after_duedate_percent = ($number_votes_completed_after_duedate / $number_votes) * 100;
-    $arrayMetrics[0]['votes_late_percentage'] = round($number_votes_completed_after_duedate_percent, 2);
+    if($number_votes_completed_after_duedate == 0){
+        $arrayMetrics[0]['votes_late_percentage'] = 0;
+    }else{
+        $number_votes_completed_after_duedate_percent = ($number_votes_completed_after_duedate / $number_votes) * 100;
+        $arrayMetrics[0]['votes_late_percentage'] = round($number_votes_completed_after_duedate_percent, 2);
+    }
 
     //REQUESTS COMPLETED
     $arrayMetrics[0]['requests_c'] = $completerequests;
@@ -242,10 +251,10 @@ if($pidsArray['METRICS'] != "") {
     $number_requests_admin = count(ProjectData::getProjectInfoArray($RecordSetUsersAdmin));
     $arrayMetrics[0]['admins'] = $number_requests_admin;
     \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "Date: ".$arrayMetrics[0]['date']);
-    $json = json_encode($arrayMetrics);
+    $json = json_encode($arrayMetrics,JSON_FORCE_OBJECT);
 
     $message = "<ul><pre>".print_r($arrayMetrics,true)."</pre></ul>";
-    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN",$message);
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON",$json);
 //    $results = \Records::saveData($pidsArray['METRICS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 //    \Records::addRecordToRecordListCache($pidsArray['METRICS'], $record_id_metrics, 1);
 //    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON RESULTS", $results);
