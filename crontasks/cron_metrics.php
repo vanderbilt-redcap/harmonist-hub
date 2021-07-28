@@ -250,13 +250,9 @@ if($pidsArray['METRICS'] != "") {
     $RecordSetUsersAdmin = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[harmonistadmin_y] = 1");
     $number_requests_admin = count(ProjectData::getProjectInfoArray($RecordSetUsersAdmin));
     $arrayMetrics[0]['admins'] = $number_requests_admin;
-    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "Date: ".$arrayMetrics[0]['date']);
-    $json = json_encode($arrayMetrics,JSON_FORCE_OBJECT);
 
-    $message = "<ul><pre>".print_r($arrayMetrics,true)."</pre></ul>";
-    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON",$json);
+    $json = json_encode($arrayMetrics,JSON_FORCE_OBJECT);
     $results = \Records::saveData($pidsArray['METRICS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($pidsArray['METRICS'], $record_id_metrics, 1);
-    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON RESULTS", $results);
 }
 ?>
