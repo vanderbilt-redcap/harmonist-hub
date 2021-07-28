@@ -2,7 +2,9 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 $date = new \DateTime();
 
-if($pidsArray['METRICS'] != "") {
+$RecordSetUsers = \REDCap::getData($pidsArray['PEOPLE'], 'array', null);
+
+if($pidsArray['METRICS'] != "" && $RecordSetUsers != "") {
     $record_id_metrics = $this->framework->addAutoNumberedRecord($pidsArray['METRICS']);
     $arrayMetrics = array();
     $arrayMetrics = array(array('record_id' => $record_id_metrics));
