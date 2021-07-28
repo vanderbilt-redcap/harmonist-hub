@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once(dirname(dirname(__FILE__))."/classes/AllCrons.php");
 include_once(__DIR__ ."/../projects.php");
-\REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "CRON HEY", "");
+
 $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
 $request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
 $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);

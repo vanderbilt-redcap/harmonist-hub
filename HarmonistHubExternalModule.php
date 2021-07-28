@@ -159,6 +159,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                     try {
                         if ($cronAttributes['cron_name'] == 'cron_data_upload_notification'){
                             \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "CRON ".$cronAttributes['cron_name'], "deactivate_datadown: ".$settings['deactivate_datadown'][1].", deactivate_datahub: ".$settings['deactivate_datahub'][1]);
+                            include("crontasks/cron_metrics.php");
                         }
 
                         #CRONS
@@ -170,8 +171,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                         } else if ($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder' && ($settings['deactivate_datadown'][1] != "1" || $settings['deactivate_datahub'][1] != "1")) {
                             include("crontasks/cron_data_upload_expiration_reminder.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown'][1] != "1" || $settings['deactivate_datahub'][1] != "1")) {
-                            \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "CRON ".$cronAttributes['cron_name'], "PID: ".$project_id);
-                            include("crontasks/cron_data_upload_notification.php");
+                           include("crontasks/cron_data_upload_notification.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1') {
                             //Every First Monday of the Month
                             include("crontasks/cron_monthly_digest.php");
