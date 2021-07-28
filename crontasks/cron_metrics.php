@@ -255,8 +255,8 @@ if($pidsArray['METRICS'] != "") {
 
     $message = "<ul><pre>".print_r($arrayMetrics,true)."</pre></ul>";
     \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON",$json);
-//    $results = \Records::saveData($pidsArray['METRICS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-//    \Records::addRecordToRecordListCache($pidsArray['METRICS'], $record_id_metrics, 1);
-//    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON RESULTS", $results);
+    $results = \Records::saveData($pidsArray['METRICS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    \Records::addRecordToRecordListCache($pidsArray['METRICS'], $record_id_metrics, 1);
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON RESULTS", $results);
 }
 ?>
