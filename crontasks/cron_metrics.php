@@ -4,6 +4,7 @@ $date = new \DateTime();
 
 \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron", "PID: ".$pidsArray['METRICS']);
 if($pidsArray['METRICS'] != "") {
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "INSIDE");
     $record_id_metrics = $this->framework->addAutoNumberedRecord($pidsArray['METRICS']);
     $arrayMetrics = array(array('record_id' => $record_id_metrics));
     $arrayMetrics[0]['date'] = $date->format('Y-m-d H:i:s');
