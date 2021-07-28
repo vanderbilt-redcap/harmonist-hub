@@ -4,6 +4,7 @@ $date = new \DateTime();
 
 if($pidsArray['METRICS'] != "") {
     $record_id_metrics = $this->framework->addAutoNumberedRecord($pidsArray['METRICS']);
+    $arrayMetrics = array();
     $arrayMetrics = array(array('record_id' => $record_id_metrics));
     $arrayMetrics[0]['date'] = $date->format('Y-m-d H:i:s');
 
@@ -242,8 +243,9 @@ if($pidsArray['METRICS'] != "") {
     $arrayMetrics[0]['admins'] = $number_requests_admin;
     \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "Date: ".$arrayMetrics[0]['date']);
     $json = json_encode($arrayMetrics);
-    $results = \Records::saveData($pidsArray['METRICS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-    \Records::addRecordToRecordListCache($pidsArray['METRICS'], $record_id_metrics, 1);
-    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON RESULTS", $results);
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "Date: ".$arrayMetrics[0]['date']);
+//    $results = \Records::saveData($pidsArray['METRICS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+//    \Records::addRecordToRecordListCache($pidsArray['METRICS'], $record_id_metrics, 1);
+//    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron JSON RESULTS", $results);
 }
 ?>
