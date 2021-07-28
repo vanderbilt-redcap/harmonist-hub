@@ -2,13 +2,11 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 $date = new \DateTime();
 
-\REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron", "PID: ".$pidsArray['METRICS']);
 if($pidsArray['METRICS'] != "") {
-    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "INSIDE");
     $record_id_metrics = $this->framework->addAutoNumberedRecord($pidsArray['METRICS']);
     $arrayMetrics = array(array('record_id' => $record_id_metrics));
     $arrayMetrics[0]['date'] = $date->format('Y-m-d H:i:s');
-
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "INSIDE");
     /***CONCEPTS***/
     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
     $total_concepts = count($RecordSetConcepts);
@@ -46,7 +44,7 @@ if($pidsArray['METRICS'] != "") {
 
     $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null, null, null, null, false, false, false, "[showregion_y] = 1");
     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
-
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "INSIDE 2");
 
     #PUBLICATIONS AND ABSTRACTS;
     $publications = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts);
@@ -74,7 +72,7 @@ if($pidsArray['METRICS'] != "") {
     $arrayMetrics[0]['abstracts'] = $number_abstracts;
     $arrayMetrics[0]['publications_current'] = $number_publications_year;
     $arrayMetrics[0]['abstracts_current'] = $number_abstracts_year;
-
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "INSIDE3");
     #COMMENTS AND VOTES
     $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null);
     $comments = ProjectData::getProjectInfoArray($RecordSetComments);
@@ -220,7 +218,7 @@ if($pidsArray['METRICS'] != "") {
     $arrayMetrics[0]['votes_late'] = $number_votes_completed_after_duedate;
     $number_votes_completed_after_duedate_percent = ($number_votes_completed_after_duedate / $number_votes) * 100;
     $arrayMetrics[0]['votes_late_percentage'] = round($number_votes_completed_after_duedate_percent, 2);
-
+    \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Metrics Cron IN", "INSIDE4");
     //REQUESTS COMPLETED
     $arrayMetrics[0]['requests_c'] = $completerequests;
 
