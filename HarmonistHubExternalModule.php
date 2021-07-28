@@ -157,10 +157,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
                 if(!empty($pidsArray) && !empty($settings)) {
                     try {
-                        if ($cronAttributes['cron_name'] == 'cron_data_upload_notification'){
-                            include("crontasks/cron_metrics.php");
-                        }
-
                         #CRONS
                         if ($cronAttributes['cron_name'] == 'cron_metrics') {
                              \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "CRON ".$cronAttributes['cron_name'], "PID: ".$project_id);
