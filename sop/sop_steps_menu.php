@@ -133,7 +133,7 @@ if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmoni
                     if (returnData.status != 'success') {
                         alert(returnData.status+" One or more of the files could not be saved."+JSON.stringify(returnData));
                     }else{
-                    \Vanderbilt\HarmonistHubExternalModule\getFileFieldElement(returnData.edoc)
+                        getFileFieldElement(returnData.edoc)
                     }
                 }
             });
