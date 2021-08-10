@@ -158,7 +158,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 if(!empty($pidsArray) && !empty($settings)) {
                     try {
                         #CRONS
-                        if ($cronAttributes['cron_name'] == 'cron_metrics') {
+                        if ($cronAttributes['cron_name'] == 'cron_metrics' && $settings['deactivate_metrics_cron'][1] != "1") {
                             include("crontasks/cron_metrics.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_delete' && ($settings['deactivate_datadown'][1] != "1" || $settings['deactivate_datahub'][1] != "1")) {
                             include("crontasks/cron_delete_AWS.php");
