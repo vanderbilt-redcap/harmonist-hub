@@ -1173,7 +1173,9 @@ canvas{
 .sopTable td:nth-child(4){
     width:808px  !important;
 }
-
+.table_name,table_name:hover{
+    color:#333;
+}
 .des_draft_header{
     background-color: #ffffcc  !important;
 }

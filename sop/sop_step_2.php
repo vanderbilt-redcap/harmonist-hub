@@ -43,7 +43,7 @@ if($indexSubSet>0) {
                 ?>
                 <div class="panel-heading <?=$table_draft?>" style="<?=$header_style?>">
                     <h3 class="panel-title">
-                        <a data-toggle="collapse" href="#collapse<?=$data['record_id']?>" id="<?='table_'.$data['record_id']?>" class="label label-as-badge-square <?='des-'.$data['table_category']?>"><strong><?PHP echo $data['table_name'].$table_draft_text; ?></strong></a>
+                        <a data-toggle="collapse" href="#collapse<?=$data['record_id']?>" id="<?='table_'.$data['record_id']?>" class="label label-as-badge-square <?='des-'.$data['table_category']?>"><strong><?PHP echo "<span class='table_name'>".$data['table_name']."</span>".$table_draft_text; ?></strong></a>
                         <span class="badge dataRequests" id="counter_<?= $data['record_id']; ?>"></span>
                         <span style="padding-left:10px">
                             <input type="checkbox" id="ckb_<?= $data['table_name']; ?>" name="<?= "chkAll_" . $data['record_id'] ?>" onclick="checkAll('<?= $data['record_id'] ?>');checkStep(2)" style="cursor: pointer;">

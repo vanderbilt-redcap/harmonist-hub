@@ -36,7 +36,6 @@
 span.round-tab {
     width: 70px;
     height: 70px;
-    line-height: 70px;
     display: inline-block;
     border-radius: 100px;
     background: #fff;
@@ -46,7 +45,7 @@ span.round-tab {
     left: 0;
     text-align: center;
     font-size: 25px;
-    padding-top: 20px;
+    padding-top: 15px;
 }
 span.round-tab i{
     color:#555555;
