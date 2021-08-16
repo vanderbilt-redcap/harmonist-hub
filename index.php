@@ -89,7 +89,7 @@ $hub_profile = $module->getProjectSetting('hub-profile');
                     <meta name="author" content="">
                     <meta http-equiv="Cache-control" content="public">
                     <meta name="theme-color" content="#fff">
-                    <link rel="icon" href="<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module,$settings['hub_logo_favicon'],'url')?>">
+                    <link rel="icon" href="<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module,$settings['hub_logo_favicon'],'favicon')?>">
 
                     <?php include_once("head_scripts.php");?>
 

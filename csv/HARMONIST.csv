@@ -26,13 +26,15 @@ notiedeaperson,participants,,checkbox,,"1, The person I want to add is not in th
 person_other,participants,,text,"<div style=""padding-left:30px; color:#333333"">Other (non-Consortia) Contact
 <span style=""font-weight:lighter; font-style:italic"">(For Consortium members, please <a href=""https://redcap.vanderbilt.edu/redcap_v7.2.2/DataEntry/record_home.php?pid=59097"">add them to the Persons Project</a> instead and they will then appear in the dropdown list.)</span></div>",,,,,,,"[notiedeaperson(1)] = '1'",,,,,,
 adminupdate_d,admin_update,,text,"Date of update",,,date_ymd,,,,,,,,,,
+admin_status,admin_update,,dropdown,Status,"1, Not approved | 2, Approved | 3, In development | 4, Submitted to journal | 5, Published",,,,,,,,,,,,
 admin_update,admin_update,,notes,"Admin update on project:",,,,,,,,,LV,,,,
 adminupdate_file,admin_update,,file,"Associated file",,,,,,,,,,,,,
-update_request,quarterly_update_survey,,descriptive,"Hello [configuration_arm_1][first_name], 
+update_request,project_update_survey,,descriptive,"Hello [configuration_arm_1][first_name], 
 Please submit a <u>brief status report</u> on the following project for the upcoming Quarterly Project Review:<div class='blue'><p style=""text-indent:50px;""><strong>[configuration_arm_1][project_title]</strong></p></div>We will use this info to report to the consortium.",,,,,,,,,,,,,
-update_d,quarterly_update_survey,,text,"Date of update",,,date_ymd,,,,,,,,,," @TODAY @READONLY"
-monthly_update,quarterly_update_survey,,notes,"Please give a 2-3 sentence update on this project.<div style=""font-weight:lighter"">This can include updates on data collection, preparation, and analysis; work on abstracts or manuscripts; writing group meetings; journal/conference submissions; or waiting periods (to receive data, to hear from reviewers, etc.)</div>",,,,,,,,,LV,,,,
-thanks,quarterly_update_survey,,descriptive,"<div class=""green"" style=""text-align:center"">Thank you! We will include your update in a status report for the consortium.</div>",,,,,,,,,,,,,
+update_d,project_update_survey,,text,"Date of update",,,date_ymd,,,,,,,,,," @TODAY @READONLY"
+project_status,project_update_survey,,dropdown,Status,"1, Not approved | 2, Approved | 3, In development | 4, Submitted to journal | 5, Published",,,,,,,,,,,,
+project_update,project_update_survey,,notes,"Please give a 2-3 sentence update on this project.<div style=""font-weight:lighter"">This can include updates on data collection, preparation, and analysis; work on abstracts or manuscripts; writing group meetings; journal/conference submissions; or waiting periods (to receive data, to hear from reviewers, etc.)</div>",,,,,,,,,LV,,,,
+thanks,project_update_survey,,descriptive,"<div class=""green"" style=""text-align:center"">Thank you! We will include your update in a status report for the consortium.</div>",,,,,,,,,,,,,
 output_txt,outputs,,descriptive,"<div style=""color:white; text-align:center; border: 1px #3498db; background-color: #2980b9;""><h3 style=""margin:0px; padding:10px"">Scientific Outputs</h3></div>",,,,,,,,,,,,,
 output_type,outputs,,dropdown,"Type of Scientific Output","1, Manuscript | 2, Abstract | 3, Poster | 4, Presentation Slides | 5, Report | 99, Other",,,,,,,,,,,,
 output_presentformat,outputs,,radio,"Abstract Presentation Format","1, Poster presentation | 2, Oral presentation | 9, Other | 0, Not applicable",,,,,,"[output_type] = '2'",,,,,,

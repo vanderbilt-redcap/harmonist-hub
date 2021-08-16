@@ -76,6 +76,9 @@ function getFile($module, $edoc, $type){
                 $file = '<div style="max-width: 450px;height: 500px;"><img src="data:'.$row['mime_type'].';base64,' . $base64. '" style="display: block; margin: 0 auto;width:450px;height: 450px;"></div>';
             }else if($type == "url") {
                 $file = $module->getUrl($url);
+            }else if($type = "favicon") {
+                $download = \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row['stored_name']."&file=". urlencode($row['doc_name'])."&edoc=".$edoc,'e',"","");
+                $file = $module->getUrl("downloadFile.php?pid=".IEDEA_PROJECTS."&code=".$download);
             }else{
                 $file = '<br/><div class="inside-panel-content"><a href="'.$module->getUrl($url,true).'" target="_blank"><span class="fa fa-file-o"></span> ' . $row['doc_name'] . '</a></div>';
             }
