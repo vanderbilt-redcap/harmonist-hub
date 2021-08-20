@@ -170,7 +170,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                            //Do not show request
                         }else{
                             $any_request_found = true;
-                            $RecordSetRM_survey = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "finalization_of_request", "");
+                            $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "finalization_of_request", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                             $passthru_link_doc = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "final_docs_request_survey", "");
                             $survey_link_doc = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_doc['hash']);
