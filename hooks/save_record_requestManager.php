@@ -60,7 +60,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $jsonRM = json_encode($arrayRM);
     $results = \Records::saveData($project_id, 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($project_id, $event_id,1);
-}else if($instrument == 'mr_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
+}else if($instrument == 'tracking_number_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
     $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', array('record_id' => '1'));
     $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 

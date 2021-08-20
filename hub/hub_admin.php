@@ -174,7 +174,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                             $passthru_link_doc = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "final_docs_request_survey", "");
                             $survey_link_doc = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_doc['hash']);
-                            $passthru_link_mr = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "mr_assignment_survey", "");
+                            $passthru_link_mr = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "tracking_number_assignment_survey", "");
                             $survey_link_mr = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_mr['hash']);
 
                             $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "");
@@ -279,7 +279,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                             $passthru_link_doc = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "final_docs_request_survey", "");
                             $survey_link_doc = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_doc['hash']);
-                            $passthru_link_mr = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "mr_assignment_survey", "");
+                            $passthru_link_mr = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "tracking_number_assignment_survey", "");
                             $survey_link_mr = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_mr['hash']);
 
                             $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "");
