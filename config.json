@@ -17,7 +17,7 @@
     "project": [
       {
         "name": "Harmonist Hub",
-        "icon": "database_table",
+        "icon": "fas fa-database",
         "url": "index.php",
         "target": "_blank"
       }
