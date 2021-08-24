@@ -5,6 +5,7 @@ if($_REQUEST['record'] != ""){
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 }
 
+$record_id = $_REQUEST['record'];
 $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
 
 if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id'] ))){
@@ -55,6 +56,9 @@ if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmoni
             var id = $('#selectSOP_'+$('[name=optradio]:checked').val()).val();
             if (id == undefined || id == ''){
                 id = $('#save_option').val();
+            }
+            if (id == undefined || id == ''){
+                id = <?=json_encode($record_id)?>;
             }
 
             if(sButton.name == 'save_continue_0' || sButton.name == 'save_continue_1'){

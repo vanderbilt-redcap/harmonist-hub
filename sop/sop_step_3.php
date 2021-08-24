@@ -97,7 +97,7 @@ $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null);
 $people = ProjectData::getProjectInfoArray($RecordSetPeople);
 ArrayFunctions::array_sort_by_column($people,'firstname');
 if (!empty($people)) {
-    $select_people = "<option>Select Name</option>";
+    $select_people = "<option value=''>Select Name</option>";
     foreach ($people as $person){
         $select_people .= "<option value='".$person['record_id']."'>".$person['firstname']." ".$person['lastname']." | ".$person['email']. "</option>";
     }

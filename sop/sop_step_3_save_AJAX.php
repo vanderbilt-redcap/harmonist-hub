@@ -16,11 +16,14 @@ if(!isset($_REQUEST['sop_downloaders_dummy'])){
 $Proj = new \Project(IEDEA_SOP);
 $event_id = $Proj->firstEventId;
 
+$sop_inclusion = ($_REQUEST['sop_inclusion'] == "") ? "<i>None</i>" : $_REQUEST['sop_inclusion'];
+$sop_exclusion = ($_REQUEST['sop_exclusion'] == "") ? "<i>None</i>" : $_REQUEST['sop_exclusion'];
+
 $arraySOP = array();
 $arraySOP[$record][$event_id]['sop_downloaders'] = $_REQUEST['downloaders'];
-$arraySOP[$record][$event_id]['sop_downloaders_dummy'] = $downDummy;
-$arraySOP[$record][$event_id]['sop_inclusion'] = $_REQUEST['sop_inclusion'];
-$arraySOP[$record][$event_id]['sop_exclusion'] = $_REQUEST['sop_exclusion'];
+$arraySOP[$record][$event_id]['sop_downloaders_dummy'][1] = $downDummy;
+$arraySOP[$record][$event_id]['sop_inclusion'] = $sop_inclusion;
+$arraySOP[$record][$event_id]['sop_exclusion'] = $sop_exclusion;
 $arraySOP[$record][$event_id]['sop_notes'] = $_REQUEST['sop_notes'];
 $arraySOP[$record][$event_id]['sop_due_d'] = $_REQUEST['sop_due_d'];
 $arraySOP[$record][$event_id]['sop_creator'] = $_REQUEST['sop_creator'];
@@ -29,7 +32,7 @@ $arraySOP[$record][$event_id]['sop_creator2'] = $_REQUEST['sop_creator2'];
 $arraySOP[$record][$event_id]['sop_creator2_org'] = $_REQUEST['sop_creator2_org'];
 $arraySOP[$record][$event_id]['sop_datacontact'] = $_REQUEST['sop_datacontact'];
 $arraySOP[$record][$event_id]['sop_datacontact_org'] = $_REQUEST['sop_datacontact_org'];
-$arraySOP[$record][$event_id]['dataformat_prefer'] = $_REQUEST['dataformat_prefer'];
+$arraySOP[$record][$event_id]['dataformat_prefer'] = ($_REQUEST['dataformat_prefer'] == "") ? array() : $_REQUEST['dataformat_prefer'];
 $arraySOP[$record][$event_id]['dataformat_notes'] = $_REQUEST['dataformat_notes'];
 
 $date = new \DateTime();
@@ -41,6 +44,8 @@ $results = \Records::saveData(IEDEA_SOP, 'array', $arraySOP,'overwrite', 'YMD', 
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record));
 $data = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 $data['sop_version_date'] = "Data Request Version: ".date('d F Y');
+$data['sop_inclusion'] = $sop_inclusion;
+$data['sop_exclusion'] = $sop_exclusion;
 
 $date = new \DateTime($_REQUEST['sop_due_d']);
 $data['sop_due_d_preview'] = $date->format('d F Y');
