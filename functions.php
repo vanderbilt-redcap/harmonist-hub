@@ -1059,7 +1059,7 @@ function getFileRow($module,$edoc, $contact_name, $text, $datetime,$secret_key,$
     if($edoc != "") {
         $q = $module->query("SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
         while ($row = $q->fetch_assoc()) {
-            $file_row = "<td><a href='downloadFile.php?code=" . \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row['stored_name'] . "&file=" . urlencode($row['doc_name']) . "&edoc=" . $edoc . "&pid=" . $user . "&id=" . $lid, 'e', $secret_key, $secret_iv) . "' target='_blank'>" . $row['doc_name'] . "</a></td>";
+            $file_row = "<td><a href='".$module->getUrl('downloadFile.php?code='. \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row['stored_name'] . "&file=" . urlencode($row['doc_name']) . "&edoc=" . $edoc . "&pid=" . $user . "&id=" . $lid, 'e', $secret_key, $secret_iv) ). "' target='_blank'>" . $row['doc_name'] . "</a></td>";
             $file_row .= "<td>" . $text . "</td>";
             $file_row .= "<td>" . $contact_name . "</td>";
             $file_row .= "<td>" . $datetime . "</td>";
@@ -1979,5 +1979,34 @@ function startTest($encryptedCode, $secret_key, $secret_iv, $timestamp){
         return true;
     }
     return false;
+}
+
+function getConceptStatusIcon($value,$text)
+{
+    if ($value != "") {
+        switch ($value) {
+            case "1":
+                $icon = "fa-search";
+                break;
+            case "2":
+                $icon = "fa-wrench";
+                break;
+            case "3":
+                $icon = "fa-paper-plane";
+                break;
+            case "4":
+                $icon = "fa-check";
+                break;
+            case "5":
+                $icon = "fa-check";
+                break;
+            default:
+                $icon = "fa-times";
+                break;
+        }
+        return '<a href="#" data-toggle="tooltip" title="' . $text . '" data-placement="top" class="custom-tooltip" style="vertical-align: -2px;"><span class="label concept_status_' . $value . '"><i class="fa ' . $icon . '" aria-hidden="true"></i></span></a>';
+    }else{
+            return "";
+    }
 }
 ?>

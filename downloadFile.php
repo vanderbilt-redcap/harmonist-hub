@@ -8,6 +8,7 @@ parse_str($code, $exploded);
 
 $filename = $exploded['file'];
 $sname = $exploded['sname'];
+$extension = pathinfo($filename, PATHINFO_EXTENSION);
 
 $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $exploded['pid']));
 $current_user = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
@@ -26,7 +27,7 @@ if($current_user != "") {
     \Records::addRecordToRecordListCache(IEDEA_FILELIBRARY, $record, 1);
 }
 
-header('Content-type: application/pdf');
+header('Content-type: application/'.$extension);
 header('Content-Disposition: attachment; filename="'.$filename.'"');
 header('Content-Transfer-Encoding: binary');
 header('Accept-Ranges: bytes');
