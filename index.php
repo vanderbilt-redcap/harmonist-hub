@@ -11,7 +11,7 @@ define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
-
+$pid = (int)$_GET['pid'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +21,7 @@ $hub_profile = $module->getProjectSetting('hub-profile');
             <?php include_once("head_scripts.php");?>
             <script>
                 var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php'))?>;
-                var pid = <?=json_encode($_GET['pid'])?>;
+                var pid = <?=json_encode($pid)?>;
             </script>
         </head>
         <body>
@@ -29,7 +29,7 @@ $hub_profile = $module->getProjectSetting('hub-profile');
     <?php if(array_key_exists('message',$_REQUEST) && $_REQUEST['message']=='DD'){?>
         <div class="container" style="margin-top: 80px">
             <div class="alert alert-success col-md-12">
-                Data Dictionary and projects successfully installed. To see the Project Ids go to the <a href="<?=APP_PATH_WEBROOT?>DataEntry/record_status_dashboard.php?pid=<?=$_REQUEST['pid']?>" target="_blank">Record Dashboard</a>.
+                Data Dictionary and projects successfully installed. To see the Project Ids go to the <a href="<?=APP_PATH_WEBROOT?>DataEntry/record_status_dashboard.php?pid=<?=$pid?>" target="_blank">Record Dashboard</a>.
             </div>
         </div>
     <?php }
@@ -37,7 +37,7 @@ $hub_profile = $module->getProjectSetting('hub-profile');
             echo '  <div class="container" style="margin-top: 60px">  
                 <div class="alert alert-danger col-md-12">
                     <div class="col-md-10">
-                        To start the installation you need fill up the fields in the <a href="'.APP_PATH_WEBROOT_FULL."external_modules/manager/project.php?pid=".$_GET['pid'].'" target="_blank">External Modules configuration settings</a>.
+                        To start the installation you need fill up the fields in the <a href="'.APP_PATH_WEBROOT_FULL."external_modules/manager/project.php?pid=".$pid.'" target="_blank">External Modules configuration settings</a>.
                     </div>
                  </div>
             </div>';
@@ -55,6 +55,10 @@ $hub_profile = $module->getProjectSetting('hub-profile');
                 ?>
                 <head>
                     <?php include_once("head_scripts.php");?>
+                    <script>
+                        var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php'))?>;
+                        var pid = <?=json_encode($pid)?>;
+                    </script>
                 </head>
                 <body>
                 <?php
