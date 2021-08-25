@@ -24,12 +24,11 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     public function redcap_module_link_check_display($project_id, $link) {
         $hub_projectname = $this->getProjectSetting('hub-projectname');
 
-        if($hub_projectname != ""){
+        if($hub_projectname != "" && $_REQUEST['pid'] == $this->getProjectSetting('hub-mapper')){
             $link['name'] = $hub_projectname." Hub";
         }else{
             return false;
         }
-
         return parent::redcap_module_link_check_display($project_id,$link);
     }
 
