@@ -122,7 +122,7 @@ $results = \Records::saveData(IEDEA_SOP, 'array', $arraySOP,'overwrite', 'YMD', 
 \Records::addRecordToRecordListCache(IEDEA_SOP, $record,1);
 
 $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record));
-$data = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$data = ProjectData::getProjectInfoArray($RecordSetSOP)[0];
 
 $data['select'] = $data_select;
 $data['save_option'] = $save_option;
@@ -173,6 +173,12 @@ if($data['sop_datacontact'] != "") {
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $data['sop_datacontact_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_datacontact_email'] = $people['email'];
+}
+
+if($data['sop_hubuser'] != "") {
+    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $data['sop_hubuser']));
+    $sop_hubuser_region = ProjectData::getProjectInfoArray($RecordSetPeople)[0]['person_region'];
+    $data['sopCreator_region'] = $sop_hubuser_region;
 }
 
 //Load From discuss data

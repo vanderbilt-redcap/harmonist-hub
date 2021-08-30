@@ -479,7 +479,7 @@ function loadAjax_steps(data,url,loadAjax,step){
                         }else if(key == "sop_creator_email" || key == "sop_creator2_email" || key == "sop_datacontact_email"){
                             $('[preview=' + key+"]").text(jsonAjax[key]);
                             $('[preview=' + key+"]").attr('href',"mailto:"+jsonAjax[key]);
-                        }else if(key == "sop_due_d" || key == "sop_due_d_preview" || key == "sop_hubuser" || key == "sop_creator" || key == "sop_creator2" || key == "sop_datacontact") {
+                        }else if(key == "sop_due_d" || key == "sop_due_d_preview" || key == "sop_hubuser" || key == "sop_creator" || key == "sop_creator2" || key == "sop_datacontact" || key == "sopCreator_region") {
                             $('#' + key).val(jsonAjax[key]);
                             $('[preview=' + key+"]").html(jsonAjax[key]);
                             if(key == "sop_datacontact" && jsonAjax[key] != "" && jsonAjax[key] != "Select Name"){
@@ -686,8 +686,8 @@ function update_table_fields(tablefields){
 
 function  update_preferred_format(key,preferredFormat){
     for (var row in preferredFormat) {
-        if(preferredFormat[row] != "") {
-            $('#'+key+'_'+preferredFormat[row]).prop('checked',true);
+        if(preferredFormat[row] == "1") {
+            $('#'+key+'_'+row).prop('checked',true);
         }
     }
 }
