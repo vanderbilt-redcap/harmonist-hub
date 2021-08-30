@@ -22,7 +22,7 @@ if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" &
     $recordsPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_hubuser']),null,null,null,false,false,false,null);
     $person_region = ProjectData::getProjectInfoArray($recordsPeople)[0]['person_region'];
 
-    $arrayComments = array(array('record_id' => $module->framework->addAutoNumberedRecord(IEDEA_SOPCOMMENTS),'responsecomplete_ts' => $completion_time, 'sop_id' => $sop['record_id'], 'response_region' => $person_region, 'response_person' => $sop['sop_hubuser']));
+    $arrayComments = array(array('record_id' => $this->framework->addAutoNumberedRecord(IEDEA_SOPCOMMENTS),'responsecomplete_ts' => $completion_time, 'sop_id' => $sop['record_id'], 'response_region' => $person_region, 'response_person' => $sop['sop_hubuser']));
 
     $recordsPeople = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region),null,null,null,false,false,false,null);
     $regions = ProjectData::getProjectInfoArray($recordsPeople)[0];
@@ -39,13 +39,13 @@ if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" &
         $arrayComments[0]['comment_ver'] = "1";
         $arrayComments[0]['response_person'] = $sop['sop_finalize_person'];
 
-        $q = $module->query("SELECT doc_name,stored_name,doc_size,file_extension,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$sop['sop_finalpdf']]);
+        $q = $this->query("SELECT doc_name,stored_name,doc_size,file_extension,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$sop['sop_finalpdf']]);
         $docId = "";
         while ($row = $q->fetch_assoc()) {
             $storedName = date("YmdsH")."_pid".IEDEA_HARMONIST."_".\Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
             $output = file_get_contents(EDOC_PATH.$row['stored_name']);
             $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
-            $q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',IEDEA_HARMONIST,date('Y-m-d h:i:s')]);
+            $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',IEDEA_HARMONIST,date('Y-m-d h:i:s')]);
             $docId = db_insert_id();
 
             $jsonConcepts = json_encode(array(array('record_id' => $sop['sop_concept_id'], 'datasop_file' => $docId)));
