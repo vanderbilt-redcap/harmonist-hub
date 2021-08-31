@@ -5,17 +5,21 @@ include_once(__DIR__ ."/../projects.php");
 $isAdmin = false;
 if(array_key_exists('isAdmin', $_REQUEST) && ($_REQUEST['isAdmin'] == '1')){
     $isAdmin = true;
+    $moduleAux = $module;
+    $pidsArray = REDCapManagement::getPIDsArray(IEDEA_PROJECTS);
+}else{
+    $moduleAux = $this;
 }
 $today = strtotime(date("Y-m-d"));
 if(strtotime($settings['publications_lastupdate']) < $today || $settings['publications_lastupdate'] == "" || $isAdmin) {
-    $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[output_year] <> ''");
-    $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets);
+    $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array');
+    $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,"[output_year] <> ''");
 
     $RecordSetExtraOut = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'array', null);
     $extra_outputs = ProjectData::getProjectInfoArray($RecordSetExtraOut);
     ArrayFunctions::array_sort_by_column($extra_outputs, 'output_year', SORT_DESC);
 
-    $abstracts_publications_type = $this->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
+    $abstracts_publications_type = $moduleAux->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
     $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
     $abstracts_publications_badge_text = array("1" => "badge-manuscript-text", "2" => "badge-abstract-text", "3" => "badge-poster-text", "4" => "badge-presentation-text", "5" => "badge-report-text", "99" => "badge-other-text");
 
@@ -27,11 +31,6 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             arsort($output_year);
             foreach ($output_year as $index => $value) {
                 $records++;
-                $instance = $index;
-                if ($index == '') {
-                    $instance = 1;
-                }
-
                 $available = '';
                 if (!empty($concept['output_citation'][$index])) {
                     $available = htmlentities($concept['output_citation'][$index]) . " ";
@@ -45,16 +44,16 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
                 $file = '';
                 if ($concept['output_file'][$index] != "") {
-                    $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($this, $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                    $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                 }
 
-                $passthru_link = $this->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "output_record", "");
-                $survey_link = $this->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "output_record", "");
+                $survey_link = $moduleAux->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                 $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
                 $table_aux = array();
-                $table_aux['concept'] = '<a href="'.$this->getUrl('index.php?pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']) . '">' . htmlentities($concept['concept_id']) . '</a>';
+                $table_aux['concept'] = '<a href="'.$moduleAux->getUrl('index.php?pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']) . '">' . htmlentities($concept['concept_id']) . '</a>';
                 $table_aux['year'] = '<strong>' . htmlentities($concept['output_year'][$index]) . '</strong>';
                 $table_aux['region'] = '<span class="badge badge-pill badge-draft">MR</span>';
                 $table_aux['conf'] = htmlentities($concept['output_venue'][$index]);
@@ -92,11 +91,11 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
             $file = '';
             if ($output['output_file'] != "") {
-                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($this, $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
             }
 
-            $passthru_link = $this->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
-            $survey_link = $this->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+            $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
+            $survey_link = $moduleAux->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
             $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
             $table_aux = array();
@@ -129,7 +128,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $output = file_get_contents(EDOC_PATH . $storedName);
     $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
     //Save document on DB
-    $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$filename,$filesize,'txt','application/octet-stream','0',$pidsArray['SETTINGS'], date('Y-m-d h:i:s')]);
+        $moduleAux->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$filename,$filesize,'txt','application/octet-stream','0',$pidsArray['SETTINGS'], date('Y-m-d h:i:s')]);
     $docId = db_insert_id();
 
     //Add document DB ID to project
@@ -138,6 +137,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $json = json_encode(array(array('record_id' => 1, 'publications_json' => $docId,'publications_lastupdate' => date("Y-m-d H:m:s"))));
     $results = \Records::saveData($pidsArray['SETTINGS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($pidsArray['SETTINGS'], 1, $event_id);
+
 
 }
 ?>
