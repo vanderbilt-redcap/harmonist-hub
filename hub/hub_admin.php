@@ -1,5 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+
+$default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
 ?>
 <script>
     $(document).ready(function() {
@@ -98,6 +100,9 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                 $region = " (".$person_region_code.")";
                             }
 
+                            $check_submission_text = ($settings['admintext1']=="")? $default_values_settings['admintext1']:$settings['admintext1'];
+                            $set_deadline_text = ($settings['admintext2']=="")? $default_values_settings['admintext2']:$settings['admintext2'];
+
                             echo '<tr>
                                     <td><span class="nowrap">'.$req['requestopen_ts'].'</span></td>
                                     <td><strong>'.$request_type_label[$req['request_type']].'</strong><br>'.\Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "").'</td>
@@ -106,12 +111,12 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
                             $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "request", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
-                            echo '<td><div><a href="'.$survey_link.'" class="btn btn-primary btn-xs actionbutton" target="_blank"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> Check Submission</a></div>';
+                            echo '<td><div><a href="'.$survey_link.'" class="btn btn-primary btn-xs actionbutton" target="_blank"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> '.$check_submission_text.'</a></div>';
 
                             $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "admin_review", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
-                            echo '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> Set Deadline</a></div></td>';
+                            echo '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> '.$set_deadline_text.'</a></div></td>';
                         }
                     }
                     if(!$any_request_found){
@@ -187,21 +192,25 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                 $region = " (" . $person_region_code . ")";
                             }
 
+                            $finalize_review_text = ($settings['admintext3']=="")? $default_values_settings['admintext3']:$settings['admintext3'];
+                            $request_docs_text = ($settings['admintext4']=="")? $default_values_settings['admintext4']:$settings['admintext4'];
+                            $assign_mr_text = ($settings['admintext5']=="")? $default_values_settings['admintext5']:$settings['admintext5'];
+
                             if ($req['finalize_y'] != "") {
-                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> Finalize Review</a>';
+                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$finalize_review_text.'</a>';
                             } else {
-                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-legal fa-fw" aria-hidden="true"></i> Finalize Review</a>';
+                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-legal fa-fw" aria-hidden="true"></i> '.$finalize_review_text.'</a>';
                             }
                             if($req['request_type'] == '1' || $req['request_type'] == '5'){
                                 if ($req['author_doc'] != "") {
-                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> Request Docs</a>';
+                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$request_docs_text.'</a>';
                                 } else {
-                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-file fa-fw" aria-hidden="true"></i> Request Docs</a>';
+                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-file fa-fw" aria-hidden="true"></i> '.$request_docs_text.'</a>';
                                 }
                                 if ($req['mr_assigned'] != "" && $req['finalconcept_doc'] != "" && $req['finalconcept_pdf'] != "") {
-                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> Assign MR</a>';
+                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$assign_mr_text.'</a>';
                                 } else {
-                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-hashtag fa-fw" aria-hidden="true"></i> Assign MR</a>';
+                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-hashtag fa-fw" aria-hidden="true"></i> '.$assign_mr_text.'</a>';
                                 }
                             }else{
                                 $request_docs = "";

@@ -4,6 +4,8 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 class ProjectData
 {
+    public $default_value;
+
     /**
      * Function that returns the info array from a specific project
      * @param $project, the project id
@@ -97,6 +99,23 @@ class ProjectData
             $index++;
         }
         return $array;
+    }
+
+    public function setDefaultValues($project_id){
+        $data_dictionary_settings = \REDCap::getDataDictionary($project_id, 'array',false);
+        $default_value = array();
+        foreach ($data_dictionary_settings as $row) {
+            if($row['field_annotation'] != "" && strpos($row['field_annotation'], "@DEFAULT") !== false){
+                $text = trim(explode("@DEFAULT=", $row['field_annotation'])[1],'\'"');;
+                $default_value[$project_id][$row['field_name']] = $text;
+            }
+
+        }
+        $this->default_value = $default_value;
+    }
+
+    public function getDefaultValues($project_id){
+        return $this->default_value[$project_id];
     }
 }
 ?>

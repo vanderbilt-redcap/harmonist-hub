@@ -70,3 +70,5 @@ use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
 $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
+$default_values = new ProjectData;
+$default_values->setDefaultValues(IEDEA_SETTINGS);
