@@ -228,7 +228,7 @@ if($concept['revised_y'][0] == '1'){
     </table>
 
 <?php
-if (!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['adminupdate_d'])>0) {
+if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['adminupdate_d'])>0) || (!empty($concept) && $concept['update_d'] != "" && count($concept['update_d'])>0)) {
 ?>
 
     <div class="panel panel-default-archive">
@@ -244,10 +244,10 @@ if (!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admin
 
                 <tbody>
                 <?php
-                    if($concept['adminupdate_d'] == ""){
+                    if($concept['adminupdate_d'] == "" && $concept['update_d'] == ""){
                         echo '<tr><td colspan="3">No updates available</td></tr>';
                     }else{
-                        #sort elements by most recent date
+                        #sort elements by most recent date Admin
                         arsort($concept['adminupdate_d']);
                         foreach ($concept['adminupdate_d'] as $index=>$value){
                             echo '<tr>';
