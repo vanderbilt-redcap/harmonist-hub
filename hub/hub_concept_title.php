@@ -205,7 +205,7 @@ if($concept['revised_y'][0] == '1'){
         <div class="row request">
             <div class="col-md-2"><strong>Participants:</strong>
             </div>
-            <div class="col-md-10">
+            <div class="col-md-6">
                 <?php
                 if(!empty($concept['participants_complete'])) {
                     foreach ($concept['participants_complete'] as $id => $participant) {
@@ -224,7 +224,22 @@ if($concept['revised_y'][0] == '1'){
                 }
                 ?>
             </div>
-        </div>
+            <div class="col-md-4 hidden-sm hidden-xs"><strong>Tags: </strong>
+                <?php
+                $noTags = true;
+                $concept_tags = $module->getChoiceLabels('concept_tags', IEDEA_HARMONIST);
+                foreach ($concept['concept_tags'] as $tag=>$value){
+                    if($value == 1) {
+                        $noTags = false;
+                        echo '<span class="label label-as-badge badge-draft"> ' . $concept_tags[$tag].'</span> ';
+                    }
+                }
+                if($noTags){
+                   echo '<em>None</em>';
+                }
+                ?>
+            </div>
+</div>
     </table>
 
 <?php

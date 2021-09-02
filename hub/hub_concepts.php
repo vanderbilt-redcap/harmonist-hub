@@ -16,6 +16,7 @@ if (!empty($concepts)) {
         '<thead><tr>'.
         '<th class="sorted_class" data-sorted="true" data-sorted-direction="descending">ID</th>'.
         '<th class="sorted_class" data-sorted="true">Working Group</th>'.
+        '<th class="sorted_class" data-sorted="true">Tags</th>'.
         '<th class="sorted_class" data-sorted="true">Active</th>'.
         '<th class="sorted_class" data-sorted="true">Working Group 2</th>'.
         '<th class="sorted_class">Contact</th>'.
@@ -29,9 +30,16 @@ if (!empty($concepts)) {
         if(!empty($id_people)){
             $name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($id_people);
         }
+        $tags = "";
+        foreach ($concept['concept_tags'] as $tag=>$value){
+            if($value == 1) {
+                $tags .= $tag.",";
+            }
+        }
         $concepts_table .= '<tr wg_id="'.$concept['wg_link'].'">'.
             '<td style="" data-order="'.$concept['concept_id'].'"><strong>' . $concept['concept_id'].'</strong></td>' .
             '<td>' . $concept['wg_link'].'</td>' .
+            '<td>' . $tags.'</td>' .
             '<td>' . $concept['active_y'].'</td>' .
             '<td>' . $concept['wg2_link'].'</td>' .
             '<td style="">' . $name. '</td>' .
@@ -85,23 +93,26 @@ if(array_key_exists('message', $_REQUEST)){
     $.fn.dataTable.ext.search.push(
         function( settings, data, dataIndex ) {
             var wg = $('#selectWorkingGroup').val();
+            var tags = $('#selectTags').val();
             var active = $('#concept_active').is(':checked');
             $('#concept_active').val($('#concept_active').is(':checked'));
             var column_wg = data[1];
-            var column_active = data[2];
-            var column_wg2 = data[3];
+            var column_tags = data[2];
+            var column_active = data[3];
+            var column_wg2 = data[4];
 
-            if(active == true && column_active == 'Y'){
-                if(wg != '' && (column_wg == wg || column_wg2 == wg)){
-                    return true;
-                }else if(wg == ''){
-                    return true;
-                }
-            }else if(active == false){
-                if(wg != '' && (column_wg == wg || column_wg2 == wg)){
-                    return true;
-                }else if(wg == ''){
-                    return true;
+            if((active == true && column_active == 'Y') || active == false){
+                if((wg != '' && (column_wg == wg || column_wg2 == wg)) || wg == ''){
+                    if(tags == ''){
+                        return true;
+                    }else if((tags != '')){
+                        var tags_col = column_tags.split(",")
+                        for (var row in tags_col){
+                            if(tags_col[row] == tags){
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -113,6 +124,7 @@ if(array_key_exists('message', $_REQUEST)){
         $('#form_concepts_list').click(function (event) {
             $('<input />').attr('type', 'hidden').attr('name', 'concept_active').attr('value', $('#concept_active').is(':checked')).appendTo('#form_concepts_list');
             $('<input />').attr('type', 'hidden').attr('name', 'wg').attr('value', $('#selectWorkingGroup').val()).appendTo('#form_concepts_list');
+            $('<input />').attr('type', 'hidden').attr('name', 'tags').attr('value', $('#selectTags').val()).appendTo('#form_concepts_list');
             $('<input />').attr('type', 'hidden').attr('name', 'select').attr('value', $('#options_wrapper input').val()).appendTo('#form_concepts_list');
             return true;
         });
@@ -128,7 +140,7 @@ if(array_key_exists('message', $_REQUEST)){
                     extend: 'excel',
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
                     exportOptions: {
-                        columns: [0,4,5]
+                        columns: [0,5,6]
                 },
                     title: docname,
                     customize: function(xlsx){
@@ -198,7 +210,7 @@ if(array_key_exists('message', $_REQUEST)){
                     extend: 'pdf',
                     text: '<i class="fa fa-file-pdf-o"></i> PDF',
                     exportOptions: {
-                        columns: [0,4,5]
+                        columns: [0,5,6]
                     },
                     title: docname,
                     customize: function (doc) {
@@ -288,7 +300,7 @@ if(array_key_exists('message', $_REQUEST)){
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
                     exportOptions: {
-                        columns: [0,4,5],
+                        columns: [0,5,6],
                         stripHtml: false
                     },
                     customize: function ( win ) {
@@ -313,13 +325,15 @@ if(array_key_exists('message', $_REQUEST)){
         //we hide the columns that we use only as filters
         var column_wg = sortable_table.column(1);
         column_wg.visible(false);
-        var column_active = sortable_table.column(2);
+        var column_tag = sortable_table.column(2);
+        column_tag.visible(false);
+        var column_active = sortable_table.column(3);
         column_active.visible(false);
-        var column_wg2 = sortable_table.column(3);
+        var column_wg2 = sortable_table.column(4);
         column_wg2.visible(false);
 
         //when any of the filters is called upon change datatable data
-        $('#selectWorkingGroup, #concept_active').change( function() {
+        $('#selectWorkingGroup, #concept_active, #selectTags').change( function() {
             var table = $('#sortable_table').DataTable();
             table.draw();
         } );
@@ -395,6 +409,12 @@ if(array_key_exists('message', $_REQUEST)){
             <?php } ?>
         </div>
     </div>
+    <div style="float:right;padding-bottom:5px;">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="concept_active" name="concept_active" checked>
+            <label class="custom-control-label" for="concept_active">Active Concepts Only</label>
+        </div>
+    </div>
     <div class="optionSelect conceptSheets_optionMenu">
         <div style="float:left" id="options_wrapper"></div>
         <div style="float:right">
@@ -409,22 +429,35 @@ if(array_key_exists('message', $_REQUEST)){
                     $wgroups = ProjectData::getProjectInfoArray($RecordSetGroups);
                     ArrayFunctions::array_sort_by_column($wgroups,'group_abbr');
                     if (!empty($wgroups)) {
-                        foreach ($wgroups as $wg){
-                            $selected = '';
-                            if($wg_type == $wg['record_id']){
-                                $selected = 'selected';
+                        foreach ($wgroups as $wg) {
+                            if ($wg['record_id'] != "") {
+                                $selected = '';
+                                if ($wg_type == $wg['record_id']) {
+                                    $selected = 'selected';
+                                }
+                                $wg_name = $wg['group_abbr'] . " - ".$wg['group_name'];
+                                $wg_all = (strlen($wg_name) > 30) ? substr($wg_name,0,30)."..." : $wg_name;
+                                echo "<option value='" . $wg['record_id'] . "' " . $selected . ">"  . $wg_all . "</option>";
                             }
-                            echo "<option value='".$wg['record_id']."' ".$selected.">".$wg['group_abbr']." - ".$wg['group_name']."</option>";
                         }
                     }
                     ?>
                 </select>
             </div>
-            <div style="float:left;padding-left:50px;margin-top: 8px;">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="concept_active" name="concept_active" checked>
-                    <label class="custom-control-label" for="concept_active">Active Concepts Only</label>
-                </div>
+            <div style="float:left;margin-top: 8px;padding-left: 10px">
+                Tags:
+            </div>
+            <div style="float:left;padding-left:10px">
+                <select class="form-control" name="selectTags" id="selectTags">
+                    <option value="">Select All</option>
+                    <?php
+                    $concept_tags = $module->getChoiceLabels('concept_tags', IEDEA_HARMONIST);
+                    foreach ($concept_tags as $tagid => $text){
+                        $tag_text= (strlen($text) > 30) ? substr($text,0,30)."..." : $text;
+                        echo "<option value='".$tagid."'>".$tag_text."</option>";
+                    }
+                    ?>
+                </select>
             </div>
         </div>
     </div>
