@@ -205,6 +205,11 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             }
         }
     }
+}else if($instrument == 'admin_review' && $request['mr_temporary'] != "") {
+    $arrayRM = array(array('record_id' => $record));
+    $arrayRM[0]['mr_assigned'] = $request['mr_temporary'];
+    $json = json_encode($arrayRM);
+    $results = \Records::saveData(IEDEA_RMANAGER, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 }
 
 #We save the date for Recenty Finalized Requests table
