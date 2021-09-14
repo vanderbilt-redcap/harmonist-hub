@@ -203,8 +203,7 @@ if($concept['revised_y'][0] == '1'){
             <div class="col-md-4 hidden-sm hidden-xs"><strong>Status: </strong><span class="label label-as-badge <?=$active_color_button;?>"><?=$active;?></span> <?=$revised?></div>
         </div>
         <div class="row request">
-            <div class="col-md-2"><strong>Participants:</strong>
-            </div>
+            <div class="col-md-2"><strong>Participants:</strong></div>
             <div class="col-md-6">
                 <?php
                 if(!empty($concept['participants_complete'])) {
@@ -239,12 +238,12 @@ if($concept['revised_y'][0] == '1'){
                     }
                 }
                 if($noTags){
-                   echo '<em>None</em>';
+                   echo '<div style="display: inline-block;padding:0 5px 5px 5px"><em>None</em></div>';
                 }
                 ?>
                 </div>
             </div>
-</div>
+        </div>
     </table>
 
 <?php
