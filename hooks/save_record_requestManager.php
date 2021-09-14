@@ -1,6 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../functions.php");
+
 use ExternalModules\ExternalModules;
 
 $records = \REDCap::getData($project_id, 'array', array('request_id' => $record));
@@ -92,7 +93,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         if ($request['finalconcept_pdf'] != "") {
             $q = $this->query("SELECT doc_name,stored_name,doc_size,file_extension,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$request['finalconcept_pdf']]);
             $docId = "";
-            while ($row = $q->fetch_assoc()) {
+            while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
                 $storedName = date("YmdsH") . "_pid" . IEDEA_HARMONIST . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
                 $output = file_get_contents(EDOC_PATH . $row['stored_name']);
@@ -107,7 +108,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         if ($request['finalconcept_doc'] != "") {
             $q = $this->query("SELECT doc_name,stored_name,doc_size,file_extension,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$request['finalconcept_doc']]);
             $docId = "";
-            while ($row = $q->fetch_assoc()) {
+            while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
                 $storedName = date("YmdsH") . "_pid" . IEDEA_HARMONIST . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
                 $output = file_get_contents(EDOC_PATH . $row['stored_name']);
@@ -150,7 +151,6 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
         $json = json_encode($arrayConcepts);
         $results = \Records::saveData(IEDEA_HARMONIST, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-
     }else{
         $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_HARMONIST . "&arm=1&id=" . $concept['record_id'];
 
@@ -173,7 +173,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         if ($request['finalconcept_pdf'] != "") {
             $q = $this->query("SELECT doc_name,stored_name,doc_size,file_extension,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$request['finalconcept_pdf']]);
             $docId = "";
-            while ($row = $q->fetch_assoc()) {
+            while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
             }
         }
@@ -181,7 +181,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         if ($request['finalconcept_doc'] != "") {
             $q = $this->query("SELECT doc_name,stored_name,doc_size,file_extension,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$request['finalconcept_doc']]);
             $docId = "";
-            while ($row = $q->fetch_assoc()) {
+            while ($row = db_fetch_assoc($q)) {
                 $finalConcept_DOC = $row['doc_name'];
             }
         }
