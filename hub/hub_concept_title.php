@@ -224,20 +224,25 @@ if($concept['revised_y'][0] == '1'){
                 }
                 ?>
             </div>
-            <div class="col-md-4 hidden-sm hidden-xs"><strong>Tags: </strong>
+            <div class="col-md-4 hidden-sm hidden-xs" style="display: flex">
+                <div>
+                    <strong>Tags: </strong>
+                </div>
+                <div>
                 <?php
                 $noTags = true;
                 $concept_tags = $module->getChoiceLabels('concept_tags', IEDEA_HARMONIST);
                 foreach ($concept['concept_tags'] as $tag=>$value){
                     if($value == 1) {
                         $noTags = false;
-                        echo '<span class="label label-as-badge badge-draft"> ' . $concept_tags[$tag].'</span> ';
+                        echo '<div style="display: inline-block;padding:0 5px 5px 5px"><span class="label label-as-badge badge-draft"> ' . $concept_tags[$tag].'</span></div>';
                     }
                 }
                 if($noTags){
                    echo '<em>None</em>';
                 }
                 ?>
+                </div>
             </div>
 </div>
     </table>
