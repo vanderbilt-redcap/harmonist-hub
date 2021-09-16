@@ -102,10 +102,13 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
 
                             $check_submission_text = ($settings['admintext1']=="")? $default_values_settings['admintext1']:$settings['admintext1'];
                             $set_deadline_text = ($settings['admintext2']=="")? $default_values_settings['admintext2']:$settings['admintext2'];
-
+                            $concept_link = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "");
+                            if($concept_link == ""){
+                                $concept_link = $req['mr_temporary'];
+                            }
                             echo '<tr>
                                     <td><span class="nowrap">'.$req['requestopen_ts'].'</span></td>
-                                    <td><strong>'.$request_type_label[$req['request_type']].'</strong><br>'.\Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "").'</td>
+                                    <td><strong>'.$request_type_label[$req['request_type']].'</strong><br>'.$concept_link.'</td>
                                     <td><a href="mailto:'.$req['contact_email'].'">'.$req['contact_name'].'</a>'.$region.'</td>
                                     <td class="hidden-xs"><a href="'.$module->getUrl('index.php?option=hub&record='.$req['request_id']).'" target="_blank">'.$req['request_title'].'</a></td>';
 
@@ -183,6 +186,9 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                             $survey_link_mr = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_mr['hash']);
 
                             $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "");
+                            if($req_type == "" && $req['mr_temporary'] != ""){
+                                $req_type = $req['mr_temporary'];
+                            }
                             $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($req['due_d'], '', 'float:right', '0');
 
                             $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']));
@@ -292,6 +298,9 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                             $survey_link_mr = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_mr['hash']);
 
                             $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "");
+                            if($req_type == "" && $req['mr_temporary'] != ""){
+                                $req_type = $req['mr_temporary'];
+                            }
 
                             $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']));
                             $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];

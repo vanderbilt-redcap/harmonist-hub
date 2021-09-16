@@ -41,6 +41,8 @@ if($request !="") {
         $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $request['assoc_concept']));
         $concept_sheet = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
         $concept = '<a href="i'.$module->getUrl('ndex.php?pid=' . IEDEA_DATAMODEL . '&option=ttl&record=' . $request['assoc_concept']) . '" target="_blank">' . $concept_sheet . '</a>';
+    }else if($request['mr_temporary'] != ""){
+        $concept = $request['mr_temporary'];
     }
 
     $request_id = $_REQUEST['record'];

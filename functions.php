@@ -757,7 +757,7 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
     $current_req .= \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module,$req['assoc_concept'],"");
 
     if($req['mr_temporary'] != ""){
-        $current_req .= '<em>'.$req['mr_temporary'].'</em>';
+        $current_req .= $req['mr_temporary'];
     }
     if($req_type != 'home'){
         $current_req .= '</td>
