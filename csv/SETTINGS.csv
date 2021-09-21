@@ -32,30 +32,52 @@ vote_grid,hub_settings,"Hub Voting/Review Dashboard Settings",radio,"How do you 
 pastrequest_dur,hub_settings,,text,"How long (in days) should fully Completed Requests remain on the Review Dashboard before they are moved to the Archive?",,,integer,0,,,,y,,,,," @DEFAULT=""30"""
 vote_visibility,hub_settings,,dropdown,"Vote Visibility setting for hub-wide use","1, Private Votes | 2, Public Votes | 3, Mixed Votes",,,,,,,,,,,,
 vote_multiples,hub_settings,,dropdown,"Placeholder for Mixed votes","1, option 1 | 2, option 2",,,,,,,,,,,,
+session_timeout_popup,hub_settings,,radio,"Session Timeout.
+A session timeout popup will appear after 20 minutes of no activity in the selected options.","1, Apply to all Hub pages | 2, Apply only to data/admin pages | 3, Do not apply",,,,,,,,,,,,
+session_timeout_timer,hub_settings,,text,"Insert the time, in seconds, when the logout popup due to session inactivity will show up.<br/>By default if no number is entered it will be 20 minutes (1200 seconds)",,,,,,,"[session_timeout_popup] = '1' or [session_timeout_popup] = '2'",,,,,,
+session_timeout_countdown,hub_settings,,text,"Insert the countdown time, in seconds, after the popup has shown.<br/>
+By default it will be 1 minute (60 seconds).",,,,,,,"[session_timeout_popup] = '1' or [session_timeout_popup] = '2'",,,,,,
+admintext1,hub_settings,"Admin Review Dashboard Text",text,"Text to review a submitted request",,,,,,,,,,,,," @DEFAULT='Check Submission'"
+admintext2,hub_settings,,text,"Text to set a request review deadline",,,,,,,,,,,,," @DEFAULT='Set Deadline'"
+admintext3,hub_settings,,text,"Text to finalize the review of a request",,,,,,,,,,,,," @DEFAULT='Finalize Review'"
+admintext4,hub_settings,,text,"Text to request additional files from the request",,,,,,,,,,,,," @DEFAULT='Request Docs'"
+admintext5,hub_settings,,text,"Text to create a new Concept record",,,,,,,,,,,,," @DEFAULT='Assign Number'"
 deactivate_tblcenter,hub_settings,"List and Map of Consortium Sites (Site Census)",checkbox,"Hide/Deactivate Consortium Site List?","1, YES",,,,,,,,,,,,
 pastlastreview_dur,hub_settings,,text,"How frequently should Research Groups update their site list? ",,,,,,,,,,,,,
+deactivate_concept_tracker,hub_settings,"Concepts Settings",checkbox,"Hide/Deactivate Concept Tracker button?","1, YES",,,,,,,,,,,,
 hub_login_text,hub_page_text,"Login/Access Link Page",notes,"Login page text
 <div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,y,LV,,,," @DEFAULT='<p>Harmonist Hub (<a href=""http://sampleconsortiumhub.org"" target=""_blank"">sampleconsortiumhub.org</a>) is the internal coordination website for the Hub Example Consortium. Please visit <a href=""http://sampleconsortiumhub.org"" target=""_blank"">sampleconsortiumhub.org</a> for our public site.'"
 hub_login_blue_text,hub_page_text,,notes,"Login blue box text
-<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT=""<strong>Check your email for your custom Access Link. </strong> <br />If you haven't received an email within 5 minutes, your email address may not be registered in the system or you may be registered under a different email. Please e-mail <a href=""mailto:inserthelpemail@example.com"">inserthelpemail@example.com</a> to confirm."""
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT=""<strong>Check your email for your custom Access Link. </strong> 
+If you haven't received an email within 5 minutes, your email address may not be registered in the system or you may be registered under a different email. Please e-mail <a href=""mailto:inserthelpemail@example.com"">inserthelpemail@example.com</a> to confirm."""
 hub_recent_act_text,hub_page_text,"Home Page",notes,"Recent Activity Page - text
-<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT=""This page lists user comments, votes, and document revisions for Hub requests."""
-hub_statistics_data_text,hub_page_text,,notes,"Data Statistics Page - text
-<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='This page summarizes basic statistics on Data Requests activity. Counts are recalculated and logged every 24 hours. To request new metrics to be added to this page or calculations of changes over time, contact <a href=""mailto:yourcontact@example.org"">yourcontact@example.org</a>.'"
-hub_statistics_user_text,hub_page_text,,notes,"User Statistics Page - text
-<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,,
-hub_active_shortcut,hub_page_text,,notes,"Active Data Calls shortcut text (where is this?)
-<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,,
-hub_req_text,hub_page_text,REQUESTS,notes,"Requests text",,,,,,,,,,,,,
-hub_req_archive_text,hub_page_text,,notes,"Requests Archive text",,,,,,,,,,,,,
-hub_req_arc_rejected_text,hub_page_text,,notes,"Rejected Requests Archive text",,,,,,,,,,,,,
-hub_concept_text,hub_page_text,CONCEPTS,notes,"Concepts text",,,,,,,,,,,,,
-hub_publications_text,hub_page_text,PUBLICATIONS,notes,"Publications text",,,,,,,,,,,,,
-hub_admin_text,hub_page_text,ADMIN,notes,"Admin text",,,,,,,,,,,,,
-hub_data_activity_text,hub_page_text,OTHER,notes,"Data Activity Log text",,,,,,,,,,,,,
-hub_tbl_center_text,hub_page_text,,notes,"Consortium Site List text",,,,,,,,,,,,,
-hub_doc_librabry_text,hub_page_text,,notes,"Document Library text",,,,,,,,,,,,,
-hub_des_text,hub_page_text,"Data Exchange Standard (DES)",notes,"DES Text",,,,,,,,,,,,,
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_1_1"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT=""This page lists user comments, votes, and document revisions for Hub requests."""
+hub_active_shortcut,hub_page_text,,notes,"*+ Active Data Calls shortcut text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='Check the list of active data calls for open concepts.'"
+hub_req_text,hub_page_text,REQUESTS,notes,"Requests text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gbe0651af76_1_3"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>
+",,,,,,,,,LV,,,," @DEFAULT='The following requests have been submitted for review. Please respond to these requests on behalf of your research group.'"
+hub_req_archive_text,hub_page_text,,notes,"Requests Archive text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gbe0651af76_1_11"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='View and search all the current and past requests. Requests that have been withdrawn by a Hub Admin (e.g., test requests) will not appear in the archive.'"
+hub_req_arc_rejected_text,hub_page_text,,notes,"Rejected Requests Archive text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gbe0651af76_1_19"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='None'"
+hub_concept_text,hub_page_text,CONCEPTS,notes,"Concepts text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gbe0651af76_1_28"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='This list of active approved concept sheets (research proposals) is updated monthly with help from the Hub team and can be downloaded <a href=""harmonist/concepts/generate_concepts_pdf.php"" id=""form_concepts_list"">as a PDF</a>. To view completed concepts, uncheck the <strong>Active only</strong> checkbox. The Concept Tracker spreadsheet lists all concepts and is auto-generated based on content in the Hub.'"
+hub_publications_text,hub_page_text,PUBLICATIONS,notes,"Publications text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gbe0651af76_1_37"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The Hub publication archive includes publications compiled by the Hub team as well as documents submitted to the Hub. Contact <a href=""mailto: harmonist@vumc.org"">harmonist@vumc.org</a> to add missing abstracts, posters, reports, and other materials.'"
+hub_admin_text,hub_page_text,ADMIN,notes,"Admin text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gbe0651af76_1_45"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The Admin page allows admins to view, approve, and archive pending Hub requests, view user activity, and link to REDCap projects (requires REDCap login.) This page is only visible to Hub users with full Hub administrator status, as assigned in the ""Harmonist Permissions"" section of a user's record in REDCap.'"
+hub_data_activity_text,hub_page_text,OTHER,notes,"Data Activity Log text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gbe0651af76_1_53"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='This page lists all <strong>uploads, downloads, and deletions</strong> of project datasets. The Hub and Data Toolkit track the date and time of the file activity (Eastern US time), the type of file activity (upload/download/delete), the person, site, associated concept sheet, and filename. The Toolkit's auto-generated PDF report of uploaded datasets is available to users with data access for their site.'"
+hub_tbl_center_text,hub_page_text,,notes,"*+Consortium Site List text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_1_1"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='This page displays a list and map of all the active consortium sites. Use the Region dropdown menu to choose different regional maps or the full map. Records last reviewed or updated more than a year ago are <span style=""color: red;"">shown in red</span>.
+
+
+        tblCENTER displays the internal listing of sites. Some of the sites listed here may not appear on the public map. <a href=""mailto:harmonist@vumc.org"">Contact the Harmonist team</a> to request user permissions to edit tblCENTER through this interface.'"
+hub_doc_librabry_text,hub_page_text,,notes,"*+Document Library text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_1_1"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The Document Library is a searchable archive for files related to projects, meetings, and governance.'"
+hub_des_text,hub_page_text,"Data Exchange Standard (DES)",notes,"DES Text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gbe0651af76_1_62"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='This site provides an auto-generated, web-browsable version of the  Data Exchange Standard (DES), a <strong>common data model for sharing observational HIV data</strong> developed by the <a href=""http://iedea.org"" target=""_blank"">International epidemiology Databases to Evaluate AIDS</a> (IeDEA). More information on the data model is available on our <a href=""http://iedea.github.io"" target=""_blank"">GitHub page</a>.'"
 hub_subs_monthly_digest,hub_email_subscribers,"List Email Addresses for Notifications specified below",notes,"Monthly Hub Activity Digest
 <div style=""font-weight:lighter;font-style:italic"">Separate email addresses of recipients with semi-colons (;)</div>",,,,,,,,,LV,,,,
 hub_subs_0a0b,hub_email_subscribers,,notes,"Data Model Updated (Harmonist 0A/0B) 
@@ -70,7 +92,9 @@ calendar_title,hub_calendar,"Hub Calendar Settings",text,"Title for Calendar wid
 calendar_text,hub_calendar,,text,"Text for Calendar widget on Hub Home page",,,,,,,,,,,,,
 calendar_iframe,hub_calendar,,notes,"Google Calendar iframe Link
 <div style=""font-weight:lighter;font-style:italic"">Embed an existing Google Calendar on the Hub Home Page. Instructions to obtain an iframe link are here: <a href=""https://support.google.com/calendar/answer/41207?hl=en"">https://support.google.com/calendar/answer/41207?hl=en</a></div>",,,,,,,,,LV,,,,
-deactivate_metrics,hub_metrics_settings,"Show/Hide Metrics Pages",checkbox,"Hide/Deactivate Consortium Metrics for everyone but Hub Admins?
+deactivate_metrics_cron,hub_metrics_settings,"Show/Hide Metrics Pages",checkbox,"Deactivate Metrics daily calculations?
+<div style=""font-weight:lighter;font-style:italic"">This will pause the creation of new daily metrics records in Project 12 (Metrics). This may be useful during initial setup of the Hub to prevent collection of unnecessary data.</div>","1, YES",,,,,,,,,,,,
+deactivate_metrics,hub_metrics_settings,,checkbox,"Hide/Deactivate Consortium Metrics for everyone but Hub Admins?
 <div style=""font-weight:lighter;font-style:italic"">Recommended for initial setup, so Hub Admins can properly configure the metrics.</div>","1, YES",,,,,,,,,,,," @DEFAULT=""1"""
 deactivate_datametrics,hub_metrics_settings,,checkbox,"Hide/Deactivate Data Metrics for everyone but Hub Admins?
 <div style=""font-weight:lighter;font-style:italic"">Recommended for initial setup, so Hub Admins can properly configure the metrics. Deactivate Data Metrics if you are not using any data features of the Hub.</div>","1, YES",,,,,,,,,,,," @DEFAULT=""1"""
@@ -79,16 +103,41 @@ oldestyear_rmr_manuscripts,hub_metrics_settings,,text,"Regional and MR publicati
 oldestyear_rmr_abstracts,hub_metrics_settings,,text,"Regional and MR abstracts oldest year:",,,,,,,,,,,,,
 numberofyears_datacall,hub_metrics_settings,,text,"Data Call Timeline show last # of years",,,,,,,,,,,,,
 oldestyear_communications,hub_metrics_settings,,text,"Hub Communications oldest year:",,,,,,,,,,,,,
-hub_statistics_text,hub_metrics_page_text,,notes,"Hub Statistics text",,,,,,,,,,,,,
-hub_stats_consortium,hub_metrics_page_text,,notes,"Consortium Productivity",,,,,,,,,,,,,
-hub_stats_rmr_publications,hub_metrics_page_text,,notes,"Regional and MR publications",,,,,,,,,,,,,
-hub_stats_rmr_abstratcs,hub_metrics_page_text,,notes,"Regional and MR abstracts",,,,,,,,,,,,,
-hub_stats_mr_activity_year,hub_metrics_page_text,,notes,"Multi-regional Activity by Year (concept-linked projects only)",,,,,,,,,,,,,
-hub_stats_map,hub_metrics_page_text,,notes,Map,,,,,,,,,,,,,
-hub_stats_site_list,hub_metrics_page_text,,notes,"Site List",,,,,,,,,,,,,
-deactivate_datahub,data_hub_settings,,checkbox,"Hide/Deactivate Data Hub for everyone?","1, YES",,,,,,,,,,,,
-deactivate_toolkit,data_hub_settings,,checkbox,"Hide/Deactivate Toolkit for everyone?","1, YES",,,,,,,,,,,,
-deactivate_datadown,data_hub_settings,,checkbox,"Hide/Deactivate Data Downloads for everyone?","1, YES",,,,,,,,,,,,
+hub_statistics_text,hub_metrics_page_text,,notes,"Hub Metrics text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_0"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='This page provides basic metrics on the activity of your consortium. To request new metrics or calculations of changes over time, contact <a href=""mailto:harmonist@vumc.org"">harmonist@vumc.org</a>.'"
+hub_stats_consortium,hub_metrics_page_text,,notes,"Consortium Productivity
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_0"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The following doughnut charts show the types of concepts and review requests (""requests"") logged in the Hub. <i>(These statistics update automatically based on Hub content.)</i>'"
+hub_stats_rmr_publications,hub_metrics_page_text,,notes,"Publications text 
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_10"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='This graph shows publications over time. Multiregional publications are tracked on the Hub in real time, and regional publications were up to date as of <b>March 2020</b>.'"
+hub_stats_rmr_abstratcs,hub_metrics_page_text,,notes,"Abstracts text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_25"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='This graph shows abstracts over time. Multiregional abstracts are tracked on the Hub in real time, and regional abstracts were up to date as of <b>March 2020</b>.'"
+hub_stats_mr_activity_year,hub_metrics_page_text,,notes,"Consortium Activity by Year (concept-linked projects only)
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_33"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The following graph displays the number of new concepts, accepted abstracts, published manuscripts, and data requests per year. 
+<i>Note: Abstract counts prior to 2020 may be incomplete. Comprehensive data request tracking began in 2021.</i>'"
+hub_stats_map,hub_metrics_page_text,,notes,"Map text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_42"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The global map displays IeDEA regions and the locations of currently participating IeDEA sites.  <i>(Regional tblCENTER data updated January-March 2020)</i>'"
+hub_stats_site_list,hub_metrics_page_text,,notes,"Site List text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_51"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The IeDEA site list displays the counts of currently participating IeDEA sites by region, country, and type of clinic (adult/peds). <i>(Regional tblCENTER data updated January-March 2020)</i>'"
+hub_statistics_gen_text,general_hub_stats_page_text,,notes,"Hub General Statistics text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_80"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='This page summarizes basic statistics on Hub activity. Counts are recalculated and logged every 24 hours. To request new metrics to be added to this page or calculations of changes over time, contact <a href=""mailto:harmonist@vumc.org"">harmonist@vumc.org</a>.'"
+hub_stats_general_usage,general_hub_stats_page_text,,notes,"General Hub Usage Stats
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_80"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The following graphs display a summary of different elements in the Hub.'"
+hub_stats_data,general_hub_stats_page_text,,notes,"Statistics data
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_92"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The following tables display the current calculations which are logged every 24 hours.'"
+hub_stats_data_exchange,general_hub_stats_page_text,,notes,"Data Exchange
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_103"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The following graphs display a summary of different elements in the Hub.'"
+hub_stats_data_requests,general_hub_stats_page_text,,notes,"Statistics data (Requests)
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_112"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The following tables display the current calculations which are logged every 24 hours.'"
+hub_stats_datacall_time,general_hub_stats_page_text,,notes,"Data Call Timeline
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_112"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The following graph display a timeline for the Data Requests in the Hub.'"
+hub_stats_comunications,general_hub_stats_page_text,,notes,"Hub Communications
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_124"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,,
+deactivate_datahub,data_hub_settings,,checkbox,"Hide/Deactivate Data Hub for everyone?
+(deactivates everything related to the Data Hub)","1, YES",,,,,,,,,,,,
+deactivate_toolkit,data_hub_settings,,checkbox,"Hide/Deactivate Toolkit for everyone?
+(deactivates the link to the toolkit in Data Hub)","1, YES",,,,,,,,,,,,
+deactivate_datadown,data_hub_settings,,checkbox,"Hide/Deactivate Data Downloads for everyone?
+(deactivates the data download option (you can do everything but download data))","1, YES",,,,,,,,,,,,
 pastdatarequest_dur,data_hub_settings,,text,"How long (in days) should Data Requests remain on the Upload Data?",,,,,,,,,,,,,
 pastsopdatadiscuss_dur,data_hub_settings,,text,"How long (in days) should Data Requests remain on the Discuss Data?",,,,,,,,,,,,,
 recentdataactivity_dur,data_hub_settings,,text,"How long in days should the Recent Data Activity be updated?",,,,,,,,,,,,,
@@ -100,27 +149,51 @@ downloadreminder2_dur,data_hub_settings,,text,"How many days should  the SECOND 
 recentfinalreq_expiration,data_hub_settings,,text,"How Long in days show Recently Finalized Requests expire?",,,,,,,,,,,,,
 dataupload_dur,data_hub_settings,,text,"How many Data Request Uploads should be displayed in the single Data Request page?",,,,,,,,,,,,,
 number_recentdataactivity,data_hub_settings,,text,"How many Recent Data Activity entries do you want to display in the Home page?",,,,,,,,,,,,,
-hub_data_hub_text,data_hub_page_text,"DATA HUB",notes,"Data Hub text",,,,,,,,,,,,,
-hub_req_data_text,data_hub_page_text,,notes,"Request Data text",,,,,,,,,,,,,
-hub_req_data_text_after,data_hub_page_text,,notes,"Request Data text after Create button",,,,,,,,,,,,,
-hub_check_submit_text,data_hub_page_text,,notes,"Check and Submit text",,,,,,,,,,,,,
-hub_download_data_text,data_hub_page_text,,notes,"Download Data text",,,,,,,,,,,,,
-hub_recent_data_act_text,data_hub_page_text,,notes,"Recent Data Activity text",,,,,,,,,,,,,
-hub_news_archive_text,data_hub_page_text,,notes,"News Archive text",,,,,,,,,,,,,
+hub_data_hub_text,data_hub_page_text,"DATA HUB",notes,"Data Hub text
+<div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.gea397d6431_0_68"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,,LV,,,," @DEFAULT='The IeDEA Hub provides a set of tools that allow you to <strong>request, submit, and retrieve</strong> IeDEA data. The purpose of these tools it to make it easier to use the IeDEA Data Exchange Standard (DES) and share standardized and quality-checked data in a secure way.'"
+hub_req_data_text,data_hub_page_text,,notes,"Request Data text",,,,,,,,,LV,,,," @DEFAULT='<p>Interested in IeDEA data for a research project? Make sure your concept proposal is approved by the IeDEA Executive Committee before requesting data.</p>
+        <p>There are several types of IeDEA data available:</p>
+        <ul>
+            <li><b>Patient</b> data from IeDEA clinics <i>(follow instructions below)</i></li>
+            <li><b>Site Assessment</b> data - submit this <a href=""reqdatalink"" target=""_blank"">data release request</a>.</li>
+            <li><b>Other survey</b> data - contact authors <a href=""https://rocket.app.vumc.org/index.php?doc_id=14602"" target=""_blank"">here.</a></li>
+            <li><b>Custom</b> data requests - contact the Data Harmonization WG.</li>
+        </ul>
+        </p>
+        <p>The IeDEA Data Request Builder  will help you construct an <b>IeDEA Data Request</b> document, which is a formal list of the patient-level variables you hope to receive from participating IeDEA regions. The Data Request defines the data tables and variables that you need for analysis, along with cohort inclusion and exclusion criteria and contact information. </p>'"
+hub_req_data_text_after,data_hub_page_text,,notes,"Request Data text after Create button",,,,,,,,,LV,,,," @DEFAULT='<h4>Draft Data Requests</h4>
+        <p>Draft Data Requests are data requests that are in development. These drafts can be private (only visible to you) or public (shared with other IeDEA members). All draft Data Requests are shown below. You can edit your own public and private draft Data Requests. You can comment on public drafts submitted by others.</p>
+        <p>The <strong>IeDEA Data Harmonization Working Group</strong> reviews and approves draft Data Requests. Once approved, a Data Request becomes an official Data Call with set due dates for data submission. Active Data Calls are listed on the <a href=""index.php?option=upd"" target=""_blank"">Submit Data</a> page. </p>'"
+hub_check_submit_text,data_hub_page_text,,notes,"Check and Submit text",,,,,,,,,LV,,,," @DEFAULT=' <p>IeDEA data is submitted securely through the <b>Harmonist Data Toolkit</b>. The Toolkit will
+    <ol>
+        <li>Scan your uploaded files to run data format and quality checks,</li>
+        <li>Auto-generate dataset reports for you to download, and</li>
+        <li>Allow data upload to the <b>secure Harmonist cloud</b> (for data transfer only).</li>
+    </ol>
+    </p>
+    <p>Data files should be formatted according to the <a href=""/plugins/iedea/des/index.php"" target=""_blank"">IeDEA Data Exchange Standard (IeDEA DES)</a>.</p>
+    <p>The following IeDEA Concepts have active Data Requests. Please review the request details or select the request for which you wish to upload data. </p>'"
+hub_download_data_text,data_hub_page_text,,notes,"Download Data text",,,,,,,,,LV,,,," @DEFAULT='All IeDEA data requests that you have access to are displayed here. Uncollapse the menus to see individual file downloads and details. Downloads expire after 30 days. If you expect to have access to datasets that are not listed here, you may not be listed as a permitted Data Downloader on that data request. Contact the project lead and the <a href=""mailto:harmonist@vumc.org"">Harmonist team</a> to request permission.'"
+hub_recent_data_act_text,data_hub_page_text,,notes,"Recent Data Activity text",,,,,,,,,LV,,,," @DEFAULT='This page lists all data request activity tracked on the Hub, including user comments on data requests, uploads of supplementary data request documents, and data uploads and downloads through the Data Toolkit.'"
+hub_news_archive_text,data_hub_page_text,,notes,"News Archive text",,,,,,,,,LV,,,,
 temp2,data_hub_page_text,"DATA CALL",text,temp,,,,,,,,,,,,,
-hub_step1,data_hub_page_text,,notes,"Create Data Call Step 1",,,,,,,,,,,,,
-hub_step2,data_hub_page_text,,notes,"Create Data Call Step 2",,,,,,,,,,,,,
-hub_step3,data_hub_page_text,,notes,"Create Data Call Step 3",,,,,,,,,,,,,
-hub_step4,data_hub_page_text,,notes,"Create Data Call Step 4",,,,,,,,,,,,,
-hub_steps_complete_text,data_hub_page_text,,notes,"Create Data Call Steps Complete text",,,,,,,,,,,,,
-hub_datacall_archive,data_hub_page_text,,notes,"Data Call Archive text",,,,,,,,,,,,,
-hub_datareq_for_review,data_hub_page_text,,notes,"Share Data Request for Review Text",,,,,,,,,,,,,
-hub_statistics_gen_text,data_metrics_page_text,,notes,"Hub General Statistics text",,,,,,,,,,,,,
-hub_stats_general_usage,data_metrics_page_text,,notes,"General Hub Usage Stats",,,,,,,,,,,,,
-hub_stats_data,data_metrics_page_text,,notes,"Statistics data",,,,,,,,,,,,,
-hub_stats_data_exchange,data_metrics_page_text,,notes,"Data Exchange",,,,,,,,,,,,,
-hub_stats_data_requests,data_metrics_page_text,,notes,"Statistics data (Requests)",,,,,,,,,,,,,
-hub_stats_datacall_time,data_metrics_page_text,,notes,"Data Call Timeline",,,,,,,,,,,,,
-hub_stats_comunications,data_metrics_page_text,,notes,"Hub Communications",,,,,,,,,,,,,
+hub_step1,data_hub_page_text,,notes,"Create Data Call Step 1",,,,,,,,,LV,,,," @DEFAULT='The <b>IeDEA Data Request Builder</b> is going to walk you through four steps:
+                            <ol>
+                                <li>Identify the concept for which you want patient-level data, </li>
+                                <li>Pick the variables you need from the current version of the <a href=""des/index.php"" target=""_blank"">IeDEA Data Exchange Standard</a>, </li>
+                                <li>Define your inclusion/exclusion criteria, suggested data submission date, and who will have permission to download the data, and </li>
+                                <li>Preview your draft Data Request. </li>
+                            </ol>
+                            At the end, we'll guide you through <b>making your draft public</b> so you can share it with the IeDEA Data Harmonization Working Group for feedback.'"
+hub_step2,data_hub_page_text,,notes,"Create Data Call Step 2",,,,,,,,,LV,,,," @DEFAULT='<p>Select the <a href=""des/index.php"" target=""_blank"">IeDEA DES</a> tables and variables you need for your analysis.</p>
+                            <p>Keep in mind that the IeDEA DES only specifies how data are transfered among regions; it does not define what data each region collects. Therefore <b>not all these variables will be available from IeDEA regions</b>. Known variable availability (based on previous requests) is marked in the ""Availability"" column. The Data Harmonization Working Group will help you refine these selections.</p>'"
+hub_step3,data_hub_page_text,,notes,"Create Data Call Step 3",,,,,,,,,LV,,,," @DEFAULT='<p>The form below collects some extra information needed to generate the Data Request.</p>
+                            <ul class=""list-inline pull-right"" style=""    padding-right: 10%;"">
+                                <li><button type=""submit"" class=""btn btn-success saveAndContinue"" id=""save_and_stay"" name=""save_and_stay"">Save & Stay</button></li>
+                            </ul>'"
+hub_step4,data_hub_page_text,,notes,"Create Data Call Step 4",,,,,,,,,LV,,,," @DEFAULT='Preview the document below. You can return to any previous step to edit the draft. The <b>next step will save the draft Data Request to your library and create a PDF</b>. You can still return to edit the document afterwards and regenerate a new PDF.'"
+hub_steps_complete_text,data_hub_page_text,,notes,"Create Data Call Steps Complete text",,,,,,,,,LV,,,," @DEFAULT='<p>The <b>next step is to make your draft public and request a review</b> by the IeDEA Data Harmonization Working Group. The working group chairs may ask to meet with you to revise this document together, or may ask if you can discuss this data request on the next WG call.</p>'"
+hub_datacall_archive,data_hub_page_text,,notes,"Data Call Archive text",,,,,,,,,LV,,,," @DEFAULT='This page displays all past IeDEA Data Calls. You can still submit a data set to a closed data call by clicking the Dat Request link followed by the Upload button. Data Requests that have been withdrawn by a Hub Admin (e.g., test requests) will not appear in the archive.'"
+hub_datareq_for_review,data_hub_page_text,,notes,"Share Data Request for Review Text",,,,,,,,,LV,,,," @DEFAULT='The next step is to <strong>share your draft Data Request</strong> with IeDEA data managers to make sure the data request is feasible and well outlined. Once you submit the form below, your draft Data Request will <strong>change from ""Private Draft"" to ""Public Draft""</strong> so other Hub users can see it.'"
 publications_lastupdate,backend_variables,"Publications Library",text,"Last Update Date",,,datetime_seconds_ymd,,,,,,,,,," @READONLY"
 publications_json,backend_variables,,file,"Publications JSON File",,,,,,,,,,,,," @READONLY"

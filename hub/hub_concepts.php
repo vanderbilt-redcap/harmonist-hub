@@ -376,7 +376,7 @@ if(array_key_exists('message', $_REQUEST)){
         ?>
         <div style="<?=$button_style;?>">
             <div style="display: inline-block">
-                <?php if($isAdmin){?>
+                <?php if($isAdmin && $settings['deactivate_concept_tracker'][1] != 1){?>
                 <form method="POST" action="<?=$module->getUrl('hub/hub_concepts_tracker_spreadsheet.php')?>" id="form_concepts_tracker">
                     <button type="submit" class="btn btn-primary"><span class="fa fa-arrow-down"></span> Concept Tracker</button>
                 </form>
