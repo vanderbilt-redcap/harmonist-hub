@@ -67,6 +67,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     function redcap_survey_acknowledgement_page($project_id, $record, $instrument, $event_id){
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $this->setProjectConstants($hub_mapper);
+
         try {
             #Depending on the project que add one hook or another
             if ($project_id == IEDEA_SOP && $instrument == 'dhwg_review_request') {
@@ -76,6 +77,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 if ($project_id == IEDEA_SOP) {
                     include_once("hooks/save_record_SOP.php");
                 } else if ($project_id == IEDEA_RMANAGER) {
+                    error_log("IN");
                     include_once("hooks/save_record_requestManager.php");
                 } else if ($project_id == IEDEA_COMMENTSVOTES) {
                     include_once("hooks/save_record_commentsAndVotes.php");
