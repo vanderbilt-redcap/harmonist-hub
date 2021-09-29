@@ -120,7 +120,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
                 $comment_time ="";
                 if(!empty($completion_time)){
-                    $dateComment = new DateTime($completion_time);
+                    $dateComment = new \DateTime($completion_time);
                     $dateComment->modify("+1 hours");
                     $comment_time = $dateComment->format("Y-m-d H:i:s");
                 }

@@ -8,6 +8,7 @@ require_once(dirname(__FILE__)."/classes/REDCapManagement.php");
 $project_id = $_REQUEST['pid'];
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
+$userPermission = $module->getProjectSetting('user-permission',$project_id);
 $module->setProjectSetting('hub-mapper',$project_id);
 
 #PID MAPPER
@@ -811,6 +812,14 @@ foreach ($projects_array as $index=>$name){
             }
         }
 
+        #ADD USER PERMISSIONS
+        $fields_rights = "project_id, username, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
+        foreach ($userPermission as $user){
+            $this->query("INSERT INTO redcap_user_rights (".$fields_rights.")
+                    VALUES ()",
+                [$project_id, $user, 1, 1, 1, 1, 1, 1, "[,1],[,1],[,1],[,1],[,1],[,1],[,1]"]);
+        }
+
         \Records::addRecordToRecordListCache($project_id_new, $record,1);
     }
 
@@ -931,12 +940,12 @@ $projects_array_sql = array(
             'label' => ""
         ),
         'wg_name' => array (
-            'query' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=".IEDEA_GROUP." GROUP BY a.record ORDER BY value",
+            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from redcap_data record left join redcap_data active_y on active_y.project_id = ".IEDEA_GROUP." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join redcap_data group_abbr on group_abbr.project_id = ".IEDEA_GROUP." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join redcap_data group_name on group_name.project_id = ".IEDEA_GROUP." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".IEDEA_GROUP." group by record.value ORDER BY record.value",
             'autocomplete' => '0',
             'label' => ""
         ),
         'wg2_name' => array (
-            'query' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=".IEDEA_GROUP." GROUP BY a.record ORDER BY value",
+            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from redcap_data record left join redcap_data active_y on active_y.project_id = ".IEDEA_GROUP." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join redcap_data group_abbr on group_abbr.project_id = ".IEDEA_GROUP." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join redcap_data group_name on group_name.project_id = ".IEDEA_GROUP." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".IEDEA_GROUP." group by record.value ORDER BY record.value",
             'autocomplete' => '0',
             'label' => ""
         ),

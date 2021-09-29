@@ -283,7 +283,9 @@ function createProject0AJSON($module, $pidsArray){
                     "has_codes" => $has_codes,
                     "code_list_ref" => $code_list_ref,
                     "variable_order" => $data['variable_order'][$id],
-                    "variable_missingaction" => $data['variable_missingaction'][$id][1]
+                    "variable_missingaction" => $data['variable_missingaction'][$id][1],
+                    "variable_reportcomplete" => $data['variable_reportcomplete'][$id][1],
+                    "variable_indexid" => $data['variable_indexid'][$id][1]
                 );
                 $jsonVarArray['variables'][$data['variable_name'][$id]] = $variables_array;
             }
