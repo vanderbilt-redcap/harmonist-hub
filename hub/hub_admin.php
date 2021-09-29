@@ -25,7 +25,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
     }else if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'M')){
         ?>
         <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;"
-             id="succMsgContainer">You have successfully assigned an MR number.
+             id="succMsgContainer">You have successfully created a new concept.
         </div>
         <?php
     }else if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
