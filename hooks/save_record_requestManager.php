@@ -63,7 +63,6 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $results = \Records::saveData($project_id, 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($project_id, $event_id,1);
 }else if($instrument == 'tracking_number_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
-    error_log("tracking_number_assignment_survey");
     $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', array('record_id' => '1'));
     $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
@@ -118,7 +117,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',IEDEA_HARMONIST,date('Y-m-d h:i:s')]);
                 $docId = db_insert_id();
 
-                $arrayConcepts[0]['concept_word'] = $docId;
+                $arrayConcepts[0]['concept_file'] = $docId;
             }
         }
 
