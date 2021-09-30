@@ -9,7 +9,6 @@ $records = \REDCap::getData($project_id, 'array', array('request_id' => $record)
 $request = ProjectData::getProjectInfoArray($records)[0];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
-
 if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'request'){
     $data = \REDCap::getData($project_id, 'array',$record,$instrument.'_complete', null,null,false,false,true);
 
@@ -53,7 +52,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             $aux['responding_region'] = $region['record_id'];
             $aux['dashboard_voting_status_complete'] = '1';
 
-            $array_repeat_instances[$record]['repeat_instances'][$event_id]['dashboard_region_status'][$instance] = $aux;
+            $array_repeat_instances[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance] = $aux;
             $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
         }else{
             break;
