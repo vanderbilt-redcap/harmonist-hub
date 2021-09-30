@@ -375,15 +375,19 @@ if(array_key_exists('message', $_REQUEST)){
         }
         ?>
         <div style="<?=$button_style;?>">
-            <div style="display: inline-block">
-                <?php if($isAdmin && $settings['deactivate_concept_tracker'][1] != 1){?>
-                <form method="POST" action="<?=$module->getUrl('hub/hub_concepts_tracker_spreadsheet.php')?>" id="form_concepts_tracker">
-                    <button type="submit" class="btn btn-primary"><span class="fa fa-arrow-down"></span> Concept Tracker</button>
-                </form>
-                <?php } ?>
-            </div>
-            <?php if($isAdmin || $harmonist_perm_new_concept){?>
+            <?php
+            $newconcept_btn_css = "text-align:center";
+            if($isAdmin && $settings['deactivate_concept_tracker'][1] != 1){
+                $newconcept_btn_css = "display: inline-block";
+                ?>
                 <div style="display: inline-block">
+                    <form method="POST" action="<?=$module->getUrl('hub/hub_concepts_tracker_spreadsheet.php')?>" id="form_concepts_tracker">
+                        <button type="submit" class="btn btn-primary"><span class="fa fa-arrow-down"></span> Concept Tracker</button>
+                    </form>
+                </div>
+            <?php } ?>
+            <?php if($isAdmin || $harmonist_perm_new_concept){?>
+                <div style="<?=$newconcept_btn_css?>">
                     <a href="#" onclick="$('#hub_new_concept').modal('show');" class="btn btn-success btn-md"><span class="fa fa-plus"></span> New Concept</a>
                 </div>
 
