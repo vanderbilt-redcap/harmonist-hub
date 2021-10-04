@@ -820,6 +820,7 @@ class AllCrons
     {
         self::hasJsoncopyBeenUpdated($module, '0a', $settings, $pidsArray);
         self::hasJsoncopyBeenUpdated($module, '0b', $settings, $pidsArray);
+        self::hasJsoncopyBeenUpdated($module, '0c', $settings, $pidsArray);
     }
 
     public static function sendEmailToday($upload, $extra_days_delete, $extra_days, $extra_days2)
@@ -973,6 +974,8 @@ class AllCrons
             $project_pid = $pidsArray['DATAMODEL'];
         }else if($type == '0b'){
             $project_pid = $pidsArray['CODELIST'];
+        }else if($type == '0c'){
+            $project_pid = $pidsArray['DATAMODELMETADATA'];
         }
         #Check if the project has information
         $RecordSetProjectData = \REDCap::getData($project_pid, 'array');

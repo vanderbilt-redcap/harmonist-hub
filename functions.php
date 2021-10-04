@@ -3,6 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use Carbon\Carbon;
 use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
+
 require_once 'vendor/autoload.php';
 require_once(dirname(__FILE__)."/classes/ArrayFunctions.php");
 
@@ -303,7 +304,7 @@ function createProject0AJSON($module, $pidsArray){
 }
 
 /**
- * Function that creates a JSON copy of the Harmonist 0A: Data Model
+ * Function that creates a JSON copy of the Harmonist 0B: Code List
  * @return string, the JSON
  */
 function createProject0BJSON($module, $pidsArray){
@@ -336,6 +337,63 @@ function createProject0BJSON($module, $pidsArray){
     #we save the new JSON
     if(!empty($jsonArray)){
         $record_id = \Vanderbilt\HarmonistHubExternalModule\saveJSONCopy('0b', $jsonArray, $module, $pidsArray['JSONCOPY']);
+    }
+
+    return array('jsonArray' => json_encode($jsonArray,JSON_FORCE_OBJECT),'record_id' =>$record_id);
+}
+
+/**
+ * Function that creates a JSON copy of the Harmonist 0C: Data Model Metadata
+ * @return string, the JSON
+ */
+function createProject0CJSON($module, $pidsArray){
+    $dataTablerecords = \REDCap::getData($pidsArray['DATAMODELMETADATA'], 'array');
+    $dataTable = ProjectData::getProjectInfoArray($dataTablerecords)[0];
+    $jsonArray = array();
+    $jsonArray['project_name'] = $dataTable['project_name'];
+    $jsonArray['sample_dataset'] = $dataTable['sample_dataset'];
+    $jsonArray['datamodel_name'] = $dataTable['datamodel_name'];
+    $jsonArray['datamodel_abbrev'] = $dataTable['datamodel_abbrev'];
+    $jsonArray['datamodel_url_y'] = $dataTable['datamodel_url_y'];
+    $jsonArray['datamodel_url'] = $dataTable['datamodel_url'];
+    $jsonArray['hub_y'] = $dataTable['hub_y'];
+    $jsonArray['index_tablename'] = $dataTable['index_tablename'];
+    $jsonArray['patient_id_var'] = $dataTable['patient_id_var'];
+    $jsonArray['default_group_var'] = $dataTable['default_group_var'];
+    $jsonArray['group_tablename'] = $dataTable['group_tablename'];
+    $jsonArray['birthdate_var'] = $dataTable['birthdate_var'];
+    $jsonArray['death_date_var'] = $dataTable['death_date_var'];
+    $jsonArray['age_date_var'] = $dataTable['age_date_var'];
+    $jsonArray['enrol_date_var'] = $dataTable['enrol_date_var'];
+    $jsonArray['height_table'] = $dataTable['height_table'];
+    $jsonArray['height_var'] = $dataTable['height_var'];
+    $jsonArray['height_date'] = $dataTable['height_date'];
+    $jsonArray['height_units'] = $dataTable['height_units'];
+    $jsonArray['sd_ext'] = $dataTable['sd_ext'];
+    $jsonArray['ed_ext'] = $dataTable['ed_ext'];
+    $jsonArray['date_approx_y'] = $dataTable['date_approx_y'];
+    $jsonArray['date_approx'] = $dataTable['date_approx'];
+    $jsonArray['n_age_groups'] = $dataTable['n_age_groups'];
+    $jsonArray['age_1_lower'] = $dataTable['age_1_lower'];
+    $jsonArray['age_1_upper'] = $dataTable['age_1_upper'];
+    $jsonArray['age_2_lower'] = $dataTable['age_2_lower'];
+    $jsonArray['age_2_upper'] = $dataTable['age_2_upper'];
+    $jsonArray['age_3_lower'] = $dataTable['age_3_lower'];
+    $jsonArray['age_3_upper'] = $dataTable['age_3_upper'];
+    $jsonArray['age_4_lower'] = $dataTable['age_4_lower'];
+    $jsonArray['age_4_upper'] = $dataTable['age_4_upper'];
+    $jsonArray['age_5_lower'] = $dataTable['age_5_lower'];
+    $jsonArray['age_5_upper'] = $dataTable['age_5_upper'];
+    $jsonArray['age_6_lower'] = $dataTable['age_6_lower'];
+    $jsonArray['age_6_upper'] = $dataTable['age_6_upper'];
+
+    #save files data
+    $jsonArray['project_logo_100_40'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $dataTable['project_logo_100_40'],'pdf')));
+    $jsonArray['project_logo_50_20'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $dataTable['project_logo_50_20'],'pdf')));
+
+    #we save the new JSON
+    if(!empty($jsonArray)){
+        $record_id = \Vanderbilt\HarmonistHubExternalModule\saveJSONCopy('0c', $jsonArray, $module, $pidsArray['JSONCOPY']);
     }
 
     return array('jsonArray' => json_encode($jsonArray,JSON_FORCE_OBJECT),'record_id' =>$record_id);
