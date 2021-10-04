@@ -488,9 +488,20 @@ if($request !="") {
                                         }
                                     }
 
+                                    $region_code = $comment['response_regioncode'];
+                                    if($region_code == ""){
+                                        $RecordSetRegionC = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $comment['response_region']));
+                                        $region_code = ProjectData::getProjectInfoArray($RecordSetRegionC)[0]['region_code'];
+                                    }
+
+                                    $writing_group = "";
+                                    if($comment['writing_group'] != ""){
+                                        $writing_group = "<div style='padding-top:10px'>Writing Group name: ".$comment['writing_group']."</div>";
+                                    }
+
                                     $group_discussion .= "<tr>".
-                                        "<td style='width:20%'><a href='mailto:".$people['email']."'>".$name."</a> (".$comment['response_regioncode'].")<br/>".$comment_time.$text."</td>".
-                                        "<td style='width:75%'>".$comment_vote.nl2br($comment['comments']).$gd_files."</td>".
+                                        "<td style='width:20%'><a href='mailto:".$people['email']."'>".$name."</a> (".$region_code.")<br/>".$comment_time.$text."</td>".
+                                        "<td style='width:75%'>".$comment_vote.nl2br($comment['comments']).$writing_group.$gd_files."</td>".
                                         "<td  style='width:5%'>";
                                     if($comment['response_person'] == $current_user['record_id']){
                                         $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_COMMENTSVOTES, $comment['record_id'], "comments_and_votes", "");
