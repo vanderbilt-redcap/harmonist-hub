@@ -98,7 +98,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         //Info for the email sent
         $arrayCV[$record][$event_id]['contact_email'] = $request['contact_email'];
         $arrayCV[$record][$event_id]['request_title'] = $request['request_title'];
-        $arrayCV[$record][$event_id]['contactnotification_y'] = $request['contactnotification_y'];//checkbox
+        $arrayCV[$record][$event_id]['contactnotification_y'] = array(1=>($request['contactnotification_y'][1] == "")?"0":"1");//checkbox
         $results = \Records::saveData($project_id, 'array', $arrayCV,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache(IEDEA_COMMENTSVOTES, $record,1);
         if($request['follow_activity'] != ''){
