@@ -577,7 +577,7 @@ if($request !="") {
         ?>
         <div id="collapse_review" class="panel-collapse collapse in" aria-expanded="true">
             <div class="panel-body">
-                <iframe class="commentsform" id="redcap-frame" src="<?=$survey_path?>" stayrequest_y="<?=($current_user['stayrequest_y'][0]=="")?"0":"1"?>" message="A" style="border: none;height: 810px;width: 100%;"></iframe>
+                <iframe class="commentsform" id="redcap-frame" src="<?=$survey_path?>" stayrequest_y="<?=($current_user['stayrequest_y'][1]=="")?"0":"1"?>" message="A" style="border: none;height: 810px;width: 100%;"></iframe>
             </div>
         </div>
     </div>
