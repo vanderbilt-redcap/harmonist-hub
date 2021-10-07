@@ -977,26 +977,28 @@ class AllCrons
         }else if($type == '0c'){
             $project_pid = $pidsArray['DATAMODELMETADATA'];
         }
-        #Check if the project has information
-        $RecordSetProjectData = \REDCap::getData($project_pid, 'array');
-        $projectData = ProjectData::getProjectInfoArray($RecordSetProjectData)[0];
-        if(!empty($projectData)) {
-            $jsoncopyPID = $pidsArray['JSONCOPY'];
-            if (ENVIRONMENT == "DEV") {
-                $qtype = $module->query("SELECT MAX(record) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record", [$jsoncopyPID, 'type', $type]);
-            } else {
-                $qtype = $module->query("SELECT MAX(CAST(record AS Int)) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record", [$jsoncopyPID, 'type', $type]);
-            }
-            $rowtype = $qtype->fetch_assoc();
+        if($project_pid != "") {
+            #Check if the project has information
+            $RecordSetProjectData = \REDCap::getData($project_pid, 'array');
+            $projectData = ProjectData::getProjectInfoArray($RecordSetProjectData)[0];
+            if (!empty($projectData)) {
+                $jsoncopyPID = $pidsArray['JSONCOPY'];
+                if (ENVIRONMENT == "DEV") {
+                    $qtype = $module->query("SELECT MAX(record) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record", [$jsoncopyPID, 'type', $type]);
+                } else {
+                    $qtype = $module->query("SELECT MAX(CAST(record AS Int)) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record", [$jsoncopyPID, 'type', $type]);
+                }
+                $rowtype = $qtype->fetch_assoc();
 
-            $RecordSetJsonCopy = \REDCap::getData($jsoncopyPID, 'array', array('record_id' => $rowtype['record']));
-            $jsoncopy = ProjectData::getProjectInfoArray($RecordSetJsonCopy)[0];
-            $today = date("Y-m-d");
-            if ($jsoncopy["jsoncopy_file"] != "" && strtotime(date("Y-m-d", strtotime($jsoncopy['json_copy_update_d']))) == strtotime($today)) {
-                return true;
-            } else if (empty($jsoncopy) || strtotime(date("Y-m-d", strtotime($jsoncopy['json_copy_update_d']))) == "" || !array_key_exists('json_copy_update_d', $jsoncopy)) {
-                self::checkAndUpdateJSONCopyProject($module, $type, $rowtype['record'], $jsoncopy, $settings, $pidsArray);
-                return true;
+                $RecordSetJsonCopy = \REDCap::getData($jsoncopyPID, 'array', array('record_id' => $rowtype['record']));
+                $jsoncopy = ProjectData::getProjectInfoArray($RecordSetJsonCopy)[0];
+                $today = date("Y-m-d");
+                if ($jsoncopy["jsoncopy_file"] != "" && strtotime(date("Y-m-d", strtotime($jsoncopy['json_copy_update_d']))) == strtotime($today)) {
+                    return true;
+                } else if (empty($jsoncopy) || strtotime(date("Y-m-d", strtotime($jsoncopy['json_copy_update_d']))) == "" || !array_key_exists('json_copy_update_d', $jsoncopy)) {
+                    self::checkAndUpdateJSONCopyProject($module, $type, $rowtype['record'], $jsoncopy, $settings, $pidsArray);
+                    return true;
+                }
             }
         }
         return false;
