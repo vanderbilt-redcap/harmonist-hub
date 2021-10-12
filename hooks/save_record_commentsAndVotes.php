@@ -45,7 +45,9 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                     $aux['region_close_ts'] = $date->format('Y-m-d H:i:s');
 
                     #Copy votes to Vote Outcomes (temporary)
-                    $aux["vote_".$regions['region_code']] = $comment['pi_vote'];
+                    $arrayComment = array(array('request_id' => $comment['request_id'], 'vote_'.strtolower($regions['region_code']) => $comment['pi_vote']));
+                    $jsonComment = json_encode($arrayComment);
+                    $results = \Records::saveData(IEDEA_RMANAGER, 'json', $jsonComment,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
                 }else if($request['region_response_status'][$instanceId] != '2'){
                     //Progress
                     $aux['region_response_status'] = '1';
@@ -54,7 +56,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 $Proj = new \Project(IEDEA_RMANAGER);
                 $event_id_RM = $Proj->firstEventId;
                 $array_repeat_instances[$comment['request_id']]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$instanceId] = $aux;
-                $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+                $results = \REDCap::saveData(IEDEA_RMANAGER, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
                 break;
             }
 
