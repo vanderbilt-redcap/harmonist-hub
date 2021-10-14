@@ -1,23 +1,37 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
 
-use Vanderbilt\Victrlib\Env;
-# Define the environment: options include "DEV", "TEST" or "PROD"
-if (is_file('/app001/www/redcap/plugins/victrlib/src/Env.php'))
-    include_once('/app001/www/redcap/plugins/victrlib/src/Env.php');
+use ExternalModules\AbstractExternalModule;
+use ExternalModules\ExternalModules;
 
-if (class_exists("\\Vanderbilt\\Victrlib\\Env")) {
+require_once (__DIR__ . '/vendor/autoload.php');
+include_once(__DIR__ . "/email.php");
+include_once(__DIR__ . "/functions.php");
+include_once(__DIR__ . "/classes/REDCapManagement.php");
+include_once(__DIR__ . "/classes/ArrayFunctions.php");
+include_once(__DIR__ . "/classes/ProjectData.php");
+include_once(__DIR__ . "/classes/ExcelFunctions.php");
 
-    if (Env::isProd()) {
-        define("ENVIRONMENT", "PROD");
-    } else if (Env::isStaging()) {
-        define("ENVIRONMENT", "TEST");
-    }else{
-        define("ENVIRONMENT", "DEV");
-    }
-}
-else {
-    define("ENVIRONMENT", "DEV");
-}
+//use Vanderbilt\Victrlib\Env;
+//# Define the environment: options include "DEV", "TEST" or "PROD"
+//if (is_file('/app001/www/redcap/plugins/victrlib/src/Env.php'))
+//    include_once('/app001/www/redcap/plugins/victrlib/src/Env.php');
+//
+//if (class_exists("\\Vanderbilt\\Victrlib\\Env")) {
+//
+//    if (Env::isProd()) {
+//        define("ENVIRONMENT", "PROD");
+//    } else if (Env::isStaging()) {
+//        define("ENVIRONMENT", "TEST");
+//    }else{
+//        define("ENVIRONMENT", "DEV");
+//    }
+//}
+//else {
+//    define("ENVIRONMENT", "DEV");
+//}
+
+REDCapManagement::getEnvironment();
 
 #Mapper Project
 $project_id_main = ($project_id != '')?$project_id:$_GET['pid'];
@@ -59,14 +73,7 @@ foreach($linkedProjects as $projectTitle) {
 $secret_key="";
 $secret_iv="";
 
-require_once (__DIR__ . '/vendor/autoload.php');
-include_once(__DIR__ . "/email.php");
-include_once(__DIR__ . "/functions.php");
-include_once(__DIR__ . "/classes/REDCapManagement.php");
-include_once(__DIR__ . "/classes/ArrayFunctions.php");
-include_once(__DIR__ . "/classes/ProjectData.php");
-include_once(__DIR__ . "/classes/ExcelFunctions.php");
-use Vanderbilt\HarmonistHubExternalModule\ProjectData;
+
 
 $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
 $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];

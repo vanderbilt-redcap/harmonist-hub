@@ -8,7 +8,16 @@ function startDDProjects(){
             var data = JSON.parse(returnData);
             if (data.status == 'success') {
                 $('#create_spinner').removeClass('fa fa-spinner fa-spin');
-                window.location = getMessageLetterUrl(window.location.href, "DD");
+                window.location = getMessageLetterUrl(window.location.href, "D");
+                if(data.pidHome != ''){
+                    $.ajax({
+                        url: saveDefaultData_url,
+                        data: "&pidHome="+data.pidHome,
+                        type: 'POST',
+                        success: function(returnData) {
+                        }
+                    });
+                }
             }
         }
     });
