@@ -97,6 +97,12 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $this->setProjectConstants($hub_mapper);
 
+        echo "<script>
+            $(document).ready(function() {
+                window.onbeforeunload = null;
+            });
+        </script>";
+
         #Add to all projects needed
         if($project_id == IEDEA_HARMONIST){
             echo "<script>
@@ -117,7 +123,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                     $( 'span:contains(\'Close survey\')' ).parent().parent().hide();
                 });
             </script>";
-        }else {
+        }else{
             if (array_key_exists('modal', $_REQUEST)) {
                 echo "<script>
                     $(document).ready(function() {
