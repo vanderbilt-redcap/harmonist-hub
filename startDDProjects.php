@@ -955,7 +955,7 @@ $projects_array_sql = array(
             'label' => ""
         ),
         'contact_region' => array (
-            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_REGIONS."  GROUP BY a.record  ORDER BY value",
+            'query' => "select record.record as record, CONCAT( max(if(region_name.field_name = 'region_name',region_name.value, '')), ' (', max(if(region_code.field_name = 'region_code', region_code.value, '')), ') ' ) as value from redcap_data record left join redcap_data activeregion_y on activeregion_y.project_id = ".IEDEA_REGIONS." and activeregion_y.record = record.value and activeregion_y.field_name = 'activeregion_y' and activeregion_y.value ='1' left join redcap_data region_code on region_code.project_id = ".IEDEA_REGIONS." and region_code.record = record.value and region_code.field_name = 'region_code' left join redcap_data region_name on region_name.project_id = ".IEDEA_REGIONS." and region_name.record = record.value and region_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=activeregion_y.record and record.project_id = ".IEDEA_REGIONS." group by record.value ORDER BY record.value",
             'autocomplete' => '0',
             'label' => ""
         ),
