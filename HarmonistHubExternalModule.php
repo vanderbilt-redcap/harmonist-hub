@@ -97,6 +97,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $this->setProjectConstants($hub_mapper);
 
+
         echo "<script>
             $(document).ready(function() {
                 window.onbeforeunload = null;
