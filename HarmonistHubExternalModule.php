@@ -738,6 +738,24 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         // Return any SQL errors
         return $sql_errors;
     }
+
+    public function clearProjectCache(){
+        $this->setPrivateVariable('project_cache', [], 'Project');
+    }
+
+    protected function setPrivateVariable($name, $value, $target = null)
+    {
+        $class = new \ReflectionClass($target);
+        $property = $class->getProperty($name);
+        $property->setAccessible(true);
+
+        return $property->setValue($this->getReflectionClass(), $value);
+    }
+
+    protected function getReflectionClass()
+    {
+        return $this;
+    }
 }
 
 ?>

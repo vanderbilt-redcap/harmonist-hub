@@ -21,7 +21,6 @@ $pid = (int)$_GET['pid'];
             <?php include_once("head_scripts.php");?>
             <script>
                 var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php'))?>;
-                var saveDefaultData_url = <?=json_encode($module->getUrl('saveDefaultData.php'))?>;
                 var pid = <?=json_encode($pid)?>;
             </script>
         </head>
@@ -58,7 +57,6 @@ $pid = (int)$_GET['pid'];
                     <?php include_once("head_scripts.php");?>
                     <script>
                         var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php'))?>;
-                        var saveDefaultData_url = <?=json_encode($module->getUrl('saveDefaultData.php'))?>;
                         var pid = <?=json_encode($pid)?>;
                     </script>
                 </head>
