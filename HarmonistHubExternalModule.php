@@ -118,7 +118,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 });
             </script>";
         }else {
-            if ($project_id == IEDEA_TBLCENTERREVISED || $project_id == IEDEA_SOPCOMMENTS || $project_id == IEDEA_HOME || $project_id == IEDEA_COMMENTSVOTES || ($project_id == IEDEA_RMANAGER && $_REQUEST['s'] != IEDEA_REQUESTLINK) || ($project_id == IEDEA_PEOPLE && $_REQUEST['s'] != IEDEA_SURVEYPERSONINFO) || ($project_id == IEDEA_SOP && $_REQUEST['s'] != IEDEA_DATARELEASEREQUEST)) {
+            if (array_key_exists('modal', $_REQUEST)) {
                 echo "<script>
                     $(document).ready(function() {
                         $('[name=submit-btn-savereturnlater]').hide();

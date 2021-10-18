@@ -401,7 +401,7 @@ if(array_key_exists('message', $_REQUEST)){
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" value="0" id="comment_loaded">
-                                <iframe class="commentsform" id="redcap-new-frame" name="redcap-new-frame" message="N" src="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".IEDEA_CONCEPTLINK?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                                <iframe class="commentsform" id="redcap-new-frame" name="redcap-new-frame" message="N" src="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".IEDEA_CONCEPTLINK."&modal"?>" style="border: none;height: 810px;width: 100%;"></iframe>
                             </div>
 
                             <div class="modal-footer">

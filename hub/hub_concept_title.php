@@ -122,7 +122,7 @@ if($concept['revised_y'][0] == '1'){
 
         <?php if($isAdmin || $harmonist_perm_edit_concept){
             $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_HARMONIST, $_REQUEST['record'], "concept_sheet", "");
-            $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+            $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal");
 
             $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".IEDEA_HARMONIST."&arm=1&id=".$_REQUEST['record'];
 
