@@ -176,6 +176,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                             <h2>Feedback</h2>
                             <p><strong>Comments:</strong>&nbsp;'.nl2br($comment['comments']).'</p>
                             <p><strong>Vote:</strong>&nbsp; '.$comment_vote.'</p>
+                            <p><strong>Writing group nominee(s):</strong>&nbsp; '.$comment['writing_group'].'</p>
                             <p><strong>Uploaded Files:</strong></p>
                             '.$gd_files.'
                             <p>&nbsp;</p>
