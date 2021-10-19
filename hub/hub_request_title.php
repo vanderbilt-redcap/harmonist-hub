@@ -496,12 +496,12 @@ if($request !="") {
 
                                     $writing_group = "";
                                     if($comment['writing_group'] != ""){
-                                        $writing_group = "<div style='padding-top:10px'>Writing Group name: ".$comment['writing_group']."</div>";
+                                        $writing_group = "<div style='padding-top:10px'><em>Writing group nominee(s): ".$comment['writing_group']."</em></div>";
                                     }
 
                                     $group_discussion .= "<tr>".
                                         "<td style='width:20%'><a href='mailto:".$people['email']."'>".$name."</a> (".$region_code.")<br/>".$comment_time.$text."</td>".
-                                        "<td style='width:75%'>".$comment_vote.nl2br($comment['comments']).$writing_group.$gd_files."</td>".
+                                        "<td style='width:75%'>".$comment_vote."<div>".nl2br($comment['comments'])."</div>".$writing_group.$gd_files."</td>".
                                         "<td  style='width:5%'>";
                                     if($comment['response_person'] == $current_user['record_id']){
                                         $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_COMMENTSVOTES, $comment['record_id'], "comments_and_votes", "");
