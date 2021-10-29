@@ -351,24 +351,11 @@ function createProject0CJSON($module, $pidsArray){
     $dataTable = ProjectData::getProjectInfoArray($dataTablerecords)[0];
     $jsonArray = array();
     $jsonArray['project_name'] = $dataTable['project_name'];
-    $jsonArray['sample_dataset'] = $dataTable['sample_dataset'];
     $jsonArray['datamodel_name'] = $dataTable['datamodel_name'];
     $jsonArray['datamodel_abbrev'] = $dataTable['datamodel_abbrev'];
     $jsonArray['datamodel_url_y'] = $dataTable['datamodel_url_y'];
     $jsonArray['datamodel_url'] = $dataTable['datamodel_url'];
     $jsonArray['hub_y'] = $dataTable['hub_y'];
-    $jsonArray['index_tablename'] = $dataTable['index_tablename'];
-    $jsonArray['patient_id_var'] = $dataTable['patient_id_var'];
-    $jsonArray['default_group_var'] = $dataTable['default_group_var'];
-    $jsonArray['group_tablename'] = $dataTable['group_tablename'];
-    $jsonArray['birthdate_var'] = $dataTable['birthdate_var'];
-    $jsonArray['death_date_var'] = $dataTable['death_date_var'];
-    $jsonArray['age_date_var'] = $dataTable['age_date_var'];
-    $jsonArray['enrol_date_var'] = $dataTable['enrol_date_var'];
-    $jsonArray['height_table'] = $dataTable['height_table'];
-    $jsonArray['height_var'] = $dataTable['height_var'];
-    $jsonArray['height_date'] = $dataTable['height_date'];
-    $jsonArray['height_units'] = $dataTable['height_units'];
     $jsonArray['sd_ext'] = $dataTable['sd_ext'];
     $jsonArray['ed_ext'] = $dataTable['ed_ext'];
     $jsonArray['date_approx_y'] = $dataTable['date_approx_y'];
@@ -387,9 +374,24 @@ function createProject0CJSON($module, $pidsArray){
     $jsonArray['age_6_lower'] = $dataTable['age_6_lower'];
     $jsonArray['age_6_upper'] = $dataTable['age_6_upper'];
 
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableJsonName($pidsArray['DATAMODEL'], $dataTable['index_tablename'],'index_tablename',$jsonArray);
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableJsonName($pidsArray['DATAMODEL'], $dataTable['group_tablename'],'group_tablename',$jsonArray);
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableJsonName($pidsArray['DATAMODEL'], $dataTable['height_table'],'height_table',$jsonArray);
+
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['patient_id_var'],'patient_id_var',$jsonArray);
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['default_group_var'],'default_group_var',$jsonArray);
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['birthdate_var'],'birthdate_var',$jsonArray);
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['death_date_var'],'death_date_var',$jsonArray);
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['age_date_var'],'age_date_var',$jsonArray);
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['enrol_date_var'],'enrol_date_var',$jsonArray);
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['height_var'],'height_var',$jsonArray);
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['height_date'],'height_date',$jsonArray);
+    $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['height_units'],'height_units',$jsonArray);
+
     #save files data
     $jsonArray['project_logo_100_40'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $dataTable['project_logo_100_40'],'pdf')));
     $jsonArray['project_logo_50_20'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $dataTable['project_logo_50_20'],'pdf')));
+    $jsonArray['sample_dataset'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $dataTable['sample_dataset'],'pdf')));
 
     #we save the new JSON
     if(!empty($jsonArray)){
@@ -397,6 +399,28 @@ function createProject0CJSON($module, $pidsArray){
     }
 
     return array('jsonArray' => json_encode($jsonArray,JSON_FORCE_OBJECT),'record_id' =>$record_id);
+}
+
+function getTableVariableJsonName($project_id,$data,$varName,$jsonArray){
+    if($data != ""){
+        $variable = explode(":",$data);
+        $dataTableDataModelRecords = \REDCap::getData($project_id, 'array',array('record_id' => $variable[0]));
+        $tableData = ProjectData::getProjectInfoArray($dataTableDataModelRecords)[0];
+        if($variable[1] == "1"){
+            $variable[1] = "";
+        }
+        $jsonArray[$varName] = $tableData['table_name'].":".$tableData['variable_name'][$variable[1]];
+    }
+    return $jsonArray;
+}
+
+function getTableJsonName($project_id,$data,$varName,$jsonArray){
+    if($data != ""){
+        $dataTableDataModelRecords = \REDCap::getData($project_id, 'array',array('record_id' => $data));
+        $tableData = ProjectData::getProjectInfoArray($dataTableDataModelRecords)[0];
+        $jsonArray[$varName] = $tableData['table_name'];
+    }
+    return $jsonArray;
 }
 
 /**

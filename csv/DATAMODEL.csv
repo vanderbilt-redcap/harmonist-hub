@@ -2,9 +2,9 @@
 record_id,table_metadata,,text,"Record ID",,,,,,,,,,,,,
 table_name,table_metadata,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Table Definition</h3></div>",text,"Table name
 <div style=""font-weight:lighter"">Official table name, e.g., tblMED</div>",,,,,,,,,,,,,
+table_format,table_metadata,,radio,"Table type","1, One row per patient | 2, Multiple rows per patient | 0, N/A (i.e., not linked to patient)",,,,,,,,,,,,
 table_definition,table_metadata,,text,"Table definition
 <div style=""font-weight:lighter"">Brief, human-readable text string, e.g., Medications</div>",,,,,,,,,,,,,
-table_format,table_metadata,,radio,"Table type","1, One row per patient | 2, Multiple rows per patient | 0, N/A (i.e., not linked to patient)",,,,,,,,,,,,
 table_category,table_metadata,,dropdown,"Table category
 <div style=""font-weight:lighter; font-style:italic"">Modify the data dictionary to revise these categories to suit your data model.</div>","main, Core | meds, Medications | labs, Labs | dis, Conditions | preg, Pregnancy | tool, Tools | meta, Meta | oth, Other",,,,,,,,,,,,
 text_top,table_metadata,,notes,"Extra text to display before table description (optional)
@@ -31,6 +31,8 @@ variable_key,variable_metadata,,checkbox,"TABLE PRIMARY KEY / COMPOSITE KEY
 <span style=""font-weight:lighter"">(Is this variable the primary key for this table, or part of a composite key? A key variable is one that can uniquely identify each row in the table. A composite key combines two or more columns in the table to uniquely identify each row.)</span>","1, YES",,,,,,,,,,,,
 variable_required,variable_metadata,,checkbox,"REQUIRED
 <span style=""font-weight:lighter"">(This variable is required for database integrity and should always be included when data from this table is requested.)</span>","1, YES",,,,,,,,RH,,,,
+variable_indexid,variable_metadata,,checkbox,"ID TO INDEX
+<span style=""font-weight:lighter"">This variable is an ID variable that should match with the main index ID variable (e.g., PATIENT) in the main patient index table (e.g., tblBAS). The index table and main ID variables are specified in Harmonist 0C.</span>","1, YES",,,,,,,,,,,,
 variable_status,variable_metadata,"Variable Status",radio,"Variable Status","0, DRAFT (variable under consideration) | 1, Active | 2, DEPRECATED (variable retired from use)",,,,,,,,,,,,
 variable_added_d,variable_metadata,,text,"Date variable added 
 <span style=""font-weight:lighter"">(as draft or active)</span>",,,date_ymd,,,,,,,,,,
@@ -44,3 +46,6 @@ has_codes,variable_metadata,"<div style=""color:white; text-align:center; border
 code_list_ref,variable_metadata,,sql,"Select code list:","select record, value from redcap_data where project_id = 1538 and field_name = 'list_name' order by value asc",,,,,,"[has_codes] = '1'",,,,,,
 code_text,variable_metadata,,notes,"Extra text to show in ""Format""/codes column",,,,,,,,,LH,,,,
 codes_print,variable_metadata,,radio,"Should code lists be printed for this variable?","1, Yes | 0, No",,,,,,"[has_codes] = '1'",,,,,,
+variable_missingaction,variable_metadata,"<div style=""color:white; text-align:center; border: 1px #e67e22; background-color: #d35400;""><h3 style=""margin:0px; padding:10px"">Data Quality Guidance</h3></div>",checkbox,"Report missing entries as data quality errors","1, Yes",,,,,,,,,,,,
+variable_reportcomplete,variable_metadata,,checkbox,"Include this variable in the Completeness heatmap in the regular Harmonist Data Toolkit Report
+<div style=""font-weight:lighter"">This is for the regular data summary report, not the Quality Metrics Report, which reports all variables.</div>","1, Yes",,,,,,,,,,,,

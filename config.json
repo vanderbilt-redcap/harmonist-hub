@@ -68,7 +68,6 @@
         {
           "key": "user-permission",
           "name": "<div>Select a REDCap user to add to all Hub projects. </div><div>This will automatically add the user to the 30+ REDCap projects that power the Hub. The user will have \"Project Design and Setup\" rights on those projects. After initial setup, users will need to be added manually to all Hub projects.</div><br><div><font style='color:red;font-style:italic'>*This list shows all users on this REDCap project. Add users to this project before installing if you want to be able to select their usernames in this list.</font></div>",
-          "required": true,
           "type": "user-list"
         }
       ]

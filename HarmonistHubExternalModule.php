@@ -756,12 +756,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $property = $class->getProperty($name);
         $property->setAccessible(true);
 
-        return $property->setValue($this->getReflectionClass(), $value);
-    }
-
-    protected function getReflectionClass()
-    {
-        return $this;
+        return $property->setValue($this, $value);
     }
 }
 

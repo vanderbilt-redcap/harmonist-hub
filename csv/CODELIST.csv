@@ -10,4 +10,4 @@ code_ontology,code_list,,text,"URL to Ontology webpage
 <div style=""font-weight:lighter;font-style:italic"">e.g., https://bioportal.bioontology.org/ontologies/SNOMEDCT, https://bioportal.bioontology.org/ontologies/ATC</div>",,,,,,,"[code_format] = '4'",,,,,,
 codelist_header,code_list,,descriptive,"<div style=""color:white; text-align:center; border: 1px #1abc9c; background-color:#16a085;""><h3 style=""margin:0px; padding:10px"">Update Notes</h3></div>",,,,,,,,,,,,,
 codelist_update_d,code_list,,text,"Date code list last updated",,,date_ymd,,,,,,,,,,
-codelist_update_txt,code_list,,notes,"Update Notes",,,,,,,,,LH,,,,
+codelist_update_txt,code_list,,notes,"Update Notes",,,,,,,"[codelist_update_d] <> ''",,LH,,,,
