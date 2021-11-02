@@ -818,7 +818,9 @@ foreach ($projects_array as $index=>$name){
         $instrument_names = \REDCap::getInstrumentNames(null,$project_id_new);
         $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
         foreach ($userPermission as $user){
-            $module->query("UPDATE redcap_user_rights SET ".$fields_rights." WHERE project_id = ?",[$user, 1, 1, 1, 1, 1, 1, $data_entry,$project_id_new]);
+            if($user != null) {
+                $module->query("UPDATE redcap_user_rights SET " . $fields_rights . " WHERE project_id = ?", [$user, 1, 1, 1, 1, 1, 1, $data_entry, $project_id_new]);
+            }
         }
 
         \Records::addRecordToRecordListCache($project_id_new, $record,1);

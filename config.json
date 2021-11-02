@@ -2,7 +2,7 @@
   "name": "Harmonist Hub",
 
   "namespace": "Vanderbilt\\HarmonistHubExternalModule",
-  "framework-version": 5,
+  "framework-version": 6,
   "authors": [
     {
       "name": "Eva Bascompte Moragas",
