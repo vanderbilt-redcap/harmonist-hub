@@ -21,7 +21,7 @@ class REDCapManagement {
             14=>'Data Model JSON (11)',15=>'Metrics (12)',16=>'Data Availability (13)',17=>'Issue Reporting (14)',
             18=>'Toolkit Usage Metrics (15)',19=>'Toolkit Upload Security (16)',20=>'Toolkit FAQ (17)', 21=>'Changelog (18)',
             22=>'File Library (19)',23=>'File Library Log (20)',24=>'News Items (21)',25=>'About (22)',26=>'Extra Outputs (23)',
-            27=>'Consortium Site List (24)',28=>'Settings (99)',29=>'Data Model Metadata (0C)');
+            27=>'Consortium Site List (24)',28=>'Settings (99)',29=>'Toolkit Metadata (0C)');
 
         return $projects_array_title;
     }
