@@ -43,11 +43,6 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                     $aux['region_vote_status'] = $comment['pi_vote'];
                     $date = new \DateTime();
                     $aux['region_close_ts'] = $date->format('Y-m-d H:i:s');
-
-                    #Copy votes to Vote Outcomes (temporary)
-                    $arrayComment = array(array('request_id' => $comment['request_id'], 'vote_'.strtolower($regions['region_code']) => $comment['pi_vote']));
-                    $jsonComment = json_encode($arrayComment);
-                    $results = \Records::saveData(IEDEA_RMANAGER, 'json', $jsonComment,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
                 }else if($request['region_response_status'][$instanceId] != '2'){
                     //Progress
                     $aux['region_response_status'] = '1';

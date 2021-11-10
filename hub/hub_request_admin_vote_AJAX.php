@@ -54,10 +54,6 @@ foreach ($region_vote_values as $votes_info){
         $comments[$comments_id][$event_id_comments]['comments'] = $comment;
         $comments[$comments_id][$event_id_comments]['comments_and_votes_complete'] = "2";
 
-        #Copy votes to Vote Outcomes (temporary)
-        $region_code = strtolower($regions_comment['region_code']);
-        $recordRM[$request_id][$event_id_RM]["vote_".$region_code] = $vote;
-
         $results = \Records::saveData(IEDEA_COMMENTSVOTES, 'array', $comments,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache(IEDEA_RMANAGER, $event_id_RM,1);
         \Records::addRecordToRecordListCache(IEDEA_COMMENTSVOTES, $event_id_comments,1);

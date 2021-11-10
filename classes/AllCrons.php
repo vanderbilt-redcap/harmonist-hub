@@ -1004,13 +1004,6 @@ class AllCrons
         return false;
     }
 
-    public static function checkIfJsonOrPDFBlank($module, $settings, $project_id){
-        if($settings['des_variable_search'] == "" || !array_key_exists('des_variable_search',$settings)){
-            self::createAndSaveJSONCron($module, $project_id);
-        }
-    }
-
-
     public static function createAndSaveJSONCron($module, $project_id){
         error_log("createpdf - createAndSaveJSONCron");
         $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='DATAMODEL'");
