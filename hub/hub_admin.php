@@ -114,12 +114,12 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
 
                             $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "request", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
-                            echo '<td><div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\');" class="btn btn-primary btn-xs actionbutton"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> '.$check_submission_text.'</a></div>';
+                            echo '<td><div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\',\''.$check_submission_text.'\');" class="btn btn-primary btn-xs actionbutton"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> '.$check_submission_text.'</a></div>';
 
                             $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "admin_review", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
 
-                            echo '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> '.$set_deadline_text.'</a></div></td>';
+                            echo '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\',\''.$set_deadline_text.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> '.$set_deadline_text.'</a></div></td>';
                         }
                     }
                     if(!$any_request_found){
@@ -203,20 +203,20 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                             $assign_mr_text = ($settings['admintext5']=="")? $default_values_settings['admintext5']:$settings['admintext5'];
 
                             if ($req['finalize_y'] != "") {
-                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$finalize_review_text.'</a>';
+                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$finalize_review_text.'</a>';
                             } else {
-                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-legal fa-fw" aria-hidden="true"></i> '.$finalize_review_text.'</a>';
+                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-legal fa-fw" aria-hidden="true"></i> '.$finalize_review_text.'</a>';
                             }
                             if($req['request_type'] == '1' || $req['request_type'] == '5'){
                                 if ($req['author_doc'] != "") {
-                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$request_docs_text.'</a>';
+                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$request_docs_text.'</a>';
                                 } else {
-                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-file fa-fw" aria-hidden="true"></i> '.$request_docs_text.'</a>';
+                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-file fa-fw" aria-hidden="true"></i> '.$request_docs_text.'</a>';
                                 }
                                 if ($req['mr_assigned'] != "" && $req['finalconcept_doc'] != "" && $req['finalconcept_pdf'] != "") {
-                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$assign_mr_text.'</a>';
+                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$assign_mr_text.'</a>';
                                 } else {
-                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-hashtag fa-fw" aria-hidden="true"></i> '.$assign_mr_text.'</a>';
+                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-hashtag fa-fw" aria-hidden="true"></i> '.$assign_mr_text.'</a>';
                                 }
                             }else{
                                 $request_docs = "";
@@ -315,20 +315,20 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
 
 
                             if ($req['finalize_y'] != "") {
-                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$finalize_review_text.'</a>';
+                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$finalize_review_text.'</a>';
                             } else {
-                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-legal fa-fw" aria-hidden="true"></i> '.$finalize_review_text.'</a>';
+                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-legal fa-fw" aria-hidden="true"></i> '.$finalize_review_text.'</a>';
                             }
                             if($req['request_type'] == '1' || $req['request_type'] == '5'){
                                 if ($req['author_doc'] != "") {
-                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$request_docs_text.'</a>';
+                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$request_docs_text.'</a>';
                                 } else {
-                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-file fa-fw" aria-hidden="true"></i> '.$request_docs_text.'</a>';
+                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-file fa-fw" aria-hidden="true"></i> '.$request_docs_text.'</a>';
                                 }
                                 if ($req['mr_assigned'] != "" && $req['finalconcept_doc'] != "" && $req['finalconcept_pdf'] != "") {
-                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$assign_mr_text.'</a>';
+                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$assign_mr_text.'</a>';
                                 } else {
-                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-hashtag fa-fw" aria-hidden="true"></i> '.$assign_mr_text.'</a>';
+                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-hashtag fa-fw" aria-hidden="true"></i> '.$assign_mr_text.'</a>';
                                 }
                             }else{
                                 $request_docs = "";
@@ -372,7 +372,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Finalize Review</h4>
+                    <h4 class="modal-title">Finalize Request</h4>
                 </div>
                 <div class="modal-body">
                     <iframe class="commentsform" id="redcap-finalize-frame" message="F" name="redcap-finalize-frame" src="" style="border: none;height: 810px;width: 100%;"></iframe>
