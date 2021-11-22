@@ -93,7 +93,7 @@ if($record != ''){?>
         });
     </script>
 <?php }
-$RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null);
+$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null);
 $people = ProjectData::getProjectInfoArray($RecordSetPeople);
 ArrayFunctions::array_sort_by_column($people,'firstname');
 if (!empty($people)) {
@@ -174,7 +174,7 @@ if (!empty($people)) {
                 <label class="steps_sub_label">Name / Email:</label>
                 <select class="form-control data-form-control" name="sop_hubuser" id="sop_hubuser" disabled>
                     <?php
-                    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null);
+                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null);
                     $people = ProjectData::getProjectInfoArray($RecordSetPeople);
                     if (!empty($people)) {
                         foreach ($people as $person){
@@ -192,7 +192,7 @@ if (!empty($people)) {
                 <label class="steps_sub_label">Region</label>
                 <select class="form-control data-form-control" name="sopCreator_region" id="sopCreator_region" onchange="checkStep(3);" disabled>
                     <?php
-                    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null);
+                    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
                     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                     if (!empty($regions)) {
                         foreach ($regions as $region){
@@ -218,7 +218,7 @@ if (!empty($people)) {
                 <label class="steps_sub_label"></label>
                 <div style="display: inline-block">
             <?php
-            $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', IEDEA_SOP);
+            $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']);
             foreach($dataformat_prefer as $dataid => $dataformat){
                 echo '<div><input type="checkbox" class="" id="dataformat_prefer_'.$dataid.'" name="dataformat_prefer[]" value="'.$dataid.'" onkeyup="checkStep(3);"><span style="padding-left: 10px">'.$dataformat.'</span></div>';
             }
@@ -237,7 +237,7 @@ if (!empty($people)) {
             <select class="form-control data-form-control" style="width:150px" name="dropDown_region" id="dropDown_region" onchange="check_people_region_dragAndDrop();checkStep(3);">
                 <option value="" region="all" selected>All Regions</option>
                 <?php
-                $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null);
+                $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
                 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                 if (!empty($regions)) {
                     foreach ($regions as $region){
@@ -250,7 +250,7 @@ if (!empty($people)) {
         <div class="col-md-12">
             <ul id="sortable1" class="connectedSortable" style="width: 35%;" role="list">
             <?php
-            $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[active_y] = '1' AND [redcap_name] <> '' AND [allowgetdata_y(1)] = 1");
+            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[active_y] = '1' AND [redcap_name] <> '' AND [allowgetdata_y(1)] = 1");
             $people_sop = ProjectData::getProjectInfoArray($RecordSetPeople);
             ArrayFunctions::array_sort_by_column($people_sop,'firstname');
             foreach ($people_sop as $person){

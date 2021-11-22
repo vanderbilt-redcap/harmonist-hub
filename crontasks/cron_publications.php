@@ -6,7 +6,7 @@ $isAdmin = false;
 if(array_key_exists('isAdmin', $_REQUEST) && ($_REQUEST['isAdmin'] == '1')){
     $isAdmin = true;
     $moduleAux = $module;
-    $pidsArray = REDCapManagement::getPIDsArray(IEDEA_PROJECTS);
+    $pidsArray = REDCapManagement::getPIDsArray($pidsArray['PROJECTS']);
 }else{
     $moduleAux = $this;
 }
@@ -44,7 +44,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
                 $file = '';
                 if ($concept['output_file'][$index] != "") {
-                    $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                    $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $pidsArray['PROJECTS'], $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                 }
 
                 $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "output_record", "");
@@ -91,7 +91,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
             $file = '';
             if ($output['output_file'] != "") {
-                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $pidsArray['PROJECTS'], $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
             }
 
             $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");

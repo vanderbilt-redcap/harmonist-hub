@@ -7,7 +7,7 @@ $data_response_notes = $_REQUEST['data_response_notes'];
 $status = $_REQUEST['status'];
 $region = $_REQUEST['region'];
 
-$Proj = new \Project(IEDEA_SOP);
+$Proj = new \Project($pidsArray['SOP']);
 $event_id = $Proj->firstEventId;
 
 $array_repeat_instances = array();
@@ -20,6 +20,6 @@ if($status == "2"){
     $arraySOP['region_complete_ts'] = date("Y-m-d H:i:s");
 }
 $array_repeat_instances[$record]['repeat_instances'][$event_id]['region_participation_status'][$region] = $arraySOP;
-$results = \REDCap::saveData(IEDEA_SOP, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
-\Records::addRecordToRecordListCache(IEDEA_SOP, $record, 1);
+$results = \REDCap::saveData($pidsArray['SOP'], 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+\Records::addRecordToRecordListCache($pidsArray['SOP'], $record, 1);
 ?>

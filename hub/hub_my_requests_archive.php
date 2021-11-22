@@ -1,17 +1,17 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS).'">< Back to Home</a>';
+$back_button = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS']).'">< Back to Home</a>';
 
 $person_name = "";
 if($_REQUEST['type'] != ""){
     if($_REQUEST['type'] == 'h'){
         $person_name = $name;
-        $back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS).'">< Back to Home</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS']).'">< Back to Home</a>';
     }else if($_REQUEST['type'] == 'r'){
-        $back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub').'">< Back to Requests</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub').'">< Back to Requests</a>';
     }else if($_REQUEST['type'] == 'a'){
-        $back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=adm').'">< Back to Admin</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=adm').'">< Back to Admin</a>';
     }
 }
 ?>
@@ -66,7 +66,7 @@ if($_REQUEST['type'] != ""){
     <br>
     <?php if($isAdmin){?>
     <div class="pull-right">
-        <p><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=mrr&type=a')?>">View Rejected & Deactivated Requests</a></p>
+        <p><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=mrr&type=a')?>">View Rejected & Deactivated Requests</a></p>
     </div>
     <?php }?>
     <div class="optionSelect conceptSheets_optionMenu">
@@ -104,15 +104,15 @@ if($_REQUEST['type'] != ""){
         <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
             <?php
             if(!empty($requests)) {
-                $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+                $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '1','archive');
+                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $current_user['person_region'], $settings['vote_grid'], '1','archive');
 
                 $requests_counter = 0;
                 foreach ($requests as $req) {
-                    $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
+                    $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
                     if($user_req_body != ""){
                         $requests_counter++;
                     }

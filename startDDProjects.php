@@ -1104,7 +1104,7 @@ $projects_array_sql = array(
             'label' => ""
         ),
         'data_assoc_request' => array (
-            'query' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".IEDEA_SOP." AND field_name = 'record_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".IEDEA_SOP." and field_name = 'sop_name') b ON b.record=a.record ORDER BY a.value, b.value",
+            'query' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = ".$pidsArray['SOP']." AND field_name = 'record_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".$pidsArray['SOP']." and field_name = 'sop_name') b ON b.record=a.record ORDER BY a.value, b.value",
             'autocomplete' => '0',
             'label' => ""
         ),
@@ -1141,7 +1141,7 @@ $projects_array_sql = array(
             'label' => ""
         ),
         'download_id' => array (
-            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'record_id', a.value, NULL)),    ' (',   max(if(a.field_name = 'responsecomplete_ts', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".IEDEA_DATAUPLOAD."  GROUP BY a.record  ORDER BY value",
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'record_id', a.value, NULL)),    ' (',   max(if(a.field_name = 'responsecomplete_ts', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=".$pidsArray['DATAUPLOAD']."  GROUP BY a.record  ORDER BY value",
             'autocomplete' => '0',
             'label' => ""
         )

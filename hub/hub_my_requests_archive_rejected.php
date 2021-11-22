@@ -37,7 +37,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=mra&type=a')?>">< Back to Requests Archive</a>
+        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=mra&type=a')?>">< Back to Requests Archive</a>
     </div>
     <h3>Rejected & Deactivated Requests Archive</h3>
     <p class="hub-title"><?=$settings['hub_req_arc_rejected_text']?></p>
@@ -63,18 +63,18 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     <div>
         <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
             <?php
-            $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array',null,null,null,null,false,false,false,"[approval_y] != 1");
+            $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array',null,null,null,null,false,false,false,"[approval_y] != 1");
             $request_reject = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
             if(!empty($request_reject)) {
-                $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+                $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '2','archive');
+                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $current_user['person_region'], $settings['vote_grid'], '2','archive');
 
                 $requests_counter = 0;
                 foreach ($request_reject as $req) {
-                    $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $req, $regions, $request_type_label, $current_user, 2, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
+                    $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 2, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
                     if($user_req_body != ""){
                         $requests_counter++;
                     }

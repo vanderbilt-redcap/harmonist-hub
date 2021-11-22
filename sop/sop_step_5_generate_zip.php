@@ -6,39 +6,39 @@ require_once APP_PATH_DOCROOT.'Classes/Files.php';
 
 $record_id = $_REQUEST['record'];
 
-$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record_id));
+$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-$dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module);
+$dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module, $pidsArray['DATAMODEL']);
 $tableHtml = "";
 if(!empty($dataTable)) {
     # Get selected rows
-    $tableHtml = \Vanderbilt\HarmonistHubExternalModule\generateTablesHTML_pdf($module, $dataTable,$sop['sop_tablefields']);
+    $tableHtml = \Vanderbilt\HarmonistHubExternalModule\generateTablesHTML_pdf($module, $pidsArray['CODELIST'], $dataTable,$sop['sop_tablefields']);
     $requested_tables = \Vanderbilt\HarmonistHubExternalModule\generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
 }
 
 
-$RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array("record_id" => $sop['sop_concept_id']));
+$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
 $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
 $concept_id = $concept['concept_id'];
 $concept_title = $concept['concept_title'];
 
-$RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $sop['sop_creator']));
+$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_creator']));
 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 $sop_creator_name = $people['firstname'].' '.$people['lastname'];
 $sop_creator_email = $people['email'];
 
-$projectPeople = new \Plugin\Project(IEDEA_PEOPLE);
+$projectPeople = new \Plugin\Project($pidsArray['PEOPLE']);
 $RecordSetPeople = new \Plugin\RecordSet($projectPeople, array("record_id" => $sop['sop_creator']));
 $sop_creator_name = $RecordSetPeople->getDetails()[0]['firstname'].' '.$RecordSetPeople->getDetails()[0]['lastname'];
 $sop_creator_email = $RecordSetPeople->getDetails()[0]['email'];
 
-$RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $sop['sop_creator2']));
+$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_creator2']));
 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 $sop_creator2_name  = $people['firstname'].' '.$people['lastname'];
 $sop_creator2_email = $people['email'];
 
-$RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $sop['sop_datacontact']));
+$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_datacontact']));
 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 $sop_datacontact_name  = $people['firstname'].' '.$people['lastname'];
 $sop_datacontact_email = $people['email'];
@@ -82,7 +82,7 @@ $second_page .= "<p><span style='font-size:16pt'><strong>3. Exclusion Criteria</
 $second_page .= "<p><span style='font-size: 12pt'>".$sop['sop_exclusion']."</span></p>";
 $second_page .= "<p><span style='font-size:16pt'><strong>4. Data Submission Notes</strong></span></p>";
 if($sop['dataformat_prefer'] != ""){
-    $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', IEDEA_SOP);
+    $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']);
     foreach($dataformat_prefer as $dataid => $dataformat){
         foreach($sop['dataformat_prefer'] as $dataf) {
             if($dataf == $dataid){
@@ -101,7 +101,7 @@ if($sop['sop_notes'] != ""){
 $second_page .= "<p><span style='font-size:16pt'><strong>5. List of Requested Tables</strong></span></p>";
 $second_page .= "<p><span style='font-size: 12pt'>".$requested_tables."</span></p>";
 
-$img = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $settings['hub_logo_pdf'],'pdf')));
+$img = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'pdf')));
 
 $page_num = '<style>a{text-decoration: none;}</style>';
 

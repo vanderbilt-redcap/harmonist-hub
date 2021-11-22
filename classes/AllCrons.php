@@ -855,7 +855,7 @@ class AllCrons
             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
                 "<div>This is a reminder that you have not downloaded the dataset that was submitted to secure cloud storage by&nbsp;<strong>" . $name_uploader . "</strong> from&nbsp;<strong>" . $region_code_uploader . "</strong> in response to your data request \"" . $concept_title . "\" for concept&nbsp;<b>" . $concept_id . "</b>, <i>Draft ID: " . $sop['record_id'] . "</i>. The upload was received at " . $date_time . " Eastern US Time (ET). </div><br/>" .
                 "<div>The dataset will be deleted on&nbsp;<strong><span style='color:red;'>" . $expired_date_delete . " 23:59 ET (" . $settings['downloadreminder_dur'] . " days)</span></strong>.</div><br/>" .
-                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?pid=" . IEDEA_PROJECTS . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
+                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
                 "A summary report for the dataset is also available on that page.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
             $reminder_num = $settings['downloadreminder_dur'];
@@ -865,7 +865,7 @@ class AllCrons
             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
                 "<div>This is a reminder that you have not downloaded the dataset that was submitted to secure cloud storage by&nbsp;<strong>" . $name_uploader . "</strong> from&nbsp;<strong>" . $region_code_uploader . "</strong> in response to your data request \"" . $concept_title . "\" for concept&nbsp;<b>" . $concept_id . "</b>, <i>Draft ID: " . $sop['record_id'] . "</i>. The upload was received at " . $date_time . " Eastern US Time (ET). </div><br/>" .
                 "<div>The dataset will be deleted on&nbsp;<strong><span style='color:red;'>" . $expired_date_delete . " 23:59 ET (" . $settings['downloadreminder2_dur'] . " days)</span></strong>.</div><br/>" .
-                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?pid=" . IEDEA_PROJECTS . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
+                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
                 "A summary report for the dataset is also available on that page.</div><br/>" .
                 "<div>This is the final reminder for this dataset.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
@@ -889,7 +889,7 @@ class AllCrons
         $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $uploadData[0]['data_assoc_request']));
         $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-        $uploader_name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($uploadData[0]['data_upload_person'], "");
+        $uploader_name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $uploadData[0]['data_upload_person'], "");
 
         $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $uploadData[0]['data_upload_region']));
         $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];

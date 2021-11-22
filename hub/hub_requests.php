@@ -1,17 +1,17 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
+$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-$header =  \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions,$current_user['person_region'],$settings['vote_grid'],'0');
+$header =  \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions,$current_user['person_region'],$settings['vote_grid'],'0');
 
 $title = "Requests";
 $link_all_requests = '';
 if($_REQUEST['type'] != ''){
     $title = $title." for ".$request_type_label[$_REQUEST['type']];
-    $link_all_requests = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub').'">View All Requests</a> | ';
+    $link_all_requests = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub').'">View All Requests</a> | ';
 }
 
 $completed_req = '';
@@ -22,13 +22,13 @@ foreach ($requests as $req){
         if (!\Vanderbilt\HarmonistHubExternalModule\hideRequestForNonVoters($settings, $req, $person_region)) {
             if (\Vanderbilt\HarmonistHubExternalModule\showClosedRequest($settings, $req, $current_user['person_region'])) {
                 //COMPLETED REQUESTS
-                $completed_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
-            } else if (\Vanderbilt\HarmonistHubExternalModule\showPendingRequest($req['request_id'], $req, $current_user['person_region']) && $current_user['pendingpanel_y'][0] == '1' && $req['region_response_status'][$current_user['person_region']] != '2') {
+                $completed_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
+            } else if (\Vanderbilt\HarmonistHubExternalModule\showPendingRequest($pidsArray['COMMENTSVOTES'], $req['request_id'], $req, $current_user['person_region']) && $current_user['pendingpanel_y'][0] == '1' && $req['region_response_status'][$current_user['person_region']] != '2') {
                 //PENDING REQUESTS
-                $pending_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $pending_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
             } else if (\Vanderbilt\HarmonistHubExternalModule\showOpenRequest($req, $current_user['person_region']) && $req['region_response_status'][$current_user['person_region']] != '2') {
                 //OPEN REQUESTS
-                $current_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $current_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
             }
         }
     }
@@ -48,7 +48,7 @@ foreach ($requests as $req){
     <h3><?=$title;?></h3>
     <p class="hub-title"><?=$settings['hub_req_text']?></p>
     <div class="pull-right">
-        <p><?php echo $link_all_requests; ?><a href="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".IEDEA_REQUESTLINK?>" target="_blank">Create New Request</a> | <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=mra&type=r')?>">View Archived Requests</a></p>
+        <p><?php echo $link_all_requests; ?><a href="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".IEDEA_REQUESTLINK?>" target="_blank">Create New Request</a> | <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=mra&type=r')?>">View Archived Requests</a></p>
     </div>
     <ul class="list-inline">
         <?php if($settings['vote_visibility'] == "" || $settings['vote_visibility'] =="1"){?>

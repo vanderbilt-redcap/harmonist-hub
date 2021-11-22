@@ -1,26 +1,26 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $_REQUEST['record']));
+$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $_REQUEST['record']));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
 if($sop !="") {
-    $sop_status = $module->getChoiceLabels('sop_status', IEDEA_SOP);
-    $sop_visibility = $module->getChoiceLabels('sop_visibility', IEDEA_SOP);
-    $status_type = $module->getChoiceLabels('data_response_status', IEDEA_SOP);
+    $sop_status = $module->getChoiceLabels('sop_status', $pidsArray['SOP']);
+    $sop_visibility = $module->getChoiceLabels('sop_visibility', $pidsArray['SOP']);
+    $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
 
-    $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $sop['sop_concept_id']));
+    $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $sop['sop_concept_id']));
     $concept_id = ProjectData::getProjectInfoArray($RecordSetConceptSheets)[0]['concept_id'];
-    $concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $sop['sop_concept_id'], 1);
+    $concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $sop['sop_concept_id'], 1);
 
-    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_creator']));
+    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator']));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $research_contact = "<em>None</em>";
     if($people['firstname'] != ''){
         $research_contact = $people['firstname'] . ' ' . $people['lastname']." (<a href='mailto:".$people['email']."'>".$people['email']."</a>)";
     }
 
-    $RecordSetPeopleDC = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
+    $RecordSetPeopleDC = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
     $peopleDC = ProjectData::getProjectInfoArray($RecordSetPeopleDC)[0];
     $data_contact = "<em>None</em>";
     if($peopleDC != ''){
@@ -48,11 +48,11 @@ if($sop !="") {
         $userid = $current_user['record_id'];
         $record_id = $_REQUEST['record'];
 
-        $Proj = new \Project(IEDEA_SOP);
+        $Proj = new \Project($pidsArray['SOP']);
         $event_id = $Proj->firstEventId;
         $recordSaveDU = array();
 
-        $RecordSetFollowAct = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $record_id));
+        $RecordSetFollowAct = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record_id));
         $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetFollowAct)[0]['follow_activity'];
         $array_userid = explode(',', $follow_activity);
 
@@ -61,8 +61,8 @@ if($sop !="") {
             unset($array_userid[$key]);
             $string_userid = implode(",", $array_userid);
             $recordSaveDU[$record_id][$event_id]['follow_activity'] = $string_userid;
-            $results = \Records::saveData(IEDEA_SOP, 'array', $recordSaveDU,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-            \Records::addRecordToRecordListCache(IEDEA_SOP, $record_id,1);
+            $results = \Records::saveData($pidsArray['SOP'], 'array', $recordSaveDU,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            \Records::addRecordToRecordListCache($pidsArray['SOP'], $record_id,1);
         }
     }
 }
@@ -73,7 +73,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
     $(function(){
         $('#deleteDataRequest').submit(function () {
             var data = $('#deleteDataRequest').serialize();
-            CallAJAXAndRedirect(data, <?=json_encode($module->getUrl('sop/sop_delete_data_request.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=smn&message=D"))?>);
+            CallAJAXAndRedirect(data, <?=json_encode($module->getUrl('sop/sop_delete_data_request.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=smn&message=D"))?>);
             return false;
         });
         $('#makePrivate').submit(function () {
@@ -93,7 +93,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
             data += "&status_record="+$('#status_record').val();
             data += "&data_response_notes="+encodeURIComponent($('#data_response_notes').val());
             var record = <?=json_encode($_REQUEST['record'])?>;
-            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=sop&record=".$_REQUEST['record']."&message=D"))?>);
+            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=sop&record=".$_REQUEST['record']."&message=D"))?>);
             return false;
         });
         //To change the text on select
@@ -134,12 +134,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
 
     <div class="backTo">
         <?php
-        $back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=smn').'">< Back to Request Data</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=smn').'">< Back to Request Data</a>';
         if($_REQUEST['type'] != ""){
             if($_REQUEST['type'] == 's'){
-                $back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=upd').'">< Back to Check and Submit Data</a>';
+                $back_button = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=upd').'">< Back to Check and Submit Data</a>';
             }else if($_REQUEST['type'] == 'r'){
-                $back_button = '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dnd').'">< Back to Retrieve Data</a>';
+                $back_button = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dnd').'">< Back to Retrieve Data</a>';
             }
         }
         echo $back_button;
@@ -152,7 +152,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     Data Request #<?= $sop['record_id']; ?> | <?= $concept_id; ?>
                 </h2>
                 <?php if ($isAdmin || $harmonist_perm) {
-                    $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_SOP . "&arm=1&id=" . $sop['record_id'];
+                    $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['SOP'] . "&arm=1&id=" . $sop['record_id'];
                     ?>
                     <div class="btn-group hidden-xs pull-right">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
@@ -163,7 +163,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             <?php
                                 if(($sop['sop_status'] == '2' && ($isAdmin || $harmonist_perm)) || $sop['sop_status'] != '2'){
                                     ?> <li>
-                                        <a href='<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=ss1&record=".$_REQUEST['record']."&step=3")?>' target="_blank">Edit Data Request</a>
+                                        <a href='<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=ss1&record=".$_REQUEST['record']."&step=3")?>' target="_blank">Edit Data Request</a>
                                     </li>
                                     <?php
                                 }
@@ -187,12 +187,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                 echo '<li><a href="#" onclick="confirmMakePrivate(\'' . $sop['record_id'] . '\')" class="open-codesModal">Revert to Private</a></li>';
                             }
                             if($sop['sop_status'] != "1") {
-                                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_SOP, $_REQUEST['record'], "finalization_of_data_request", "");
+                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $_REQUEST['record'], "finalization_of_data_request", "");
                                 $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" style="cursor:pointer">Start Data Call</a></li>';
                             }
                             if($sop['sop_status'] == "1" && $sop['sop_visibility'] == "2" && $sop['sop_finalize_y'][1] == '1' && empty($sop['sop_closed_y'][0])){
-                                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_SOP, $_REQUEST['record'], "data_call_closure", "");
+                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $_REQUEST['record'], "data_call_closure", "");
                                 $survey_link_closure = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-closure\',\'redcap-closure-frame\',\'' . $survey_link_closure . '\');" style="cursor:pointer">Archive Data Call</a></li>';
                             }
@@ -247,11 +247,11 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                         </thead>
                                         <tbody>
                                         <?php
-                                        $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
+                                        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
                                         $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                                         ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-                                        $status_type = $module->getChoiceLabels('data_response_status', IEDEA_SOP);
+                                        $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
                                         $status_icon_color = array(0=>"label-default_light",1=>"label-warning",2=>"label-approved",3=>"label-default",4=>"label-default",9=>"label-other");
                                         $status_icon = array(0=>"fa-times text-default_light",1=>"fa-wrench",2=>"fa-check",3=>"fa-ban",4=>"fa-times",9=>"fa-question");
 
@@ -328,7 +328,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                             <div style="float: left;line-height: 30px;">Set my status:</div>
                                             <div style="float: left;padding-left: 10px">
                                                 <?php
-                                                $status_type = $module->getChoiceLabels('data_response_status', IEDEA_SOP);
+                                                $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
                                                 $status_icon_color = array(0=>"label-default_light",1=>"label-warning",2=>"label-approved",3=>"label-default",4=>"label-default",9=>"label-other");
                                                 $status_icon = array(0=>"fa-times text-default_light",1=>"fa-wrench",2=>"fa-check",3=>"fa-ban",4=>"fa-times",9=>"fa-question");
                                                 $selected = ' <a href="#" data-toggle="dropdown" style="width:290px" class="dropdown-toggle form-control output_select btn-group" id="default-select-value"><span class="fa-label-legend status fa fa-fw fa-times text-default_light label-default_light " style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="0"><span class="status-text"> Not Started</span><span class="caret" style="float: right;margin-top:8px"></span></a>';
@@ -441,7 +441,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                 <div class="pull-right" id="btn_follow" style="padding-right: 10px">
                     <?php
                     if ($sop['sop_visibility'] == '1') {
-                        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_SOP, $_REQUEST['record_id'], "dhwg_review_request", "");
+                        $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $_REQUEST['record_id'], "dhwg_review_request", "");
                         $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                         echo '<a href="#" onclick="editIframeModal(\'sop-make-public\',\'redcap-edit-frame-make-public\',\'' . $survey_link . '\');" class="btn btn-success open-codesModal"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send for Review</a>';
@@ -593,9 +593,9 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             $downloaders_list = "";
                             $downloadersOrdered = array();
                             foreach ($downloaders as $down) {
-                                $RecordSetPeopleDown = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $down));
+                                $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
                                 $peopleDown = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
-                                $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $peopleDown['person_region']));
+                                $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
                                 $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
 
                                 $downloadersOrdered[$down]['name'] = $peopleDown['firstname'] . " " . $peopleDown['lastname'];
@@ -646,7 +646,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                 $extension = ($row_sop_file['file_extension'] == 'pdf') ? "pdf-icon.png" : "word-icon.png";
                 $pdf_path = APP_PATH_PLUGIN . "/loadPDF.php?edoc=" . $sop["sop_finalpdf"];
 
-                $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $sop["sop_finalpdf"], '1', '', $secret_key, $secret_iv,$current_user['record_id'],"");
+                $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $sop["sop_finalpdf"], '1', '', $secret_key, $secret_iv,$current_user['record_id'],"");
                 ?>
 
                 <a class="btn btn-default" href="downloadFile.php?code=<?= \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row_sop_file['stored_name'] . "&file=" . urlencode($row_sop_file['doc_name'])."&edoc=".$sop["sop_finalpdf"]."&pid=".$current_user['record_id'], 'e', $secret_key, $secret_iv) ?>" target="_blank">
@@ -665,9 +665,9 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
 
                     if (!empty($row_sop_file['doc_name'])) {
                         $extension = ($row_sop_file['file_extension'] == 'pdf') ? "pdf-icon.png" : "word-icon.png";
-                        $pdf_path = $module->getUrl("loadPDF.php?pid=".IEDEA_PROJECTS."&edoc=" . $sop["sop_finalpdf"]."#navpanes=0&scrollbar=0");
+                        $pdf_path = $module->getUrl("loadPDF.php?pid=".$pidsArray['PROJECTS']."&edoc=" . $sop["sop_finalpdf"]."#navpanes=0&scrollbar=0");
 
-                        $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $sop["sop_finalpdf"], '1', '', $secret_key, $secret_iv,$current_user['record_id'],"");
+                        $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $sop["sop_finalpdf"], '1', '', $secret_key, $secret_iv,$current_user['record_id'],"");
                         ?>
                         <span style="float: right;padding-right: 15px;"><?= $file_icon; ?></span>
                         <a href="<?=$module->getUrl('downloadFile.php?code='.\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row_sop_file['stored_name'] . "&file=" . urlencode($row_sop_file['doc_name'])."&edoc=".$sop["sop_finalpdf"]."&pid=".$current_user['record_id'], 'e', $secret_key, $secret_iv)) ?>"
@@ -696,7 +696,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Data Request Uploads
-                    <a href="<?=$module->geturl("index.php?pid=".IEDEA_PROJECTS."option=lgd&record=".$_REQUEST['record']);?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->geturl("index.php?pid=".$pidsArray['PROJECTS']."option=lgd&record=".$_REQUEST['record']);?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <div id="collapse_dataReqUp" class="panel-collapse" aria-expanded="true">
@@ -710,7 +710,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                         <col>
                     </colgroup>
                     <?php
-                    $RecordSetUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$_REQUEST['record']."'");
+                    $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$_REQUEST['record']."'");
                     $uploads = ProjectData::getProjectInfoArray($RecordSetUpload);
                     ArrayFunctions::array_sort_by_column($uploads, 'responsecomplete_ts',SORT_DESC);
                     if (!empty($uploads)){
@@ -730,11 +730,11 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     $count=0;
                     foreach ($uploads as $up) {
                         if($settings['dataupload_dur'] > $count) {
-                            $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $up['data_upload_person']));
+                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $up['data_upload_person']));
                             $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                             $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
-                            $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $up['data_upload_region']));
+                            $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $up['data_upload_region']));
                             $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
                             $status = '<span class="badge label-updated">Available</span>';
@@ -781,7 +781,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     </thead>
                     <tbody>
                     <?php
-                    $RecordSetComments = \REDCap::getData(IEDEA_SOPCOMMENTS, 'array', null,null,null,null,false,false,false,"[sop_id] = '".$_REQUEST['record']."'");
+                    $RecordSetComments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'array', null,null,null,null,false,false,false,"[sop_id] = '".$_REQUEST['record']."'");
                     $comments = ProjectData::getProjectInfoArray($RecordSetComments);
                     krsort($comments);
                     if (!empty($comments)) {
@@ -793,7 +793,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                 $comment_time = $dateComment->format("Y-m-d H:i:s");
                             }
 
-                            $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $comment['response_person']));
+                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $comment['response_person']));
                             $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
@@ -802,7 +802,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                 if (!empty($comment['comments'])) {
                                     $gd_files .= "<br/>";
                                 }
-                                $gd_files .= \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $comment['revised_file'], '', '', $secret_key, $secret_iv,$current_user['record_id'],"");
+                                $gd_files .= \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['revised_file'], '', '', $secret_key, $secret_iv,$current_user['record_id'],"");
                             }
 
 
@@ -818,7 +818,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                 "<td style='width:70%'>" . nl2br($comment['comments']) . $gd_files . "</td>" .
                                 "<td  style='width:5%'>";
                             if ($comment['response_person'] == $current_user['record_id']) {
-                                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_SOPCOMMENTS, $comment['record_id'], "sop_comments", "");
+                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOPCOMMENTS'], $comment['record_id'], "sop_comments", "");
                                 $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                                 $group_discussion .= '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';

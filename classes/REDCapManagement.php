@@ -28,7 +28,7 @@ class REDCapManagement {
 
     public static function getProjectConstantsArrayWithoutDeactivatedProjects(){
         $projects_array = self::getProjectsContantsArray();
-        $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
+        $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
         $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
         $deactivatedConstants = array();

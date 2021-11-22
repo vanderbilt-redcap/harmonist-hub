@@ -1,9 +1,9 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-$RecordSetTable = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $_REQUEST['record']));
+$RecordSetTable = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $_REQUEST['record']));
 $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0];
 
-$abstracts_publications_type = $module->getChoiceLabels('output_type', IEDEA_HARMONIST);
+$abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
 
 if(!empty($concept)) {
@@ -20,13 +20,13 @@ if(!empty($concept)) {
     $id_people = $concept['contact_link'];
     $name_concept = "<em>Not specified</em>";
     if (!empty($id_people)) {
-        $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $id_people));
+        $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $id_people));
         $person_info = ProjectData::getProjectInfoArray($RecordSetPeople,'')[0];
         $email = "";
         if (!empty($person_info)) {
             $name_concept = '<a href="mailto:'.$person_info['email'].'">'.$person_info['firstname'] . ' ' . $person_info['lastname'];
             if(!empty($person_info['person_region'])){
-                $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_info['person_region']));
+                $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $person_info['person_region']));
                 $person_region = ProjectData::getProjectInfoArray($RecordSetRegion,'')[0];
                 if(!empty($person_region)){
                     $name_concept .= " (".$person_region['region_code'].")";
@@ -38,7 +38,7 @@ if(!empty($concept)) {
     }
     $id_workingGroup = $concept['wg_link'];
     if (!empty($id_workingGroup)) {
-        $RecordSetGroup = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $id_workingGroup));
+        $RecordSetGroup = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $id_workingGroup));
         $wgroup = ProjectData::getProjectInfoArray($RecordSetGroup,'')[0];
         $group_name = "";
         if (!empty($wgroup)) {
@@ -47,7 +47,7 @@ if(!empty($concept)) {
     }
 
     if (!empty($concept['wg2_link'])) {
-        $RecordSetGroup2 = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' =>  $concept['wg2_link']));
+        $RecordSetGroup2 = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' =>  $concept['wg2_link']));
         $wgroup2 = ProjectData::getProjectInfoArray($RecordSetGroup2,'')[0];
     }
     $group_name_total = "<em>Not specified</em>";
@@ -70,7 +70,7 @@ if(!empty($concept)) {
     $row_datasop_file = "";
     if (!empty($concept["status"]) && in_array('1', $concept["status"]) && !empty($concept["pdf_file"])) {
         #SOP Files from Builder SOP project
-        $RecordSop = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $concept['record_id']));
+        $RecordSop = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $concept['record_id']));
         $pdf_file = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSop,'')[0]["pdf_file"];
         $q = $module->query("SELECT doc_name,stored_name,file_extension FROM redcap_edocs_metadata WHERE doc_id = ?",[$pdf_file]);
         $row_datasop_file = $q->fetch_assoc();
@@ -115,16 +115,16 @@ if($concept['revised_y'][0] == '1'){
 <div class="container">
     <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;display: none;" id="succMsgContainer">If you've made any changes, they have been saved.</div>
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=cpt')?>">< Back to Concepts</a>
+        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=cpt')?>">< Back to Concepts</a>
     </div>
     <?php if($concept != "") {?>
     <h3 class="concepts-title-title"><?=$concept['concept_id']?></h3>
 
         <?php if($isAdmin || $harmonist_perm_edit_concept){
-            $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_HARMONIST, $_REQUEST['record'], "concept_sheet", "");
+            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $_REQUEST['record'], "concept_sheet", "");
             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
 
-            $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".IEDEA_HARMONIST."&arm=1&id=".$_REQUEST['record'];
+            $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$_REQUEST['record'];
 
             $survey_queue_link = \REDCap::getSurveyQueueLink($_REQUEST['record']);
             ?>
@@ -208,11 +208,11 @@ if($concept['revised_y'][0] == '1'){
                 <?php
                 if(!empty($concept['participants_complete'])) {
                     foreach ($concept['participants_complete'] as $id => $participant) {
-                        $RecordSetParticipant = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $concept['person_link'][$id]));
+                        $RecordSetParticipant = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $concept['person_link'][$id]));
                         $participant_info = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetParticipant)[0];
                         if (!empty($participant_info)) {
                             #get the label from the drop down menu
-                            echo '<div><a href="mailto:' . $participant_info['email'] . '">' . $participant_info['firstname'] . ' ' . $participant_info['lastname'] . '</a> (' . $module->getChoiceLabels('person_role', IEDEA_HARMONIST)[$concept['person_role'][$id]]. ')</div>';
+                            echo '<div><a href="mailto:' . $participant_info['email'] . '">' . $participant_info['firstname'] . ' ' . $participant_info['lastname'] . '</a> (' . $module->getChoiceLabels('person_role', $pidsArray['HARMONIST'])[$concept['person_role'][$id]]. ')</div>';
                         } else {
 
                             echo '<div>' . $concept['person_other'][$id] . '</div>';
@@ -230,7 +230,7 @@ if($concept['revised_y'][0] == '1'){
                 <div>
                 <?php
                 $noTags = true;
-                $concept_tags = $module->getChoiceLabels('concept_tags', IEDEA_HARMONIST);
+                $concept_tags = $module->getChoiceLabels('concept_tags', $pidsArray['HARMONIST']);
                 foreach ($concept['concept_tags'] as $tag=>$value){
                     if($value == 1) {
                         $noTags = false;
@@ -272,7 +272,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                             echo '<tr>';
                             echo  '<td style="width: 10%;">' . $value. '</td>';
                             echo  '<td>' . $concept['admin_update'][$index]. '</td>';
-                            echo  '<td style="width: 5%;">' . \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $concept['adminupdate_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],""). '</td>';
+                            echo  '<td style="width: 5%;">' . \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept['adminupdate_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],""). '</td>';
                             echo '</tr>';
                         }
                     }
@@ -296,7 +296,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     $extension = ($row_concept_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
                     $pdf_path = APP_PATH_PLUGIN."/loadPDF.php?edoc=".$concept["concept_file"]."#page=1&zoom=100";
 
-                    $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                    $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                     ?>
                     <span style="float: right;padding-right: 15px;"><?=$file_icon;?></span>
                     <a href="downloadFile.php?code=<?=\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv)?>" target="_blank" style="float: right;padding-right: 10px;"><span class="hidden-sm hidden-xs">Download </span>PDF </a>
@@ -330,22 +330,22 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
         <div id="collapse4" class="table-responsive panel-collapse collapse in" aria-expanded="false" style="overflow-y: hidden;">
             <table class="table sortable-theme-bootstrap" data-sortable>
             <?php
-            $q = $module->query("SELECT record FROM redcap_data WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$_REQUEST['record'],IEDEA_HARMONIST]);
+            $q = $module->query("SELECT record FROM redcap_data WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$_REQUEST['record'],$pidsArray['HARMONIST']]);
 
             $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_visibility] = 2 and [sop_concept_id] = ".$_REQUEST['record']);
             $data_requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
 
             ArrayFunctions::array_sort_by_column($data_requests,'sop_updated_dt',SORT_DESC);
             if(!empty($data_requests) || $q->num_rows > 0) {
-                echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsHeader($current_user['person_region'],$settings['vote_grid']);
+                echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsHeader($pidsArray['REGIONS'], $current_user['person_region'],$settings['vote_grid']);
                 foreach ($data_requests as $sop) {
-                        echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'','');
+                        echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'','');
                 }
                 while ($row = db_fetch_assoc($q)){
                     $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$row['record']);
                     $data_requests_old = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
                     if(empty($data_requests_old)){
-                        echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$row['record'],"1");
+                        echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$row['record'],"1");
                     }
                 }
             }else{?>
@@ -376,7 +376,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     <col>
                 </colgroup>
                 <?php
-                $RecordSetUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$_REQUEST['record']);
+                $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$_REQUEST['record']);
                 $uploads = ProjectData::getProjectInfoArray($RecordSetUpload);
                 if(!empty($uploads)){?>
 
@@ -392,11 +392,11 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <tbody>
                 <?php
                 foreach ($uploads as $up){
-                    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $up['data_upload_person']));
+                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $up['data_upload_person']));
                     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                     $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
-                    $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $up['data_upload_region']));
+                    $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $up['data_upload_region']));
                     $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
                     $status = '<span class="badge label-updated">Available</span>';
@@ -478,7 +478,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
 
                         $file ='';
                         if($concept['output_file'][$index] != ""){
-                            $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $concept['output_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                            $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept['output_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                         }
                         echo '<td>'.$file.'</td></tr>';
                     }
@@ -501,7 +501,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
         <div id="collapse3" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                 <?php
-                $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null);
+                $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null);
                 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y' => "1",'assoc_concept' => $concept['record_id']));
                 if(!empty($request)){
                     echo \Vanderbilt\HarmonistHubExternalModule\getArchiveHeader('Status');
@@ -509,7 +509,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     <tbody>
                     <?php
                     foreach ($request as $req) {
-                        echo \Vanderbilt\HarmonistHubExternalModule\getArchiveHTML($module, $req, $request_type_label, $current_user['person_region'],$settings['vote_visibility']);
+                        echo \Vanderbilt\HarmonistHubExternalModule\getArchiveHTML($module, $pidsArray, $req, $request_type_label, $current_user['person_region'],$settings['vote_visibility']);
                     }
                 }else{?>
                     <tbody>

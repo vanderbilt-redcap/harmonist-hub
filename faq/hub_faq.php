@@ -1,10 +1,10 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetFaq = \REDCap::getData(IEDEA_FAQ, 'array', null,null,null,null,false,false,false,"[help_show_y] = '1'");
+$RecordSetFaq = \REDCap::getData($pidsArray['FAQ'], 'array', null,null,null,null,false,false,false,"[help_show_y] = '1'");
 $faqs = ProjectData::getProjectInfoArray($RecordSetFaq);
 ArrayFunctions::array_sort_by_column($regions, 'help_category');
-$help_category = $module->getChoiceLabels('help_category', IEDEA_FAQ);
+$help_category = $module->getChoiceLabels('help_category', $pidsArray['FAQ']);
 
 ?>
 <script>

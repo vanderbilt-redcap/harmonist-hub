@@ -4,21 +4,21 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 #Consortium Productivity
  **/
 
-$wg_link = $module->getChoiceLabels('wg_link', IEDEA_HARMONIST);
-$Recordwg_link = \REDCap::getData(IEDEA_GROUP, 'array', null);
+$wg_link = $module->getChoiceLabels('wg_link', $pidsArray['HARMONIST']);
+$Recordwg_link = \REDCap::getData($pidsArray['GROUP'], 'array', null);
 $wg_array = ProjectData::getProjectInfoArray($Recordwg_link,'');
 $wg_link = array();
 foreach ($wg_array as $wg){
     $wg_link[$wg['record_id']] = $wg['group_name'].' ('.$wg['group_abbr'].')';
 }
 
-$RecordSetConceptsALL = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
+$RecordSetConceptsALL = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsALL,'');
-$RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[active_y] = 'Y'");
+$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[active_y] = 'Y'");
 $active_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts));
-$RecordSetConceptsIC = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[active_y] = 'N' AND [concept_outcome] = '1'");
+$RecordSetConceptsIC = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[active_y] = 'N' AND [concept_outcome] = '1'");
 $inactive_complete_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsIC));
-$RecordSetConceptsID = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[active_y] = 'N' AND [concept_outcome] = '2'");
+$RecordSetConceptsID = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[active_y] = 'N' AND [concept_outcome] = '2'");
 $inactive_discontinued_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsID));
 
 $array_wg = array();
@@ -48,13 +48,13 @@ foreach ($wg_link as $code => $text){
 $conceptswg_short_label_index[''] = 'No WG';
 array_push($conceptswg_short_label,'No WG');
 
-$RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null);
+$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 $conceptsleadregion_values = array();
 $conceptsleadregion_labels = array();
 $requests_array_region = array();
 foreach ($regions as $region){
-    $RecordSetConceptsLead = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[lead_region] = '".$region['record_id']."'");
+    $RecordSetConceptsLead = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[lead_region] = '".$region['record_id']."'");
     $lead_region = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsLead);
     array_push($conceptsleadregion_values,count($lead_region));
     array_push($conceptsleadregion_labels,$region['region_code']);
@@ -89,11 +89,11 @@ $conceptswg_labels[''] = 'No WG';
 **/
 
 $concept_type = array(1=>'manuscripts',2=>'abstracts');
-$RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
+$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
 $conceptsData = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,'');
 $regionalmrdata = array();
 foreach ($concept_type as $output_type=>$type){
-    ${"regionalmrdata_".$type} = \Vanderbilt\HarmonistHubExternalModule\getRegionalAndMR($conceptsData,$type, $regionalmrdata,$settings['oldestyear_rmr_'.$type],$output_type);
+    ${"regionalmrdata_".$type} = \Vanderbilt\HarmonistHubExternalModule\getRegionalAndMR($pidsArray['EXTRAOUTPUTS'], $conceptsData,$type, $regionalmrdata,$settings['oldestyear_rmr_'.$type],$output_type);
     ${"data_".$type} = \Vanderbilt\HarmonistHubExternalModule\getDataRMRTable(${"regionalmrdata_".$type}['outputs'],$type);
 }
 
@@ -165,7 +165,7 @@ foreach ($concept_years as $year => $concept){
 /**
 #Requests
  **/
-$RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = '1'");
+$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,null,null,null,false,false,false,"[approval_y] = '1'");
 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
 ArrayFunctions::array_sort_by_column($request, 'due_d');
 
@@ -273,7 +273,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         var url_base64 = save64Img(chart.toBase64Image());
     }
     $(function () {
-        var url = <?=json_encode($module->getUrl('index.php?pid='.IEDEA_PROJECTS.'?option=cpt'))?>;
+        var url = <?=json_encode($module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'?option=cpt'))?>;
 
         var array_sections = <?=json_encode($array_sections)?>;
         var array_sections_title = <?=json_encode($array_sections_title)?>;
@@ -665,7 +665,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS)?>">< Back to Home</a>
+        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>">< Back to Home</a>
     </div>
 </div>
 <div class="container">
@@ -802,7 +802,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
     $region_name = $module->getChoiceLabels('region', IEDEA_TBLCENTERREVISED);
 
     $tbl_array = array();
-    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
+    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
     $regions_ordered = ProjectData::getProjectInfoArray($RecordSetRegions);
     ArrayFunctions::array_sort_by_column($regions_ordered,'region_code');
     //To order the display

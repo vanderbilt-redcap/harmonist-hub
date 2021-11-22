@@ -1,11 +1,11 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetHome = \REDCap::getData(IEDEA_HOME, 'array', null);
+$RecordSetHome = \REDCap::getData($pidsArray['HOME'], 'array', null);
 $homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
-$homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', IEDEA_HOME);
+$homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', $pidsArray['HOME']);
 
-$RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] =1");
+$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,null,null,null,false,false,false,"[approval_y] =1");
 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
 ArrayFunctions::array_sort_by_column($request, 'due_d');
 
@@ -63,7 +63,7 @@ $number_of_deadlines = $settings['home_number_deadlines'];
 $number_of_quicklinks = $settings['home_number_quicklinks'];
 $number_of_recentactivity = $settings['home_number_recentactivity'];
 
-$RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".date('Y-m-d', strtotime("-7 day"))."', \"d\", true) >= 0");
+$RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".date('Y-m-d', strtotime("-7 day"))."', \"d\", true) >= 0");
 $comments_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetComments);
 ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
@@ -140,7 +140,7 @@ if(!empty($homepage)) {
             <div class="modal-body">
                 <input type="hidden" value="0" id="announcement_loaded">
                 <?php
-                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_HOME, 1, "announcements", "");
+                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HOME'], 1, "announcements", "");
                 $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
                 ?>
                 <iframe class="commentsform" id="announcements-frame" name="announcements-frame" message="U" src="<?=$survey_link?>" style="border: none;height: 810px;width: 100%;" message="F"></iframe>
@@ -160,33 +160,33 @@ if(!empty($homepage)) {
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <a href="<?$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub")?> title="open requests" class="home_openrequests_link"><span class="badge label-default" style="float: right;"><?=$numberOfOpenRequest?></span></a>
+                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub")?> title="open requests" class="home_openrequests_link"><span class="badge label-default" style="float: right;"><?=$numberOfOpenRequest?></span></a>
                             Open Requests</h3>
 
                     </div>
                    <ul class="list-group">
                         <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub&type=1")?>" title="concept sheets" class="home_openrequests_link"><span class="badge concepts"><?=($number_concepts == 0)?"":$number_concepts;?></span></a>
+                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=1")?>" title="concept sheets" class="home_openrequests_link"><span class="badge concepts"><?=($number_concepts == 0)?"":$number_concepts;?></span></a>
                             Concept Sheets
                         </li>
                         <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub&type=2")?>" title="abstracts" class="home_openrequests_link"><span class="badge abstracts"><?=($number_abstracts == 0)?"":$number_abstracts;?></span></a>
+                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=2")?>" title="abstracts" class="home_openrequests_link"><span class="badge abstracts"><?=($number_abstracts == 0)?"":$number_abstracts;?></span></a>
                             Abstracts
                         </li>
                         <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub&type=3")?>" title="manuscripts" class="home_openrequests_link"><span class="badge manuscripts"><?=($number_manuscripts == 0)?"":$number_manuscripts;?></span></a>
+                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=3")?>" title="manuscripts" class="home_openrequests_link"><span class="badge manuscripts"><?=($number_manuscripts == 0)?"":$number_manuscripts;?></span></a>
                             Manuscripts
                         </li>
                         <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub&type=4")?>" title="posters" class="home_openrequests_link"><span class="badge posters"><?=($number_poster == 0)?"":$number_poster;?></span></a>
+                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=4")?>" title="posters" class="home_openrequests_link"><span class="badge posters"><?=($number_poster == 0)?"":$number_poster;?></span></a>
                             Posters
                         </li>
                         <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub&type=5")?>" title="fast track" class="home_openrequests_link"><span class="badge dataRequests"><?=($number_fastTrack == 0)?"":$number_fastTrack;?></span></a>
+                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=5")?>" title="fast track" class="home_openrequests_link"><span class="badge dataRequests"><?=($number_fastTrack == 0)?"":$number_fastTrack;?></span></a>
                             Fast Track
                         </li>
                         <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub&type=99")?>" title="other items" class="home_openrequests_link"><span class="badge other"><?=($number_other == 0)?"":$number_other;?></span></a>
+                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=99")?>" title="other items" class="home_openrequests_link"><span class="badge other"><?=($number_other == 0)?"":$number_other;?></span></a>
                             Other Items
                         </li>
                     </ul>
@@ -238,7 +238,7 @@ if(!empty($homepage)) {
                         </div>
                         <div class="modal-body">
                             <?php
-                            $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_HOME, 1, "deadlines", "");
+                            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HOME'], 1, "deadlines", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
                             ?>
                             <iframe class="commentsform" id="deadlines-frame" message="E" name="deadlines-frame" src="<?=$survey_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
@@ -255,22 +255,22 @@ if(!empty($homepage)) {
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">My Requests
-                    <a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=mra&type=h")?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=mra&type=h")?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <div class="table-responsive">
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                     <?php
                     if(!empty($requests)) {
-                        $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
+                        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
                         $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                         ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-                        $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions, $current_user['person_region'], $settings['vote_grid'], '1','home');
+                        $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $current_user['person_region'], $settings['vote_grid'], '1','home');
 
                         $requests_counter = 0;
                         foreach ($requests as $req) {
-                            $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
+                            $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
                             if($user_req_body != ""){
                                 $requests_counter++;
                             }
@@ -299,7 +299,7 @@ if(!empty($homepage)) {
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Recent Activity
-                    <a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hra")?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hra")?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <ul class="list-group">
@@ -311,7 +311,7 @@ if(!empty($homepage)) {
                             if ($i < $number_of_recentactivity) {
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $comment['response_person']));
+                                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $comment['response_person']));
                                 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
@@ -325,7 +325,7 @@ if(!empty($homepage)) {
                                 if ($comment['author_revision_y'] == '1') {
                                     echo '<i class="fa fa-fw fa-file-text-o text-success" aria-hidden="true"></i>' .
                                         '<span class="time"> ' . $time . '</span> ' .
-                                        '<strong>' . $name . '</strong> submitted a <b>revision</b> for <a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $requestComment['request_id']) . '" target="_blank">' . $title . '</a>';
+                                        '<strong>' . $name . '</strong> submitted a <b>revision</b> for <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id']) . '" target="_blank">' . $title . '</a>';
                                 } else{
                                     $text = '<span class="time"> ' . $time . '</span> <strong>' . $name . '</strong> submited a ';
                                     $itemcount = 0;
@@ -352,7 +352,7 @@ if(!empty($homepage)) {
                                         $text .= '<strong>vote</strong>';
                                     }
 
-                                    echo $icon.$text.' for <a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $requestComment['request_id']).'" target="_blank">' . $title . '</a>';
+                                    echo $icon.$text.' for <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id']).'" target="_blank">' . $title . '</a>';
                                 }
                                 echo '</li>';
                                 $i++;
@@ -369,7 +369,7 @@ if(!empty($homepage)) {
     </div>
     <div class="col-sm-3">
         <?php
-        $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
+        $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
         $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
         $open_data_calls = 0;
         if(!empty($request_dataCall)) {
@@ -391,7 +391,7 @@ if(!empty($homepage)) {
             </div>
             <div class="stat-table-outer" aria-expanded="true">
                 <div style="padding-bottom: 10px;text-align: left;"><?=$settings['hub_active_shortcut']?></div>
-                <div style="text-align: center;"><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=upd')?>" class="btn btn-default">View Data Calls</a></div>
+                <div style="text-align: center;"><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=upd')?>" class="btn btn-default">View Data Calls</a></div>
             </div>
         </div>
         <?php } ?>
@@ -401,7 +401,7 @@ if(!empty($homepage)) {
                 <h3 class="panel-title">
                     Hub Metrics
                         <?php if($settings['deactivate_metrics'][1] != "1" || $isAdmin){ ?>
-                            <span style="float: right"><a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=mts")?>">View more</a></span>
+                            <span style="float: right"><a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=mts")?>">View more</a></span>
                         <?php } ?>
                 </h3>
             </div>
@@ -424,7 +424,7 @@ if(!empty($homepage)) {
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Calendar
-                    <span style="float: right"><a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=cal")?>">View more</a></span>
+                    <span style="float: right"><a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=cal")?>">View more</a></span>
                 </h3>
             </div>
             <div class="stat-table-outer" aria-expanded="true">

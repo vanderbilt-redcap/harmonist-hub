@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
+$default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
 ?>
 <script>
     $(document).ready(function() {
@@ -55,7 +55,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
 
     ?>
     <div class="pull-right">
-        <p><a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=mts")?>">View Hub Statistics</a> | <a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=mra&type=a")?>">View Archived Requests</a></p>
+        <p><a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=mts")?>">View Hub Statistics</a> | <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=mra&type=a")?>">View Archived Requests</a></p>
     </div>
 </div>
 <div class="container">
@@ -93,7 +93,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                     foreach ($request_admin as $req) {
                         if ($req['approval_y'] == '' || $req['approval_y'] == null) {
                             $any_request_found = true;
-                            $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']));
+                            $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $req['contact_region']));
                             $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
                             $region = "";
                             if($person_region_code != ""){
@@ -102,7 +102,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
 
                             $check_submission_text = ($settings['admintext1']=="")? $default_values_settings['admintext1']:$settings['admintext1'];
                             $set_deadline_text = ($settings['admintext2']=="")? $default_values_settings['admintext2']:$settings['admintext2'];
-                            $concept_link = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "");
+                            $concept_link = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $req['assoc_concept'], "");
                             if($concept_link == ""){
                                 $concept_link = $req['mr_temporary'];
                             }
@@ -112,11 +112,11 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                                     <td><a href="mailto:'.$req['contact_email'].'">'.$req['contact_name'].'</a>'.$region.'</td>
                                     <td class="hidden-xs"><a href="'.$module->getUrl('index.php?option=hub&record='.$req['request_id']).'" target="_blank">'.$req['request_title'].'</a></td>';
 
-                            $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "request", "");
+                            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "request", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
                             echo '<td><div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\',\''.$check_submission_text.'\');" class="btn btn-primary btn-xs actionbutton"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> '.$check_submission_text.'</a></div>';
 
-                            $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "admin_review", "");
+                            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "admin_review", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
 
                             echo '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\',\''.$set_deadline_text.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> '.$set_deadline_text.'</a></div></td>';
@@ -151,7 +151,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
         <div id="collapse1" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap admin-table" data-sortable>
                 <?php
-                $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = '1' AND [detected_complete(1)] = '1'");
+                $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,null,null,null,false,false,false,"[approval_y] = '1' AND [detected_complete(1)] = '1'");
                 $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
                 ArrayFunctions::array_sort_by_column($requests,"due_d");
                 $any_request_found = false;
@@ -178,20 +178,20 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                            //Do not show request
                         }else{
                             $any_request_found = true;
-                            $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "finalization_of_request", "");
+                            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "finalization_of_request", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
-                            $passthru_link_doc = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "final_docs_request_survey", "");
+                            $passthru_link_doc = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "final_docs_request_survey", "");
                             $survey_link_doc = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_doc['hash']."&modal=modal");
-                            $passthru_link_mr = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "tracking_number_assignment_survey", "");
+                            $passthru_link_mr = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "tracking_number_assignment_survey", "");
                             $survey_link_mr = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_mr['hash']."&modal=modal");
 
-                            $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "");
+                            $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $req['assoc_concept'], "");
                             if($req_type == "" && $req['mr_temporary'] != ""){
                                 $req_type = $req['mr_temporary'];
                             }
                             $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($req['due_d'], '', 'float:right', '0');
 
-                            $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']));
+                            $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $req['contact_region']));
                             $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
                             $region = "";
                             if ($person_region_code != "") {
@@ -227,7 +227,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                                 '<td><div><strong><span class="fa fa-user fa-square  ' . $abstracts_publications_badge_text[$req['request_type']] . '"></span> ' . $request_type_label[$req['request_type']] . '</strong> (' . $req_type . ')</div>' .
                                 '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . $region . '</div>' .
                                 '<div style="padding-top:5px;">Due on: ' . $array_dates['text'] . '</div></td>' .
-                                '<td><a href="'.$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub&record=" . $req['request_id']) . '" target="_blank">' . $req['request_title'] . '</a></td>' .
+                                '<td><a href="'.$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id']) . '" target="_blank">' . $req['request_title'] . '</a></td>' .
                                 '<td><div>' . $finalize_review . '</div></td>' .
                                 '<td><div>' . $request_docs . '</div></td>' .
                                 '<td><div>' . $assign_mr . '</div></td>' .
@@ -263,7 +263,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
         <div id="collapse_req_finalized" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                 <?php
-                $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[finalize_y] = '1' AND [approval_y] = '1'");
+                $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,null,null,null,false,false,false,"[finalize_y] = '1' AND [approval_y] = '1'");
                 $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
                 ArrayFunctions::array_sort_by_column($requests,"due_d");
                 $any_request_found = false;
@@ -290,19 +290,19 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                         $expire_date = date('Y-m-d', strtotime($req['workflowcomplete_d'] . $extra_days));
                         if($req['workflowcomplete_d'] != "" && strtotime ($expire_date) >= strtotime(date('Y-m-d'))){
                             $any_request_found = true;
-                            $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "finalization_of_request", "");
+                            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "finalization_of_request", "");
                             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
-                            $passthru_link_doc = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "final_docs_request_survey", "");
+                            $passthru_link_doc = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "final_docs_request_survey", "");
                             $survey_link_doc = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_doc['hash']."&modal=modal");
-                            $passthru_link_mr = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "tracking_number_assignment_survey", "");
+                            $passthru_link_mr = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "tracking_number_assignment_survey", "");
                             $survey_link_mr = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_mr['hash']."&modal=modal");
 
-                            $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $req['assoc_concept'], "");
+                            $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $req['assoc_concept'], "");
                             if($req_type == "" && $req['mr_temporary'] != ""){
                                 $req_type = $req['mr_temporary'];
                             }
 
-                            $RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']));
+                            $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $req['contact_region']));
                             $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
                             $region = "";
                             if ($person_region_code != "") {
@@ -339,7 +339,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                                 '<td><div><strong><span class="fa fa-user fa-square  ' . $abstracts_publications_badge_text[$req['request_type']] . '"></span> ' . $request_type_label[$req['request_type']] . '</strong> (' . $req_type . ')</div>' .
                                 '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . $region . '</div>' .
                                 '<div style="padding-top:5px;">Completed on: ' . $req['workflowcomplete_d'] . '</div></td>' .
-                                '<td><a href="'.$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=hub&record=" . $req['request_id']) . '" target="_blank">' . $req['request_title'] . '</a></td>' .
+                                '<td><a href="'.$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id']) . '" target="_blank">' . $req['request_title'] . '</a></td>' .
                                 '<td><div>' . $finalize_review . '</div></td>' .
                                 '<td><div>' . $request_docs . '</div></td>' .
                                 '<td><div>' . $assign_mr . '</div></td>' .
@@ -505,7 +505,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                 <div class="table-responsive panel-collapse collapse in" aria-expanded="true">
                     <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                         <?php
-                        $q = $module->query("SELECT a.record,max(if(a.field_name = ?, a.value, '')) as active_y,max(if(a.field_name = ?, a.value, '')) as last_requested_token_d,max(if(a.field_name = ?, a.value, NULL))as email, max(if(a.field_name = ?, a.value, NULL))as person_region,CONCAT_WS(' ',max(if(a.field_name = ?, a.value, NULL)),max(if(a.field_name = ?, a.value, NULL))) as name FROM redcap_data a INNER JOIN redcap_data b on (b.value is not null and b.field_name = ? AND a.record=b.record and a.project_id=b.project_id) WHERE a.project_id=? group by a.record ORDER BY b.value DESC LIMIT 15", ['active_y','last_requested_token_d','email','person_region', 'firstname','lastname', 'last_requested_token_d' ,IEDEA_PEOPLE]);
+                        $q = $module->query("SELECT a.record,max(if(a.field_name = ?, a.value, '')) as active_y,max(if(a.field_name = ?, a.value, '')) as last_requested_token_d,max(if(a.field_name = ?, a.value, NULL))as email, max(if(a.field_name = ?, a.value, NULL))as person_region,CONCAT_WS(' ',max(if(a.field_name = ?, a.value, NULL)),max(if(a.field_name = ?, a.value, NULL))) as name FROM redcap_data a INNER JOIN redcap_data b on (b.value is not null and b.field_name = ? AND a.record=b.record and a.project_id=b.project_id) WHERE a.project_id=? group by a.record ORDER BY b.value DESC LIMIT 15", ['active_y','last_requested_token_d','email','person_region', 'firstname','lastname', 'last_requested_token_d' ,$pidsArray['PEOPLE']]);
                         while ($row = $q->fetch_assoc()) {
                             $logins[] = $row;
                         }
@@ -520,17 +520,17 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
                                     </tr>'.'
                                     </thead>';
 
-                            $harmonist_regperm = $module->getChoiceLabels('harmonist_regperm', IEDEA_PEOPLE);
-                            $harmonist_perms = $module->getChoiceLabels('harmonist_perms', IEDEA_PEOPLE);
+                            $harmonist_regperm = $module->getChoiceLabels('harmonist_regperm', $pidsArray['PEOPLE']);
+                            $harmonist_perms = $module->getChoiceLabels('harmonist_perms', $pidsArray['PEOPLE']);
                             foreach ($logins as $login){
                                 if($login['active_y'] != "0") {
-                                    $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $login['person_region']));
+                                    $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $login['person_region']));
                                     $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
-                                    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $login['record']));
+                                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $login['record']));
                                     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 
-                                    $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_PEOPLE . "&arm=1&id=" . $login['record'];
+                                    $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "&arm=1&id=" . $login['record'];
 
                                     $harmonist_perm_text = "";
                                     foreach ($people['harmonist_perms'] as $h_perm){
@@ -571,7 +571,7 @@ $default_values_settings = $default_values->getDefaultValues(IEDEA_SETTINGS);
             <div id="collapse3" class="table-responsive panel-collapse collapse in" aria-expanded="true">
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                     <?php
-                    $RecordSetProjectsY = \REDCap::getData(IEDEA_PROJECTS, 'array', null,null,null,null,false,false,false, "[project_show_y] = '1'");
+                    $RecordSetProjectsY = \REDCap::getData($pidsArray['PROJECTS'], 'array', null,null,null,null,false,false,false, "[project_show_y] = '1'");
                     $projectsY = ProjectData::getProjectInfoArray($RecordSetProjectsY);
                     foreach ($projectsY as $project){
                         $iedea_constant = constant("IEDEA_".$project['project_constant']);

@@ -12,6 +12,7 @@ define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
 $pid = (int)$_GET['pid'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,7 +74,7 @@ $pid = (int)$_GET['pid'];
                 </div>';
             } else {
                 include_once("projects.php");
-                $settings = \REDCap::getData(array('project_id' => IEDEA_SETTINGS), 'array')[1][$module->framework->getEventId(IEDEA_SETTINGS)];
+                $settings = \REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$module->framework->getEventId($pidsArray['SETTINGS'])];
 
                 /***
                  * Installation updates check to update new/missing variables
@@ -93,7 +94,7 @@ $pid = (int)$_GET['pid'];
                     <meta name="author" content="">
                     <meta http-equiv="Cache-control" content="public">
                     <meta name="theme-color" content="#fff">
-                    <link rel="icon" href="<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module,$settings['hub_logo_favicon'],'favicon')?>">
+                    <link rel="icon" href="<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_favicon'],'favicon')?>">
 
                     <?php include_once("head_scripts.php");?>
 
@@ -161,12 +162,12 @@ $pid = (int)$_GET['pid'];
                 $token = "";
                 if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd')  || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'iut') || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
                     $_SESSION['token'] = array();
-                    $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')] = \Vanderbilt\HarmonistHubExternalModule\getToken(USERID);
-                    $token = $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')];
-                }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'])){
+                    $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = \Vanderbilt\HarmonistHubExternalModule\getToken(USERID, $pidsArray['PEOPLE']);
+                    $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
+                }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])){
                     $token = $_REQUEST['token'];
-                }else if(!empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])&& \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])) {
-                    $token = $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')];
+                }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
+                    $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
                 }
 
                 if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dfq'){
@@ -179,24 +180,23 @@ $pid = (int)$_GET['pid'];
                     <?php
                     //Session OUT
                     if(array_key_exists('sout', $_REQUEST)){
-                        unset($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')]);
+                        unset($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]);
                     }
 
-                    if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'])) {
-                        $_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')] = $_REQUEST['token'];
+                    if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
+                        $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $_REQUEST['token'];
                     }
-
                     if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'map' )
                     {
                         include('map/index.php');
                     }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dfq')
                     {
                         include('faq/datatoolkit_faq.php');
-                    }else if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])){
+                    }else if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])){
                         include('hub/hub_login.php');
                     }else if($current_user['active_y'] == "0"){
                         include('hub/hub_login.php');
-                    }else if(!empty($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')]) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].constant(ENVIRONMENT.'_IEDEA_PROJECTS')])){
+                    }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])){
                         if( !array_key_exists('option', $_REQUEST)){
                             include('hub/hub_home.php');
                         }

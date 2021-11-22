@@ -70,18 +70,18 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
         try {
             #Depending on the project que add one hook or another
-            if ($project_id == IEDEA_SOP && $instrument == 'dhwg_review_request') {
+            if ($project_id == $pidsArray['SOP'] && $instrument == 'dhwg_review_request') {
                 include_once("sop/sop_make_public_request_AJAX.php?record=" . $record);
-                echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php?pid=" . IEDEA_PROJECTS . "&option=smn&record='.$record.'&message=P")) . '</script>';
+                echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=smn&record='.$record.'&message=P")) . '</script>';
             } else {
-                if ($project_id == IEDEA_SOP) {
+                if ($project_id == $pidsArray['SOP']) {
                     include_once("hooks/save_record_SOP.php");
-                } else if ($project_id == IEDEA_RMANAGER) {
+                } else if ($project_id == $pidsArray['RMANAGER']) {
                     error_log("IN");
                     include_once("hooks/save_record_requestManager.php");
-                } else if ($project_id == IEDEA_COMMENTSVOTES) {
+                } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
                     include_once("hooks/save_record_commentsAndVotes.php");
-                } else if ($project_id == IEDEA_SOPCOMMENTS) {
+                } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
                     include_once("hooks/save_record_SOP_comments.php");
                 }
                 echo '<script>';
@@ -105,7 +105,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         </script>";
 
         #Add to all projects needed
-        if($project_id == IEDEA_HARMONIST){
+        if($project_id == $pidsArray['HARMONIST']){
             echo "<script>
                 $(document).ready(function() {
                     $('[name=submit-btn-savereturnlater]').hide();
@@ -300,7 +300,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
             echo "<script>var missing = ".json_encode($missing).";</script>\n";
             echo "<div id='metadataWarning' class='install-metadata-box install-metadata-box-danger'>
-                        <i class='fa fa-exclamation-circle' aria-hidden='true'></i> An upgrade in your Data Dictionary exists. <a href='javascript:;' onclick='installMetadata(missing,".json_encode($this->getUrl("installMetadata.php?pid=".IEDEA_PROJECTS)).");'>Click here to install.</a>
+                        <i class='fa fa-exclamation-circle' aria-hidden='true'></i> An upgrade in your Data Dictionary exists. <a href='javascript:;' onclick='installMetadata(missing,".json_encode($this->getUrl("installMetadata.php?pid=".$pidsArray['PROJECTS'])).");'>Click here to install.</a>
                         <ul><li>The following fields will be added: ".(empty($alert_text_additions) ? "<i>None</i>" : $alert_text_additions)."</li>
                         <li>The following fields will be changed: ".(empty($alert_text_changed) ? "<i>None</i>" : $alert_text_changed)."</li></ul>
                     </div>";
@@ -346,7 +346,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         if(count($alert) > 0){
             echo "<script>var forms = ".json_encode($alert).";</script>\n";
             echo "<div id='formsWarning' class='install-metadata-box install-metadata-box-danger'>
-                        <i class='fa fa-exclamation-circle' aria-hidden='true'></i> New Repeatable Forms were found <a href='javascript:;' onclick='installRepeatingForms(forms,".json_encode($this->getUrl("installRepeatingForms.php?pid=".IEDEA_PROJECTS)).");'>Click here to install.</a>";
+                        <i class='fa fa-exclamation-circle' aria-hidden='true'></i> New Repeatable Forms were found <a href='javascript:;' onclick='installRepeatingForms(forms,".json_encode($this->getUrl("installRepeatingForms.php?pid=".$pidsArray['PROJECTS'])).");'>Click here to install.</a>";
             foreach ($alert as $project_id => $repeat){
                 $title = $this->framework->getProject($project_id)->getTitle();
                 echo "<ul>

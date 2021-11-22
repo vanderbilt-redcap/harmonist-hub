@@ -4,7 +4,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 $RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
 $TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
 
-$RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
 $regionstbl = ProjectData::getProjectInfoArray($RecordSetRegions);
 ArrayFunctions::array_sort_by_column($regionstbl, 'region_code');
 
@@ -12,7 +12,7 @@ $region_array = \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercent
 
 $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 8);
 
-$RecordSetRegionsAll = \REDCap::getData(IEDEA_REGIONS, 'array', null);
+$RecordSetRegionsAll = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
 $regions_all = ProjectData::getProjectInfoArray($RecordSetRegionsAll);
 $map_region = $person_region['region_code'];
 foreach($regions_all as $region){
@@ -67,7 +67,7 @@ if(array_key_exists('message', $_REQUEST)){
 ?>
 
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a>
     </div>
 </div>
 <div class="container">

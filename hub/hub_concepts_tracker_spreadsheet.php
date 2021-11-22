@@ -5,7 +5,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 
-$RecordSetConcetps = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
+$RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 $multireg_pub = array();
 $multireg_con = array();
@@ -14,7 +14,7 @@ if(!empty($concepts)){
     foreach ($concepts as $concept){
         $group_name = "";
         if($concept['wg_link'] != ""){
-            $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $concept['wg_link'] ));
+            $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $concept['wg_link'] ));
             $group_name = ProjectData::getProjectInfoArray($RecordSetGroups)[0]['group_name'];
         }
         $ec_approval = "";
@@ -27,7 +27,7 @@ if(!empty($concepts)){
         if(array_key_exists('person_link',$concept)){
             foreach ($concept['person_link'] as $index =>$person){
                 if($concept['person_role'][$index] == "1" || $concept['person_role'][$index] == "2"){
-                    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $person));
+                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $person));
                     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                     if($concept['person_role'][$index] == "1"){
                         $lead_author .= $people['lastname'].", ".$people['firstname']. " & ";

@@ -6,24 +6,24 @@ $request_id = $_REQUEST['request_id'];
 $region_id = $_REQUEST['region_id'];
 $project_id = $_REQUEST['pid'];
 
-$RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
+$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-$RecordSetRequest = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $request_id));
+$RecordSetRequest = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequest)[0];
 
 $region_vote_icon_view = array("1" => "fa fa-check", "0" => "fa fa-times", "9" => "fa fa-ban");
 $region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" => "text-default");
 $vote_text = array("1" => "Approved", "0" => "Not Approved", "9" => "Abstained/Not applicable");
-$region_vote_status = $module->getChoiceLabels('region_vote_status', IEDEA_RMANAGER);
+$region_vote_status = $module->getChoiceLabels('region_vote_status', $pidsArray['RMANAGER']);
 
 $votes_menu = '<ul class="nav nav-tabs">';
 $votes_table = "";
 foreach ($regions as $region){
     $votes_text = '<div style="padding-top: 20px"><h4>Votes for <strong>'.$region['region_name'].' ('.$region['region_code'].')</strong></h4></div><div><p>Here you will find all votes submitted for this request.</p></div>';
 
-    $RecordSetVoters = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[harmonist_regperm] = 3 and [person_region] =".$region['record_id']);
+    $RecordSetVoters = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[harmonist_regperm] = 3 and [person_region] =".$region['record_id']);
     $total_voters = ProjectData::getProjectInfoArray($RecordSetVoters);
 
     $votes_text .='<div style="padding-bottom: 20px">There are currently <strong>'.$total_voters.' voters</strong> for this region.</div>';
@@ -38,15 +38,15 @@ foreach ($regions as $region){
         $activeLabel = "label-default label-white";
     }
 
-    $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array("request_id" => $request_id),null,null,null,false,false,false,"[response_region] =".$region['record_id']);
+    $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', array("request_id" => $request_id),null,null,null,false,false,false,"[response_region] =".$region['record_id']);
     $votes = ProjectData::getProjectInfoArray($RecordSetComments);
-    $response_person = $module->getChoiceLabels('response_person', IEDEA_COMMENTSVOTES);
+    $response_person = $module->getChoiceLabels('response_person', $pidsArray['COMMENTSVOTES']);
     $region_row = '';
     $total_votes = 0;
     foreach ($votes as $vote){
         if(array_key_exists('pi_vote',$vote)){
             $region_time = $vote['responsecomplete_ts'];
-            $name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($vote['response_person'],"");
+            $name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $vote['response_person'],"");
 
             $region_row .= '<tr>'.
                 '<td><span class="'.$region_vote_icon_view[$vote['pi_vote']].' '.$region_vote_icon_text[$vote['pi_vote']].'" aria-hidden="true"></span><span class="'.$region_vote_icon_text[$vote['pi_vote']].'"> '.$vote_text[$vote['pi_vote']].'</span></td>'.

@@ -58,7 +58,7 @@ function getCrypt($string, $action = 'e',$secret_key="",$secret_iv="" ) {
     return $output;
 }
 
-function getFile($module, $edoc, $type){
+function getFile($module, $project_id, $edoc, $type){
     $file = "#";
     if($edoc != ""){
         $q = $module->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
@@ -79,7 +79,7 @@ function getFile($module, $edoc, $type){
                 $file = $module->getUrl($url);
             }else if($type = "favicon") {
                 $download = \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row['stored_name']."&file=". urlencode($row['doc_name'])."&edoc=".$edoc,'e',"","");
-                $file = $module->getUrl("downloadFile.php?pid=".IEDEA_PROJECTS."&code=".$download);
+                $file = $module->getUrl("downloadFile.php?pid=".$project_id."&code=".$download);
             }else{
                 $file = '<br/><div class="inside-panel-content"><a href="'.$module->getUrl($url,true).'" target="_blank"><span class="fa fa-file-o"></span> ' . $row['doc_name'] . '</a></div>';
             }
@@ -93,7 +93,7 @@ function getFile($module, $edoc, $type){
  * @param $edoc
  * @return string
  */
-function getFileLink($module,$edoc, $option, $outer="",$secret_key,$secret_iv,$user,$lid){
+function getFileLink($module, $project_id, $edoc, $option, $outer="",$secret_key,$secret_iv,$user,$lid){
     $file_row = "";
     if($edoc != "" and is_numeric($edoc)){
         $file_row = '';
@@ -102,7 +102,7 @@ function getFileLink($module,$edoc, $option, $outer="",$secret_key,$secret_iv,$u
             $name = urlencode($row['doc_name']);
 
             $download = \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv);
-            $file_url = $module->getUrl("downloadFile.php?pid=".IEDEA_PROJECTS."&code=".$download);
+            $file_url = $module->getUrl("downloadFile.php?pid=".$project_id."&code=".$download);
 
             if($option == ''){
                 $icon = \Vanderbilt\HarmonistHubExternalModule\getFaIconFile($row['file_extension']);
@@ -204,8 +204,8 @@ function convertDigit($number, $base) {
  * @param $token
  * @return bool
  */
-function isTokenCorrect($token){
-    $projectPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[access_token] = '".$token."'");
+function isTokenCorrect($token,$pidPeople){
+    $projectPeople = \REDCap::getData($pidPeople, 'array', null,null,null,null,false,false,false,"[access_token] = '".$token."'");
     $people = ProjectData::getProjectInfoArray($projectPeople)[0];
     if(!empty($people)){
         if(strtotime($people['token_expiration_d']) > strtotime(date('Y-m-d'))){
@@ -215,31 +215,31 @@ function isTokenCorrect($token){
     return false;
 }
 
-function getToken($userid){
-    $projectPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[redcap_name] = '".$userid."'");
+function getToken($userid,$pidPeople){
+    $projectPeople = \REDCap::getData($pidPeople, 'array', null,null,null,null,false,false,false,"[redcap_name] = '".$userid."'");
     $people = ProjectData::getProjectInfoArray($projectPeople)[0];
     if(!empty($people)){
         return $people['access_token'];
     }
 }
 
-function getReqAssocConceptLink($module,$assoc_concept, $option=""){
+function getReqAssocConceptLink($module, $pidsArray, $assoc_concept, $option=""){
     if(!empty($assoc_concept)){
-        $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $assoc_concept));
+        $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $assoc_concept));
         $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
         $concept_sheet = $concepts['concept_id'];
         $concept_title = $concepts['concept_title'];
         if($option == '1'){
-            return '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ttl&record='.$assoc_concept).'" target="_blank">'.$concept_sheet.', '.$concept_title.'</a>';
+            return '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$assoc_concept).'" target="_blank">'.$concept_sheet.', '.$concept_title.'</a>';
         }else{
-            return '<a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ttl&record='.$assoc_concept).'" target="_blank">'.$concept_sheet.'</a>';
+            return '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$assoc_concept).'" target="_blank">'.$concept_sheet.'</a>';
         }
     }
 }
 
-function getPeopleName($people_id,$option=""){
+function getPeopleName($pidPeople, $people_id,$option=""){
     if(!empty($people_id)){
-        $recordsPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $people_id));
+        $recordsPeople = \REDCap::getData($pidPeople, 'array', array('record_id' => $people_id));
         $people = ProjectData::getProjectInfoArray($recordsPeople)[0];
         $name = trim($people['firstname'].' '.$people['lastname']);
         if($option == "email"){
@@ -389,9 +389,9 @@ function createProject0CJSON($module, $pidsArray){
     $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['height_units'],'height_units',$jsonArray);
 
     #save files data
-    $jsonArray['project_logo_100_40'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $dataTable['project_logo_100_40'],'pdf')));
-    $jsonArray['project_logo_50_20'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $dataTable['project_logo_50_20'],'pdf')));
-    $jsonArray['sample_dataset'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $dataTable['sample_dataset'],'pdf')));
+    $jsonArray['project_logo_100_40'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $pidsArray['PROJECTS'], $dataTable['project_logo_100_40'],'pdf')));
+    $jsonArray['project_logo_50_20'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $pidsArray['PROJECTS'], $dataTable['project_logo_50_20'],'pdf')));
+    $jsonArray['sample_dataset'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $pidsArray['PROJECTS'], $dataTable['sample_dataset'],'pdf')));
 
     #we save the new JSON
     if(!empty($jsonArray)){
@@ -537,7 +537,7 @@ function hasUserPermissions($permissionlist, $value){
  * @param $regions
  * @return string
  */
-function getRequestHeader($regions, $person_region, $vote_grid, $option, $type=""){
+function getRequestHeader($pidRegions, $regions, $person_region, $vote_grid, $option, $type=""){
 
     $header_colgroup = '<colgroup>
                     <col>
@@ -564,7 +564,7 @@ function getRequestHeader($regions, $person_region, $vote_grid, $option, $type="
     if($option != '2' && $type != 'home'){
         $small_screen_class = 'hidden-sm hidden-xs';
         if ($vote_grid == '2') {
-            $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region));
+            $RecordSetRegions = \REDCap::getData($pidRegions, 'array', array('record_id' => $person_region));
             $my_region = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
             $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" style="width:150px" data-sortable="false">' . $my_region . '</th>';
         } else {
@@ -698,8 +698,8 @@ function showClosedRequest($settings,$req,$instance){
  * @param $instance
  * @return bool
  */
-function showPendingRequest($request_id, $req, $current_region){
-    $RecordSetComment = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array('request_id' => $request_id));
+function showPendingRequest($pidCommentsVotes, $request_id, $req, $current_region){
+    $RecordSetComment = \REDCap::getData($pidCommentsVotes, 'array', array('request_id' => $request_id));
     $comments = ProjectData::getProjectInfoArray($RecordSetComment);
     foreach ($comments as $comment){
         if($comment['vote_now'] == "0" && $comment['response_region'] == $current_region && (!array_key_exists('finalize_y', $req) || $req['finalize_y'] == "")){
@@ -746,8 +746,8 @@ function getPrivateVotesHTML($region_response_status,$small_screen_class){
     return $current_req_region;
 }
 
-function getMixVotesHTML($region_vote_status,$region_response_status,$region_id,$req,$small_screen_class){
-    $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array("request_id" => $req['request_id']),null,null,null,false,false,false,"[response_region] ='".$region_id."'");
+function getMixVotesHTML($pidCommentsVotes, $region_vote_status,$region_response_status,$region_id,$req,$small_screen_class){
+    $RecordSetComments = \REDCap::getData($pidCommentsVotes, 'array', array("request_id" => $req['request_id']),null,null,null,false,false,false,"[response_region] ='".$region_id."'");
     $votes = ProjectData::getProjectInfoArray($RecordSetComments);
     $mix = false;
     foreach ($votes as $vote){
@@ -811,7 +811,7 @@ function getPublicVotesHTML($response_status,$vote,$small_screen_class){
  * @param $option
  * @return string
  */
-function getRequestHTML($module,$req,$regions,$request_type_label,$current_user, $option, $vote_visibility, $vote_grid, $req_type){
+function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$current_user, $option, $vote_visibility, $vote_grid, $req_type){
     $class = "nowrap";
 
     if($option == 0){
@@ -838,7 +838,7 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
                     <td '.$width[1].'>
                         <strong>'.$request_type_label[$req['request_type']].'</strong><br>';
 
-    $current_req .= \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module,$req['assoc_concept'],"");
+    $current_req .= \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray,$req['assoc_concept'],"");
 
     if($req['mr_temporary'] != ""){
         $current_req .= $req['mr_temporary'];
@@ -850,7 +850,7 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
 
     $text = "";
     if ($req['revision_counter_total'] != '') {
-        $RecordSetComments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array('request_id' => $req['request_id']),null,null,null,false,false,false,"[revision_counter] =".$req['revision_counter_total']);
+        $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', array('request_id' => $req['request_id']),null,null,null,false,false,false,"[revision_counter] =".$req['revision_counter_total']);
         $comment = ProjectData::getProjectInfoArray($RecordSetComments)[0];
 
         $comment_time ="";
@@ -866,19 +866,19 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
     if($option == '2') {
         $type = '&type=r';
     }
-    $current_req .= '<td '.$width[2].' class="hidden-xs"><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $req['request_id'] . $type).'">'.$text.$req['request_title'].'</a></td>';
+    $current_req .= '<td '.$width[2].' class="hidden-xs"><a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id'] . $type).'">'.$text.$req['request_title'].'</a></td>';
 
     $current_req_region = '';
     if($option != '2') {
         if($req_type != 'home') {
             if ($vote_grid == '2') {
-                $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
+                $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $current_user['person_region']));
                 $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0];
-                $current_req_region = \Vanderbilt\HarmonistHubExternalModule\getRequestVoteIcon($current_req_region, $vote_grid, $current_user['person_region'], $my_region['record_id'], $vote_visibility, $req, $current_user);
+                $current_req_region = \Vanderbilt\HarmonistHubExternalModule\getRequestVoteIcon($pidsArray['COMMENTSVOTES'], $current_req_region, $vote_grid, $current_user['person_region'], $my_region['record_id'], $vote_visibility, $req, $current_user);
 
             } else {
                 foreach ($regions as $region) {
-                    $current_req_region = \Vanderbilt\HarmonistHubExternalModule\getRequestVoteIcon($current_req_region, $vote_grid, $current_user['person_region'], $region['record_id'], $vote_visibility, $req, $current_user);
+                    $current_req_region = \Vanderbilt\HarmonistHubExternalModule\getRequestVoteIcon($pidsArray['COMMENTSVOTES'], $current_req_region, $vote_grid, $current_user['person_region'], $region['record_id'], $vote_visibility, $req, $current_user);
                     if ($vote_grid == "0") {
                         break;
                     }
@@ -900,7 +900,7 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
             if ($req_type == 'archive') {
                 $current_req .= '<td ' . $width[0] . '>';
                 if ($req['finalize_y'] != "") {
-                    $request_finalize_y_label = $module->getChoiceLabels('finalize_y', IEDEA_RMANAGER);
+                    $request_finalize_y_label = $module->getChoiceLabels('finalize_y', $pidsArray['RMANAGER']);
                     $current_req .= $request_finalize_y_label[$req['finalize_y']] . "<br><span style='font-size: 12px'>" . $req['final_d'] . "</span>";
                 } else {
                     $current_req .= "<em>None</em>";
@@ -908,18 +908,18 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
             } else {
                 if ($req_type != 'home') {
                     if ($current_user['harmonist_regperm'] == 1) {
-                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa fa-eye"></span> View</a></div>';
+                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa fa-eye"></span> View</a></div>';
                     } else {
-                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa ' . $button_icon . '"></span> ' . $button_text . '</a></div>';
+                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa ' . $button_icon . '"></span> ' . $button_text . '</a></div>';
                     }
                 }
             }
         } else {
-            $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub&record=' . $req['request_id']) . '" class="btn btn-default btn-xs actionbutton"><span class="fa fa-eye"></span> View/Edit</a></div>';
+            $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id']) . '" class="btn btn-default btn-xs actionbutton"><span class="fa fa-eye"></span> View/Edit</a></div>';
         }
     }else {
         if ($req['reviewer_id'] != ''){
-            $reviewer = \Vanderbilt\HarmonistHubExternalModule\getPeopleName(array('record_id' => $req['reviewer_id']),"");
+            $reviewer = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], array('record_id' => $req['reviewer_id']),"");
             if ($reviewer != '') {
                 $reviewer = ' by ' . $reviewer;
             }
@@ -932,18 +932,18 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
             $current_req .= '<td width="150px"><strong>Deactivated</strong>'.$reviewer.'</td>';
         }
 
-        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "request", "");
+        $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "request", "");
         $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
         $current_req .=  '<td><div><a href="'.$survey_link.'" class="btn btn-primary btn-xs actionbutton" target="_blank"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> Check Submission</a></div>';
 
-        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "admin_review", "");
+        $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "admin_review", "");
         $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
         $current_req .=  '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> Change Status</a></div>';
     }
 
     if(($req['contactperson_id'] == $current_user['record_id'] || ($current_user['person_region'] == $req['contact_region'] && $current_user['harmonist_regperm'] == 3)) && $req_type != 'archive' && $req_type != 'home'){
-        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $req['request_id'], "request", "");
+        $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "request", "");
         $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
         $current_req .= '<div><a href="'.$survey_link.'" class="btn btn-default btn-xs actionbutton" target="_blank" style="margin-top: 7px;"><span class="fa fa-pencil"></span> '.$req_type.'Edit</a></div>';
@@ -960,7 +960,7 @@ function getRequestHTML($module,$req,$regions,$request_type_label,$current_user,
  * @param $person_region
  * @return string
  */
-function getArchiveHTML($module,$req,$request_type_label,$person_region, $vote_visibility){
+function getArchiveHTML($module,$pidsArray,$req,$request_type_label,$person_region, $vote_visibility){
 
     $class = "nowrap";
     if (strtotime($req['due_d']) < strtotime(date('Y-m-d'))){
@@ -972,9 +972,9 @@ function getArchiveHTML($module,$req,$request_type_label,$person_region, $vote_v
                     <td>
                         <strong>'.$request_type_label[$req['request_type']].'</strong><br>';
 
-    $current_req .= \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module,$req['assoc_concept'],"");
+    $current_req .= \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray,$req['assoc_concept'],"");
 
-    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $req['contact_region']),null,null,null,false,false,false,"[showregion_y] = 1");
+    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $req['contact_region']),null,null,null,false,false,false,"[showregion_y] = 1");
     $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
 
     $current_req .= '</td>
@@ -1009,7 +1009,7 @@ function getArchiveHTML($module,$req,$request_type_label,$person_region, $vote_v
     return $current_req;
 }
 
-function getRequestVoteIcon($current_req_region,$vote_grid,$person_region,$record_id,$vote_visibility,$req,$current_user){
+function getRequestVoteIcon($pidCommentsVotes,$current_req_region,$vote_grid,$person_region,$record_id,$vote_visibility,$req,$current_user){
     if($vote_grid == "0"){
         $instance = $person_region;
     }else{
@@ -1026,7 +1026,7 @@ function getRequestVoteIcon($current_req_region,$vote_grid,$person_region,$recor
         $current_req_region .= \Vanderbilt\HarmonistHubExternalModule\getPrivateVotesHTML($req['region_response_status'][$instance], $small_screen_class);
     }else if($vote_visibility =="3"){
         //MIX VOTES
-        $current_req_region .= \Vanderbilt\HarmonistHubExternalModule\getMixVotesHTML($req['region_vote_status'][$instance],$req['region_response_status'][$instance], $record_id, $req, $small_screen_class);
+        $current_req_region .= \Vanderbilt\HarmonistHubExternalModule\getMixVotesHTML($pidCommentsVotes, $req['region_vote_status'][$instance],$req['region_response_status'][$instance], $record_id, $req, $small_screen_class);
     }else{
         if ($req['region_response_status'][$instance] == "2") {
             //PUBLIC VOTES
@@ -1049,14 +1049,14 @@ function getRequestVoteIcon($current_req_region,$vote_grid,$person_region,$recor
  * @param $vote_grid
  * @return string
  */
-function getHomeRequestHTML($module, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $request_duration, $type){
+function getHomeRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $request_duration, $type){
     //Only open requests
     if (($req['contactperson_id'] == $current_user['record_id'] && !empty($req['due_d'])) || $request_duration == "none"){
         $extra_days = ' + ' . $request_duration . " days";
         $due_date_time = date('Y-m-d', strtotime($req['due_d'] . $extra_days));
         $today = date('Y-m-d');
         if ((strtotime($due_date_time) > strtotime($today))|| $request_duration == "none") {
-            return \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $type);
+            return \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $type);
         }
     }
 }
@@ -1181,15 +1181,15 @@ function getDateForHumans($date){
     return $cn;
 }
 
-function getDataCallHeader($person_region, $vote_grid, $option=""){
-    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
+function getDataCallHeader($pidRegions, $person_region, $vote_grid, $option=""){
+    $RecordSetRegions = \REDCap::getData($pidRegions, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
     ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
     $header_colgroup = "<colgroup><col><col><col>";
     $header_region = "";
     if($vote_grid == '2' || $vote_grid == '0') {
-        $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region));
+        $RecordSetMyRegion = \REDCap::getData($pidRegions, 'array', array('record_id' => $person_region));
         $my_region = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
         $header_region .= '<th class="request_grid_icon hidden-sm hidden-xs" style="width:40px" data-sortable="false">' . $my_region . '</th>';
     }else {
@@ -1233,15 +1233,15 @@ function getDataCallHeader($person_region, $vote_grid, $option=""){
     return $header;
 }
 
-function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote_grid,$type,$harmonist_perm=""){
-    $status_type = $module->getChoiceLabels('data_response_status', IEDEA_SOP);
+function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret_key,$secret_iv,$vote_grid,$type,$harmonist_perm=""){
+    $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
 
     $data =  "<tr>";
     $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '0');
 
-    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
+    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-    $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']));
+    $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']));
     $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
     $contact_person = "";
@@ -1249,12 +1249,12 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
         $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a> (" . $region_code . ")";
     }
 
-    $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $sop['sop_concept_id']));
+    $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $sop['sop_concept_id']));
     $concept = ProjectData::getProjectInfoArray($RecordSetConceptSheets)[0];
     $concept_id = $concept['concept_id'];
     $concept_title = $concept['concept_title'];
 
-    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
+    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
     ArrayFunctions::array_sort_by_column($regions, 'region_code');
     $status_row = "";
@@ -1317,7 +1317,7 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
         $data .= "<td><div style='text-align: center'>" . $array_dates['text'] . "</div><div>" . $array_dates['button'] . "</div></td>";
     } else if ($type == "p") {
         if ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id']) {
-            $buttons .= '<div><a href="'.$module->getUrl('index.php?pid=' . IEDEA_PROJECTS . '&option=ss1&record=' . $sop['record_id'] . '&step=3').'" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
+            $buttons .= '<div><a href="'.$module->getUrl('index.php?pid=' . $pidsArray['PROJECTS'] . '&option=ss1&record=' . $sop['record_id'] . '&step=3').'" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
         }
         if ($isAdmin || $harmonist_perm) {
             $buttons .= '<div style="padding-top: 8px"><a href="#" onclick="confirmMakePrivate(\'' . $sop['record_id'] . '\')" class="btn btn-default btn-xs"><i class="fa fa-thumb-tack" aria-hidden="true"></i> Make private</a></div>';
@@ -1327,7 +1327,7 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
     } else if ($type == 'm') {
         $buttons = '';
         if ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id']) {
-            $buttons .= '<div><a href="'.$module->getUrl('index.php?pid=' . IEDEA_PROJECTS . '&option=ss1&record=' . $sop['record_id'] . '&step=3').'" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
+            $buttons .= '<div><a href="'.$module->getUrl('index.php?pid=' . $pidsArray['PROJECTS'] . '&option=ss1&record=' . $sop['record_id'] . '&step=3').'" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
         }
 
         if ($sop['sop_visibility'] == '2') {
@@ -1337,7 +1337,7 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
         } else if ($sop['sop_visibility'] == '1') {
             $sop_visibility = '<span class="badge badge-pill badge-private">Private</span>';
 
-            $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_SOP, $sop['record_id'], "dhwg_review_request", "");
+            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $sop['record_id'], "dhwg_review_request", "");
             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
             $buttons .= '<div><a href="#" onclick="editIframeModal(\'sop-make-public\',\'redcap-edit-frame-make-public\',\'' . $survey_link . '\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send for Review</a></div>';
@@ -1350,10 +1350,10 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
 
     $file_data ='';
     if($sop['sop_finalpdf'] != ""){
-        $file_data = " | ".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $sop['sop_finalpdf'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+        $file_data = " | ".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $sop['sop_finalpdf'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
     }
 
-    $data .=    "<td><div><strong>" . $concept_id . "</strong> ".$sop_visibility."</div><div>" . $concept_title . "</div><div><em>Draft ID: ".$sop['record_id']."</em></div><div></div><a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=sop&record=".$sop['record_id'].$url)."'>Data Request </a> | <a href='".$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=ttl&record=".$sop['sop_concept_id'])."'>".$concept_id." Concept</a>".$file_data."</td>" .
+    $data .=    "<td><div><strong>" . $concept_id . "</strong> ".$sop_visibility."</div><div>" . $concept_title . "</div><div><em>Draft ID: ".$sop['record_id']."</em></div><div></div><a href='".$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=sop&record=".$sop['record_id'].$url)."'>Data Request </a> | <a href='".$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=ttl&record=".$sop['sop_concept_id'])."'>".$concept_id." Concept</a>".$file_data."</td>" .
         "<td style='width:168px'>" . $contact_person . "</td>" .
         $status_row.
         "<td ".$width.">" . $button_votes.$buttons . "</td>" .
@@ -1361,8 +1361,8 @@ function getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret
 
     return $data;
 }
-function getDataCallConceptsHeader($person_region,$vote_grid){
-    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+function getDataCallConceptsHeader($pidRegions, $person_region,$vote_grid){
+    $RecordSetRegions = \REDCap::getData($pidRegions, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
     ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
@@ -1370,7 +1370,7 @@ function getDataCallConceptsHeader($person_region,$vote_grid){
     $header_region = "";
 
     if($vote_grid == '2' || $vote_grid == '0') {
-        $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region));
+        $RecordSetMyRegion = \REDCap::getData($pidRegions, 'array', array('record_id' => $person_region));
         $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
         $header_region .= '<th class="request_grid_icon hidden-sm hidden-xs" style="width:150px" data-sortable="false">' . $my_region . '</th>';
     }else{
@@ -1408,13 +1408,13 @@ function getDataCallConceptsHeader($person_region,$vote_grid){
     return $header;
 }
 
-function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_key, $secret_iv, $vote_grid, $concept_record, $option = ""){
+function getDataCallConceptsRow($module, $pidsArray, $sop, $isAdmin, $current_user, $secret_key, $secret_iv, $vote_grid, $concept_record, $option = ""){
     $data =  "<tr>";
     $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '3');
 
-    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_datacontact']));
+    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-    $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $people['person_region']));
+    $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']));
     $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
     $contact_person = "<em>Unknown</em>";
@@ -1422,7 +1422,7 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
         $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a> (" . $region_code . ")";
     }
 
-    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
     ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
@@ -1430,7 +1430,7 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
     $status_row = "";
     $view_all_votes = "";
     if($vote_grid == '2' || $vote_grid == '0') {
-        $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
+        $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $current_user['person_region']));
         $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['record_id'];
 
         $status = $sop['data_response_status'][$my_region];
@@ -1459,12 +1459,12 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
     $data .= "<td><div style='text-align: center'>" . $array_dates['text'] . "</div><div>" . $array_dates['button'] . "</div></td>";
 
     if($option == "1"){
-        $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $concept_record));
+        $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $concept_record));
         $data_sopfile = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['datasop_file'];
 
         $details = "<div><em>Historic (pre-Hub) Data Request";
         if($data_sopfile != ""){
-            $details .= ": ".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $data_sopfile,'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+            $details .= ": ".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $data_sopfile,'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
         }
         $details .= "</em></div>";
 
@@ -1483,7 +1483,7 @@ function getDataCallConceptsRow($module, $sop, $isAdmin, $current_user, $secret_
             $status = 'badge-final';
         }
 
-        $sop_status = $module->getChoiceLabels('sop_status', IEDEA_SOP);
+        $sop_status = $module->getChoiceLabels('sop_status', $pidsArray['SOP']);
         $sop_status = '<span class="label label-as-badge '.$status.'">'. $sop_status[$sop['sop_status']].'</span>&nbsp;&nbsp;';
 
         $url = "&type=s";
@@ -1605,13 +1605,13 @@ function searchTBLMissingFields($center){
  * @param $projectID
  * @return array|mixed
  */
-function getTablesInfo($module){
-    $q = $module->query("SELECT * FROM `redcap_events_arms` WHERE project_id = ?",[IEDEA_DATAMODEL]);
+function getTablesInfo($module, $pidDataModel){
+    $q = $module->query("SELECT * FROM `redcap_events_arms` WHERE project_id = ?",[$pidDataModel]);
     $dataTable = array();
     while ($row = $q->fetch_assoc()){
         $qTable = $module->query("SELECT * FROM `redcap_events_metadata` WHERE arm_id = ?",[$row['arm_id']]);
         while ($rowTable = $qTable->fetch_assoc()){
-            $dataTable = \Vanderbilt\HarmonistHubExternalModule\generateTableArray($module,$dataTable);
+            $dataTable = \Vanderbilt\HarmonistHubExternalModule\generateTableArray($module, $pidDataModel, $dataTable);
         }
     }
     return $dataTable;
@@ -1624,9 +1624,9 @@ function getTablesInfo($module){
  * @param $dataTable, the array we are going to fill up
  * @return mixed, the array $dataTable we are going to fill up
  */
-function generateTableArray($module, $dataTable){
-    $dataFormat = $module->getChoiceLabels('data_format', IEDEA_DATAMODEL);
-    $RecordSetTable = \REDCap::getData(IEDEA_DATAMODEL, 'array', null);
+function generateTableArray($module, $pidDataModel, $dataTable){
+    $dataFormat = $module->getChoiceLabels('data_format', $pidDataModel);
+    $RecordSetTable = \REDCap::getData($pidDataModel, 'array', null);
     $recordsTable = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable);
     $dataTable['data_format_label'] = $dataFormat;
     foreach( $recordsTable as $data ){
@@ -1692,7 +1692,7 @@ function generateRequestedTablesList_pdf($dataTable,$fieldsSelected){
  * @param $dataTable, Tables and Variables information
  * @return string, the html content
  */
-function generateTablesHTML_steps($dataTable){
+function generateTablesHTML_steps($pidCodeList,$dataTable){
     $tableHtml = "";
     foreach ($dataTable as $data) {
         if (!empty($data['record_id'])) {
@@ -1750,7 +1750,7 @@ function generateTablesHTML_steps($dataTable){
                         }
                     } else if ($data['has_codes'][$id] == '1') {
                         if (!empty($data['code_list_ref'][$id])) {
-                            $dataTablerecords = \REDCap::getData(IEDEA_CODELIST, 'array',array('record_id' => $data['code_list_ref'][$id]));
+                            $dataTablerecords = \REDCap::getData($pidCodeList, 'array',array('record_id' => $data['code_list_ref'][$id]));
                             $codeformat = ProjectData::getProjectInfoArray($dataTablerecords);
 
                             if ($codeformat['code_format'] == '1') {
@@ -1797,7 +1797,7 @@ function generateTablesHTML_steps($dataTable){
  * @param $fieldsSelected, the selected fields
  * @return string, the html content
  */
-function generateTablesHTML_pdf($module, $dataTable,$fieldsSelected){
+function generateTablesHTML_pdf($module, $pidCodeList, $dataTable,$fieldsSelected){
     $fieldsSelected = explode(',',$fieldsSelected);
     $tableHtml = "";
     $table_counter = 0;
@@ -1878,7 +1878,7 @@ function generateTablesHTML_pdf($module, $dataTable,$fieldsSelected){
                         }
                     } else if ($data['has_codes'][$id] == '1') {
                         if(!empty($data['code_list_ref'][$id])){
-                            $dataTablerecords = \REDCap::getData(IEDEA_CODELIST, 'array',array('record_id' => $data['code_list_ref'][$id]));
+                            $dataTablerecords = \REDCap::getData($pidCodeList, 'array',array('record_id' => $data['code_list_ref'][$id]));
                             $codeformat = ProjectData::getProjectInfoArray($dataTablerecords);
 
                             if ($codeformat['code_format'] == '1') {
@@ -1953,7 +1953,7 @@ function getHtmlCodesTable($module, $code_file, $htmlCodes, $id){
 }
 
 /***METRICS***/
-function getRegionalAndMR($conceptsData,$type, $regionalmrdata,$startyear,$output_type){
+function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata,$startyear,$output_type){
     $currentYear = date("Y");
     $regionalmrdata['r'] = array();
     $regionalmrdata['mr'] = array();
@@ -1963,9 +1963,9 @@ function getRegionalAndMR($conceptsData,$type, $regionalmrdata,$startyear,$outpu
     for($year = $startyear; $year <= $currentYear; $year++) {
         array_push(${"years_label_regional_pubs_".$type}, $year);
 
-        $RecordSetExtraOutputsSingleReg = \REDCap::getData(IEDEA_EXTRAOUTPUTS, 'array',  null,null,null,null,false,false,false,"[output_year] = '".$year."' AND [output_type] = '".$output_type."' AND [producedby_region] = '1'");
+        $RecordSetExtraOutputsSingleReg = \REDCap::getData($pidExtraOutputs, 'array',  null,null,null,null,false,false,false,"[output_year] = '".$year."' AND [output_type] = '".$output_type."' AND [producedby_region] = '1'");
         array_push($regionalmrdata['r'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputsSingleReg)));
-        $RecordSetExtraOutMultipleReg = \REDCap::getData(IEDEA_EXTRAOUTPUTS, 'array',  null,null,null,null,false,false,false,"[output_year] = '".$year."' AND [output_type] = '".$output_type."' AND [producedby_region] = '2'");
+        $RecordSetExtraOutMultipleReg = \REDCap::getData($pidExtraOutputs, 'array',  null,null,null,null,false,false,false,"[output_year] = '".$year."' AND [output_type] = '".$output_type."' AND [producedby_region] = '2'");
         array_push($regionalmrdata['mrw'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg)));
         ${"outputs_mrw_".$type} = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg);
 

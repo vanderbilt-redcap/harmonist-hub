@@ -6,11 +6,11 @@ $userid = $_REQUEST['userid'];
 $option = $_REQUEST['option'];
 $request_id = $_REQUEST['record'];
 
-$RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $request_id));
+$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
 $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0]['follow_activity'];
 $array_userid = explode(',',$follow_activity);
 
-$Proj = new \Project(IEDEA_RMANAGER);
+$Proj = new \Project($pidsArray['RMANAGER']);
 $event_id_RM = $Proj->firstEventId;
 $recordRM = array();
 if($option == "0"){
@@ -32,8 +32,8 @@ if($option == "0"){
     }
     $button = '<button onclick="follow_activity(\'0\',\''.$userid.'\',\''.$request_id.'\','.$module->getUrl('hub/hub_request_follow_activity_AJAX.php').')" class="btn btn-primary actionbutton"><i class="fa fa-check-square"></i> <span class="hidden-xs">Following</span></button>';
 }
-$results = \Records::saveData(IEDEA_RMANAGER, 'array', $recordRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-\Records::addRecordToRecordListCache(IEDEA_RMANAGER, $request_id,1);
+$results = \Records::saveData($pidsArray['RMANAGER'], 'array', $recordRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+\Records::addRecordToRecordListCache($pidsArray['RMANAGER'], $request_id,1);
 
 echo json_encode($button);
 ?>

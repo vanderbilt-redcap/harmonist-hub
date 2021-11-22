@@ -4,16 +4,16 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
-$RecordSetConcetps = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
+$RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 
-$RecordSetExtraOutputs = \REDCap::getData(IEDEA_EXTRAOUTPUTS, 'array', null);
+$RecordSetExtraOutputs = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'array', null);
 $extra_outputs = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 
 ArrayFunctions::array_sort_by_column($extra_outputs,'output_year',SORT_DESC);
 ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'concept_id',SORT_DESC);
 
-$abstracts_publications_type = $module->getChoiceLabels('output_type', IEDEA_HARMONIST);
+$abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $excel_data = array();
 foreach ($concepts as $concept) {
     $output_year = $concept['output_year'];
@@ -49,7 +49,7 @@ foreach ($extra_outputs as $output){
     if($output['producedby_region'] == 2){
         $excel_data_aux[8] = "MR";
     }else if($output['producedby_region'] == 1){
-        $RecordSetMyRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $output['lead_region']));
+        $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $output['lead_region']));
         $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
         $region = "";
         if($my_region != ""){

@@ -41,10 +41,10 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=adm')?>">< Back to Admin</a>
+        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=adm')?>">< Back to Admin</a>
     </div>
     <h3>Hub Users</h3>
-    <p class="hub-title">All Hub users with "active" status are listed. To change a user's access level, grant or remove permissions, or deactivate a user account, click on the user's REDCap icon to edit the settings in REDCap (requires REDCap login.) To create a new user or to activate an inactive user account, <a href="<?= APP_PATH_WEBROOT_ALL.'DataEntry/record_status_dashboard.php?pid='.IEDEA_PEOPLE?>" target="_blank">log in to REDCap directly</a>.</p>
+    <p class="hub-title">All Hub users with "active" status are listed. To change a user's access level, grant or remove permissions, or deactivate a user account, click on the user's REDCap icon to edit the settings in REDCap (requires REDCap login.) To create a new user or to activate an inactive user account, <a href="<?= APP_PATH_WEBROOT_ALL.'DataEntry/record_status_dashboard.php?pid='.$pidsArray['PEOPLE']?>" target="_blank">log in to REDCap directly</a>.</p>
     </br>
 </div>
 <div class="container">
@@ -57,7 +57,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                 <select class="form-control" name="selectRegion" id="selectRegion">
                     <option value="">Select All</option>
                     <?php
-                    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null);
+                    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
                     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                     ArrayFunctions::array_sort_by_column($regions,'region_code');
                     if (!empty($regions)) {
@@ -75,7 +75,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                 <select class="form-control" name="selectActivity" id="selectActivity">
                     <option value="">Select All</option>
                     <?php
-                    $harmonist_regperm = $module->getChoiceLabels('harmonist_regperm', IEDEA_PEOPLE);
+                    $harmonist_regperm = $module->getChoiceLabels('harmonist_regperm', $pidsArray['PEOPLE']);
                     if (!empty($harmonist_regperm)) {
                         foreach ($harmonist_regperm as $level){
                             echo "<option value='".$level."'>".$level."</option>";
@@ -92,7 +92,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         <div class="table-responsive table-archive">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
                 <?php
-                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[active_y] = '1'");
+                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[active_y] = '1'");
                 $logins = ProjectData::getProjectInfoArray($RecordSetPeople);
                 if(!empty($logins)) {
                     echo '<thead>' . '
@@ -106,16 +106,16 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                 <th class="sorted_class" data-sortable="false">Options</th>' . '
                             </tr>' . '
                             </thead>';
-                    $harmonist_regperm = $module->getChoiceLabels('harmonist_regperm', IEDEA_PEOPLE);
-                    $harmonist_perms = $module->getChoiceLabels('harmonist_perms', IEDEA_PEOPLE);
+                    $harmonist_regperm = $module->getChoiceLabels('harmonist_regperm', $pidsArray['PEOPLE']);
+                    $harmonist_perms = $module->getChoiceLabels('harmonist_perms', $pidsArray['PEOPLE']);
                     foreach ($logins as $login){
-                        $RecordSetRegionsLogin = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $login['person_region']));
+                        $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $login['person_region']));
                         $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)['region_code'];
 
-                        $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array',  array('record_id' => $login['record_id']));
+                        $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array',  array('record_id' => $login['record_id']));
                         $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 
-                        $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_PEOPLE . "&arm=1&id=" . $login['record'];
+                        $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "&arm=1&id=" . $login['record'];
 
                         $harmonist_perm_text = "";
                         if($people['harmonistadmin_y'] == "1"){
@@ -138,7 +138,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             '<td>' . $harmonist_regperm[$people['harmonist_regperm']] . '</td>' .
                             '<td>' . $harmonist_perm_text . '</td>' .
                             '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>'.
-                            '<td style="text-align: center;"><div><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hra&record='.$login['record_id']).'" class="btn btn-primary btn-xs actionbutton"><i class="fa fa-user fa-fw" aria-hidden="true"></i> View Activity</a></div></td>';
+                            '<td style="text-align: center;"><div><a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hra&record='.$login['record_id']).'" class="btn btn-primary btn-xs actionbutton"><i class="fa fa-user fa-fw" aria-hidden="true"></i> View Activity</a></div></td>';
 
                     }
                 }else{?>

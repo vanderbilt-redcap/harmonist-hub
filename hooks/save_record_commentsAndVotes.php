@@ -19,13 +19,13 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
     $arrayCV = array();
     $arrayCV[$record][$event_id]['responsecomplete_ts'] = $completion_time;
-    $recordsRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $comment['response_region']));
+    $recordsRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $comment['response_region']));
     $regions = ProjectData::getProjectInfoArray($recordsRegions)[0];
     if(!empty($regions)){
         $arrayCV[$record][$event_id]['response_regioncode'] = $regions['region_code'];
     }
 
-    $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $comment['request_id']));
+    $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
     $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
     if(!empty($request)){
         $all_votes_completed = true;
@@ -48,14 +48,14 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                     $aux['region_response_status'] = '1';
                 }
 
-                $Proj = new \Project(IEDEA_RMANAGER);
+                $Proj = new \Project($pidsArray['RMANAGER']);
                 $event_id_RM = $Proj->firstEventId;
                 $array_repeat_instances[$comment['request_id']]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$instanceId] = $aux;
-                $results = \REDCap::saveData(IEDEA_RMANAGER, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+                $results = \REDCap::saveData($pidsArray['RMANAGER'], 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
                 break;
             }
 
-            $RecordSetVotingRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $resp_region));
+            $RecordSetVotingRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $resp_region));
             $voting_region = ProjectData::getProjectInfoArray($RecordSetVotingRegion)[0];
             if($voting_region['voteregion_y'] == "1" && $request['region_vote_status'][$instanceId] == ""){
                 $all_votes_completed = false;
@@ -64,12 +64,12 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         #If all votes complete we check the checkbox
         if($all_votes_completed){
             if($request['detected_complete'][0] != "1") {
-                $Proj = new \Project(IEDEA_RMANAGER);
+                $Proj = new \Project($pidsArray['RMANAGER']);
                 $event_id_RM = $Proj->firstEventId;
                 $arrayRM = array();
                 $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete'] = array(1=>"1");//checkbox
                 $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete_ts'] = date('Y-m-d H:i:s');
-                $results = \Records::saveData(IEDEA_RMANAGER, 'array', $arrayRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+                $results = \Records::saveData($pidsArray['RMANAGER'], 'array', $arrayRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
             }
         }
 
@@ -82,13 +82,13 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             }
             $arrayComment = array(array('record_id' => $comment['record_id'], 'revision_counter' => $revision_counter_total));
             $jsonComment = json_encode($arrayComment);
-            $results = \Records::saveData(IEDEA_RMANAGER, 'json', $jsonComment,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $jsonComment,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 
             $arrayRM = array(array('request_id' => $comment['request_id'],'revision_counter_total' => $revision_counter_total));
             $jsonRM = json_encode($arrayRM);
-            $results = \Records::saveData(IEDEA_RMANAGER, 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 
-            \Records::addRecordToRecordListCache(IEDEA_RMANAGER, $comment['request_id'],1);
+            \Records::addRecordToRecordListCache($pidsArray['RMANAGER'], $comment['request_id'],1);
             \Records::addRecordToRecordListCache($project_id, $record,1);
         }
 
@@ -97,16 +97,16 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $arrayCV[$record][$event_id]['request_title'] = $request['request_title'];
         $arrayCV[$record][$event_id]['contactnotification_y'] = array(1=>($request['contactnotification_y'][1] == "")?"0":"1");//checkbox
         $results = \Records::saveData($project_id, 'array', $arrayCV,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-        \Records::addRecordToRecordListCache(IEDEA_COMMENTSVOTES, $record,1);
+        \Records::addRecordToRecordListCache($pidsArray['COMMENTSVOTES'], $record,1);
         if($request['follow_activity'] != ''){
-            $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array');
+            $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array');
             $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
-            $request_type_label = $this->getChoiceLabels('request_type', IEDEA_RMANAGER);
+            $request_type_label = $this->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
             $array_userid = explode(',',$request['follow_activity']);
             foreach ($array_userid as $user_id){
-                $RecordSetEmail = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' =>$user_id));
+                $RecordSetEmail = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' =>$user_id));
                 $people = ProjectData::getProjectInfoArray($RecordSetEmail)[0];
 
                 $environment = "";
@@ -114,7 +114,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                     $environment = " " . ENVIRONMENT." - ";
                 }
 
-                $name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($comment['response_person'],"");
+                $name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $comment['response_person'],"");
 
                 $comment_time ="";
                 if(!empty($completion_time)){
@@ -125,17 +125,17 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
                 $gd_files = "<ol>";
                 if(!empty($comment['revised_file'])){
-                    $gd_files .= "<li>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($this, $comment['revised_file'],'',0,$secret_key,$secret_iv,$people['record_id'],"")."</li>";
+                    $gd_files .= "<li>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($this, $pidsArray['PROJECTS'], $comment['revised_file'],'',0,$secret_key,$secret_iv,$people['record_id'],"")."</li>";
                 }
                 else{
                     $gd_files .= "<li><i>None</i></li>";
                 }
 
                 if(!empty($comment['extra_revfile1'])){
-                    $gd_files .= "<li>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($this, $comment['extra_revfile1'],'',0,$secret_key,$secret_iv,$people['record_id'],"")."</li>";
+                    $gd_files .= "<li>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($this, $pidsArray['PROJECTS'], $project_id, $comment['extra_revfile1'],'',0,$secret_key,$secret_iv,$people['record_id'],"")."</li>";
                 }
                 if(!empty($comment['extra_revfile2'])){
-                    $gd_files .= "<li>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($this, $comment['extra_revfile2'],'',0,$secret_key,$secret_iv,$people['record_id'],"")."</li>";
+                    $gd_files .= "<li>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($this, $pidsArray['PROJECTS'], $comment['extra_revfile2'],'',0,$secret_key,$secret_iv,$people['record_id'],"")."</li>";
                 }
                 $gd_files .= "</ol>";
 
@@ -160,7 +160,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                     }
                 }
 
-                $url = $this->getUrl("index.php?token=".$people['access_token']."&option=hub&record=".$comment['sop_id']."&pid=".IEDEA_PROJECTS);
+                $url = $this->getUrl("index.php?token=".$people['access_token']."&option=hub&record=".$comment['sop_id']."&pid=".$pidsArray['PROJECTS']);
 
                 $subject = $environment." ".$settings['hub_name']."Request #".$request['request_id']." feedback posted: ".$name.", ".$comment_time;
 
@@ -176,9 +176,9 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                             '.$gd_files.'
                             <p>&nbsp;</p>
                             <p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the '.$settings["hub_name"].' Hub system (<a href="http://iedeahub.org">iedeahub.org</a>). You are receiving this email because you signed up to follow this Request. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:'.$settings["hub_contact_email"].'">'.$settings["hub_contact_email"].'</a>.</span></p>
-                            <p><span style="color: #999999; font-size: 11px;">Want to stop following this Request? Here\'s a <a href="'.$this->getUrl('index.php?pid='.IEDEA_PROJECTS.'&token='.$people['access_token'].'&option=unf&record='.$request['request_id']).'">quick link to visit the Hub</a>.</span></p>
+                            <p><span style="color: #999999; font-size: 11px;">Want to stop following this Request? Here\'s a <a href="'.$this->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&token='.$people['access_token'].'&option=unf&record='.$request['request_id']).'">quick link to visit the Hub</a>.</span></p>
                             ';
-                sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message,$people['record_id'],"New request feedback posted", IEDEA_RMANAGER);
+                sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message,$people['record_id'],"New request feedback posted", $pidsArray['RMANAGER']);
             }
         }
     }

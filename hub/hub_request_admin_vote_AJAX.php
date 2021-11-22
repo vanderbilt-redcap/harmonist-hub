@@ -3,10 +3,10 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 $request_id = $_REQUEST['request_id'];
 
-$RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $request_id));
+$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
 
-$Proj = new \Project(IEDEA_RMANAGER);
+$Proj = new \Project($pidsArray['RMANAGER']);
 $event_id_RM = $Proj->firstEventId;
 $recordRM = array();
 $recordRM[$request_id][$event_id_RM]["request_id"] = $request_id;
@@ -32,9 +32,9 @@ foreach ($region_vote_values as $votes_info){
             $recordRM[$request_id][$event_id_RM]['region_close_ts'] = $timestamp;
         }
 
-        $ProjC = new \Project(IEDEA_COMMENTSVOTES);
+        $ProjC = new \Project($pidsArray['COMMENTSVOTES']);
         $event_id_comments = $ProjC->firstEventId;
-        $comments_id = $module->framework->addAutoNumberedRecord(IEDEA_COMMENTSVOTES);
+        $comments_id = $module->framework->addAutoNumberedRecord($pidsArray['COMMENTSVOTES']);
         $comments = array();
         $comments[$comments_id][$event_id_comments]['vote_now'] = "1";
         $comments[$comments_id][$event_id_comments]['pi_vote'] = $vote;
@@ -44,19 +44,19 @@ foreach ($region_vote_values as $votes_info){
         $comments[$comments_id][$event_id_comments]['response_pi_level'] = $_REQUEST['pi_level'];
         $comments[$comments_id][$event_id_comments]['responsecomplete_ts'] = $timestamp;
 
-        $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $_REQUEST['region']));
+        $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $_REQUEST['region']));
         $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegion)[0];
         $comments[$comments_id][$event_id_comments]['response_regioncode'] = $regions['region_code'];
 
-        $RecordSetRegionComment = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $region));
+        $RecordSetRegionComment = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $region));
         $regions_comment = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegionComment)[0];
         $comment = "Vote submitted for region (".$regions_comment['region_code'].") by Admin";
         $comments[$comments_id][$event_id_comments]['comments'] = $comment;
         $comments[$comments_id][$event_id_comments]['comments_and_votes_complete'] = "2";
 
-        $results = \Records::saveData(IEDEA_COMMENTSVOTES, 'array', $comments,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-        \Records::addRecordToRecordListCache(IEDEA_RMANAGER, $event_id_RM,1);
-        \Records::addRecordToRecordListCache(IEDEA_COMMENTSVOTES, $event_id_comments,1);
+        $results = \Records::saveData($pidsArray['COMMENTSVOTES'], 'array', $comments,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        \Records::addRecordToRecordListCache($pidsArray['RMANAGER'], $event_id_RM,1);
+        \Records::addRecordToRecordListCache($pidsArray['COMMENTSVOTES'], $event_id_comments,1);
 
     }
     if(explode('_',$votes_info)[1] == "none"){
@@ -69,5 +69,5 @@ if($all_votes_completed){
         $recordRM[$request_id][$event_id_RM]["detected_complete_ts"] = date('Y-m-d H:i:s');
     }
 }
-$results = \Records::saveData(IEDEA_RMANAGER, 'array', $recordRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+$results = \Records::saveData($pidsArray['RMANAGER'], 'array', $recordRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 ?>

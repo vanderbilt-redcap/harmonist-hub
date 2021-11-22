@@ -14,18 +14,18 @@ if(empty($completion_time)){
     $completion_time = $date->format('Y-m-d H:i:s');
 }
 
-$records = \REDCap::getData(IEDEA_SOPCOMMENTS, 'array', array('sop_id' => $record),null,null,null,false,false,false,"[other_action] = 3");
+$records = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'array', array('sop_id' => $record),null,null,null,false,false,false,"[other_action] = 3");
 $comments_DCStarted = ProjectData::getProjectInfoArray($records)[0];
-$records = \REDCap::getData(IEDEA_SOPCOMMENTS, 'array', array('sop_id' => $record),null,null,null,false,false,false,"[other_action] = 4");
+$records = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'array', array('sop_id' => $record),null,null,null,false,false,false,"[other_action] = 4");
 $comments_DCCompleted = ProjectData::getProjectInfoArray($records)[0];
 
 if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" && $sop['sop_finalize_y'][1] == '1') || ($instrument == 'dhwg_review_request') || ($instrument == 'data_call_closure' && $comments_DCCompleted == "" && $sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'] == "1")){
-    $recordsPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $sop['sop_hubuser']),null,null,null,false,false,false,null);
+    $recordsPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_hubuser']),null,null,null,false,false,false,null);
     $person_region = ProjectData::getProjectInfoArray($recordsPeople)[0]['person_region'];
 
-    $arrayComments = array(array('record_id' => $this->framework->addAutoNumberedRecord(IEDEA_SOPCOMMENTS),'responsecomplete_ts' => $completion_time, 'sop_id' => $sop['record_id'], 'response_region' => $person_region, 'response_person' => $sop['sop_hubuser']));
+    $arrayComments = array(array('record_id' => $this->framework->addAutoNumberedRecord($pidsArray['SOPCOMMENTS']),'responsecomplete_ts' => $completion_time, 'sop_id' => $sop['record_id'], 'response_region' => $person_region, 'response_person' => $sop['sop_hubuser']));
 
-    $recordsPeople = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $person_region),null,null,null,false,false,false,null);
+    $recordsPeople = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $person_region),null,null,null,false,false,false,null);
     $regions = ProjectData::getProjectInfoArray($recordsPeople)[0];
     if(!empty($regions)) {
         $arrayComments[0]['response_regioncode'] = $regions['region_code'];
@@ -43,10 +43,10 @@ if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" &
         $q = $this->query("SELECT doc_name,stored_name,doc_size,file_extension,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$sop['sop_finalpdf']]);
         $docId = "";
         while ($row = $q->fetch_assoc()) {
-            $storedName = date("YmdsH")."_pid".IEDEA_HARMONIST."_".\Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
+            $storedName = date("YmdsH")."_pid".$pidsArray['HARMONIST']."_".\Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
             $output = file_get_contents(EDOC_PATH.$row['stored_name']);
             $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
-            $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',IEDEA_HARMONIST,date('Y-m-d h:i:s')]);
+            $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
             $docId = db_insert_id();
 
             $jsonConcepts = json_encode(array(array('record_id' => $sop['sop_concept_id'], 'datasop_file' => $docId)));
@@ -70,10 +70,10 @@ if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" &
     }
 
     $json = json_encode($arrayComments);
-    $results = \Records::saveData(IEDEA_SOPCOMMENTS, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    $results = \Records::saveData($pidsArray['SOPCOMMENTS'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     $recordcomment = array_pop(array_reverse($results['ids']));
 
-    \Records::addRecordToRecordListCache(IEDEA_SOPCOMMENTS, $recordcomment,1);
+    \Records::addRecordToRecordListCache($pidsArray['SOPCOMMENTS'], $recordcomment,1);
     \Records::addRecordToRecordListCache($project_id, $record,1);
 }
 ?>

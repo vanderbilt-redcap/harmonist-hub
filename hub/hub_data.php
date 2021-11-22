@@ -1,20 +1,20 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetHome = \REDCap::getData(IEDEA_HOME, 'array', null);
+$RecordSetHome = \REDCap::getData($pidsArray['HOME'], 'array', null);
 $homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
-$homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', IEDEA_HOME);
+$homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', $pidsArray['HOME']);
 $expire_date = date('Y-m-d', strtotime(date('Y-m-d') ."-".$settings['recentdataactivity_dur']." days"));
 
-$RecordSetComments = \REDCap::getData(IEDEA_SOPCOMMENTS, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
+$RecordSetComments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
 $comments_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetComments);
 ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
-$RecordSetDataUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
+$RecordSetDataUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
 $dataUpload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataUpload);
 ArrayFunctions::array_sort_by_column($dataUpload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
-$RecordSetDataDownload = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
+$RecordSetDataDownload = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
 $dataDownload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataDownload);
 ArrayFunctions::array_sort_by_column($dataDownload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
@@ -24,10 +24,10 @@ $all_data_recent_activity = array_merge($all_data_recent_activity, $dataDownload
 ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
 $number_of_recentactivity = $settings['number_recentdataactivity'];
 
-$RecordSetDataDownload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
+$RecordSetDataDownload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
 $number_uploads = count(ProjectData::getProjectInfoArray($RecordSetDataDownload));
 
-$RecordSetDataDownload = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null);
+$RecordSetDataDownload = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null);
 $number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDataDownload));
 
 $RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
@@ -35,7 +35,7 @@ $TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
 
 $region_tbl_percent = \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentRegions($TBLCenter, $person_region['region_code'], $settings['pastlastreview_dur']);
 
-$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
+$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
 $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
 $open_data_calls = 0;
 if(!empty($request_dataCall)) {
@@ -48,8 +48,8 @@ if(!empty($request_dataCall)) {
     }
 }
 
-$news_type = $module->getChoiceLabels('news_type', IEDEA_NEWITEMS);
-$RecordSetNewItems = \REDCap::getData(IEDEA_NEWITEMS, 'array', null,null,null,null,false,false,false,"[news_category] = '1'");
+$news_type = $module->getChoiceLabels('news_type', $pidsArray['NEWITEMS']);
+$RecordSetNewItems = \REDCap::getData($pidsArray['NEWITEMS'], 'array', null,null,null,null,false,false,false,"[news_category] = '1'");
 $newItems = ProjectData::getProjectInfoArray($RecordSetNewItems);
 ArrayFunctions::array_sort_by_column($newItems, 'news_d',SORT_DESC);
 $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-calendar-o'=>'#ff8080','fa-bell-o'=>'#dff028',
@@ -73,14 +73,14 @@ $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-
         <div class="well centerwell data_boxes">
             <i class="fa fa-2x fa-fw fa-bullhorn" aria-hidden="true"></i>
             <div class="welltitle"><strong>Request</strong> <?=$settings['hub_name']?> data for your approved concept</div>
-            <a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=smn");?>" class="btn btn-primary">Create Data Request</a>
+            <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=smn");?>" class="btn btn-primary">Create Data Request</a>
         </div>
     </div>
     <div class="col-sm-3">
         <div class="well centerwell data_boxes">
             <i class="fa fa-2x fa-fw fa-cloud-upload" aria-hidden="true"></i>
             <div class="welltitle"><strong>Check and submit</strong> data for an active data call</div>
-            <a href="<?=$module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=upd");?>" class="btn btn-success">View Data Calls <span class="badge" style="padding: 2px 6px;"><?=$open_data_calls?></span></a>
+            <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=upd");?>" class="btn btn-success">View Data Calls <span class="badge" style="padding: 2px 6px;"><?=$open_data_calls?></span></a>
         </div>
     </div>
     <?php
@@ -109,7 +109,7 @@ if($settings['deactivate_datadown'][1] != "1"){
     ?>
 <div class="hidden-xs" style="margin-bottom: 20px;"></div>
 <div class="modal fade" id="modal-data-download-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
-    <form class="form-horizontal" action="<?=$module->getUrl('NOAUTH_access.php?pid='.IEDEA_PROJECTS.'&option=dnd')?>" method="post" id='dataDownloadForm'>
+    <form class="form-horizontal" action="<?=$module->getUrl('NOAUTH_access.php?pid='.$pidsArray['PROJECTS'].'&option=dnd')?>" method="post" id='dataDownloadForm'>
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -212,7 +212,7 @@ if($settings['deactivate_datadown'][1] != "1"){
             <div class="panel-heading" style="border: none;">
                 <h3 class="panel-title">
                     Data News
-                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dna&type=1')?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dna&type=1')?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <div id="collapse3" class="table-responsive panel-collapse collapse in" aria-expanded="true">
@@ -226,15 +226,15 @@ if($settings['deactivate_datadown'][1] != "1"){
                                 echo "<td style='width: 755px;' class='media'>" .
                                     "<span class='label news-label' style='background-color:".$news_icon_color[$event['news_type']].";' title='".$news_type[$event['news_type']]."'><i class='fa ".$event['news_type']."'></i></span>".
                                     "<div style='float:left;padding-left: 10px;width:95%'>".
-                                    "<span>" . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($event['news_person'], 'email') . " on " . $event['news_d'] ."</span>".
+                                    "<span>" . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $event['news_person'], 'email') . " on " . $event['news_d'] ."</span>".
                                     "<div><strong>".$event['news_title']. "</strong></div>".
                                     "</div>";
                                 echo "<div class='comment more' style='display: inline-block;'>".$event['news']." ";
                                 if($event['news_file'] != "" && $event['news_file2'] == ""){
-                                    echo "<div style='padding-top: 10px;padding-bottom: 10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
+                                    echo "<div style='padding-top: 10px;padding-bottom: 10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
                                 }else if($event['news_file'] != "" && $event['news_file2'] != ""){
-                                    echo "<div style='padding-top: 10px;'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
-                                    echo  "<div style='padding-bottom: 10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $event['news_file2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
+                                    echo "<div style='padding-top: 10px;'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $event['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
+                                    echo  "<div style='padding-bottom: 10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $event['news_file2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div> ";
                                 }
                                 echo "</div>";
 
@@ -258,7 +258,7 @@ if($settings['deactivate_datadown'][1] != "1"){
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Recent Data Activity
-                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=sra')?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sra')?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <ul class="list-group">
@@ -271,22 +271,22 @@ if($settings['deactivate_datadown'][1] != "1"){
                             if($recent_activity['comments'] != '') {
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['response_person']));
+                                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['response_person']));
                                 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                                $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $recent_activity['sop_id']));
+                                $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $recent_activity['sop_id']));
                                 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
                                 $sop_concept_id = $sop['sop_concept_id'];
                                 $sop_name = $sop['sop_name'];
-                                $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $sop_concept_id, "");
+                                $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $sop_concept_id, "");
 
                                 $title = substr($sop_name, 0, 50) . '...';
 
                                 if ($recent_activity['author_revision_y'] == '1') {
                                     echo '<i class="fa fa-fw fa-file-text-o text-success" aria-hidden="true"></i>' .
                                         '<span class="time"> ' . $time . '</span> ' .
-                                        '<strong>' . $name . '</strong> submitted a <strong>revision</strong> for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=sop&record=' . $recent_activity['sop_id']) . '" target="_blank">'.$title . '</a>';
+                                        '<strong>' . $name . '</strong> submitted a <strong>revision</strong> for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id']) . '" target="_blank">'.$title . '</a>';
                                 } else{
                                     $text = '<span class="time"> ' . $time . '</span> <strong>' . $name . '</strong> submited a ';
                                     $itemcount = 0;
@@ -305,23 +305,23 @@ if($settings['deactivate_datadown'][1] != "1"){
                                         $text .= '<strong>file</strong>';
                                     }
 
-                                    echo $icon.$text.' for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=sop&record=' . $recent_activity['sop_id']) . '" target="_blank">'.$title . '</a>';
+                                    echo $icon.$text.' for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id']) . '" target="_blank">'.$title . '</a>';
                                 }
                                 echo '</li>';
                                 $i++;
                             }else if($recent_activity['download_id'] != ""){
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['downloader_id']));
+                                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['downloader_id']));
                                 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                                $RecordSetUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', array('record_id' => $recent_activity['downloader_id']));
+                                $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', array('record_id' => $recent_activity['downloader_id']));
                                 $data_upload_region = ProjectData::getProjectInfoArray($RecordSetUpload)[0]['data_upload_region'];
-                                $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $data_upload_region));
+                                $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $data_upload_region));
                                 $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                                $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept'], "");
+                                $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept'], "");
 
                                 $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
@@ -331,14 +331,14 @@ if($settings['deactivate_datadown'][1] != "1"){
                             }else if($recent_activity['data_assoc_request'] != "") {
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['data_upload_person']));
+                                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['data_upload_person']));
                                 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                                $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $recent_activity['data_upload_region']));
+                                $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $recent_activity['data_upload_region']));
                                 $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                                $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $recent_activity['data_assoc_concept'], "");
+                                $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept'], "");
 
                                 $icon = '<i class="fa fa-fw fa-arrow-up text-info" aria-hidden="true"></i>';
 
@@ -359,7 +359,7 @@ if($settings['deactivate_datadown'][1] != "1"){
     </div>
     <div class="col-sm-3">
         <div class="list-group">
-            <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=lgd')?>" style="cursor:pointer" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=lgd')?>" style="cursor:pointer" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
                         <span style="float:left;font-weight: bold">Data Log</span>
@@ -399,7 +399,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                 </div>
             </a>
             <?php if($settings['deactivate_tblcenter'][1] != "1"){?>
-            <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=tbl')?>" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=tbl')?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
                         <span style="float:left;font-weight: bold">tblCENTER</span>
@@ -418,7 +418,7 @@ if($settings['deactivate_datadown'][1] != "1"){
             <?php } ?>
 
             <?php if($settings['deactivate_datametrics'][1] != "1" || $isAdmin){?>
-            <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=mth')?>" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=mth')?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div style="display: inline-block;width: 50%;vertical-align:top;padding-right:5px">
                     <div style="font-weight:bold; padding-bottom:20px">
                         Hub Stats
@@ -431,7 +431,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                 </div>
             </a>
             <?php } ?>
-            <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ofs')?>" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=ofs')?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
                         <span style="float:left;font-weight: bold">Document Library</span>
@@ -449,16 +449,16 @@ if($settings['deactivate_datadown'][1] != "1"){
 <?php
 
 #FILE ACTIVITY
-$RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
+$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
 $number_uploads = count(ProjectData::getProjectInfoArray($RecordSetDU));
 
-$RecordSetDN = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null);
+$RecordSetDN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null);
 $number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDN));
 
-$RecordSetDU = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '2'");
+$RecordSetDU = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '2'");
 $number_deletes = count(ProjectData::getProjectInfoArray($RecordSetDU));
 
-$RecordSetDUAuto = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '1'");
+$RecordSetDUAuto = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '1'");
 $number_deletes_auto = count(ProjectData::getProjectInfoArray($RecordSetDUAuto));
 
 //GRAPH

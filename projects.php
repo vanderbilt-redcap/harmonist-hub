@@ -35,11 +35,14 @@ REDCapManagement::getEnvironment();
 
 #Mapper Project
 $project_id_main = ($project_id != '')?$project_id:$_GET['pid'];
-define(ENVIRONMENT.'_IEDEA_PROJECTS', $project_id_main);
+#Get Projects ID's
+$pidsArray = REDCapManagement::getPIDsArray($project_id_main);
 
-if(defined(ENVIRONMENT."_IEDEA_PROJECTS")) {
-    define("IEDEA_PROJECTS", constant(ENVIRONMENT."_IEDEA_PROJECTS"));
-}
+//define(ENVIRONMENT.'_IEDEA_PROJECTS', $project_id_main);
+//
+//if(defined(ENVIRONMENT."_IEDEA_PROJECTS")) {
+//    define("IEDEA_PROJECTS", constant(ENVIRONMENT."_IEDEA_PROJECTS"));
+//}
 
 if(APP_PATH_WEBROOT[0] == '/'){
     $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
@@ -52,31 +55,29 @@ define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 # Define the projects stored in MAPPER
 //$module->setProjectConstants(IEDEA_PROJECTS);
 
-$projects = \REDCap::getData(array('project_id'=>IEDEA_PROJECTS),'array');
+$projects = \REDCap::getData(array('project_id'=>$pidsArray['PROJECTS']),'array');
 
-$linkedProjects = array();
-foreach ($projects as $event){
-    foreach ($event as $project) {
-        define(ENVIRONMENT . '_IEDEA_' . $project['project_constant'], $project['project_id']);
-        array_push($linkedProjects,"IEDEA_".$project['project_constant']);
-    }
-}
+//$linkedProjects = array();
+//foreach ($projects as $event){
+//    foreach ($event as $project) {
+//        define(ENVIRONMENT . '_IEDEA_' . $project['project_constant'], $project['project_id']);
+//        array_push($linkedProjects,"IEDEA_".$project['project_constant']);
+//    }
+//}
 
-# Define the environment for each project
-foreach($linkedProjects as $projectTitle) {
-    if(defined(ENVIRONMENT."_".$projectTitle)) {
-        define($projectTitle, constant(ENVIRONMENT."_".$projectTitle));
-
-    }
-}
+//# Define the environment for each project
+//foreach($linkedProjects as $projectTitle) {
+//    if(defined(ENVIRONMENT."_".$projectTitle)) {
+//        define($projectTitle, constant(ENVIRONMENT."_".$projectTitle));
+//
+//    }
+//}
 
 $secret_key="";
 $secret_iv="";
 
-
-
-$RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
+$RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
 $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
 $default_values = new ProjectData;
-$default_values->setDefaultValues(IEDEA_SETTINGS);
+$default_values->setDefaultValues($pidsArray['SETTINGS']);

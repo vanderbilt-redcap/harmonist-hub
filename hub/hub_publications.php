@@ -1,5 +1,5 @@
 <?php
-$abstracts_publications_type = $module->getChoiceLabels('output_type', IEDEA_HARMONIST);
+$abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
 $abstracts_publications_badge_text = array("1" => "badge-manuscript-text", "2" => "badge-abstract-text", "3" => "badge-poster-text", "4" => "badge-presentation-text", "5" => "badge-report-text", "99" => "badge-other-text");
 

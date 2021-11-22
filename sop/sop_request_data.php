@@ -11,7 +11,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         });
         $('#deleteDataRequest').submit(function () {
             var data = $('#deleteDataRequest').serialize();
-            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_delete_data_request.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=smn&message=D"))?>);
+            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_delete_data_request.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=smn&message=D"))?>);
             return false;
         });
     } );
@@ -29,7 +29,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     }
     ?>
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a>
     </div>
     <div class="optionSelect">
             <h3>Request Data</h3>
@@ -37,7 +37,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         <div class="optionSelect">
             <div style="margin: 0 auto 15px auto;width: 200px;">
                 <div style="display: inline-block">
-                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ss1')?>" class="btn btn-success btn-md">Create New Data Request</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=ss1')?>" class="btn btn-success btn-md">Create New Data Request</a>
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                 <div id="collapse" class="table-responsive panel-collapse collapse in">
                     <table class="table sortable-theme-bootstrap sop_discuss" data-sortable>
                     <?php
-                    $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_status] = '0' AND [sop_active] = '1' AND [sop_visibility] = '2'");
+                    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_status] = '0' AND [sop_active] = '1' AND [sop_visibility] = '2'");
                     $sop_drafts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
                     ArrayFunctions::array_sort_by_column($sop_drafts,'sop_updated_dt',SORT_DESC);
                     if(!empty($sop_drafts)) {?>
@@ -75,7 +75,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
                         $data = "";
                         foreach ($sop_drafts as $draft){
-                            $data .= \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module,$draft,$isAdmin,$current_user,$secret_key,$secret_iv,0,'p',$harmonist_perm);
+                            $data .= \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module, $pidsArray,$draft,$isAdmin,$current_user,$secret_key,$secret_iv,0,'p',$harmonist_perm);
                         }
                         echo $data;
                     }else{?>
@@ -100,7 +100,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             <div id="collapse2" class="table-responsive panel-collapse collapse in" aria-expanded="true">
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable="" id="" data-sortable-initialized="true">
                     <?php
-                    $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_hubuser] = '".$current_user['record_id']."' AND [sop_active] = '1' AND [sop_status] = '0'");
+                    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_hubuser] = '".$current_user['record_id']."' AND [sop_active] = '1' AND [sop_status] = '0'");
                     $sop_drafts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
                     ArrayFunctions::array_sort_by_column($sop_drafts,'sop_updated_dt',SORT_DESC);
                     if(!empty($sop_drafts)) {?>
@@ -119,7 +119,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                     <?php
                         $data = "";
                         foreach ($sop_drafts as $draft){
-                            $data .= \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module,$draft,$isAdmin,$current_user,$secret_key,$secret_iv,0,'m',$harmonist_perm);
+                            $data .= \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module, $pidsArray,$draft,$isAdmin,$current_user,$secret_key,$secret_iv,0,'m',$harmonist_perm);
                         }
                         echo $data;
                     }else{?>

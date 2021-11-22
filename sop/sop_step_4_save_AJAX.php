@@ -3,13 +3,13 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $record_id = $_REQUEST['id'];
-$Proj = new \Project(IEDEA_SOP);
+$Proj = new \Project($pidsArray['SOP']);
 $event_id = $Proj->firstEventId;
 
-$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record_id));
+$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-$RecordSetRegionsLoginDown = \REDCap::getData(IEDEA_REGIONS, 'array', null);
+$RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
 $regions = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown);
 foreach ($regions as $region){
     $instance = $region['record_id'];
@@ -23,20 +23,20 @@ foreach ($regions as $region){
         $arraySOP['data_region'] = $region['record_id'];
         $arraySOP['region_participation_status_complete'] = "1";
         $array_repeat_instances[$record_id]['repeat_instances'][$event_id]['region_participation_status'][$instance] = $arraySOP;
-        $results = \REDCap::saveData(IEDEA_SOP, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+        $results = \REDCap::saveData($pidsArray['SOP'], 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
     }else{
         break;
     }
 }
 
-$dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module);
+$dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module, $pidsArray['DATAMODEL']);
 $tableHtml = "";
 if(!empty($dataTable)) {
     # Get selected rows
-    $tableHtml = \Vanderbilt\HarmonistHubExternalModule\generateTablesHTML_pdf($module, $dataTable,$sop['sop_tablefields']);
+    $tableHtml = \Vanderbilt\HarmonistHubExternalModule\generateTablesHTML_pdf($module, $pidsArray['CODELIST'], $dataTable,$sop['sop_tablefields']);
     $requested_tables = \Vanderbilt\HarmonistHubExternalModule\generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
 
-    $dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module);
+    $dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module, $pidsArray['DATAMODEL']);
     $tablefields = array();
     foreach( $dataTable as $data ) {
         if (!empty($data['record_id'])) {
@@ -63,30 +63,30 @@ $arraySOP[$record_id][$event_id]['sop_updated_dt'] = $sop_updated_dt;
 if(!empty($tablefields)){
     $arraySOP[$record_id][$event_id]['shiny_json'] = json_encode($tablefields);
 }
-$results = \Records::saveData(IEDEA_SOP, 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-\Records::addRecordToRecordListCache(IEDEA_SOP, $record,1);
+$results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+\Records::addRecordToRecordListCache($pidsArray['SOP'], $record,1);
 
-$RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array("record_id" => $sop['sop_concept_id']));
+$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
 $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
 $concept_id = $concept['concept_id'];
 $concept_title = $concept['concept_title'];
 
-$RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $sop['sop_creator']));
+$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_creator']));
 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 $sop_creator_name = $people['firstname'].' '.$people['lastname'];
 $sop_creator_email = $people['email'];
 
-$RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $sop['sop_creator2']));
+$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_creator2']));
 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 $sop_creator2_name  = $people['firstname'].' '.$people['lastname'];
 $sop_creator2_email = $people['email'];
 
-$RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $sop['sop_datacontact']));
+$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_datacontact']));
 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 $sop_datacontact_name  = $people['firstname'].' '.$people['lastname'];
 $sop_datacontact_email = $people['email'];
 
-$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record_id));
+$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
 $data = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
 $date = new \DateTime($sop['sop_due_d']);
@@ -126,7 +126,7 @@ $second_page .= "<p><span style='font-size:16pt'><strong>3. Exclusion Criteria</
 $second_page .= "<p><span style='font-size: 12pt'>".$sop['sop_exclusion']."</span></p>";
 $second_page .= "<p><span style='font-size:16pt'><strong>4. Data Submission Notes</strong></span></p>";
 if($sop['dataformat_prefer'] != ""){
-    $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', IEDEA_SOP);
+    $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']);
     foreach($dataformat_prefer as $dataid => $dataformat){
         foreach($data['dataformat_prefer'] as $dataf) {
             if($dataf == $dataid){
@@ -147,7 +147,7 @@ $second_page .= "<p><span style='font-size: 12pt'>".$requested_tables."</span></
 
 $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }a{text-decoration: none;}</style>';
 
-$img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $settings['hub_logo_pdf'],'pdf');
+$img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'pdf');
 
 $html_pdf = "<html><body style='font-family:\"Calibri\";font-size:10pt;'>".$page_num
     ."<div class='footer'><span left: 0px;>".$concept_id."</span></div>"
@@ -180,13 +180,13 @@ $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
 //$filesize = file_put_contents(EDOC_PATH.$storedName, ob_get_contents());
 
 //Save document on DB
-$q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$reportHash.".pdf",$filesize,'.pdf','application/octet-stream','0',IEDEA_SOP,date('Y-m-d h:i:s')]);
+$q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$reportHash.".pdf",$filesize,'.pdf','application/octet-stream','0',$pidsArray['SOP'],date('Y-m-d h:i:s')]);
 $docId = db_insert_id();
 
 //Add document DB ID to project
 $jsonConcepts = json_encode(array(array('record_id' => $record_id, 'sop_finalpdf' => $docId)));
-$results = \Records::saveData(IEDEA_SOP, 'json', $jsonConcepts,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-\Records::addRecordToRecordListCache(IEDEA_SOP, $record,1);
+$results = \Records::saveData($pidsArray['SOP'], 'json', $jsonConcepts,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+\Records::addRecordToRecordListCache($pidsArray['SOP'], $record,1);
 
 echo json_encode('success');
 ?>

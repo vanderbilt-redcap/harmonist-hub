@@ -20,7 +20,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
     $arrayRM = array(array('request_id' => $record,'requestopen_ts' => $completion_time));
 
-    $recordsPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $record),null,null,null,false,false,false,"[email] = '".$request['contact_email']."'");
+    $recordsPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $record),null,null,null,false,false,false,"[email] = '".$request['contact_email']."'");
     $people = ProjectData::getProjectInfoArray($recordsPeople)[0];
 
     if(!empty($people)){
@@ -40,7 +40,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         }
     }
 
-    $recordsRegions = \REDCap::getData(IEDEA_REGIONS, 'array');
+    $recordsRegions = \REDCap::getData($pidsArray['REGIONS'], 'array');
     $regions = ProjectData::getProjectInfoArray($recordsRegions);
     foreach ($regions as $region){
         $instance = $region['record_id'];
@@ -62,17 +62,17 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $results = \Records::saveData($project_id, 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($project_id, $event_id,1);
 }else if($instrument == 'tracking_number_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
-    $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', array('record_id' => '1'));
+    $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', array('record_id' => '1'));
     $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
-    $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', null,null,null,null,false,false,false,"[concept_id] = '".$request['mr_assigned']."'");
+    $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[concept_id] = '".$request['mr_assigned']."'");
     $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
     if (empty($concept)) {
         if($request['final_d'] != ""){
             $start_year = date("Y", strtotime($request['final_d']));
         }
         $last_update = date("Y-m-d H:i");
-        $concept_id = $this->framework->addAutoNumberedRecord(IEDEA_HARMONIST);
+        $concept_id = $this->framework->addAutoNumberedRecord($pidsArray['HARMONIST']);
         $arrayConcepts = array(array('record_id' => $concept_id));
         $arrayConcepts[0]['lastupdate_d'] = $last_update;
         $arrayConcepts[0]['concept_id'] = $request['mr_assigned'];
@@ -95,10 +95,10 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             $docId = "";
             while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
-                $storedName = date("YmdsH") . "_pid" . IEDEA_HARMONIST . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
+                $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
                 $output = file_get_contents(EDOC_PATH . $row['stored_name']);
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
-                $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',IEDEA_HARMONIST,date('Y-m-d h:i:s')]);
+                $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
                 $docId = db_insert_id();
 
                 $arrayConcepts[0]['concept_file'] = $docId;
@@ -110,10 +110,10 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             $docId = "";
             while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
-                $storedName = date("YmdsH") . "_pid" . IEDEA_HARMONIST . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
+                $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
                 $output = file_get_contents(EDOC_PATH . $row['stored_name']);
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
-                $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',IEDEA_HARMONIST,date('Y-m-d h:i:s')]);
+                $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
                 $docId = db_insert_id();
 
                 $arrayConcepts[0]['concept_file'] = $docId;
@@ -122,14 +122,14 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
         $wgroup_name = "<i>None</i>";
         if ($request['wg_name'] != "") {
-            $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg_name']));
+            $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg_name']));
             $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
             $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
 
         $wgroup2_name = "<i>None</i>";
         if ($request['wg2_name'] != "") {
-            $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg2_name']));
+            $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
             $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
             $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
@@ -137,33 +137,33 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $message = "<div>Dear Administrator,</div>" .
             "<div>A new concept sheet <b>" . $request['mr_assigned'] . "</b> has been created in the Hub.</div><br/>" .
             "<div><ul><li><b>Active:</b> Y</li><li><b>Last Update:</b> " . $last_update . "</li><li><b>Concept ID:</b> " . $request['mr_assigned'] . "</li><li><b>Concept Title:</b> " . $request['request_title'] . "</li>" .
-            "<li><b>Contact Link:</b> " . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($request['contactperson_id']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $request['final_d'] . "</li>" .
+            "<li><b>Contact Link:</b> " . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $request['contactperson_id']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $request['final_d'] . "</li>" .
             "<li><b>WG Link:</b> " . $wgroup_name . "</li><li><b>WG2 Link:</b> " . $wgroup2_name . "</li><li><b>Concept File:</b> " . $finalConcept_PDF . "</li><li><b>Concept Word:</b> " . $finalConcept_DOC . "</li></ul></div><br/>";
 
-        $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_HARMONIST . "&arm=1&id=" . $concept['record_id'];
+        $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['HARMONIST'] . "&arm=1&id=" . $concept['record_id'];
         $message .= "<div>Click <a href='" . $link . "' target='_blank'>this link</a> to see the concept sheet.</div>";
         if($settings['hub_email_new_conceptsheet'] != "") {
             $emails = explode(';', $settings['hub_email_new_conceptsheet']);
             foreach ($emails as $email) {
-                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "New concept sheet " . $request['mr_assigned'] . " created in the Hub", $message, $concept_id,"New concept sheet created",IEDEA_HARMONIST);
+                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "New concept sheet " . $request['mr_assigned'] . " created in the Hub", $message, $concept_id,"New concept sheet created",$pidsArray['HARMONIST']);
             }
         }
 
         $json = json_encode($arrayConcepts);
-        $results = \Records::saveData(IEDEA_HARMONIST, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        $results = \Records::saveData($pidsArray['HARMONIST'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     }else{
-        $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_HARMONIST . "&arm=1&id=" . $concept['record_id'];
+        $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['HARMONIST'] . "&arm=1&id=" . $concept['record_id'];
 
         $wgroup_name = "<i>None</i>";
         if ($request['wg_name'] != "") {
-            $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg_name']));
+            $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg_name']));
             $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
             $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
 
         $wgroup2_name = "<i>None</i>";
         if ($request['wg2_name'] != "") {
-            $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg2_name']));
+            $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
             $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
             $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
@@ -194,14 +194,14 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             "<div><span style='color: red'>This concept already exists.</span></div><br/>" .
             "<div>Existing concept sheet data:</div><br/>" .
             "<div><ul><li><b>Active:</b> ".$concept['active_y']."</li><li><b>Last Update:</b> " . $concept['lastupdate_d'] . "</li><li><b>Concept ID:</b> " . $concept['concept_id'] . "</li><li><b>Concept Title:</b> " . $concept['concept_title'] . "</li>" .
-            "<li><b>Contact Link:</b> " . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($concept['contact_link']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $concept['ec_approval_d'] . "</li>" .
+            "<li><b>Contact Link:</b> " . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $concept['contact_link']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $concept['ec_approval_d'] . "</li>" .
             "<li><b>WG Link:</b> " . $wgroup_name . "</li><li><b>WG2 Link:</b> " . $wgroup2_name . "</li><li><b>Concept File:</b> " . $finalConcept_PDF . "</li><li><b>Concept Word:</b> " . $finalConcept_DOC . "</li></ul></div><br/>".
             "<div>Click <a href='" . $link . "' target='_blank'>this link</a> to see the existing concept sheet.</div><br/>" ;
 
         if($settings['hub_email_new_conceptsheet'] != "") {
             $emails = explode(';', $settings['hub_email_new_conceptsheet']);
             foreach ($emails as $email) {
-                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Failed to create concept sheet " . $concept['concept_id'] . " in the Hub", $message, $concept['record_id'],"New concept sheet FAILED",IEDEA_HARMONIST);
+                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Failed to create concept sheet " . $concept['concept_id'] . " in the Hub", $message, $concept['record_id'],"New concept sheet FAILED",$pidsArray['HARMONIST']);
             }
         }
     }
@@ -209,7 +209,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $arrayRM = array(array('record_id' => $record));
     $arrayRM[0]['mr_assigned'] = $request['mr_temporary'];
     $json = json_encode($arrayRM);
-    $results = \Records::saveData(IEDEA_RMANAGER, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 }
 
 #We save the date for Recenty Finalized Requests table
@@ -217,6 +217,6 @@ if(($request['finalize_y'] != "" && ($request['request_type'] != '1' && $request
     $arrayRM = array(array('record_id' => $record));
     $arrayRM[0]['workflowcomplete_d'] = date("Y-m-d");
     $json = json_encode($arrayRM);
-    $results = \Records::saveData(IEDEA_RMANAGER, 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 }
 ?>

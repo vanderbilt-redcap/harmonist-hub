@@ -2,7 +2,7 @@
 use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
-$RecordSetCurrentUser = \REDCap::getData(IEDEA_PEOPLE, 'array', null,null,null,null,false,false,false,"[access_token] = '".$token."'");
+$RecordSetCurrentUser = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[access_token] = '".$token."'");
 $current_user = ProjectData::getProjectInfoArray($RecordSetCurrentUser)[0];
 $name = $current_user['firstname'].' '.$current_user['lastname'];
 
@@ -10,20 +10,20 @@ $isAdmin = false;
 if($current_user['harmonistadmin_y'] == '1'){//$userRights->super_user == "1"
     $isAdmin = true;
 }
-$RecordSetPersonRegion = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $current_user['person_region']));
+$RecordSetPersonRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $current_user['person_region']));
 $person_region = ProjectData::getProjectInfoArray($RecordSetPersonRegion)[0];
 
-$RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array',null);
+$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array',null);
 $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
 ArrayFunctions::array_sort_by_column($requests, 'due_d');
 
-$request_type_label = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
-$request_response_person = $module->getChoiceLabels('response_person', IEDEA_RMANAGER);
+$request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
+$request_response_person = $module->getChoiceLabels('response_person', $pidsArray['RMANAGER']);
 $numberOfOpenRequest = \Vanderbilt\HarmonistHubExternalModule\numberOfOpenRequest($requests,$current_user['person_region']);
 
 $request_admin = "";
 if($isAdmin) {
-    $RecordSetRM_admin = \REDCap::getData(IEDEA_RMANAGER, 'array', null);
+    $RecordSetRM_admin = \REDCap::getData($pidsArray['RMANAGER'], 'array', null);
     $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM_admin);
     ArrayFunctions::array_sort_by_column($request_admin, 'requestopen_ts');
     $numberOfAdminRequest = \Vanderbilt\HarmonistHubExternalModule\numberOfAdminRequest($request_admin);
@@ -40,11 +40,11 @@ if($isAdmin) {
                 <i class="icon-bar"></i>
             </button>
             <div class="imgNavbar">
-                <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS)?>" style="text-decoration: none;float:left">
-                    <img src='<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module,$settings['hub_logo'], 'src');?>' style='max-width:250px;height:40px;' class='wiki_logo_img' alt="<?=$hub_projectname?> Logo">
+                <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>" style="text-decoration: none;float:left">
+                    <img src='<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo'], 'src');?>' style='max-width:250px;height:40px;' class='wiki_logo_img' alt="<?=$hub_projectname?> Logo">
                 </a>
                     <?php if(empty($token) || array_key_exists('sout', $_REQUEST)){ ?>
-                        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS)?>" style="text-decoration: none;float:left" class="hub_header_title">
+                        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>" style="text-decoration: none;float:left" class="hub_header_title">
                             <span class=""><?=$hub_projectname?> Hub</span>
                         </a>
                     <?php } ?>
@@ -61,26 +61,26 @@ if($isAdmin) {
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub')?>" role="button" option="hub">Requests <span class="badge label-default"><?=$numberOfOpenRequest?></span></a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub')?>" role="button" option="hub">Requests <span class="badge label-default"><?=$numberOfOpenRequest?></span></a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=cpt')?>"role="button" option="cpt">Concepts</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=cpt')?>"role="button" option="cpt">Concepts</a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=out')?>"role="button" option="out">Publications</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=out')?>"role="button" option="out">Publications</a>
                 </li>
             </ul>
 
             <?php if($settings['deactivate_datahub'][1] != "1"){ ?>
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>"role="button" option="dat">Data Hub</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dat')?>"role="button" option="dat">Data Hub</a>
 
                 </li>
             </ul>
@@ -89,7 +89,7 @@ if($isAdmin) {
             <?php if($isAdmin){ ?>
                 <ul class="nav navbar-nav navbar-links">
                     <li class="menu-item dropdown">
-                        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=adm')?>"role="button" option="adm">Admin <span class="badge label-default"><?=$numberOfAdminRequest?></span></a>
+                        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=adm')?>"role="button" option="adm">Admin <span class="badge label-default"><?=$numberOfAdminRequest?></span></a>
                     </li>
                 </ul>
             <?php } ?>
@@ -101,10 +101,10 @@ if($isAdmin) {
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle hidden-xs hidden-md hidden-lg" style="padding: 20px"><span class="label label-primary"><?=$person_region['region_code']?></span>&nbsp;&nbsp;<i class="fa fa-user" aria-hidden="true"></i> <span class="caret"></span></a>
 
                         <ul class="dropdown-menu">
-                            <li><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=pro')?>"><i class="fa fa-user fa-fw" aria-hidden="true"></i> Profile</a></li>
-                            <li><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=faq')?>"><i class="fa fa-support fa-fw" aria-hidden="true"></i> Help</a></li>
+                            <li><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=pro')?>"><i class="fa fa-user fa-fw" aria-hidden="true"></i> Profile</a></li>
+                            <li><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=faq')?>"><i class="fa fa-support fa-fw" aria-hidden="true"></i> Help</a></li>
                             <li class="divider"></li>
-                            <?php $url_logout = $module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&sout');?>
+                            <?php $url_logout = $module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&sout');?>
                             <li><a href="#" onclick="destroy_session(<?="'".$url_logout."'"?>)"><i class="fa fa-sign-out fa-fw" aria-hidden="true"></i> Logout</a></li>
                         </ul>
                     </li>

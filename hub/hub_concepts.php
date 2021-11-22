@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 $wg_type = $_REQUEST['type'];
 $concepts_table = "";
-$RecordSetConcetps = \REDCap::getData(IEDEA_HARMONIST, 'array', null);
+$RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 if (!empty($concepts)) {
     $concepts_table .= '<table class="table table_requests sortable-theme-bootstrap concepts-table" data-sortable id="sortable_table">'.
@@ -28,7 +28,7 @@ if (!empty($concepts)) {
         $id_people = $concept['contact_link'];
         $name = "";
         if(!empty($id_people)){
-            $name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($id_people);
+            $name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $id_people);
         }
         $tags = "";
         foreach ($concept['concept_tags'] as $tag=>$value){
@@ -43,11 +43,11 @@ if (!empty($concepts)) {
             '<td>' . $concept['active_y'].'</td>' .
             '<td>' . $concept['wg2_link'].'</td>' .
             '<td style="">' . $name. '</td>' .
-            '<td><a href="'.$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=ttl&record='.$concept['record_id']).'">' . $concept['concept_title'] . '</a></td>' ;
+            '<td><a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$concept['record_id']).'">' . $concept['concept_title'] . '</a></td>' ;
 
         #Only check if they are final
         $row = "";
-        $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $concept['record_id']));
+        $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $concept['record_id']));
         $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
         if(!empty($sop["status"]) && in_array('1',$sop["status"]) && !empty($sop["pdf_file"])) {
             #SOP Files from Builder SOP project
@@ -60,7 +60,7 @@ if (!empty($concepts)) {
 
         $file_concept ='';
         if($concept["concept_file"] != ""){
-            $file_concept = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $concept["concept_file"],'1','', $secret_key, $secret_iv, $current_user['record_id'],"");
+            $file_concept = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept["concept_file"],'1','', $secret_key, $secret_iv, $current_user['record_id'],"");
         }
         $concepts_table .= '<td style="text-align: center;">'.$file_concept.'</td>';
 
@@ -429,7 +429,7 @@ if(array_key_exists('message', $_REQUEST)){
                 <select class="form-control" name="selectWorkingGroup" id="selectWorkingGroup">
                     <option value="">Select All</option>
                     <?php
-                    $RecordSetGroups = \REDCap::getData(IEDEA_GROUP, 'array', null);
+                    $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', null);
                     $wgroups = ProjectData::getProjectInfoArray($RecordSetGroups);
                     ArrayFunctions::array_sort_by_column($wgroups,'group_abbr');
                     if (!empty($wgroups)) {
@@ -455,7 +455,7 @@ if(array_key_exists('message', $_REQUEST)){
                 <select class="form-control" name="selectTags" id="selectTags">
                     <option value="">Select All</option>
                     <?php
-                    $concept_tags = $module->getChoiceLabels('concept_tags', IEDEA_HARMONIST);
+                    $concept_tags = $module->getChoiceLabels('concept_tags', $pidsArray['HARMONIST']);
                     foreach ($concept_tags as $tagid => $text){
                         $tag_text= (strlen($text) > 30) ? substr($text,0,30)."..." : $text;
                         echo "<option value='".$tagid."'>".$tag_text."</option>";

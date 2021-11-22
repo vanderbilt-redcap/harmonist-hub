@@ -1,11 +1,11 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetFileLibrary = \REDCap::getData(IEDEA_FILELIBRARY, 'array');
+$RecordSetFileLibrary = \REDCap::getData($pidsArray['FILELIBRARY'], 'array');
 $fileLibrary = ProjectData::getProjectInfoArray($RecordSetFileLibrary);
 
-$file_tags = $module->getChoiceLabels('file_tags', IEDEA_FILELIBRARY);
-$upload_type = $module->getChoiceLabels('upload_type', IEDEA_FILELIBRARY);
+$file_tags = $module->getChoiceLabels('file_tags', $pidsArray['FILELIBRARY']);
+$upload_type = $module->getChoiceLabels('upload_type', $pidsArray['FILELIBRARY']);
 
 ?>
 <script>
@@ -56,9 +56,9 @@ $upload_type = $module->getChoiceLabels('upload_type', IEDEA_FILELIBRARY);
     <div class="backTo">
         <?php
         if($_REQUEST['type'] == "home") {
-            ?><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS)?>">< Back to Home</a><?php
+            ?><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>">< Back to Home</a><?php
         }else{
-            ?><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>">< Back to Data</a><?php
+            ?><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a><?php
         }
 
         ?>
@@ -156,7 +156,7 @@ $upload_type = $module->getChoiceLabels('upload_type', IEDEA_FILELIBRARY);
                                 }
                             }
 
-                            $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $filel['file_uploader']));
+                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $filel['file_uploader']));
                             $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
@@ -169,7 +169,7 @@ $upload_type = $module->getChoiceLabels('upload_type', IEDEA_FILELIBRARY);
                                 '<td width="150px;">' . $filel['upload_dt'] . '</td>';
 
                             if ($isAdmin) {
-                                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_FILELIBRARY, $filel['record_id'], "file_information","");
+                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['FILELIBRARY'], $filel['record_id'], "file_information","");
                                 $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                                 $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'sop_other_files_modal\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';

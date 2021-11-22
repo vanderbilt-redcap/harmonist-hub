@@ -8,7 +8,7 @@ $record = $_REQUEST['id'];
 $save_option = $_REQUEST['save_option'];
 $sop_hubuser = $_REQUEST['sop_hubuser'];
 
-$RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array("record_id" => $selectConcept));
+$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $selectConcept));
 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
 $contact_link = $concepts['contact_link'];
 $concept_id = $concepts['concept_id'];
@@ -19,9 +19,9 @@ $sop_created_dt = $date->format('Y-m-d H:i:s');
 $data_select = "";
 if($option == "1" && $save_option == ""){
     #NEW SOP
-    $Proj = new \Project(IEDEA_SOP);
+    $Proj = new \Project($pidsArray['SOP']);
     $event_id = $Proj->firstEventId;
-    $record = $module->framework->addAutoNumberedRecord(IEDEA_SOP);
+    $record = $module->framework->addAutoNumberedRecord($pidsArray['SOP']);
     $save_option = $record;
 
     $arraySOP = array();
@@ -37,7 +37,7 @@ if($option == "1" && $save_option == ""){
     $arraySOP[$record][$event_id]['sop_created_dt'] = $sop_created_dt;
     $arraySOP[$record][$event_id]['sop_updated_dt'] = $sop_created_dt;
 
-    $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 AND [sop_status] = 0 AND [sop_hubuser] = '".$sop_hubuser."'");
+    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 AND [sop_status] = 0 AND [sop_hubuser] = '".$sop_hubuser."'");
     $sop_drafts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
     if (!empty($sop_drafts)) {
         $data_select = '<select class="form-control" name="selectSOP_3" id="selectSOP_3" onchange="checkStep(1);checkConcept();">
@@ -45,7 +45,7 @@ if($option == "1" && $save_option == ""){
 
         foreach ($sop_drafts as $draft){
             if($draft['sop_active'] == '1') {
-                $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array("record_id" => $draft['sop_concept_id']));
+                $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $draft['sop_concept_id']));
                 $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
                 if($draft['record_id'] == $record){
                     $data_select .=  "<option value='" . $draft['record_id'] . "' concept='" . $draft['sop_concept_id'] . "' concept_id='" . $concept_id . "' selected>" . $draft['sop_name'] . "</option>";
@@ -60,12 +60,12 @@ if($option == "1" && $save_option == ""){
 
 }else if($option == "2"){
     #LOAD TEMPLATE
-    $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record));
+    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record));
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-    $Proj = new \Project(IEDEA_SOP);
+    $Proj = new \Project($pidsArray['SOP']);
     $event_id = $Proj->firstEventId;
-    $record = $module->framework->addAutoNumberedRecord(IEDEA_SOP);
+    $record = $module->framework->addAutoNumberedRecord($pidsArray['SOP']);
     $save_option = $record;
 
     $arraySOP = array();
@@ -99,14 +99,14 @@ if($option == "1" && $save_option == ""){
     }else{
         $save_option = $record;
     }
-    $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record));
+    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record));
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-    $RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array("record_id" => $sop['sop_concept_id']));
+    $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
     $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
     if($selectConcept != ""){
         //UPDATE SOP
-        $Proj = new \Project(IEDEA_SOP);
+        $Proj = new \Project($pidsArray['SOP']);
         $event_id = $Proj->firstEventId;
 
         $arraySOP = array();
@@ -118,10 +118,10 @@ if($option == "1" && $save_option == ""){
     }
 
 }
-$results = \Records::saveData(IEDEA_SOP, 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-\Records::addRecordToRecordListCache(IEDEA_SOP, $record,1);
+$results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+\Records::addRecordToRecordListCache($pidsArray['SOP'], $record,1);
 
-$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $record));
+$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record));
 $data = ProjectData::getProjectInfoArray($RecordSetSOP)[0];
 
 $data['select'] = $data_select;
@@ -135,7 +135,7 @@ $data['concept_id'] = $concept_id;
 #Load information for STEP4
 $dataformat_prefer_text = "";
 if($data['dataformat_prefer'] != ""){
-    $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', IEDEA_SOP);
+    $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']);
     foreach($dataformat_prefer as $dataid => $dataformat){
         foreach($data['dataformat_prefer'] as $dataf) {
             if($dataf == $dataid){
@@ -149,34 +149,34 @@ if($data['dataformat_prefer'] != ""){
 
 $sop_concept_id = $data['sop_concept_id'];
 
-$RecordSetConcepts = \REDCap::getData(IEDEA_HARMONIST, 'array', array("record_id" => $data['sop_concept_id']));
+$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $data['sop_concept_id']));
 $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
 $data['sop_concept_id'] = $concept['concept_id'];
 $data['sop_concept_title'] = $concept['concept_title'];
 
 if($data['sop_creator'] != ""){
-    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $data['sop_creator']));
+    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $data['sop_creator']));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $data['sop_creator_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_creator_email'] = $people['email'];
 }
 
 if($data['sop_creator2'] != ""){
-    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $data['sop_creator2']));
+    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $data['sop_creator2']));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $data['sop_creator2_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_creator2_email'] = $people['email'];
 }
 
 if($data['sop_datacontact'] != "") {
-    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $data['sop_datacontact']));
+    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $data['sop_datacontact']));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $data['sop_datacontact_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_datacontact_email'] = $people['email'];
 }
 
 if($data['sop_hubuser'] != "") {
-    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array("record_id" => $data['sop_hubuser']));
+    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $data['sop_hubuser']));
     $sop_hubuser_region = ProjectData::getProjectInfoArray($RecordSetPeople)[0]['person_region'];
     $data['sopCreator_region'] = $sop_hubuser_region;
 }

@@ -1,11 +1,11 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetDataUpload = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
+$RecordSetDataUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
 $dataUpload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataUpload);
 ArrayFunctions::array_sort_by_column($dataUpload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
-$RecordSetDataDownload = \REDCap::getData(IEDEA_DATADOWNLOAD, 'array', null);
+$RecordSetDataDownload = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null);
 $dataDownload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataDownload);
 ArrayFunctions::array_sort_by_column($dataDownload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
@@ -146,11 +146,11 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
         }
 
         if($_REQUEST['type'] == "upload") {
-            ?><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=upd')?>">< Back to Submit Data</a><?php
+            ?><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=upd')?>">< Back to Submit Data</a><?php
         }else if($datareq_id != "") {
-            ?><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=sop&record='.$datareq_id.'&type=s')?>">< Back to Data Request</a><?php
+            ?><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record='.$datareq_id.'&type=s')?>">< Back to Data Request</a><?php
         }else{
-            ?><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>">< Back to Data</a><?php
+            ?><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a><?php
         }
         ?>
     </div>
@@ -167,7 +167,7 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
                 <select class="form-control" name="selectRegion" id="selectRegion">
                     <option value="">Select All</option>
                     <?php
-                    $recordsRegions = \REDCap::getData(IEDEA_REGIONS, 'array');
+                    $recordsRegions = \REDCap::getData($pidsArray['REGIONS'], 'array');
                     $regions = ProjectData::getProjectInfoArray($recordsRegions);
                     ArrayFunctions::array_sort_by_column($regions, 'region_code');
                     if (!empty($regions)) {
@@ -247,19 +247,19 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
 
                         if($recent_activity['download_id'] != ""){
                             #DOWNLOADS
-                            $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['downloader_id']));
+                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['downloader_id']));
                             $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-                            $RecordSetRegionPeople = \REDCap::getData(IEDEA_REGIONS, 'array',array('record_id' => $people['person_region']));
+                            $RecordSetRegionPeople = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $people['person_region']));
                             $region_code_person = ProjectData::getProjectInfoArray($RecordSetRegionPeople)[0]['region_code'];
 
                             $name = trim($people['firstname'] . ' ' . $people['lastname'])." (".$region_code_person.")";
 
-                            $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array',array('record_id' => $recent_activity['downloader_region']));
+                            $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $recent_activity['downloader_region']));
                             $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                            $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $recent_activity['downloader_assoc_concept']);
+                            $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept']);
 
-                            $RecordSetDataUploadReq = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', array('record_id' => $recent_activity['download_id']));
+                            $RecordSetDataUploadReq = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', array('record_id' => $recent_activity['download_id']));
                             $data_request = ProjectData::getProjectInfoArray($RecordSetDataUploadReq)[0]['data_assoc_request'];
 
                             $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
@@ -275,30 +275,30 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
                                 '<td width="50px"> </td>'.
                                 '<td width="50px"> </td>';
                             if($isAdmin){
-                                $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_DATADOWNLOAD . "&arm=1&id=" . $recent_activity['record_id'];
+                                $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATADOWNLOAD'] . "&arm=1&id=" . $recent_activity['record_id'];
                                 echo '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
                             }
                             echo '</tr>';
                         }else{
                             #UPLOADS
-                            $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['data_upload_person']));
+                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['data_upload_person']));
                             $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-                            $RecordSetRegionPeople = \REDCap::getData(IEDEA_REGIONS, 'array',array('record_id' => $people['person_region']));
+                            $RecordSetRegionPeople = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $people['person_region']));
                             $region_code_person = ProjectData::getProjectInfoArray($RecordSetRegionPeople)[0]['region_code'];
 
                             $name = trim($people['firstname'] . ' ' . $people['lastname'])." (".$region_code_person.")";
 
-                            $RecordSetRegion = \REDCap::getData(IEDEA_REGIONS, 'array',array('record_id' => $recent_activity['data_upload_region']));
+                            $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $recent_activity['data_upload_region']));
                             $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
 
-                            $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $recent_activity['data_assoc_concept']);
+                            $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
 
                             $file = "";
                             $buttons = "";
                             $activity_hidden = "upload";
                             $activity = '<i class="fa fa-fw fa-arrow-up text-success" aria-hidden="true"></i> upload ';
                             if($current_user['person_region'] == $recent_activity['data_upload_region'] || $isAdmin) {
-                                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $recent_activity['data_upload_pdf'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['data_upload_pdf'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                             }
                             if($recent_activity['deleted_y'] != "1" && ($recent_activity['data_upload_person'] == $current_user['record_id'] || $isAdmin)){
                                     $crypt = \Vanderbilt\HarmonistHubExternalModule\getCrypt("&id=".$recent_activity['record_id']."&idu=".$current_user['record_id'],'e',$secret_key,$secret_iv);
@@ -317,7 +317,7 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
                                 '<td width="50px"> '.$buttons.'</td>';
 
                             if($isAdmin){
-                                $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_DATAUPLOAD . "&arm=1&id=" . $recent_activity['record_id'];
+                                $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recent_activity['record_id'];
                                 echo '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
                             }
                             echo '</tr>';
@@ -328,9 +328,9 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
                                 if ($recent_activity['deletion_type'][0] == '1') {
                                     $name = "<em>Automatic</em>";
                                 } else if ($recent_activity['deletion_type'][0] == '2') {
-                                    $RecordSetPeopleDelete = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $recent_activity['deletion_hubuser']));
+                                    $RecordSetPeopleDelete = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['deletion_hubuser']));
                                     $peopleDelete = ProjectData::getProjectInfoArray($RecordSetPeopleDelete)[0];
-                                    $RecordSetRegionPeople = \REDCap::getData(IEDEA_REGIONS, 'array',array('record_id' => $peopleDelete['person_region']));
+                                    $RecordSetRegionPeople = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $peopleDelete['person_region']));
                                     $region_code_person = ProjectData::getProjectInfoArray($RecordSetRegionPeople)[0]['region_code'];
 
                                     $name = trim($peopleDelete['firstname'] . ' ' . $peopleDelete['lastname'])." (".$region_code_person.")";
@@ -355,7 +355,7 @@ if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
                                     '<td width="50px"></td>';
 
                                 if($isAdmin){
-                                    $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . IEDEA_DATAUPLOAD . "&arm=1&id=" . $recent_activity['record_id'];
+                                    $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recent_activity['record_id'];
                                     echo '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
                                 }
                                 echo '</tr>';

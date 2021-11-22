@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-$RecordSetChangelog = \REDCap::getData(IEDEA_CHANGELOG, 'array', null);
+$RecordSetChangelog = \REDCap::getData($pidsArray['CHANGELOG'], 'array', null);
 $changelog = ProjectData::getProjectInfoArray($RecordSetChangelog);
 ArrayFunctions::array_sort_by_column($changelog,'release_d',SORT_DESC);
 ?>

@@ -21,7 +21,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             data += "&region="+$('#region').val();
             data += "&status_record="+$('#status_record').val();
             data += "&data_response_notes="+encodeURIComponent($('#data_response_notes').val());
-            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".IEDEA_PROJECTS."&option=upd&message=S"))?>);
+            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=upd&message=S"))?>);
             return false;
         });
 
@@ -64,7 +64,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 </script>
 
 <?php
-$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
+$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
 $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
 ArrayFunctions::array_sort_by_column($request_dataCall,'sop_due_d');
 $open_data_calls = "";
@@ -73,9 +73,9 @@ if(!empty($request_dataCall)) {
     foreach ($request_dataCall as $sop) {
         if ($sop['sop_closed_y'][1] != "1") {
             if($sop['data_response_status'][$current_user['person_region']] == "0" || $sop['data_response_status'][$current_user['person_region']] == "1" || $sop['data_response_status'][$current_user['person_region']] == ""){
-                $open_data_calls .= \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'s');
+                $open_data_calls .= \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'s');
             }else{
-                $completed_data_calls .= \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'s');
+                $completed_data_calls .= \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'s');
             }
         }
     }
@@ -88,7 +88,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
 }
 ?>
 <div class="backTo">
-    <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>">< Back to Data</a>
+    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a>
 </div>
 <div class="optionSelect">
     <h3>Check and Submit Data</h3>
@@ -97,7 +97,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
 </div>
 
 <div class="pull-right">
-    <p><a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=lgd&type=upload')?>">View Data Activity Log</a> | <a href="<?=$module->getUrl('index.php?'.IEDEA_PROJECTS.'&option=pdc')?>">View Past Data Calls</a></p>
+    <p><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=lgd&type=upload')?>">View Data Activity Log</a> | <a href="<?=$module->getUrl('index.php?'.$pidsArray['PROJECTS'].'&option=pdc')?>">View Past Data Calls</a></p>
 </div>
 
 <div>
@@ -121,7 +121,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
             <table class="table sortable-theme-bootstrap" data-sortable>
                 <?php
                 if(!empty($open_data_calls)) {
-                    echo \Vanderbilt\HarmonistHubExternalModule\getDataCallHeader($current_user['person_region'],$settings['vote_grid']);
+                    echo \Vanderbilt\HarmonistHubExternalModule\getDataCallHeader($pidsArray['REGIONS'], $current_user['person_region'],$settings['vote_grid']);
                     echo $open_data_calls;
                 }else{?>
                     <tbody>
@@ -148,7 +148,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
             <table class="table sortable-theme-bootstrap" data-sortable>
                 <?php
                 if(!empty($completed_data_calls)) {
-                    echo \Vanderbilt\HarmonistHubExternalModule\getDataCallHeader($current_user['person_region'],$settings['vote_grid']);
+                    echo \Vanderbilt\HarmonistHubExternalModule\getDataCallHeader($pidsArray['REGIONS'], $current_user['person_region'],$settings['vote_grid']);
                     echo $completed_data_calls;
                 }else{?>
                     <tbody>
@@ -205,7 +205,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
                         <div style="float: left;padding-left: 10px">
 
                             <?php
-                            $status_type = $module->getChoiceLabels('data_response_status', IEDEA_SOP);
+                            $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
                             $status_icon_color = array(0=>"label-default_light",1=>"label-warning",2=>"label-approved",3=>"label-default",4=>"label-default",9=>"label-other");
                             $status_icon = array(0=>"fa-times text-default_light",1=>"fa-wrench",2=>"fa-check",3=>"fa-ban",4=>"fa-times",9=>"fa-question");
                             $selected = ' <a href="#" data-toggle="dropdown" style="width:290px" class="dropdown-toggle form-control output_select btn-group" id="default-select-value"><span class="fa-label-legend status fa fa-fw fa-times text-default_light label-default_light " style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="0"><span class="status-text"> Not Started</span><span class="caret" style="float: right;margin-top:8px"></span></a>';

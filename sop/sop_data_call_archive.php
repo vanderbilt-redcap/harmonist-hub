@@ -51,7 +51,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=upd')?>">< Back to Submit Data</a>
+        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=upd')?>">< Back to Submit Data</a>
     </div>
     <h3>Data Call Archive</h3>
     <p class="hub-title"><?=$settings['hub_datacall_archive']?></p>
@@ -59,13 +59,13 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     <div class="table-responsive">
         <table class="table table_requests sortable-theme-bootstrap" data-sortable id="sortable_table">
             <?php
-            $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
+            $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
             $request_dataCall_arc = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
             ArrayFunctions::array_sort_by_column($request_dataCall_arc,'sop_due_d',SORT_DESC);
             if(!empty($request_dataCall_arc)) {
-                echo \Vanderbilt\HarmonistHubExternalModule\getDataCallHeader($current_user['person_region'],1);
+                echo \Vanderbilt\HarmonistHubExternalModule\getDataCallHeader($pidsArray['REGIONS'], $current_user['person_region'],1);
                 foreach ($request_dataCall_arc as $sop){
-                    echo \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module, $sop,$isAdmin,$current_user,$secret_key,$secret_iv,1,'a');
+                    echo \Vanderbilt\HarmonistHubExternalModule\getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret_key,$secret_iv,1,'a');
                 }
             }else{?>
                 <tbody>

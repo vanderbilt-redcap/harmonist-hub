@@ -1,9 +1,9 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$news_type = $module->getChoiceLabels('news_type', IEDEA_NEWITEMS);
-$news_category = $module->getChoiceLabels('news_category', IEDEA_NEWITEMS);
-$RecordSetNewItems = \REDCap::getData(IEDEA_NEWITEMS, 'array');
+$news_type = $module->getChoiceLabels('news_type', $pidsArray['NEWITEMS']);
+$news_category = $module->getChoiceLabels('news_category', $pidsArray['NEWITEMS']);
+$RecordSetNewItems = \REDCap::getData($pidsArray['NEWITEMS'], 'array');
 $newItems = ProjectData::getProjectInfoArray($RecordSetNewItems);
 ArrayFunctions::array_sort_by_column($newItems, 'news_d',SORT_DESC);
 $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-calendar-o'=>'#ff8080','fa-bell-o'=>'#dff028',
@@ -150,7 +150,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=dat')?>">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a>
     </div>
     <h3>News Archive</h3>
     <p class="hub-title"><?=$settings['hub_news_archive_text']?></p>
@@ -189,7 +189,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
             </div>
             <div style="float:left;padding-left:10px">
                 <?php
-                $status_type = $module->getChoiceLabels('data_response_status', IEDEA_SOP);
+                $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
                 $selected = ' <a href="#" data-toggle="dropdown" style="width:200px" class="dropdown-toggle form-control output_select btn-group" id="default-select-value"><span class="status-text"> Select All</span><span class="caret" style="float: right;margin-top:8px"></span></a>';
                 foreach ($news_type as $index=>$status){
                     $menu .= '<li style="width:200px"><span class="fa-label status fa fa-fw '.$index.'" style="background-color:'.$news_icon_color[$index].';padding: 3px;border-radius:3px;color:#fff;font-size: 13px;height: 20px;" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.$status.'</span></li>';
@@ -256,24 +256,24 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
                     <tbody>
                     <?php
                     foreach ($newItems as $news) {
-                        $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $news['news_person']));
+                        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $news['news_person']));
                         $region_code = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
 
                         echo '<tr>'.
                             '<td width="8%">'.$news['news_d'].'</td>'.
                             '<td>'.$news_type[$news['news_type']].'</td>'.
                             '<td>'.$news['news_category'].'</td>'.
-                            '<td width="13%">'.\Vanderbilt\HarmonistHubExternalModule\getPeopleName($news['news_person'], 'email').' ('.$region_code.')</td>'.
+                            '<td width="13%">'.\Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $news['news_person'], 'email').' ('.$region_code.')</td>'.
                             '<td style="width: 60%">'.
                                         '<div><span class="label news-label-tiny" style="background-color:'.$news_icon_color[$news['news_type']].';margin-right: 10px;" title="'.$news_type[$news['news_type']].'"><i class="fa '.$news['news_type'].'"></i></span></div>'.
                                         '<div style="padding-bottom: 10px;"><strong>'.$news['news_title'].'</strong></div>'.
                                         '<div class="more">'.$news['news']." ".'</div></td>'.
-                            '<td style="width: 15%;word-break: break-all"><div>'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").'</div>'.
-                            '<div>'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").' </div></td>';
+                            '<td style="width: 15%;word-break: break-all"><div>'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").'</div>'.
+                            '<div>'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").' </div></td>';
                         if($isAdmin || $harmonist_perm_news){
                             $edit = "";
                             if($isAdmin || $news['news_person'] == $current_user['record_id']){
-                                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_NEWITEMS, $news['record_id'], "news_item", "");
+                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['NEWITEMS'], $news['record_id'], "news_item", "");
                                 $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                                 $edit .= '<a class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_news\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></a>';

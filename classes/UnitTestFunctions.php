@@ -116,10 +116,10 @@ class UnitTestFunctions
 
         echo $this->getTestOutputMessage('Data Upload Expiration Reminder CRON',2, $messageArray[0][$settings['downloadreminder_dur']]);
 
-        $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null);
+        $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
         $request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
 
-        $RecordSetSettings = \REDCap::getData(IEDEA_SETTINGS, 'array', null);
+        $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
         $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
         $days_expiration = intval($settings['downloadreminder_dur']);
@@ -134,7 +134,7 @@ class UnitTestFunctions
 
         $messageArrayData = array();
         foreach ($request_DU as $upload) {
-            $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array('record_id' => $upload['data_assoc_request']));
+            $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $upload['data_assoc_request']));
             $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
             $messageArrayRealData = AllCrons::runCronDataUploadExpirationReminder(
@@ -216,7 +216,7 @@ class UnitTestFunctions
 
         echo $this->getTestOutputMessage('Data Upload Notification CRON',2, $messageArray[0]['numDownloaders']);
 
-        $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[emails_sent_y(1)] = 1 AND datediff ([responsecomplete_ts], '".date('Y-m-d')."', \"d\", true) = 0");
+        $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[emails_sent_y(1)] = 1 AND datediff ([responsecomplete_ts], '".date('Y-m-d')."', \"d\", true) = 0");
         $total_notifications_sent_today = count(ProjectData::getProjectInfoArray($RecordSetDU));
         if($total_notifications_sent_today > 0) {
             echo '<div class="alert alert-secondary fade in col-md-12">' .
@@ -240,17 +240,17 @@ class UnitTestFunctions
 
         echo $this->getTestOutputMessage('Monthly Digest CRON',1, $message['code_test']);
 
-        $RecordSetReq = \REDCap::getData(IEDEA_RMANAGER, 'array', null,null,null,null,false,false,false,"[approval_y] = 1");
+        $RecordSetReq = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,null,null,null,false,false,false,"[approval_y] = 1");
         $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetReq);
         ArrayFunctions::array_sort_by_column($requests, 'due_d',SORT_ASC);
 
         $numberDaysInCurrentMonth = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'));
         $expire_date = date('Y-m-d', strtotime(date('Y-m-d') ."-".$numberDaysInCurrentMonth." days"));
-        $RecordSetReq = \REDCap::getData(IEDEA_RMANAGER, 'array',null,null,null,null,false,false,false,"[finalize_y] <> '' and [final_d] <>'' and datediff ([final_d], '".$expire_date."', \"d\", true) <= 0");
+        $RecordSetReq = \REDCap::getData($pidsArray['RMANAGER'], 'array',null,null,null,null,false,false,false,"[finalize_y] <> '' and [final_d] <>'' and datediff ([final_d], '".$expire_date."', \"d\", true) <= 0");
         $requests_hub = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetReq);
         ArrayFunctions::array_sort_by_column($requests_hub, 'final_d',SORT_ASC);
 
-        $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null);
+        $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
         $sops = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
         ArrayFunctions::array_sort_by_column($sops, 'sop_due_d',SORT_ASC);
 
@@ -301,7 +301,7 @@ class UnitTestFunctions
         }
         echo $this->getTestOutputMessage('Delete AWS CRON',1, $messageArray[0]['code_test'][0]);
 
-        $RecordSetDU = \REDCap::getData(IEDEA_DATAUPLOAD, 'array', null,null,null,null,false,false,false,"[deleted_y] = 1 AND datediff ([deletion_ts], '".date('Y-m-d')."', \"d\", true) = 0");
+        $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[deleted_y] = 1 AND datediff ([deletion_ts], '".date('Y-m-d')."', \"d\", true) = 0");
         $total_notifications_deleted_today = count(ProjectData::getProjectInfoArray($RecordSetDU));
         if($total_notifications_deleted_today > 0) {
             echo '<div class="alert alert-secondary fade in col-md-12">' .

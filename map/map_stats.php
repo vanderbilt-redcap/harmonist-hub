@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
-$RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
 $regionstbl = ProjectData::getProjectInfoArray($RecordSetRegions);
 ArrayFunctions::array_sort_by_column($regionstbl, 'region_code');
 
@@ -40,7 +40,7 @@ $RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
 $RecordSetTableTBLC = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
 $totalLocations = array();
 
-$RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 foreach ($regions as $region){
     $totalAreasByRegion[$region['region_code']] = array();

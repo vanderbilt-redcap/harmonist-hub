@@ -1,10 +1,10 @@
 <?PHP
 namespace Vanderbilt\HarmonistHubExternalModule;
 #We get the Tables and Variables information
-$dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module);
+$dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module, $pidsArray['DATAMODEL']);
 $first_table = 0;
 
-$type_status = $module->getChoiceLabels('available_status', IEDEA_DATAAVAILABILITY);
+$type_status = $module->getChoiceLabels('available_status', $pidsArray['DATAAVAILABILITY']);
 $type_label = array(0=>'label-available-few', 1=>'label-available-some', 2=>'label-available-most',3=>'label-available-all', 99=>'label-unknown');
 $type_icon = array(0=>'fa-circle-o', 1=>'fa-adjust', 2=>'fa-circle', 99=>'fa-question');
 
@@ -13,7 +13,6 @@ if($indexSubSet>0) {
     //collapse columns as there is some existing info
     $tr_class = '';
 }
-
 ?>
 <script>
     $(document).ready(function () {
@@ -96,7 +95,7 @@ if($indexSubSet>0) {
                                 $variable_required = "Y";
                             }
 
-                            $RecordSetDA = \REDCap::getData(IEDEA_DATAAVAILABILITY, 'array', null,null,null,null,false,false,false,"[available_table] = '".$data['record_id']."'");
+                            $RecordSetDA = \REDCap::getData($pidsArray['DATAAVAILABILITY'], 'array', null,null,null,null,false,false,false,"[available_table] = '".$data['record_id']."'");
                             $data_availability = ProjectData::getProjectInfoArray($RecordSetDA);
                             $type_text = $type_status[99];
                             $type_color = $type_label[99];
@@ -133,7 +132,7 @@ if($indexSubSet>0) {
                                     }
                                 } else if ($data['has_codes'][$id] == '1') {
                                     if(!empty($data['code_list_ref'][$id])){
-                                        $RecordSetCode = \REDCap::getData(IEDEA_CODELIST, 'array', array('record_id' => $data['code_list_ref'][$id]));
+                                        $RecordSetCode = \REDCap::getData($pidsArray['CODELIST'], 'array', array('record_id' => $data['code_list_ref'][$id]));
                                         $codeformat = ProjectData::getProjectInfoArray($RecordSetCode);
                                         if ($codeformat['code_format'] == '1') {
                                             $codeOptions = empty($codeformat['code_list']) ? $data['code_text'][$id] : explode(" | ", $codeformat['code_list']);

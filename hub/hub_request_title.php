@@ -1,12 +1,12 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $_REQUEST['record']));
+$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $_REQUEST['record']));
 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,'')[0];
 if($request !="") {
-    $request_type_label = $module->getChoiceLabels('request_type', IEDEA_RMANAGER);
-    $region_response_status = $module->getChoiceLabels('region_response_status', IEDEA_RMANAGER);
-    $region_vote_status = $module->getChoiceLabels('region_vote_status', IEDEA_RMANAGER);
+    $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
+    $region_response_status = $module->getChoiceLabels('region_response_status', $pidsArray['RMANAGER']);
+    $region_vote_status = $module->getChoiceLabels('region_vote_status', $pidsArray['RMANAGER']);
     $region_review_icon = array("0" => "fa fa-times", "1" => "fa fa-wrench", "2" => "fa fa-check");
     $region_review_icon_text = array("0" => "text-default", "1" => "text-warning", "2" => "text-approved");
     $region_vote_icon = array("1" => "fa fa-thumbs-o-up", "0" => "fa fa-thumbs-o-down", "9" => "fa fa-ban");
@@ -16,14 +16,14 @@ if($request !="") {
 
     $wg_name = "<em>Not specified</em>";
     if (!empty($request['wg_name'])) {
-        $RecordSetWG = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg_name']));
+        $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg_name']));
         $wg_name = ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
         if (!empty($request['wg2_name'])) {
-            $RecordSetWG = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg2_name']));
+            $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
             $wg_name = ", " . ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
         }
     } else if (!empty($request['wg2_name'])) {
-        $RecordSetWG = \REDCap::getData(IEDEA_GROUP, 'array', array('record_id' => $request['wg2_name']));
+        $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
         $wg_name = ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
     }
 
@@ -38,9 +38,9 @@ if($request !="") {
 
     $concept = "<em>None</em>";
     if (!empty($request['assoc_concept'])) {
-        $RecordSetConceptSheets = \REDCap::getData(IEDEA_HARMONIST, 'array', array('record_id' => $request['assoc_concept']));
+        $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $request['assoc_concept']));
         $concept_sheet = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
-        $concept = '<a href="i'.$module->getUrl('ndex.php?pid=' . IEDEA_DATAMODEL . '&option=ttl&record=' . $request['assoc_concept']) . '" target="_blank">' . $concept_sheet . '</a>';
+        $concept = '<a href="i'.$module->getUrl('ndex.php?pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $request['assoc_concept']) . '" target="_blank">' . $concept_sheet . '</a>';
     }else if($request['mr_temporary'] != ""){
         $concept = $request['mr_temporary'];
     }
@@ -49,7 +49,7 @@ if($request !="") {
     if ($_REQUEST['option'] == 'unf' && $_REQUEST['record'] != '') {
         $userid = $current_user['record_id'];
 
-        $RecordSetRM = \REDCap::getData(IEDEA_RMANAGER, 'array', array('request_id' => $request_id));
+        $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
         $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0]['follow_activity'];
         $array_userid = explode(',', $follow_activity);
         $arrayMRmanager = array(array('record_id' => $request_id));
@@ -59,8 +59,8 @@ if($request !="") {
             unset($array_userid[$key]);
             $string_userid = implode(",", $array_userid);
             $arrayMRmanager[0]['follow_activity'] = $string_userid;
-            $results = \Records::saveData(IEDEA_RMANAGER, 'array', $arrayMRmanager,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-            \Records::addRecordToRecordListCache(IEDEA_RMANAGER, $request_id,1);
+            $results = \Records::saveData($pidsArray['RMANAGER'], 'array', $arrayMRmanager,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            \Records::addRecordToRecordListCache($pidsArray['RMANAGER'], $request_id,1);
         }
     }
 }
@@ -117,9 +117,9 @@ if($request !="") {
     <div class="backTo">
         <?php
         if($_REQUEST['type'] != "" && $_REQUEST['type'] == 'r'){ ?>
-            <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=mrr')?>">< Back to Rejected Requests Archive</a>
+            <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=mrr')?>">< Back to Rejected Requests Archive</a>
         <?php }else{ ?>
-            <a href="<?=$module->getUrl('index.php?pid='.IEDEA_PROJECTS.'&option=hub')?>">< Back to Dashboard</a>
+            <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub')?>">< Back to Dashboard</a>
         <?php }
         ?>
 
@@ -137,12 +137,12 @@ if($request !="") {
             </h2>
             <?php if($isAdmin){
                 $editRequestButton ='';
-                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $request_id, "request", "");
+                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "request", "");
                 $editRequest = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
-                $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".IEDEA_RMANAGER."&arm=1&id=".$request['request_id'];
+                $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['RMANAGER']."&arm=1&id=".$request['request_id'];
 
-                $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $request_id, "admin_review", "");
+                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "admin_review", "");
                 $changeApproval = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                 ?>
                 <div class="btn-group hidden-xs pull-right">
@@ -155,7 +155,7 @@ if($request !="") {
                         <li><a href="<?=$editRequest?>"target="_blank">Edit Request</a></li>
                         <li><a href="<?=$changeApproval?>"target="_blank">Change Approval</a></li>
                         <?php
-                        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_RMANAGER, $_REQUEST['record'], "finalization_of_request", "");
+                        $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $_REQUEST['record'], "finalization_of_request", "");
                         $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                         echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\''.$survey_link.'\');" style="cursor:pointer">Finalize Request</a></li>';
                         ?>
@@ -182,7 +182,7 @@ if($request !="") {
                                     </thead>
                                     <tbody>
                                     <?php
-                                    $RecordSetRegions = \REDCap::getData(IEDEA_REGIONS, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+                                    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                                     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                                     ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
@@ -290,7 +290,7 @@ if($request !="") {
 
         <div class="panel-body">
             <?php if($request['finalize_y'] != ""){
-                $request_finalize_y_label = $module->getChoiceLabels('finalize_y', IEDEA_RMANAGER);
+                $request_finalize_y_label = $module->getChoiceLabels('finalize_y', $pidsArray['RMANAGER']);
 
                 $finalize_date = "";
                 if($request['final_d'] != ""){
@@ -408,10 +408,10 @@ if($request !="") {
                         }
 
                         $parameter = '[request_id] = "'.$request['request_id'].'"';
-                        $comments = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', null, null, null, null, false, false, false, $parameter, false);
+                        $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, $parameter, false);
                         krsort($comments);
 
-                        $RecordSetCommentsRecent = \REDCap::getData(IEDEA_COMMENTSVOTES, 'array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''");
+                        $RecordSetCommentsRecent = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''");
                         $most_recent_file = ProjectData::getProjectInfoArray($RecordSetCommentsRecent)[0];
                         foreach($most_recent_file as $k=>$v)
                         {
@@ -439,7 +439,7 @@ if($request !="") {
                                         $revised_class = 'last_file';
                                     }
 
-                                    $RecordSetPeople = \REDCap::getData(IEDEA_PEOPLE, 'array', array('record_id' => $comment['response_person']));
+                                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $comment['response_person']));
                                     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                     $name = trim($people['firstname'].' '.$people['lastname']);
 
@@ -456,15 +456,15 @@ if($request !="") {
                                         if(!empty($comment['comments'])){
                                             $gd_files .= "<div style='padding-top:10px'>";
                                         }
-                                        $gd_files .= \Vanderbilt\HarmonistHubExternalModule\getFileLink($module,$comment['revised_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
+                                        $gd_files .= \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['revised_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
                                     }
                                     if(!empty($comment['extra_revfile1'])){
-                                        echo "<tr class='".$revised_class."'>" . \Vanderbilt\HarmonistHubExternalModule\getFileRow($module,$comment['extra_revfile1'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
-                                        $gd_files .= "<div style='padding-top:10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module,$comment['extra_revfile1'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
+                                        echo "<tr class='".$revised_class."'>" . \Vanderbilt\HarmonistHubExternalModule\getFileRow($module, $comment['extra_revfile1'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
+                                        $gd_files .= "<div style='padding-top:10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['extra_revfile1'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
                                     }
                                     if(!empty($comment['extra_revfile2'])){
-                                        echo "<tr class='".$revised_class."'>" . \Vanderbilt\HarmonistHubExternalModule\getFileRow($module,$comment['extra_revfile2'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
-                                        $gd_files .= "<div style='padding-top:10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module,$comment['extra_revfile2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
+                                        echo "<tr class='".$revised_class."'>" . \Vanderbilt\HarmonistHubExternalModule\getFileRow($module, $comment['extra_revfile2'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
+                                        $gd_files .= "<div style='padding-top:10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['extra_revfile2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
                                     }
 
                                     /*** GROUP DISCUSION ***/
@@ -490,7 +490,7 @@ if($request !="") {
 
                                     $region_code = $comment['response_regioncode'];
                                     if($region_code == ""){
-                                        $RecordSetRegionC = \REDCap::getData(IEDEA_REGIONS, 'array', array('record_id' => $comment['response_region']));
+                                        $RecordSetRegionC = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $comment['response_region']));
                                         $region_code = ProjectData::getProjectInfoArray($RecordSetRegionC)[0]['region_code'];
                                     }
 
@@ -504,7 +504,7 @@ if($request !="") {
                                         "<td style='width:75%'>".$comment_vote."<div>".nl2br($comment['comments'])."</div>".$writing_group.$gd_files."</td>".
                                         "<td  style='width:5%'>";
                                     if($comment['response_person'] == $current_user['record_id']){
-                                        $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_COMMENTSVOTES, $comment['record_id'], "comments_and_votes", "");
+                                        $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['COMMENTSVOTES'], $comment['record_id'], "comments_and_votes", "");
                                         $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                         $group_discussion .= '<button class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button>';
                                     }
