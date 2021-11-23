@@ -70,7 +70,12 @@ if($sop !="") {
 $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
 ?>
 <script>
-    $(function(){
+    $(document).ready(function() {
+        //To change the text on select
+        $(".dropdown-menu-custom li").click(function(){
+            var selText = $(this).html();
+            $(this).parents('.dropdown').find('.dropdown-toggle').html(selText+' <span class="caret" style="float: right;margin-top:8px"></span>');
+        });
         $('#deleteDataRequest').submit(function () {
             var data = $('#deleteDataRequest').serialize();
             CallAJAXAndRedirect(data, <?=json_encode($module->getUrl('sop/sop_delete_data_request.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=smn&message=D"))?>);
@@ -95,11 +100,6 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
             var record = <?=json_encode($_REQUEST['record'])?>;
             CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=sop&record=".$_REQUEST['record']."&message=D"))?>);
             return false;
-        });
-        //To change the text on select
-        $(".dropdown-menu-custom li").click(function(){
-            var selText = $(this).html();
-            $(this).parents('.dropdown').find('.dropdown-toggle').html(selText+' <span class="caret" style="float: right;margin-top:8px"></span>');
         });
     });
 </script>
@@ -287,7 +287,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                                 '<td>'.$region['region_code'].'/'.$region['region_name'].'</td>'.
                                                 '<td>
                                                             <div style="float:left;">
-                                                                <ul class="nav" style="margin:0;width:290px" name="data_status">
+                                                                <ul class="nav" style="margin:0;width:290px" name="data_status_region">
                                                                     <li class="menu-item dropdown">
                                                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-custom form-control output_select btn-group" id="default-select-value" style="width: 300px;">'.$selected.'<span class="caret" style="float: right;margin-top:8px"></span></a>
                                                                         <ul class="dropdown-menu output-dropdown-menu dropdown-menu-custom" style="width:290px">
@@ -331,14 +331,16 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                                 $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
                                                 $status_icon_color = array(0=>"label-default_light",1=>"label-warning",2=>"label-approved",3=>"label-default",4=>"label-default",9=>"label-other");
                                                 $status_icon = array(0=>"fa-times text-default_light",1=>"fa-wrench",2=>"fa-check",3=>"fa-ban",4=>"fa-times",9=>"fa-question");
-                                                $selected = ' <a href="#" data-toggle="dropdown" style="width:290px" class="dropdown-toggle form-control output_select btn-group" id="default-select-value"><span class="fa-label-legend status fa fa-fw fa-times text-default_light label-default_light " style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="0"><span class="status-text"> Not Started</span><span class="caret" style="float: right;margin-top:8px"></span></a>';
+                                                $selected .= '<input type="hidden" value="" class="dropdown_votes" record="'.$sop['record_id'].'" id="'.$region_id.'_'.$sop['data_response_status'][$region['record_id']].'">';
+                                                $menu = '';
                                                 foreach ($status_type as $index=>$status){
-                                                    $menu .= '<li style="width:290px"><a href="#" tabindex="1"><span class="fa-label status fa fa-fw '.$status_icon[$index].' '.$status_icon_color[$index].'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.$status.'</span></a></li>';
+                                                    $menu .= '<li style="width:290px"><span class="fa-label status fa fa-fw '.$status_icon[$index].' '.$status_icon_color[$index].'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.$status.'</span>';
+                                                    $menu .= '<input type="hidden" value="'.$index.'" class="dropdown_votes" record="'.$sop['record_id'].'" id="'.$region_id.'_'.$index.'"></li>';
                                                 }
                                                 ?>
                                                 <ul class="nav" style="margin:0;width:290px" id="data_status" name="data_status">
                                                     <li class="menu-item dropdown">
-                                                        <?=$selected?>
+                                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-custom form-control output_select btn-group" id="default-select-value" style="width: 300px;"><?=$selected?><span class="caret" style="float: right;margin-top:8px"></span></a>
                                                         <ul class="dropdown-menu output-dropdown-menu dropdown-menu-custom" style="width:290px">
                                                             <?=$menu?>
                                                         </ul>
