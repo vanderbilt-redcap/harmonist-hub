@@ -1960,50 +1960,49 @@ function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata
     $regionalmrdata['mrw'] = array();
     $concept_outputs_by_year = array();
     ${"years_label_regional_pubs_".$type} = array();
-    for($year = $startyear; $year <= $currentYear; $year++) {
-        array_push(${"years_label_regional_pubs_".$type}, $year);
+    if($startyear != "") {
+        for ($year = $startyear; $year <= $currentYear; $year++) {
+            $RecordSetExtraOutputsSingleReg = \REDCap::getData($pidExtraOutputs, 'array', null, null, null, null, false, false, false, "[output_year] = '" . $year . "' AND [output_type] = '" . $output_type . "' AND [producedby_region] = '1'");
+            array_push($regionalmrdata['r'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputsSingleReg)));
+            $RecordSetExtraOutMultipleReg = \REDCap::getData($pidExtraOutputs, 'array', null, null, null, null, false, false, false, "[output_year] = '" . $year . "' AND [output_type] = '" . $output_type . "' AND [producedby_region] = '2'");
+            array_push($regionalmrdata['mrw'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg)));
+            ${"outputs_mrw_" . $type} = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg);
 
-        $RecordSetExtraOutputsSingleReg = \REDCap::getData($pidExtraOutputs, 'array',  null,null,null,null,false,false,false,"[output_year] = '".$year."' AND [output_type] = '".$output_type."' AND [producedby_region] = '1'");
-        array_push($regionalmrdata['r'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputsSingleReg)));
-        $RecordSetExtraOutMultipleReg = \REDCap::getData($pidExtraOutputs, 'array',  null,null,null,null,false,false,false,"[output_year] = '".$year."' AND [output_type] = '".$output_type."' AND [producedby_region] = '2'");
-        array_push($regionalmrdata['mrw'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg)));
-        ${"outputs_mrw_".$type} = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg);
+            $regionalmrdata['mr'][$year] = 0;
+            foreach ($conceptsData as $concepts) {
+                if (is_array($concepts['output_year'])) {
+                    foreach ($concepts['output_year'] as $index => $output) {
+                        if ($output == $year) {
+                            if ($concepts['output_type'][$index] == '' || $concepts['output_type'][$index] == '1' && $type == 'manuscripts') {
+                                $regionalmrdata['mr'][$year] += 1;
+                            } else if ($concepts['output_type'][$index] == '2' && $type == 'abstracts') {
+                                $regionalmrdata['mr'][$year] += 1;
+                            }
 
-        $regionalmrdata['mr'][$year] = 0;
-        foreach ($conceptsData as $concepts) {
-            if (is_array($concepts['output_year'])) {
-                foreach ($concepts['output_year'] as $index => $output) {
-                    if ($output == $year) {
-                        if ($concepts['output_type'][$index] == '' || $concepts['output_type'][$index] == '1' && $type == 'manuscripts') {
-                            $regionalmrdata['mr'][$year] += 1;
-                        } else if ($concepts['output_type'][$index] == '2' && $type == 'abstracts') {
-                            $regionalmrdata['mr'][$year] += 1;
-                        }
-
-                        if ($concepts['output_venue'][$index] != "") {
-                            if ($concepts['output_type'][$index] == "1" && $type == 'manuscripts') {
-                                $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] += 1;
-                            } else if ($concepts['output_type'][$index] == "2" && $type == 'abstracts') {
-                                $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] += 1;
+                            if ($concepts['output_venue'][$index] != "") {
+                                if ($concepts['output_type'][$index] == "1" && $type == 'manuscripts') {
+                                    $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] += 1;
+                                } else if ($concepts['output_type'][$index] == "2" && $type == 'abstracts') {
+                                    $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] += 1;
+                                }
                             }
                         }
                     }
                 }
             }
+            foreach (${'outputs_mrw_' . $type} as $outmanu) {
+                $concept_outputs_by_year[$year][$outmanu['output_venue']] += 1;
+            }
+            if (!array_key_exists($year, $concept_outputs_by_year)) {
+                $concept_outputs_by_year[$year]['None'] = 0;
+            }
         }
-        foreach (${'outputs_mrw_' . $type} as $outmanu) {
-            $concept_outputs_by_year[$year][$outmanu['output_venue']] += 1;
-        }
-        if(!array_key_exists($year,$concept_outputs_by_year)){
-            $concept_outputs_by_year[$year]['None'] = 0;
-        }
+        krsort($concept_outputs_by_year);
+
+        $regionalmrdata['mr'] = array_values($regionalmrdata['mr']);
+        $regionalmrdata['outputs'] = $concept_outputs_by_year;
+        $regionalmrdata['years'] = ${"years_label_regional_pubs_" . $type};
     }
-    krsort($concept_outputs_by_year);
-
-    $regionalmrdata['mr'] = array_values($regionalmrdata['mr']);
-    $regionalmrdata['outputs'] = $concept_outputs_by_year;
-    $regionalmrdata['years'] = ${"years_label_regional_pubs_".$type};
-
     return $regionalmrdata;
 }
 
