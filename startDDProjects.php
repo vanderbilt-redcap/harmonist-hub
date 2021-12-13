@@ -962,6 +962,11 @@ $projects_array_sql = array(
             'autocomplete' => '1',
             'label' => ""
         ),
+        'contact2_link' => array (
+            'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
         'wg_link' => array (
             'query' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=".$pidsArray['GROUP']." GROUP BY a.record ORDER BY value",
             'autocomplete' => '0',
