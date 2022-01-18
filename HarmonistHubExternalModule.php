@@ -77,7 +77,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 if ($project_id == $pidsArray['SOP']) {
                     include_once("hooks/save_record_SOP.php");
                 } else if ($project_id == $pidsArray['RMANAGER']) {
-                    error_log("IN");
                     include_once("hooks/save_record_requestManager.php");
                 } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
                     include_once("hooks/save_record_commentsAndVotes.php");

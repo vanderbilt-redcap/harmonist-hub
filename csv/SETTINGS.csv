@@ -86,6 +86,9 @@ hub_email_new_conceptsheet,hub_email_subscribers,,notes,"New Concept Sheet Creat
 <div style=""font-weight:lighter;font-style:italic"">Separate email addresses of recipients with semi-colons (;)</div>",,,,,,,,,LV,,,,
 hub_email_pending_uploads,hub_email_subscribers,,notes,"Partial Data Upload (upload has partially been updated?)
 <div style=""font-weight:lighter;font-style:italic"">Separate email addresses of recipients with semi-colons (;)</div>",,,,,,,,,LV,,,,
+hub_email_author_summary,hub_email_subscribers,,notes,"Author Summary E-mail (summary of comments and votes once request is finalized, these people will be CC'd)
+<div style=""font-weight:lighter;font-style:italic"">Separate email addresses of recipients with semi-colons (;)</div>",,,,,,,,,LV,,,,
+author_summary_footer,hub_email_subscribers,,notes,"Author Summary E-mail Footer (this will show up at the bottom of the Author Summary e-mail)",,,,,,,,,LV,,,,
 calendar_active,hub_calendar,"Show/Hide Hub Calendar",checkbox,"Enable Google Calendar on Hub Home page?
 <div style=""font-weight:lighter;font-style:italic"">Optional feature. Must configure a separate public Google Calendar and provide the iframe link below.</div>","1, YES",,,,,,,,,,,,
 calendar_title,hub_calendar,"Hub Calendar Settings",text,"Title for Calendar widget on Home Page",,,,,,,,,,,,,
