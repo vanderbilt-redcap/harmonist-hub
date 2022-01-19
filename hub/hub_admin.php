@@ -2,6 +2,8 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 
 $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
+$RecordSetRM_admin = \REDCap::getData($pidsArray['RMANAGER'], 'array', null);
+$request_admin = ProjectData::getProjectInfoArray($RecordSetRM_admin);
 ?>
 <script>
     $(document).ready(function() {
