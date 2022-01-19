@@ -67,7 +67,7 @@ $upload_type = $module->getChoiceLabels('upload_type', $pidsArray['FILELIBRARY']
     <p class="hub-title"><?=$settings['hub_doc_librabry_text']?></p>
     <br>
     <div style="text-align: center">
-        <a href="#" onclick="$('#redcap-new-file-frame').attr('src','<?=APP_PATH_WEBROOT_FULL."/surveys/?s=".IEDEA_SURVEYFILELIBRARY?>');$('#sop_add_library_file').modal('show');" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add Library File</a>
+        <a href="#" onclick="$('#redcap-new-file-frame').attr('src','<?=APP_PATH_WEBROOT_FULL."/surveys/?s=".$pidsArray['SURVEYFILELIBRARY']?>');$('#sop_add_library_file').modal('show');" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add Library File</a>
     </div>
     <br>
     <br>

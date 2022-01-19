@@ -26,7 +26,7 @@ foreach($codes as $iso2 => $iso3) {
 }
 
 #Get the data and tranform it to a json
-$projectIedeaTBLC = new \Plugin\Project(IEDEA_TBLCENTER);
+$projectIedeaTBLC = new \Plugin\Project($pidsArray['TBLCENTER']);
 $RecordSetTableTBLC= new \Plugin\RecordSet($projectIedeaTBLC,array(\Plugin\RecordSet::getKeyComparatorPair($projectIedeaTBLC->getFirstFieldName(),"!=") => ""));
 $totalLocations = array();
 $totalAreas = array();

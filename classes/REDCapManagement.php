@@ -26,6 +26,22 @@ class REDCapManagement {
         return $projects_array_title;
     }
 
+    public static function getSurveyContantsArray(){
+        $projects_array = array(
+            30=>'ANALYTICS',
+            31=>'CONCEPTLINK',
+            32=>'REQUESTLINK',
+            33=>'SURVEYLINK',
+            34=>'SURVEYLINKSOP',
+            35=>'SURVEYPERSONINFO',
+            36=>'REPORTBUGSURVEY',
+            37=>'SURVEYFILELIBRARY',
+            38=>'SURVEYNEWS',
+            39=>'SURVEYTBLCENTERREVISED');
+
+        return $projects_array;
+    }
+
     public static function getProjectConstantsArrayWithoutDeactivatedProjects(){
         $projects_array = self::getProjectsContantsArray();
         $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
@@ -57,7 +73,7 @@ class REDCapManagement {
     }
 
     public static function getPIDsArray($project_id){
-        $projects_array = self::getProjectsContantsArray();
+        $projects_array = array_merge(self::getProjectsContantsArray(),self::getSurveyContantsArray());
         $pidsArray = array();
         foreach ($projects_array as $constant){
             $RecordSetHarmonist = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='".$constant."'");

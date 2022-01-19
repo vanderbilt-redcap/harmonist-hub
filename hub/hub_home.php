@@ -315,7 +315,7 @@ if(!empty($homepage)) {
                                 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                                $RecordSetRMComment = \REDCap::getData(IEDEA_RMANAGAER, 'array', array('request_id' => $comment['request_id']));
+                                $RecordSetRMComment = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
                                 $requestComment = ProjectData::getProjectInfoArray($RecordSetRMComment)[0];
 
                                 $time = \Vanderbilt\HarmonistHubExternalModule\getDateForHumans($comment['responsecomplete_ts']);

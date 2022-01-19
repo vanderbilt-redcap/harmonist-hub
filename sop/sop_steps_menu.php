@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 if($_REQUEST['record'] != ""){
-    $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', array("record_id" => $_REQUEST['record']));
+    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $_REQUEST['record']));
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 }
 

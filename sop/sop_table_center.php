@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
+$RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
 $TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
 
 $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
@@ -81,7 +81,7 @@ if(array_key_exists('message', $_REQUEST)){
         <div class="optionSelect">
                 <div style="margin:0 auto;width: 30%;">
                     <div style="float: left"> <a href="#" onclick="$('#sop_new_center').modal('show');" class="btn btn-success btn-md">Create New Center</a></div>
-                    <div style="float: left;padding-left: 10px;"> <a href="<?=APP_PATH_WEBROOT_ALL . "DataEntry/record_status_dashboard.php?pid=".IEDEA_TBLCENTERREVISED?>" target="_blank" class="btn btn-default btn-md">Go to REDCap</a></div>
+                    <div style="float: left;padding-left: 10px;"> <a href="<?=APP_PATH_WEBROOT_ALL . "DataEntry/record_status_dashboard.php?pid=".$pidsArray['TBLCENTERREVISED']?>" target="_blank" class="btn btn-default btn-md">Go to REDCap</a></div>
                 </div>
 
                 <!-- MODAL NEW CONCEPT-->
@@ -94,7 +94,7 @@ if(array_key_exists('message', $_REQUEST)){
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" value="0" id="comment_loaded_center">
-                                <iframe class="commentsform" id="redcap-new-center" name="redcap-new-center" message="N" src="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".IEDEA_SURVEYTBLCENTERREVISED?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                                <iframe class="commentsform" id="redcap-new-center" name="redcap-new-center" message="N" src="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYTBLCENTERREVISED']?>" style="border: none;height: 810px;width: 100%;"></iframe>
                             </div>
 
                             <div class="modal-footer">
@@ -185,7 +185,7 @@ if(array_key_exists('message', $_REQUEST)){
                             if($center['drop_center'] == '' || !in_array($center['drop_center'],$center)) {
                                 $buttons = "";
                                 if (($harmonist_perm && $center['region'] == $map_region) || $isAdmin) {
-                                    $passthru_link = $module->resetSurveyAndGetCodes(IEDEA_TBLCENTERREVISED, $center['record_id'], "tblcenter", "");
+                                    $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SURVEYTBLCENTERREVISED'], $center['record_id'], "tblcenter", "");
                                     $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                     $buttons = '<div><a href="#" onclick="editIframeModal(\'update_center\',\'redcap-upload-center\',\'' . $survey_link . '\')" class="btn btn-primary btn-xs">Update</a></div>';
                                 }

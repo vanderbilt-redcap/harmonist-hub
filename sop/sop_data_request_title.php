@@ -864,7 +864,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                 </h4>
             </div>
             <?php
-            $survey_path = APP_PATH_WEBROOT_FULL . "/surveys/?s=" . IEDEA_SURVEYLINKSOP . "&sop_id=" . $_REQUEST['record'] . "&response_person=" . $current_user['record_id'] . "&response_region=" . $current_user['person_region'] . "&comment_ver=" . $sop['sop_status'];
+            $survey_path = APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $pidsArray['SURVEYLINKSOP'] . "&sop_id=" . $_REQUEST['record'] . "&response_person=" . $current_user['record_id'] . "&response_region=" . $current_user['person_region'] . "&comment_ver=" . $sop['sop_status'];
             ?>
             <div id="collapse_ask" class="panel-collapse collapse in" aria-expanded="true">
                 <div class="panel-body">

@@ -332,7 +332,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
             <?php
             $q = $module->query("SELECT record FROM redcap_data WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$_REQUEST['record'],$pidsArray['HARMONIST']]);
 
-            $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_visibility] = 2 and [sop_concept_id] = ".$_REQUEST['record']);
+            $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_visibility] = 2 and [sop_concept_id] = ".$_REQUEST['record']);
             $data_requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
 
             ArrayFunctions::array_sort_by_column($data_requests,'sop_updated_dt',SORT_DESC);
@@ -342,7 +342,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                         echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'','');
                 }
                 while ($row = db_fetch_assoc($q)){
-                    $RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$row['record']);
+                    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$row['record']);
                     $data_requests_old = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
                     if(empty($data_requests_old)){
                         echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$row['record'],"1");

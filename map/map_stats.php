@@ -36,7 +36,7 @@ foreach($codes as $iso2 => $iso3) {
 }
 
 #Get the data and tranform it to a json
-$RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
+$RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
 $RecordSetTableTBLC = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
 $totalLocations = array();
 

@@ -140,7 +140,7 @@ foreach ($conceptsData as $concepts){
         }
     }
 }
-$RecordSetSOP = \REDCap::getData(IEDEA_SOP, 'array', null,null,null,null,false,false,false,"[sop_final_d] <> ''");
+$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_final_d] <> ''");
 $sopData = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
 foreach ($sopData as $sop){
     $sop_year = date("Y",strtotime($sop['sop_final_d']));
@@ -796,10 +796,10 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 </div>
 <div class="container">
     <?php
-    $RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
+    $RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
     $TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
-    $country = $module->getChoiceLabels('country', IEDEA_TBLCENTERREVISED);
-    $region_name = $module->getChoiceLabels('region', IEDEA_TBLCENTERREVISED);
+    $country = $module->getChoiceLabels('country', $pidsArray['TBLCENTERREVISED']);
+    $region_name = $module->getChoiceLabels('region', $pidsArray['TBLCENTERREVISED']);
 
     $tbl_array = array();
     $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");

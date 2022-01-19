@@ -48,7 +48,7 @@ foreach ($requests as $req){
     <h3><?=$title;?></h3>
     <p class="hub-title"><?=$settings['hub_req_text']?></p>
     <div class="pull-right">
-        <p><?php echo $link_all_requests; ?><a href="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".IEDEA_REQUESTLINK?>" target="_blank">Create New Request</a> | <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=mra&type=r')?>">View Archived Requests</a></p>
+        <p><?php echo $link_all_requests; ?><a href="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['REQUESTLINK']?>" target="_blank">Create New Request</a> | <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=mra&type=r')?>">View Archived Requests</a></p>
     </div>
     <ul class="list-inline">
         <?php if($settings['vote_visibility'] == "" || $settings['vote_visibility'] =="1"){?>

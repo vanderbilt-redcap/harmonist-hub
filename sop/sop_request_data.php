@@ -33,7 +33,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     </div>
     <div class="optionSelect">
             <h3>Request Data</h3>
-        <?=str_replace('reqdatalink',APP_PATH_WEBROOT_FULL.'surveys/?s='.IEDEA_DATARELEASEREQUEST,$settings['hub_req_data_text'])?>
+        <?=str_replace('reqdatalink',APP_PATH_WEBROOT_FULL.'surveys/?s='.$pidsArray['DATARELEASEREQUEST'],$settings['hub_req_data_text'])?>
         <div class="optionSelect">
             <div style="margin: 0 auto 15px auto;width: 200px;">
                 <div style="display: inline-block">

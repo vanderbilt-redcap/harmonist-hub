@@ -30,7 +30,7 @@ $number_uploads = count(ProjectData::getProjectInfoArray($RecordSetDataDownload)
 $RecordSetDataDownload = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null);
 $number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDataDownload));
 
-$RecordSetTBLCenter = \REDCap::getData(IEDEA_TBLCENTERREVISED, 'array', null);
+$RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
 $TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
 
 $region_tbl_percent = \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentRegions($TBLCenter, $person_region['region_code'], $settings['pastlastreview_dur']);

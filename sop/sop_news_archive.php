@@ -158,7 +158,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
     <div class="optionSelect">
         <div style="margin: 0 auto;width: 200px;">
             <?php if($isAdmin || $harmonist_perm_news){?>
-                <a href="#" onclick="editIframeModal('hub_add_news','redcap-add-news','<?=APP_PATH_WEBROOT_FULL."surveys/?s=".IEDEA_SURVEYNEWS."&news_person=".$current_user['record_id']?>');" class="btn btn-success btn-md"><span class="fa fa-plus"></span> Add News</a>
+                <a href="#" onclick="editIframeModal('hub_add_news','redcap-add-news','<?=APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYNEWS']."&news_person=".$current_user['record_id']?>');" class="btn btn-success btn-md"><span class="fa fa-plus"></span> Add News</a>
 
                 <!-- MODAL ADD NEWS-->
                 <div class="modal fade" id="hub_add_news" tabindex="-1" role="dialog" aria-labelledby="Codes">
