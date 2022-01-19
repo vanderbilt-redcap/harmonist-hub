@@ -5,7 +5,7 @@ $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTING
 $RecordSetRM_admin = \REDCap::getData($pidsArray['RMANAGER'], 'array', null);
 $request_admin = ProjectData::getProjectInfoArray($RecordSetRM_admin);
 
-print_array($RecordSetRM_admin);
+print_array($pidsArray['RMANAGER']);
 ?>
 <script>
     $(document).ready(function() {
