@@ -4,6 +4,8 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
 $RecordSetRM_admin = \REDCap::getData($pidsArray['RMANAGER'], 'array', null);
 $request_admin = ProjectData::getProjectInfoArray($RecordSetRM_admin);
+
+print_array($RecordSetRM_admin);
 ?>
 <script>
     $(document).ready(function() {
@@ -94,7 +96,6 @@ $request_admin = ProjectData::getProjectInfoArray($RecordSetRM_admin);
                     <?php
                     foreach ($request_admin as $req) {
                         if ($req['approval_y'] == '' || $req['approval_y'] == null) {
-                            print_array($req);
                             $any_request_found = true;
                             $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $req['contact_region']));
                             $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
