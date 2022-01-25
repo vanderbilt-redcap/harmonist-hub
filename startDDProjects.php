@@ -91,52 +91,52 @@ $projects_array_hooks = array(0=>'1',1=>'1',2=>'1',3=>'1',4=>'1',5=>'1',6=>'1',
 
 $projects_array_module_emailalerts = array(
     3=> array(
-        "datapipe_var" => "[contact_email], Contact Email
-                            [cc_email1], CC Email 1
-                            [cc_email2], CC Email 2",
+        "datapipeEmail_var" => "[contact_email], Contact Email
+        [cc_email1], CC Email 1
+        [cc_email2], CC Email 2",
         "emailFromForm_var" => "",
         "emailSender_var" => $hub_projectname." Hub",
-        "datapipeEmail_var" => "[request_id], Request ID
-                                [request_type], Request Type
-                                [request_title], Request Title
-                                [request_conf], Conference
-                                [assoc_concept], Concept Tracking Number
-                                [wg_name], ".$hub_projectname." WG1
-                                [request_description], Request Desc
-                                [contact_email], Contact Email
-                                [contact_name], Contact Name
-                                [contact_region], Contact Region
-                                [reviewer_id], Reviewer ID
-                                [contactperson_id], Contact Person ID
-                                [due_d], Due Date
-                                [reviewer_id], Admin Reviewer Name
-                                [admin_review_notes], Admin Review Notes
-                                [approval_y], Admin Approval
-                                [admin_internal_notes], Admin Internal Notes
-                                [admin_noemail], No email
-                                [detected_complete], All votes complete
-                                [detected_complete_ts], Detected Complete TS
-                                [finalize_y], Finalized Status
-                                [final_d], Finalized Date
-                                [finalizer_id], Finalizing Person
-                                [custom_note], Custom Note to Author
-                                [author_doc], Author Final Doc
-                                [datarequest_type], Requested Data Types
-                                [mr_assigned], Assigned Tracking Number
-                                [finalconcept_doc], Final DOC
-                                [finalconcept_pdf], Final PDF
-                                [vote_ap], AP vote
-                                [vote_ca], CA vote
-                                [vote_cn], CN vote
-                                [vote_ea], EA vote
-                                [vote_na], NA vote
-                                [vote_sa], SA vote
-                                [vote_wa], WA vote",
+        "datapipe_var" => "[request_id], Request ID
+        [request_type], Request Type
+        [request_title], Request Title
+        [request_conf], Conference
+        [assoc_concept], Concept Tracking Number
+        [wg_name], ".$hub_projectname." WG1
+        [request_description], Request Desc
+        [contact_email], Contact Email
+        [contact_name], Contact Name
+        [contact_region], Contact Region
+        [reviewer_id], Reviewer ID
+        [contactperson_id], Contact Person ID
+        [due_d], Due Date
+        [reviewer_id], Admin Reviewer Name
+        [admin_review_notes], Admin Review Notes
+        [approval_y], Admin Approval
+        [admin_internal_notes], Admin Internal Notes
+        [admin_noemail], No email
+        [detected_complete], All votes complete
+        [detected_complete_ts], Detected Complete TS
+        [finalize_y], Finalized Status
+        [final_d], Finalized Date
+        [finalizer_id], Finalizing Person
+        [custom_note], Custom Note to Author
+        [author_doc], Author Final Doc
+        [datarequest_type], Requested Data Types
+        [mr_assigned], Assigned Tracking Number
+        [finalconcept_doc], Final DOC
+        [finalconcept_pdf], Final PDF
+        [vote_ap], AP vote
+        [vote_ca], CA vote
+        [vote_cn], CN vote
+        [vote_ea], EA vote
+        [vote_na], NA vote
+        [vote_sa], SA vote
+        [vote_wa], WA vote",
         "surveyLink_var" => "[__SURVEYLINK_request],Request Survey
-                            [__SURVEYLINK_admin_review],Admin Review Survey
-                            [__SURVEYLINK_finalization_of_request], Finalization of Request
-                            [__SURVEYLINK_final_docs_request_survey],Final Docs Request
-                            [__SURVEYLINK_tracking_number_assignment_survey],Tracking Number Assignment Survey",
+        [__SURVEYLINK_admin_review],Admin Review Survey
+        [__SURVEYLINK_finalization_of_request], Finalization of Request
+        [__SURVEYLINK_final_docs_request_survey],Final Docs Request
+        [__SURVEYLINK_tracking_number_assignment_survey],Tracking Number Assignment Survey",
         "formLink_var" => "",
         "emailFailed_var" => "harmonist@vanderbilt.edu",
         "form-name" => array
