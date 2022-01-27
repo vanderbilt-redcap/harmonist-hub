@@ -62,40 +62,69 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         echo '<script>';
         include_once("js/iframe.js");
         echo '</script>';
+
+        #Get Projects ID's
+        $hub_mapper = $this->getProjectSetting('hub-mapper');
+        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
+
+        try {
+            #Depending on the project que add one hook or another
+            if ($project_id == $pidsArray['SOP']) {
+                include_once("hooks/save_record_SOP.php");
+            } else if ($project_id == $pidsArray['RMANAGER']) {
+                include_once("hooks/save_record_requestManager.php");
+            } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
+                include_once("hooks/save_record_commentsAndVotes.php");
+            } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
+                include_once("hooks/save_record_SOP_comments.php");
+            }
+            echo '<script>';
+            include_once("js/iframe.js");
+            echo '</script>';
+
+        }catch (Throwable $e) {
+            \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Hook Error", $e->getMessage());
+        }
     }
 
     function redcap_survey_acknowledgement_page($project_id, $record, $instrument, $event_id){
+        #Get Projects ID's
         $hub_mapper = $this->getProjectSetting('hub-mapper');
-        $this->setProjectConstants($hub_mapper);
+        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
 
         try {
             #Depending on the project que add one hook or another
             if ($project_id == $pidsArray['SOP'] && $instrument == 'dhwg_review_request') {
                 include_once("sop/sop_make_public_request_AJAX.php?record=" . $record);
                 echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=smn&record='.$record.'&message=P")) . '</script>';
-            } else {
-                if ($project_id == $pidsArray['SOP']) {
-                    include_once("hooks/save_record_SOP.php");
-                } else if ($project_id == $pidsArray['RMANAGER']) {
-                    include_once("hooks/save_record_requestManager.php");
-                } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
-                    include_once("hooks/save_record_commentsAndVotes.php");
-                } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
-                    include_once("hooks/save_record_SOP_comments.php");
-                }
+            }else{
                 echo '<script>';
                 include_once("js/iframe.js");
                 echo '</script>';
             }
+//            else {
+//                if ($project_id == $pidsArray['SOP']) {
+//                    include_once("hooks/save_record_SOP.php");
+//                } else if ($project_id == $pidsArray['RMANAGER']) {
+//                    include_once("hooks/save_record_requestManager.php");
+//                } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
+//                    include_once("hooks/save_record_commentsAndVotes.php");
+//                } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
+//                    include_once("hooks/save_record_SOP_comments.php");
+//                }
+//                echo '<script>';
+//                include_once("js/iframe.js");
+//                echo '</script>';
+//            }
         }catch (Throwable $e) {
             \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Hook Error", $e->getMessage());
         }
     }
 
     function redcap_survey_page_top($project_id){
+        #Get Projects ID's
         $hub_mapper = $this->getProjectSetting('hub-mapper');
-        $this->setProjectConstants($hub_mapper);
-
+        $pidsArray = REDCapManagement::getPIDsArray($project_id);
 
         echo "<script>
             $(document).ready(function() {
@@ -201,27 +230,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             <script>
                 $(document).ready(function() { $('.chklist.round:eq(6)').hide(); });
             </script>\n";
-        }
-    }
-
-    function setProjectConstants($project_id){
-        # Define the projects stored in MAPPER
-        $projects = \REDCap::getData(array('project_id'=>$project_id),'array');
-
-        $linkedProjects = array();
-        foreach ($projects as $event){
-            foreach ($event as $project) {
-                define(ENVIRONMENT . '_IEDEA_' . $project['project_constant'], $project['project_id']);
-                array_push($linkedProjects,"IEDEA_".$project['project_constant']);
-            }
-        }
-
-        # Define the environment for each project
-        foreach($linkedProjects as $projectTitle) {
-            if(defined(ENVIRONMENT."_".$projectTitle)) {
-                define($projectTitle, constant(ENVIRONMENT."_".$projectTitle));
-
-            }
         }
     }
 
