@@ -2,8 +2,11 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../projects.php");
 include_once(__DIR__ ."/../functions.php");
-
 use ExternalModules\ExternalModules;
+
+#Get Projects ID's
+$hub_mapper = $this->getProjectSetting('hub-mapper');
+$pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
 
 $records = \REDCap::getData($project_id, 'array', array('request_id' => $record));
 $request = ProjectData::getProjectInfoArray($records)[0];

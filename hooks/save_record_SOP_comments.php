@@ -4,6 +4,10 @@ include_once(__DIR__ ."/../projects.php");
 include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
 
+#Get Projects ID's
+$hub_mapper = $this->getProjectSetting('hub-mapper');
+$pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
+
 $RecordSetComment = \REDCap::getData($project_id, 'array', array('record_id' => $record));
 $comment = ProjectData::getProjectInfoArray($RecordSetComment)[0];
 
