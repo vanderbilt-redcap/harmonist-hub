@@ -5,43 +5,27 @@ $RecordSetHome = \REDCap::getData($pidsArray['HOME'], 'array', null);
 $homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
 $homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', $pidsArray['HOME']);
 
-$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,null,null,null,false,false,false,"[approval_y] =1");
-$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array');
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y' => '1'));
 ArrayFunctions::array_sort_by_column($request, 'due_d');
+$request_type = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
 $instance = $current_user['person_region'];
 if ($instance == 1) {
     $instance = '';
 }
 
-$number_concepts = 0;
-$number_abstracts = 0;
-$number_manuscripts = 0;
-$number_poster = 0;
-$number_fastTrack = 0;
-$number_other = 0;
 $number_concepts_graph = 0;
 $number_abstracts_graph = 0;
 $number_manuscripts_graph = 0;
 $number_poster_graph = 0;
 $number_fastTrack_graph = 0;
 $number_other_graph = 0;
+$open_requests_values = array();
 foreach ($request as $req){
     //Only open requests
     if($req['finalize_y'] == "" && ($req['region_response_status'][$instance] == '0' || $req['region_response_status'][$instance] == '1')){
-        if($req['request_type'] == '1'){
-            $number_concepts++;
-        }else if($req['request_type'] == '2'){
-            $number_abstracts++;
-        }else if($req['request_type'] == '3'){
-            $number_manuscripts++;
-        }else if($req['request_type'] == '4'){
-            $number_poster++;
-        }else if($req['request_type'] == '5'){
-            $number_fastTrack++;
-        }else if($req['request_type'] == '99'){
-            $number_other++;
-        }
+        $open_requests_values[$req['request_type']] += 1;
     }
     if($req['request_type'] == '1'){
         $number_concepts_graph++;
@@ -57,7 +41,6 @@ foreach ($request as $req){
         $number_other_graph++;
     }
 }
-
 $number_of_announcements = $settings['home_number_announcements'];
 $number_of_deadlines = $settings['home_number_deadlines'];
 $number_of_quicklinks = $settings['home_number_quicklinks'];
@@ -83,6 +66,9 @@ ArrayFunctions::array_sort_by_column($dealines, 'date');
 $requests_values = array(0 => $number_concepts_graph,1=> $number_abstracts_graph,2 => $number_manuscripts_graph,3 => $number_fastTrack_graph,4 => $number_poster_graph,5 => $number_other_graph );
 $requests_labels = array(0 => "Concepts",1 => "Abstracts",2 => "Manuscripts",3 => "Fast Track",4 => "Poster", 5=>"Other");
 $requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777");
+
+print_array($request_type);
+print_array($open_requests_values);
 
 if(array_key_exists('message', $_REQUEST)){
     if($_REQUEST['message'] == 'U') {
@@ -152,7 +138,6 @@ if(!empty($homepage)) {
         </div>
     </div>
 </div>
-
 <div class="row">
     <div class="col-sm-9">
         <div class="row">
@@ -165,30 +150,25 @@ if(!empty($homepage)) {
 
                     </div>
                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=1")?>" title="concept sheets" class="home_openrequests_link"><span class="badge concepts"><?=($number_concepts == 0)?"":$number_concepts;?></span></a>
-                            Concept Sheets
-                        </li>
-                        <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=2")?>" title="abstracts" class="home_openrequests_link"><span class="badge abstracts"><?=($number_abstracts == 0)?"":$number_abstracts;?></span></a>
-                            Abstracts
-                        </li>
-                        <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=3")?>" title="manuscripts" class="home_openrequests_link"><span class="badge manuscripts"><?=($number_manuscripts == 0)?"":$number_manuscripts;?></span></a>
-                            Manuscripts
-                        </li>
-                        <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=4")?>" title="posters" class="home_openrequests_link"><span class="badge posters"><?=($number_poster == 0)?"":$number_poster;?></span></a>
-                            Posters
-                        </li>
-                        <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=5")?>" title="fast track" class="home_openrequests_link"><span class="badge dataRequests"><?=($number_fastTrack == 0)?"":$number_fastTrack;?></span></a>
-                            Fast Track
-                        </li>
-                        <li class="list-group-item">
-                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=99")?>" title="other items" class="home_openrequests_link"><span class="badge other"><?=($number_other == 0)?"":$number_other;?></span></a>
-                            Other Items
-                        </li>
+                       <?php
+                       $i=0;
+                       foreach ($request_type as $value => $label){
+                           if(!in_array($value,$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])){
+                               $open_req_value = ($open_requests_values[$value] == 0)?"":$open_requests_values[$value];
+
+                               #GRADIENT for the Badge
+                               $total_colors = count($requests_values) - count($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']);
+                               $color = \Vanderbilt\HarmonistHubExternalModule\getGradientColor("777777","003D99",$total_colors,$i);
+                               echo '<li class="list-group-item">
+                                        <a href="'.$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&type=1").'" title="concept sheets" class="home_openrequests_link">
+                                        <span class="badge" style="background-color:'.$color.'">'.$open_req_value.'</span>
+                                        </a>
+                                        '.$label.'
+                                    </li>';
+                               $i++;
+                           }
+                       }
+                       ?>
                     </ul>
                 </div>
             </div>

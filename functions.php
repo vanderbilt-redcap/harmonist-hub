@@ -2095,4 +2095,37 @@ function getConceptStatusIcon($value,$text)
             return "";
     }
 }
+
+function getGradientColor($scolor,$ecolor,$totalColors,$iteration){
+    $startColor = hexdec($scolor);
+    $endColor = hexdec($ecolor);
+
+    $theColorBegin = (($startColor >= 0x000000) && ($startColor <= 0xffffff)) ? $startColor : 0x000000;
+    $theColorEnd = (($endColor >= 0x000000) && ($endColor <= 0xffffff)) ? $endColor : 0xffffff;
+    $theNumSteps = (($totalColors > 0) && ($totalColors < 256)) ? $totalColors : 16;
+
+    $theR0 = ($theColorBegin & 0xff0000) >> 16;
+    $theG0 = ($theColorBegin & 0x00ff00) >> 8;
+    $theB0 = ($theColorBegin & 0x0000ff) >> 0;
+
+    $theR1 = ($theColorEnd & 0xff0000) >> 16;
+    $theG1 = ($theColorEnd & 0x00ff00) >> 8;
+    $theB1 = ($theColorEnd & 0x0000ff) >> 0;
+
+    $theR = \Vanderbilt\HarmonistHubExternalModule\interpolate($theR0, $theR1, $iteration, $theNumSteps);
+    $theG = \Vanderbilt\HarmonistHubExternalModule\interpolate($theG0, $theG1, $iteration, $theNumSteps);
+    $theB = \Vanderbilt\HarmonistHubExternalModule\interpolate($theB0, $theB1, $iteration, $theNumSteps);
+
+    $theVal = ((($theR << 8) | $theG) << 8) | $theB;
+
+    return sprintf("#%06X",$theVal);
+}
+
+function interpolate($pBegin, $pEnd, $pStep, $pMax) {
+    if ($pBegin < $pEnd) {
+        return (($pEnd - $pBegin) * ($pStep / $pMax)) + $pBegin;
+    } else {
+        return (($pBegin - $pEnd) * (1 - ($pStep / $pMax))) + $pEnd;
+    }
+}
 ?>

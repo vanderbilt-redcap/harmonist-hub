@@ -117,5 +117,17 @@ class ProjectData
     public function getDefaultValues($project_id){
         return $this->default_value[$project_id];
     }
+
+    public function getHideChoice($project_id){
+        $data_dictionary_settings = \REDCap::getDataDictionary($project_id, 'array',false);
+        $default_value = array();
+        foreach ($data_dictionary_settings as $row) {
+            if($row['field_annotation'] != "" && strpos($row['field_annotation'], "@HIDECHOICE") !== false){
+                $text = explode(",",trim(explode("@HIDECHOICE=", $row['field_annotation'])[1],'\'"'));
+                $default_value[$project_id][$row['field_name']] = $text;
+            }
+        }
+        return $default_value;
+    }
 }
 ?>
