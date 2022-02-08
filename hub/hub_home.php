@@ -67,9 +67,6 @@ $requests_values = array(0 => $number_concepts_graph,1=> $number_abstracts_graph
 $requests_labels = array(0 => "Concepts",1 => "Abstracts",2 => "Manuscripts",3 => "Fast Track",4 => "Poster", 5=>"Other");
 $requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777");
 
-print_array($request_type);
-print_array($open_requests_values);
-
 if(array_key_exists('message', $_REQUEST)){
     if($_REQUEST['message'] == 'U') {
         echo '<div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">The announcement has been successfully updated.</div>';
