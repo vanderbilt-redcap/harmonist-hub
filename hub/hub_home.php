@@ -15,30 +15,11 @@ if ($instance == 1) {
     $instance = '';
 }
 
-$number_concepts_graph = 0;
-$number_abstracts_graph = 0;
-$number_manuscripts_graph = 0;
-$number_poster_graph = 0;
-$number_fastTrack_graph = 0;
-$number_other_graph = 0;
 $open_requests_values = array();
 foreach ($request as $req){
     //Only open requests
     if($req['finalize_y'] == "" && ($req['region_response_status'][$instance] == '0' || $req['region_response_status'][$instance] == '1')){
         $open_requests_values[$req['request_type']] += 1;
-    }
-    if($req['request_type'] == '1'){
-        $number_concepts_graph++;
-    }else if($req['request_type'] == '2'){
-        $number_abstracts_graph++;
-    }else if($req['request_type'] == '3'){
-        $number_manuscripts_graph++;
-    }else if($req['request_type'] == '4'){
-        $number_poster_graph++;
-    }else if($req['request_type'] == '5'){
-        $number_fastTrack_graph++;
-    }else if($req['request_type'] == '99'){
-        $number_other_graph++;
     }
 }
 $number_of_announcements = $settings['home_number_announcements'];
@@ -63,9 +44,24 @@ ArrayFunctions::array_sort_by_column($dealines, 'date');
 
 
 /***GRAPH***/
-$requests_values = array(0 => $number_concepts_graph,1=> $number_abstracts_graph,2 => $number_manuscripts_graph,3 => $number_fastTrack_graph,4 => $number_poster_graph,5 => $number_other_graph );
-$requests_labels = array(0 => "Concepts",1 => "Abstracts",2 => "Manuscripts",3 => "Fast Track",4 => "Poster", 5=>"Other");
-$requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777");
+ksort($request_type);
+ksort($open_requests_values);
+$requests_values = array_values($open_requests_values);
+$requests_labels = array_values($request_type);
+$requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777",
+                    6=>"#aa2600",7=>"#bf80ff",8=>"#006238",9=>"#6ddc9c", 10=>"#d1691f");
+#If there are more options than colors, we repeat the colors from the beginning
+if(count($requests_labels) > count($requests_colors)) {
+    $count = 0;
+    for ($i=count($requests_colors);$i<count($requests_labels)+1;$i++) {
+        array_push($requests_colors,$requests_colors[$count]);
+        $count++;
+        if($count > 10){
+            $count = 0;
+        }
+    }
+}
+
 
 if(array_key_exists('message', $_REQUEST)){
     if($_REQUEST['message'] == 'U') {
