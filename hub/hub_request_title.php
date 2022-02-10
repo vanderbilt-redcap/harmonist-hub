@@ -20,7 +20,7 @@ if($request !="") {
         $wg_name = ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
         if (!empty($request['wg2_name'])) {
             $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
-            $wg_name = ", " . ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
+            $wg_name .= ", " . ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
         }
     } else if (!empty($request['wg2_name'])) {
         $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
