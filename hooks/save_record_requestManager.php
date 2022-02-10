@@ -148,7 +148,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         if($settings['hub_email_new_conceptsheet'] != "") {
             $emails = explode(';', $settings['hub_email_new_conceptsheet']);
             foreach ($emails as $email) {
-                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "New concept sheet " . $request['mr_assigned'] . " created in the Hub", $message, $concept_id,"New concept sheet created",$pidsArray['HARMONIST']);
+                \Vanderbilt\HarmonistHubExternalModule\sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "New concept sheet " . $request['mr_assigned'] . " created in the Hub", $message, $concept_id,"New concept sheet created",$pidsArray['HARMONIST']);
             }
         }
 
@@ -204,7 +204,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         if($settings['hub_email_new_conceptsheet'] != "") {
             $emails = explode(';', $settings['hub_email_new_conceptsheet']);
             foreach ($emails as $email) {
-                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Failed to create concept sheet " . $concept['concept_id'] . " in the Hub", $message, $concept['record_id'],"New concept sheet FAILED",$pidsArray['HARMONIST']);
+                \Vanderbilt\HarmonistHubExternalModule\sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Failed to create concept sheet " . $concept['concept_id'] . " in the Hub", $message, $concept['record_id'],"New concept sheet FAILED",$pidsArray['HARMONIST']);
             }
         }
     }

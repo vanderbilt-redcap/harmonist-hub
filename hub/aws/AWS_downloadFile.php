@@ -89,7 +89,7 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
                 "<div>The dataset you submitted to secure cloud storage in response to <strong>\"" . $sop['sop_name'] . "\"</strong> on " . $date_time . " Eastern US Time (ET) has been downloaded by <b>" . $downloader_all . "</b> at " . $download_time_et . ".</div><br/>" .
                 "<div>Your dataset will remain available for download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
-            sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'], "Dataset downloaded", $pidsArray['DATADOWNLOAD']);
+            \Vanderbilt\HarmonistHubExternalModule\sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'], "Dataset downloaded", $pidsArray['DATADOWNLOAD']);
 
             if ($request_DU['data_upload_person'] != $downloader) {
                 $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $downloader));
@@ -102,7 +102,7 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
                     " from " . $region_codeUp . " in response to <strong>\"" . $sop['sop_name'] . "\"</strong> (uploaded on " . $date_time . " ET).</div><br/>" .
                     "<div>The dataset will remain available for download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .
                     "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
-                sendEmail($peopleDown['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $downloader, "Dataset downloaded", $pidsArray['DATADOWNLOAD']);
+                \Vanderbilt\HarmonistHubExternalModule\sendEmail($peopleDown['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $downloader, "Dataset downloaded", $pidsArray['DATADOWNLOAD']);
             }
 
 

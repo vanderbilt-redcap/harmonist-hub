@@ -95,7 +95,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                                 <p><span style="color: #999999; font-size: 11px;">Want to stop following this Data Request? Here\'s a <a href="'.$this->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&token='.$people['access_token'].'&option=und&record='.$sop['record_id']).'">quick link to visit the Hub</a>.</span></p>
                                 ';
 
-                sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message,$people['record_id'],"New data request feedback posted",$pidsArray['SOP']);
+                \Vanderbilt\HarmonistHubExternalModule\sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message,$people['record_id'],"New data request feedback posted",$pidsArray['SOP']);
             }
         }
     }

@@ -1,8 +1,10 @@
 <?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+require_once 'vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-function sendEmail($to, $sender_email, $sender_name, $subject, $message, $record_id, $action_description="", $pid=""){
+function sendEmail($to, $sender_email, $sender_name, $subject, $message, $record_id, $action_description="", $pid="", $cc=""){
 
     if($sender_email == ""){
         $sender_email = " harmonist@vumc.org";
@@ -17,6 +19,10 @@ function sendEmail($to, $sender_email, $sender_name, $subject, $message, $record
 
     $mail = setFrom($mail, $sender_email, $sender_name.$environment);
     $mail->addAddress($to);
+
+    if($cc != ""){
+        $mail->addCC($cc);
+    }
 
     $mail->CharSet = 'UTF-8';
     $mail->Subject = $subject;

@@ -77,7 +77,7 @@ try {
                 "<div>The following reason was logged for this deletion: <strong>" . $deletion_rs . "</strong></div><br/>" .
                 "<div>To replace the deleted dataset, log in to the ".$settings['hub_name']." Hub and select <strong>Submit Data on the <a href='" . $module->getUrl(APP_PATH_PLUGIN . "/index.php?option=dat")."' target='_blank'>Data page</a></strong>.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:".$settings['hub_contact_email']."'>".$settings['hub_contact_email']."</a> with any questions.</span>";
-            sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'],"Dataset deleted",$pidsArray['DATAUPLOAD']);
+            \Vanderbilt\HarmonistHubExternalModule\sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'],"Dataset deleted",$pidsArray['DATAUPLOAD']);
         } else {
             $subject = "Notification of ".$settings['hub_name']." " . $concept_id . " dataset deletion";
             $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
@@ -85,7 +85,7 @@ try {
                 "<div>The following reason was logged for this deletion: <strong>" . $deletion_rs . "</strong></div><br/>" .
                 "<div>To replace the deleted dataset, log in to the ".$settings['hub_name']." Hub and select <strong>Submit Data on the <a href='" . $module->getUrl(APP_PATH_PLUGIN . "/index.php?option=dat")."' target='_blank'>Data page</a></strong>.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:".$settings['hub_contact_email']."'>".$settings['hub_contact_email']."</a> with any questions.</span>";
-            sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'],"Dataset deleted",$pidsArray['DATAUPLOAD']);
+            \Vanderbilt\HarmonistHubExternalModule\sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'],"Dataset deleted",$pidsArray['DATAUPLOAD']);
 
             #To deletetion user
             $subject = "Confirmation  of ".$settings['hub_name']." " . $concept_id . " dataset deletion";
@@ -93,7 +93,7 @@ try {
                 "<div>The dataset submitted to secure cloud storage by <strong>" . $peopleUp['firstname'] . " " . $peopleUp['lastname'] . "</strong> in response to  <b>\"" .  $concept_id.": ".$concept_title . "\"</b> <em>(Draft ID: ".$sop['record_id'].")</em>,on " . $date_time . " Eastern US Time (ET) has been deleted successfully at your request and will not be available for future downloads.</div><br/>" .
                 "<div>The following reason was logged for this deletion: <strong>" . $deletion_rs . "</strong></div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:".$settings['hub_contact_email']."'>".$settings['hub_contact_email']."</a> with any questions.</span>";
-            sendEmail($delete_user['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $user,"Dataset deleted",$pidsArray['DATAUPLOAD']);
+            \Vanderbilt\HarmonistHubExternalModule\sendEmail($delete_user['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $user,"Dataset deleted",$pidsArray['DATAUPLOAD']);
         }
         \REDCap::logEvent("Dataset deleted manually\nRecord ".$request_DU['record_id'],"Concept ID: ".$concept_id."\n Draft ID: ".$sop['record_id']."\n Deleted by: ".$delete_user_fullname,null,null,null,$pidsArray['DATAUPLOAD']);
 
@@ -142,7 +142,7 @@ try {
                     "<div>You will receive an email to alert you if a replacement dataset is available for download. </div><br/>" .
                     "<span style='color:#777'>Please email <a href='mailto:".$settings['hub_contact_email']."'>".$settings['hub_contact_email']."</a> with any questions.</span>";
 
-                sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deleted",$pidsArray['DATAUPLOAD']);
+                \Vanderbilt\HarmonistHubExternalModule\sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deleted",$pidsArray['DATAUPLOAD']);
             }
 
         }

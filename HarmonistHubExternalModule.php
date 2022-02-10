@@ -102,20 +102,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 include_once("js/iframe.js");
                 echo '</script>';
             }
-//            else {
-//                if ($project_id == $pidsArray['SOP']) {
-//                    include_once("hooks/save_record_SOP.php");
-//                } else if ($project_id == $pidsArray['RMANAGER']) {
-//                    include_once("hooks/save_record_requestManager.php");
-//                } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
-//                    include_once("hooks/save_record_commentsAndVotes.php");
-//                } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
-//                    include_once("hooks/save_record_SOP_comments.php");
-//                }
-//                echo '<script>';
-//                include_once("js/iframe.js");
-//                echo '</script>';
-//            }
         }catch (Throwable $e) {
             \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Hook Error", $e->getMessage());
         }
@@ -205,6 +191,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                         } else if ($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1') {
                             //Every First Monday of the Month
                             include("crontasks/cron_monthly_digest.php");
+                        } else if ($cronAttributes['cron_name'] == 'cron_req_finalized_notification') {
+                            include("crontasks/cron_req_finalized_notification.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_publications') {
                             include("crontasks/cron_publications.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_json') {

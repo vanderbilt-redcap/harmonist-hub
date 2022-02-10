@@ -119,6 +119,13 @@
       "cron_minute": "59"
     },
     {
+      "cron_name": "cron_req_finalized_notification",
+      "cron_description": "Cron that sends a notification when a request is finalized",
+      "method": "cronMethod",
+      "cron_frequency": "60",
+      "cron_max_run_time": "60"
+    },
+    {
       "cron_name": "cron_upload_pending",
       "cron_description": "Cron that sends an email and generates an uploads records if there are any pending files",
       "method": "cronMethod",

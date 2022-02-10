@@ -10,7 +10,6 @@ $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
 $days_expiration = intval($settings['uploadnotification_dur']);
 $extra_days = ' + ' . $days_expiration. " days";
-error_log(json_encode($request_DU));
 foreach ($request_DU as $upload) {
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $upload['data_assoc_request']));
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];

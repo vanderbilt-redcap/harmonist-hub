@@ -44,7 +44,7 @@ if(!empty($_POST['email'])) {
         if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
-        sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $settings['hub_name']." Hub Access Link".$environment, $message,$people['record_id'],"Review Hub Access Sent",$pidsArray['PEOPLE']);
+        \Vanderbilt\HarmonistHubExternalModule\sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $settings['hub_name']." Hub Access Link".$environment, $message,$people['record_id'],"Review Hub Access Sent",$pidsArray['PEOPLE']);
 
         #Default to 7 days if empty
         if($settings['accesslink_dur'] == ""){
@@ -69,7 +69,7 @@ if(!empty($_POST['email'])) {
         if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
-        sendEmail(strtolower($_POST['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database","Access denied",$pidsArray['PEOPLE']);
+        \Vanderbilt\HarmonistHubExternalModule\sendEmail(strtolower($_POST['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database","Access denied",$pidsArray['PEOPLE']);
     }
 }
 
