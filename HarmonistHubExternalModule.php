@@ -192,7 +192,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                             //Every First Monday of the Month
                             include("crontasks/cron_monthly_digest.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_req_finalized_notification') {
-                            include("crontasks/cron_req_finalized_notification.php");
+//                            include("crontasks/cron_req_finalized_notification.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_publications') {
                             include("crontasks/cron_publications.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_json') {
