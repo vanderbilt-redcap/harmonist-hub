@@ -1134,8 +1134,8 @@ class AllCrons
         $event_id = $Proj->firstEventId;
         $recordSave = array();
         $recordSave[$request['request_id']][$event_id]['request_summary_sent_y'] = array(1 => "1");//checkbox;
-//        $results = \Records::saveData($pidsArray['RMANAGER'], 'array', $recordSave, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-//        \Records::addRecordToRecordListCache($pidsArray['RMANAGER'], $request['request_id'], 1);
+        $results = \Records::saveData($pidsArray['RMANAGER'], 'array', $recordSave, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        \Records::addRecordToRecordListCache($pidsArray['RMANAGER'], $request['request_id'], 1);
 
         #Email
         $subject = $settings['hub_name'] . " Request #" . $request['request_id'] . " Request Summary for " . $request['request_type'] . ", " . $request['contact_name'];
