@@ -140,7 +140,7 @@ if(!empty($homepage)) {
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub")?>" title="open requests" class="home_openrequests_link"><span class="badge label-default" style="float: right;"><?=$numberOfOpenRequest?></span></a>
+                            <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub")?>" title="open requests" class="home_openrequests_link"><span class="badge label-default" style="float: right;"><?=$numberOfOpenRequest?></span></a>
                             Open Requests</h3>
 
                     </div>
