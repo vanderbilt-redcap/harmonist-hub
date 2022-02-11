@@ -16,11 +16,13 @@ if ($instance == 1) {
 }
 
 $open_requests_values = array();
+$home_metrics_values = array();
 foreach ($request as $req){
     //Only open requests
     if($req['finalize_y'] == "" && ($req['region_response_status'][$instance] == '0' || $req['region_response_status'][$instance] == '1')){
         $open_requests_values[$req['request_type']] += 1;
     }
+    $home_metrics_values[$req['request_type']] += 1;
 }
 $number_of_announcements = $settings['home_number_announcements'];
 $number_of_deadlines = $settings['home_number_deadlines'];
@@ -45,8 +47,8 @@ ArrayFunctions::array_sort_by_column($dealines, 'date');
 
 /***GRAPH***/
 ksort($request_type);
-ksort($open_requests_values);
-$requests_values = array_values($open_requests_values);
+ksort($home_metrics_values);
+$requests_values = array_values($home_metrics_values);
 $requests_labels = array_values($request_type);
 $requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777",
                     6=>"#aa2600",7=>"#bf80ff",8=>"#006238",9=>"#6ddc9c", 10=>"#d1691f");
@@ -138,7 +140,7 @@ if(!empty($homepage)) {
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub")?> title="open requests" class="home_openrequests_link"><span class="badge label-default" style="float: right;"><?=$numberOfOpenRequest?></span></a>
+                            <a href="<?$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub")?>" title="open requests" class="home_openrequests_link"><span class="badge label-default" style="float: right;"><?=$numberOfOpenRequest?></span></a>
                             Open Requests</h3>
 
                     </div>
