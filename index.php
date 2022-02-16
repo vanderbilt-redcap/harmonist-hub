@@ -75,9 +75,7 @@ $pid = (int)$_GET['pid'];
             } else {
                 include_once("projects.php");
                 $settings = \REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$module->framework->getEventId($pidsArray['SETTINGS'])];
-                print_array($settings);
-                $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
-                $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+
                 /***
                  * Installation updates check to update new/missing variables
                  * -Data Dictionary Variables
