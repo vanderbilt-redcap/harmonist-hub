@@ -1,5 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+
+$RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
+$settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 ?>
 <div>
     <div style="padding-left: 15px;font-size: 20px;color: #404040;"><p>Access <?=$settings['hub_name']?> Hub</p></div>
