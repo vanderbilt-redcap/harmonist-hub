@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 ?>
 <div>
-    <div style="padding-left: 15px;font-size: 20px;color: #404040;"><p>Access <?=$settings['hub_name']?> Hub</p></div>
+    <div style="padding-left: 15px;font-size: 20px;color: #404040;"><p>Access <?=$hub_projectname?> Hub</p></div>
     <div style="padding-left: 15px;color: #404040;"><?=$settings['hub_login_text']?></div>
 
     <div class="col-md-10">
