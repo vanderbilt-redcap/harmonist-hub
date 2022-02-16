@@ -813,16 +813,6 @@ foreach ($projects_array as $index=>$name){
             }
         }
 
-        #ADD USER PERMISSIONS
-        $fields_rights = "username=?, design=?, user_rights=?, data_export_tool=?, reports=?, graphical=?, data_logging=?, data_entry=?";
-        $instrument_names = \REDCap::getInstrumentNames(null,$project_id_new);
-        $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
-        foreach ($userPermission as $user){
-            if($user != null) {
-                $module->query("UPDATE redcap_user_rights SET " . $fields_rights . " WHERE project_id = ?", [$user, 1, 1, 1, 1, 1, 1, $data_entry, $project_id_new]);
-            }
-        }
-
         \Records::addRecordToRecordListCache($project_id_new, $record,1);
     }else if($name == "HOME"){
         $pidHome = $project_id_new;
@@ -852,6 +842,18 @@ foreach ($projects_array as $index=>$name){
         $othermodule = ExternalModules::getModuleInstance("vanderbilt_emailTrigger");
         foreach ($projects_array_module_emailalerts[$index] as $setting_name => $setting_value){
             $othermodule->setProjectSetting($setting_name, $setting_value, $project_id_new);
+        }
+    }
+
+    #ADD USER PERMISSIONS
+    $fields_rights = "project_id, username, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
+    $instrument_names = \REDCap::getInstrumentNames(null,$project_id_new);
+    $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
+    foreach ($userPermission as $user){
+        if($user != null && $user != USERID) {
+            $module->query("INSERT INTO redcap_user_rights (" . $fields_rights . ")
+                    VALUES (?,?,?,?,?,?,?,?,?)",
+                [$project_id_new, $user, 1, 1, 1, 1, 1, 1, $data_entry]);
         }
     }
 
@@ -941,6 +943,12 @@ if($pidHome != ""){
     $array_repeat_instances[1]['repeat_instances'][$event_id]['quick_links_section'][2] = $aux;
     $results = \REDCap::saveData($pidHome, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
 }
+
+#Get Projects ID's
+$pidsArray = REDCapManagement::getPIDsArray($project_id);
+
+#We must clear the project cache so our updates are pulled from the DB.
+$module->clearProjectCache();
 
 #Upload SQL fields to projects
 $projects_array_sql = array(
