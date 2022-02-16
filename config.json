@@ -31,13 +31,13 @@
   "project-settings": [
     {
       "key": "hub-projectname",
-      "name": "Enter the Hub name",
+      "name": "Hub Name (if \"TEST\", all projects will be named TEST Hub.)",
       "required": true,
       "type": "text"
     },
     {
       "key": "hub-type-description",
-      "name": "<div>Select the default profile on your installation.</div><br><div class='alert alert-info' style='border-color:#bce8f1 !important'><ul style='margin-bottom: 0 !important;'><li><strong>Solo</strong> (only the Hub)</li><li><strong>Basic</strong> (Hub with Basic Data Hub (REDCap features only like data request builder and file transfer))</li><li><strong>All</strong> (Hub with Data Hub and Data Toolkit)</li></ul></div><div style='color:red'><em>*This is a ONE TIME installation only. Changing the value after the installation has finished will not change the settings.</em></div>",
+      "name": "<div>Select the default profile for your installation.</div><br><div class='alert alert-info' style='border-color:#bce8f1 !important'><ul style='margin-bottom: 0 !important;'><li><strong>Solo</strong> (Hub only)</li><li><strong>Basic</strong> (Hub with Basic Data Hub (REDCap features only like data request builder and file transfer))</li><li><strong>All</strong> (Hub with Data Hub and Data Toolkit)</li></ul></div><div style='color:red'><em>*This is a ONE TIME installation only. Changing the value after the installation has finished will not change the settings.</em></div>",
       "type": "descriptive"
     },
     {

@@ -32,7 +32,7 @@ if($isAdmin) {
 
 <nav class="navbar navbar-default" role="navigation">
     <div>
-        <div class="navbar-header">
+        <div class="navbar-header" style="min-height: 60px;">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Toggle navigation</span>
                 <i class="icon-bar"></i>
