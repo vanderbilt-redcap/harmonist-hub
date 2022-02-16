@@ -74,8 +74,8 @@ $pid = (int)$_GET['pid'];
                 </div>';
             } else {
                 include_once("projects.php");
-//                $settings = \REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$module->framework->getEventId($pidsArray['SETTINGS'])];
-
+                $settings = \REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$module->framework->getEventId($pidsArray['SETTINGS'])];
+                print_array($pidsArray['SETTINGS']);
                 $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
                 $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
                 /***
