@@ -40,11 +40,16 @@ if($isAdmin) {
                 <i class="icon-bar"></i>
             </button>
             <div class="imgNavbar">
-                <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>" style="text-decoration: none;float:left">
-                    <img src='<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo'], 'src');?>' style='max-width:250px;height:40px;' class='wiki_logo_img' alt="<?=$hub_projectname?> Logo">
-                </a>
+                <?php
+                $textStyleNoLogo = "padding-left:40px;";
+                if($settings['hub_logo'] != ""){
+                    $textStyleNoLogo = ""; ?>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>" style="text-decoration: none;float:left">
+                        <img src='<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo'], 'src');?>' style='max-width:250px;height:40px;' class='wiki_logo_img' alt="<?=$hub_projectname?> Logo">
+                    </a>
+                <?php } ?>
                     <?php if(empty($token) || array_key_exists('sout', $_REQUEST)){ ?>
-                        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>" style="text-decoration: none;float:left" class="hub_header_title">
+                        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>" style="<?=$textStyleNoLogo?>text-decoration: none;float:left" class="hub_header_title">
                             <span class=""><?=$hub_projectname?> Hub</span>
                         </a>
                     <?php } ?>
