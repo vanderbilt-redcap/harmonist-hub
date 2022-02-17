@@ -51,7 +51,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     <div class="optionSelect conceptSheets_optionMenu">
         <div style="float:right">
             <div style="float:left;padding-left:30px;margin-top: 8px;">
-                Region:
+                Group:
             </div>
             <div style="float:left;padding-left:10px">
                 <select class="form-control" name="selectRegion" id="selectRegion">
@@ -98,7 +98,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                     echo '<thead>' . '
                             <tr>' . '
                                 <th class="sorted_class" data-sorted="true" data-sorted-direction="descending">Name</th>' . '
-                                <th class="sorted_class" data-sorted-direction="descending">Region</th>' . '
+                                <th class="sorted_class" data-sorted-direction="descending">Group</th>' . '
                                 <th class="sorted_class" data-sorted-direction="descending" style="width: 150px;">Last Access Link</th>' . '
                                 <th class="sorted_class" data-sorted-direction="descending">Level</th>' . '
                                 <th class="sorted_class" data-sorted-direction="descending">Permissions</th>' . '
