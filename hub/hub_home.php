@@ -29,7 +29,7 @@ $number_of_deadlines = $settings['home_number_deadlines'];
 $number_of_quicklinks = $settings['home_number_quicklinks'];
 $number_of_recentactivity = $settings['home_number_recentactivity'];
 
-$RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".date('Y-m-d', strtotime("-7 day"))."', \"d\", true) >= 0");
+$RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null);
 $comments_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetComments);
 ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
@@ -282,7 +282,8 @@ if(!empty($homepage)) {
                 if(!empty($comments_sevenDaysYoung)) {
                     $i = 0;
                     foreach ($comments_sevenDaysYoung as $comment) {
-                        if($comment['author_revision_y'] == '1' || $comment['pi_vote'] != '' || $comment['comments'] != '') {
+                        $seveDaysYoung = strtotime(date('Y-m-d', strtotime(date('Y-m-d') . "- 7 days")));
+                        if(strtotime($comment['responsecomplete_ts']) >= $seveDaysYoung && ($comment['author_revision_y'] == '1' || $comment['pi_vote'] != '' || $comment['comments'] != '')) {
                             if ($i < $number_of_recentactivity) {
                                 echo '<li class="list-group-item">';
 
