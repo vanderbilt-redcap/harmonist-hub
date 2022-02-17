@@ -57,7 +57,7 @@ if($person_record != ""){
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="index.php">< Back to Home</a>
+        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>">< Back to Home</a>
     </div>
     <h3>Recent Activity</h3>
     <p class="hub-title"><?=$settings['hub_recent_act_text']?></p>
