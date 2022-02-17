@@ -110,7 +110,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                     $harmonist_perms = $module->getChoiceLabels('harmonist_perms', $pidsArray['PEOPLE']);
                     foreach ($logins as $login){
                         $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $login['person_region']));
-                        $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)['region_code'];
+                        $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
 
                         $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array',  array('record_id' => $login['record_id']));
                         $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
