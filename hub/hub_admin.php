@@ -574,7 +574,7 @@ $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTING
                     $RecordSetProjectsY = \REDCap::getData($pidsArray['PROJECTS'], 'array', null,null,null,null,false,false,false, "[project_show_y] = '1'");
                     $projectsY = ProjectData::getProjectInfoArray($RecordSetProjectsY);
                     foreach ($projectsY as $project){
-                        $iedea_constant = constant("IEDEA_".$project['project_constant']);
+                        $iedea_constant = $pidsArray[$project['project_constant']];
                         $title = $module->framework->getProject($iedea_constant)->getTitle();
                         $project_plugin = $iedea_constant;
                         echo '<tr>'.
