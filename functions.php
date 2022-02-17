@@ -927,9 +927,9 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
             $reviewer = '';
         }
         if($req['approval_y'] == '0'){
-            $current_req .= '<td width="150px"><em>Rejected</em>'.$reviewer.'</td>';
+            $current_req .= '<td width="150px"><strong>Rejected</strong>'.$reviewer.'</td>';
         }else if($req['approval_y'] == '9') {
-            $current_req .= '<td width="150px"><em>Deactivated</em>'.$reviewer.'</td>';
+            $current_req .= '<td width="150px"><strong>Deactivated</strong>'.$reviewer.'</td>';
         }else{
             $current_req .= '<td width="150px"><em>Unspecified</em></td>';
         }
