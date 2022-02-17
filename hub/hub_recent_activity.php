@@ -148,11 +148,13 @@ if($person_record != ""){
 
                             echo '<tr><td width="150px">'.$comment_time.'</td>';
 
-                            $concept_id = "";
+                            $concept_id = "<em>None</em>";
                             if(!empty($requestComment['assoc_concept'])){
                                 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $requestComment['assoc_concept']));
                                 $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
                                 $concept_id = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$concept['record_id']).'">'.$concept['concept_id'].'</a>';
+                            }else if($requestComment['mr_temporary'] != ""){
+                                $concept_id = $requestComment['mr_temporary'];
                             }
                             echo '<td width="50px">'.$concept_id.'</td>'.
                                 '<td width="160px">'.$name.'</td>';
