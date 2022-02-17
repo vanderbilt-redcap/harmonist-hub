@@ -48,7 +48,7 @@ if($isAdmin) {
                         <img src='<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo'], 'src');?>' style='max-width:250px;height:40px;' class='wiki_logo_img' alt="<?=$hub_projectname?> Logo">
                     </a>
                 <?php } ?>
-                    <?php if(empty($token) || array_key_exists('sout', $_REQUEST)){ ?>
+                    <?php if(empty($token) || array_key_exists('sout', $_REQUEST) || $settings['hub_logo'] == ""){ ?>
                         <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>" style="<?=$textStyleNoLogo?>text-decoration: none;float:left" class="hub_header_title">
                             <span class=""><?=$hub_projectname?> Hub</span>
                         </a>
