@@ -36,17 +36,19 @@ if($_REQUEST['type'] != ""){
         function( settings, data, dataIndex ) {
             var final = $('#selectFinal option:selected').val();
             var type = $('#selectReqType option:selected').val();
-            var column_final = data[11];
+            var column_final = data[5];
             var column_type = data[1];
+            var typePosition = column_type.search(type)
+            var finalPosition = column_final.search(final)
 
-            if(final != 'Select All' && column_final.match(final) != null){
-                if(type != 'Select All' && column_type.match(type) != null){
+            if(final != 'Select All' && finalPosition >= 0){
+                if(type != 'Select All' && typePosition >= 0){
                     return true;
                 }else if(type == 'Select All'){
                     return true;
                 }
             }else if(final == 'Select All'){
-                if(type != 'Select All' && column_type.match(type) != null){
+                if(type != 'Select All' && ctypePosition >= 0){
                     return true;
                 }else if(type == 'Select All'){
                     return true;
@@ -92,8 +94,10 @@ if($_REQUEST['type'] != ""){
                 <select class="form-control" name="selectReqType" id="selectReqType">
                     <option value="">Select All</option>
                     <?php
-                        foreach ($request_type_label as $reqType){
-                            echo "<option value='".$reqType."'>".$reqType."</option>";
+                        foreach ($request_type_label as $value => $label){
+                            if(!in_array($value,$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])) {
+                                echo "<option value='" . $label . "'>" . $label . "</option>";
+                            }
                         }
                     ?>
                 </select>
