@@ -67,7 +67,7 @@ if($person_record != ""){
     <div class="optionSelect conceptSheets_optionMenu">
         <div style="float:right">
             <div style="float:left;padding-left:30px;margin-top: 8px;">
-                Region:
+                Group:
             </div>
             <div style="float:left;padding-left:10px">
                 <select class="form-control" name="selectRegion" id="selectRegion">
@@ -120,7 +120,7 @@ if($person_record != ""){
                             <th class="sorted_class">Concept</th>
                             <th class="sorted_class">Name</th>
                             <th class="sorted_class">Activity</th>
-                            <th class="sorted_class">Region</th>
+                            <th class="sorted_class">Group</th>
                             <th class="sorted_class"><span style="display:block">Request</span><span>Title</span></th>
                             <th class="sorted_class">File</th>
                         </tr>
