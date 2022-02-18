@@ -41,7 +41,7 @@ if($isAdmin) {
             </button>
             <div class="imgNavbar">
                 <?php
-                $textStyleNoLogo = "padding-left:40px;";
+                $textStyleNoLogo = "padding-left:40px;padding-right:20px;";
                 if($settings['hub_logo'] != ""){
                     $textStyleNoLogo = ""; ?>
                     <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>" style="text-decoration: none;float:left">

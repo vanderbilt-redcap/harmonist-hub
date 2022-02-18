@@ -45,6 +45,7 @@ admintext5,hub_settings,,text,"Text to create a new Concept record",,,,,,,,,,,,,
 deactivate_tblcenter,hub_settings,"List and Map of Consortium Sites (Site Census)",checkbox,"Hide/Deactivate Consortium Site List?","1, YES",,,,,,,,,,,,
 pastlastreview_dur,hub_settings,,text,"How frequently should Research Groups update their site list? ",,,,,,,,,,,,,
 deactivate_concept_tracker,hub_settings,"Concepts Settings",checkbox,"Hide/Deactivate Concept Tracker button?","1, YES",,,,,,,,,,,,
+deactivate_analytics,hub_settings,"Google Analytics",checkbox,"Hide/Deactivate Google Analytics?","1, YES",,,,,,,,,,,,
 hub_login_text,hub_page_text,"Login/Access Link Page",notes,"Login page text
 <div style=""font-weight:lighter;font-style:italic"">(<a href=""https://docs.google.com/presentation/d/1kSyb9oBInNCrBC_xRi-cJ_u8VEFQQlXbp1-VK0vc75M/edit#slide=id.ga11fd715f1_0_77"" target=""_blank"">show me</a>) Use HTML for links and formatting. Remember to use target='_blank' on links so they open in a new tab.</div>",,,,,,,,y,LV,,,," @DEFAULT='<p>Harmonist Hub (<a href=""http://sampleconsortiumhub.org"" target=""_blank"">sampleconsortiumhub.org</a>) is the internal coordination website for the Hub Example Consortium. Please visit <a href=""http://sampleconsortiumhub.org"" target=""_blank"">sampleconsortiumhub.org</a> for our public site.'"
 hub_login_blue_text,hub_page_text,,notes,"Login blue box text

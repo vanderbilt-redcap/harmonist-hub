@@ -12,7 +12,6 @@ define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
 $pid = (int)$_GET['pid'];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -84,6 +83,9 @@ $pid = (int)$_GET['pid'];
                 if($isAdmin && !array_key_exists('sout', $_REQUEST)) {
 //                    $module->compareDataDictionaries();
 //                    $module->compareRepeatingForms();
+                }
+                if($settings['deactivate_analytics'][1] != 1) {
+                    include_once("analyticstracking.php");
                 }
                 ?>
                 <head>
