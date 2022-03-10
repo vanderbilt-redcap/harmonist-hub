@@ -983,14 +983,11 @@ class AllCrons
             $projectData = ProjectData::getProjectInfoArray($RecordSetProjectData)[0];
             if (!empty($projectData)) {
                 $jsoncopyPID = $pidsArray['JSONCOPY'];
-                if (ENVIRONMENT == "DEV") {
-                    $qtype = $module->query("SELECT MAX(record) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record", [$jsoncopyPID, 'type', $type]);
-                } else {
-                    $qtype = $module->query("SELECT MAX(CAST(record AS Int)) as record FROM redcap_data WHERE project_id=? AND field_name=? and value=? order by record", [$jsoncopyPID, 'type', $type]);
-                }
-                $rowtype = $qtype->fetch_assoc();
+                $sqltype = "SELECT record as record FROM redcap_data WHERE project_id='".db_escape(IEDEA_JSONCOPY)."' AND field_name='".db_escape('type')."' and value='".db_escape($type)."' order by record";
+                while($rowtype[] = $qtype->fetch_assoc());
+                $maxRecord = max(array_column($rowtype, 'record'));
 
-                $RecordSetJsonCopy = \REDCap::getData($jsoncopyPID, 'array', array('record_id' => $rowtype['record']));
+                $RecordSetJsonCopy = \REDCap::getData($jsoncopyPID, 'array', array('record_id' => $maxRecord));
                 $jsoncopy = ProjectData::getProjectInfoArray($RecordSetJsonCopy)[0];
                 $today = date("Y-m-d");
                 if ($jsoncopy["jsoncopy_file"] != "" && strtotime(date("Y-m-d", strtotime($jsoncopy['json_copy_update_d']))) == strtotime($today)) {
@@ -1084,9 +1081,15 @@ class AllCrons
                 $last_array = json_decode($strJsonFileContents, true);
                 $array_data = call_user_func_array("\Vanderbilt\HarmonistHubExternalModule\createProject".strtoupper($type)."JSON",array($module, $pidsArray));
                 $new_array = json_decode($array_data['jsonArray'],true);
-                $result_prev = ArrayFunctions::array_filter_empty(multi_array_diff($last_array,$new_array));
-                $result = ArrayFunctions::array_filter_empty(multi_array_diff($new_array,$last_array));
                 $record = $array_data['record_id'];
+                if($type == "0c"){
+                    $result_prev = array_filter_empty(array_diff_assoc($last_array,$new_array));
+                    $result = array_filter_empty(array_diff_assoc($new_array,$last_array));
+                }else{
+                    //multidimensional projects
+                    $result_prev = array_filter_empty(multi_array_diff($last_array,$new_array));
+                    $result = array_filter_empty(multi_array_diff($new_array,$last_array));
+                }
             }
         }else{
             $array_data = call_user_func_array("\Vanderbilt\HarmonistHubExternalModule\createProject".strtoupper($type)."JSON",array($module, $pidsArray));
