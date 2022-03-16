@@ -374,11 +374,11 @@ if(!empty($homepage)) {
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">
-                    Hub Metrics
-                        <?php if($settings['deactivate_metrics'][1] != "1" || $isAdmin){ ?>
-                            <span style="float: right"><a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=mts")?>">View more</a></span>
-                        <?php } ?>
+                <h3 class="panel-title panelHeight">
+                    <span class="col-sm-6" style="padding:0">Hub Metrics</span>
+                    <?php if($settings['deactivate_metrics'][1] != "1" || $isAdmin){ ?>
+                        <span class="col-sm-6" style="text-align:right;padding:0"><a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=mts")?>">View more</a></span>
+                    <?php } ?>
                 </h3>
             </div>
             <div class="stat-table-outer" aria-expanded="true">

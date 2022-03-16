@@ -901,9 +901,16 @@ table[data-sortable].sortable-theme-bootstrap.sop_discuss tbody td{
 }
 
 /***Medium Devices, Desktops **/
-@media (max-width: 992px) {
+@media (max-width: 990px) {
     colgroup col.active{
         background-color:transparent;
+    }
+}
+
+/*** Resize Home panel***/
+@media (min-width: 768px) and (max-width:991px) {
+    .panelHeight{
+        min-height: 35px !important;
     }
 }
 
@@ -969,6 +976,9 @@ table[data-sortable].sortable-theme-bootstrap.sop_discuss tbody td{
     border-bottom: 1px solid transparent;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
+}
+.panelHeight{
+    min-height: 19px
 }
 .list-group-item>.time {
     float: right;
