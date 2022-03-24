@@ -498,8 +498,10 @@ function numberOfOpenRequest($request,$instance){
         if ($instance == 1) {
             $instance = '';
         }
-        if ($req['finalize_y'] == "" && ($req['region_response_status'][$instance] == 0 || $req['region_response_status'][$instance] == 1)) {
-            $number++;
+        if(is_array($req['region_response_status'])) {
+            if ($req['finalize_y'] == "" && ($req['region_response_status'][$instance] == 0 || $req['region_response_status'][$instance] == 1)) {
+                $number++;
+            }
         }
     }
     return $number;
