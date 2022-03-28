@@ -1147,9 +1147,8 @@ class AllCrons
         <div>Your " . $settings['hub_name'] . " request has been approved, \"" . $request['request_title'] . "\", as of ".$request['final_d'].". Below is a summary of the votes and comments that were recorded for your request. Please check the final approval e-mail for next steps for your request; this is just a digest of recorded votes and comments.</div>
         <div>".$settings['author_summary_footer']."</div></br></br>";
 
-        $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', array("request_id" => $request['request_id']));
+        $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, "[request_id] = ".$request['request_id']);
         $comments = ProjectData::getProjectInfoArray($RecordSetComments);
-
         if (!empty($comments)) {
             $body .= "<table style='border: 1px solid #ddd;max-width: 900px;font-size: 14px;border-collapse: collapse;'>
         <thead>
@@ -1218,7 +1217,6 @@ class AllCrons
             $body .= "</tbody>
             </table>
             </br><div>Link to review request #".$request['request_id'].": <a href='".$url."'>".$url."</a></div>";
-
             if($email) {
                 \Vanderbilt\HarmonistHubExternalModule\sendEmail($request['contact_email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $body, $request['request_id'], "Request Finalized notification", $pidsArray['RMANAGER'], $settings['hub_email_author_summary']);
             }
