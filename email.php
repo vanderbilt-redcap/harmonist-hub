@@ -21,7 +21,12 @@ function sendEmail($to, $sender_email, $sender_name, $subject, $message, $record
     $mail->addAddress($to);
 
     if($cc != ""){
-        $mail->addCC($cc);
+        $emails = explode(';', $cc);
+        foreach ($emails as $email) {
+            if($email != "") {
+                $mail->addCC($email);
+            }
+        }
     }
 
     $mail->CharSet = 'UTF-8';
