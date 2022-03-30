@@ -1141,7 +1141,8 @@ class AllCrons
         \Records::addRecordToRecordListCache($pidsArray['RMANAGER'], $request['request_id'], 1);
 
         #Email
-        $subject = $settings['hub_name'] . " Request #" . $request['request_id'] . " Request Summary for " . $request['request_type'] . ", " . $request['contact_name'];
+        $request_type = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
+        $subject = $settings['hub_name'] . " Request #" . $request['request_id'] . " Request Summary for " . $request_type[$request['request_type']] . ", " . $request['contact_name'];
         $body = "<h2>Request Summary</h2>";
         $body .= "<div>Dear " . $request['contact_name'] . ",<div>
         <div>Your " . $settings['hub_name'] . " request has been approved, \"" . $request['request_title'] . "\", as of ".$request['final_d'].". Below is a summary of the votes and comments that were recorded for your request. Please check the final approval e-mail for next steps for your request; this is just a digest of recorded votes and comments.</div>
