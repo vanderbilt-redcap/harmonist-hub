@@ -1,7 +1,9 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $_REQUEST['record']));
+$record = htmlentities($_REQUEST['record'],ENT_QUOTES);
+
+$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
 if($sop !="") {
@@ -44,9 +46,9 @@ if($sop !="") {
     $date = new \DateTime($sop['sop_updated_dt']);
     $sop_updated_dt = $date->format('d F Y');
 
-    if ($_REQUEST['option'] == 'und' && $_REQUEST['record'] != '') {
+    if ($_REQUEST['option'] == 'und' && $record != '') {
         $userid = $current_user['record_id'];
-        $record_id = $_REQUEST['record'];
+        $record_id = $record;
 
         $Proj = new \Project($pidsArray['SOP']);
         $event_id = $Proj->firstEventId;
@@ -97,8 +99,8 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
             data += "&region="+$('#region').val();
             data += "&status_record="+$('#status_record').val();
             data += "&data_response_notes="+encodeURIComponent($('#data_response_notes').val());
-            var record = <?=json_encode($_REQUEST['record'])?>;
-            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=sop&record=".$_REQUEST['record']."&message=D"))?>);
+            var record = <?=json_encode($record)?>;
+            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=sop&record=".$record."&message=D"))?>);
             return false;
         });
     });
@@ -163,7 +165,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             <?php
                                 if(($sop['sop_status'] == '2' && ($isAdmin || $harmonist_perm)) || $sop['sop_status'] != '2'){
                                     ?> <li>
-                                        <a href='<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=ss1&record=".$_REQUEST['record']."&step=3")?>' target="_blank">Edit Data Request</a>
+                                        <a href='<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=ss1&record=".$record."&step=3")?>' target="_blank">Edit Data Request</a>
                                     </li>
                                     <?php
                                 }
@@ -187,12 +189,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                 echo '<li><a href="#" onclick="confirmMakePrivate(\'' . $sop['record_id'] . '\')" class="open-codesModal">Revert to Private</a></li>';
                             }
                             if($sop['sop_status'] != "1") {
-                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $_REQUEST['record'], "finalization_of_data_request", "");
+                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "finalization_of_data_request", "");
                                 $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" style="cursor:pointer">Start Data Call</a></li>';
                             }
                             if($sop['sop_status'] == "1" && $sop['sop_visibility'] == "2" && $sop['sop_finalize_y'][1] == '1' && empty($sop['sop_closed_y'][0])){
-                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $_REQUEST['record'], "data_call_closure", "");
+                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "data_call_closure", "");
                                 $survey_link_closure = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-closure\',\'redcap-closure-frame\',\'' . $survey_link_closure . '\');" style="cursor:pointer">Archive Data Call</a></li>';
                             }
@@ -406,7 +408,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                 </div>
                                 <div class="modal-body">
                                     <span>Are you sure you want to delete this Data Request?</span>
-                                    <input type="hidden" value="<?= $_REQUEST['record'] ?>" id="index_modal_delete"
+                                    <input type="hidden" value="<?= $record ?>" id="index_modal_delete"
                                            name="index_modal_delete">
                                 </div>
 
@@ -698,7 +700,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Data Request Uploads
-                    <a href="<?=$module->geturl("index.php?pid=".$pidsArray['PROJECTS']."option=lgd&record=".$_REQUEST['record']);?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->geturl("index.php?pid=".$pidsArray['PROJECTS']."option=lgd&record=".$record);?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <div id="collapse_dataReqUp" class="panel-collapse" aria-expanded="true">
@@ -712,7 +714,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                         <col>
                     </colgroup>
                     <?php
-                    $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$_REQUEST['record']."'");
+                    $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$record."'");
                     $uploads = ProjectData::getProjectInfoArray($RecordSetUpload);
                     ArrayFunctions::array_sort_by_column($uploads, 'responsecomplete_ts',SORT_DESC);
                     if (!empty($uploads)){
@@ -783,7 +785,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     </thead>
                     <tbody>
                     <?php
-                    $RecordSetComments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'array', null,null,null,null,false,false,false,"[sop_id] = '".$_REQUEST['record']."'");
+                    $RecordSetComments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'array', null,null,null,null,false,false,false,"[sop_id] = '".$record."'");
                     $comments = ProjectData::getProjectInfoArray($RecordSetComments);
                     krsort($comments);
                     if (!empty($comments)) {
@@ -864,7 +866,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                 </h4>
             </div>
             <?php
-            $survey_path = APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $pidsArray['SURVEYLINKSOP'] . "&sop_id=" . $_REQUEST['record'] . "&response_person=" . $current_user['record_id'] . "&response_region=" . $current_user['person_region'] . "&comment_ver=" . $sop['sop_status'];
+            $survey_path = APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $pidsArray['SURVEYLINKSOP'] . "&sop_id=" . $record . "&response_person=" . $current_user['record_id'] . "&response_region=" . $current_user['person_region'] . "&comment_ver=" . $sop['sop_status'];
             ?>
             <div id="collapse_ask" class="panel-collapse collapse in" aria-expanded="true">
                 <div class="panel-body">
@@ -885,6 +887,6 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
         </script>
     <?php }
    }else{ ?>
-        <div class="alert alert-warning fade in col-md-12"><em>Data Request #<?=$_REQUEST['record']?> is not available at this time.</em></div>
+        <div class="alert alert-warning fade in col-md-12"><em>Data Request #<?=$record?> is not available at this time.</em></div>
     <?php } ?>
 </div>

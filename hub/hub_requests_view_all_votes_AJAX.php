@@ -2,8 +2,8 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
-$request_id = $_REQUEST['request_id'];
-$project_id = $_REQUEST['pid'];
+$request_id = htmlentities($_REQUEST['request_id'],ENT_QUOTES);
+$project_id = (int)$_REQUEST['pid'];
 
 $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);

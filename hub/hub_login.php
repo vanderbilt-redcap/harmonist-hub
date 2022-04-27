@@ -1,5 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+
+$option = htmlentities($_GET['option'],ENT_QUOTES);
+$record = htmlentities($_GET['record'],ENT_QUOTES);
 ?>
 <div>
     <div style="padding-left: 15px;font-size: 20px;color: #404040;"><p>Access <?=$hub_projectname?> Hub</p></div>
@@ -47,8 +50,8 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                 $('html,body').scrollTop(0);
             }
             else {
-                var option = <?=json_encode($_GET['option']);?>;
-                var record = <?=json_encode($_GET['record']);?>;
+                var option = <?=json_encode($option);?>;
+                var record = <?=json_encode($record);?>;
                 loadAjax('email='+$('#hub_email').val()+'&option='+option+'&record='+record,url_getLink,'hub_error_message');
                 $('#hub_email').val('');
             }

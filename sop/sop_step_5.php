@@ -1,8 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$record_id = $_REQUEST['record'];
-$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $_REQUEST['record']));
+$record_id = htmlentities($_REQUEST['record'],ENT_QUOTES);
+$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record_id));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
 $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);

@@ -148,7 +148,7 @@ if(!empty($homepage)) {
                        <?php
                        $i=0;
                        foreach ($request_type as $value => $label){
-                           if(!in_array($value,$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])){
+                           if($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'] != "" && !in_array($value,$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])){
                                $open_req_value = ($open_requests_values[$value] == 0)?"":$open_requests_values[$value];
 
                                #GRADIENT for the Badge

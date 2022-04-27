@@ -4,5 +4,8 @@
         "nesbot/carbon": "^2.35",
         "phpoffice/phpspreadsheet": "^1.13",
         "dompdf/dompdf": "0.8.3"
+    },
+    "require-dev": {
+        "vimeo/psalm": "^4.22"
     }
 }

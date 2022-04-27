@@ -1,6 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
+$record = htmlentities($_REQUEST['record'],ENT_QUOTES);
+
 $RecordSetDataUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
 $dataUpload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataUpload);
 ArrayFunctions::array_sort_by_column($dataUpload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
@@ -15,9 +17,9 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
 
 $datareq_id = '';
 $datareq_title = '';
-if(array_key_exists('record', $_REQUEST) && $_REQUEST['record'] != ''){
-    $datareq_id = $_REQUEST['record'];
-    $datareq_title = "<em>(for Data Request #".$_REQUEST['record'].")</em>";
+if(array_key_exists('record', $_REQUEST) && $record != ''){
+    $datareq_id = $record;
+    $datareq_title = "<em>(for Data Request #".$record.")</em>";
 }
 ?>
 <script>

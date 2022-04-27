@@ -1,7 +1,10 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $_REQUEST['record']));
+$option = htmlentities($_GET['option'],ENT_QUOTES);
+$record = htmlentities($_GET['record'],ENT_QUOTES);
+
+$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $record));
 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,'')[0];
 if($request !="") {
     $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
@@ -45,8 +48,8 @@ if($request !="") {
         $concept = $request['mr_temporary'];
     }
 
-    $request_id = $_REQUEST['record'];
-    if ($_REQUEST['option'] == 'unf' && $_REQUEST['record'] != '') {
+    $request_id = $record;
+    if ($option == 'unf' && $record != '') {
         $userid = $current_user['record_id'];
 
         $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
@@ -75,8 +78,8 @@ if($request !="") {
         var table = $('#table_request').DataTable({"order": [3, "desc"]});
 
 
-        var option = <?=json_encode($_REQUEST['option'])?>;
-        var record = <?=json_encode($_REQUEST['record'])?>;
+        var option = <?=json_encode($option)?>;
+        var record = <?=json_encode($record)?>;
         if(option == 'unf' && record != ''){
             $('#succMsgContainer_unfollow').show();
         }
@@ -155,7 +158,7 @@ if($request !="") {
                         <li><a href="<?=$editRequest?>"target="_blank">Edit Request</a></li>
                         <li><a href="<?=$changeApproval?>"target="_blank">Change Approval</a></li>
                         <?php
-                        $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $_REQUEST['record'], "finalization_of_request", "");
+                        $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $record, "finalization_of_request", "");
                         $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                         echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\''.$survey_link.'\');" style="cursor:pointer">Finalize Request</a></li>';
                         ?>
@@ -274,7 +277,7 @@ if($request !="") {
                 $follow_class = 'btn-default';
                 $follow_icon_class ='fa fa-plus-square';
                 $follow_text = "Follow Activity";
-                if($request['follow_activity'] != '' && $_REQUEST['option'] != 'unf'){
+                if($request['follow_activity'] != '' && $option != 'unf'){
                     $array_userid = explode(',',$request['follow_activity']);
                     if(in_array($current_user['record_id'],$array_userid)){
                         $follow_option = '0';
@@ -367,7 +370,7 @@ if($request !="") {
                             </div>
                             <div class="modal-body">
                                 <?php
-                                $survey_path = APP_PATH_WEBROOT_FULL."/surveys/?s=".$pidsArray['SURVEYLINK']."&author_revision_y=1"."&request_id=".$_REQUEST['record']."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal";
+                                $survey_path = htmlentities(APP_PATH_WEBROOT_FULL."/surveys/?s=".$pidsArray['SURVEYLINK']."&author_revision_y=1"."&request_id=".$record."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal",ENT_QUOTES);
                                 ?>
                                 <iframe class="commentsform" id="redcap-author-revision" name="redcap-author-revision" message="R" src="<?=$survey_path?>" style="border: none;height: 810px;width: 100%;"></iframe>
                             </div>
@@ -573,7 +576,7 @@ if($request !="") {
             if($current_user['harmonist_regperm'] == '3'){
                 $response_pi_level = 1;
             }
-            $survey_path = APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYLINK']."&request_id=".$_REQUEST['record']."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal";
+            $survey_path = htmlentities(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYLINK']."&request_id=".$record."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal",ENT_QUOTES);
         ?>
         <div id="collapse_review" class="panel-collapse collapse in" aria-expanded="true">
             <div class="panel-body">
@@ -591,6 +594,6 @@ if($request !="") {
     <?php }?>
 
     <?php }else{?>
-        <div class="alert alert-warning fade in col-md-12"><em>Request #<?=$_REQUEST['record']?> is not available at this time.</em></div>
+        <div class="alert alert-warning fade in col-md-12"><em>Request #<?=$record?> is not available at this time.</em></div>
     <?php }?>
 </div>

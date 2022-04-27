@@ -1,6 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-$RecordSetTable = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $_REQUEST['record']));
+
+$record = htmlentities($_REQUEST['record'],ENT_QUOTES);
+$RecordSetTable = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $record));
 $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0];
 
 $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
@@ -121,12 +123,12 @@ if($concept['revised_y'][0] == '1'){
     <h3 class="concepts-title-title"><?=$concept['concept_id']?></h3>
 
         <?php if($isAdmin || $harmonist_perm_edit_concept){
-            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $_REQUEST['record'], "concept_sheet", "");
+            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $record, "concept_sheet", "");
             $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
 
-            $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$_REQUEST['record'];
+            $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$record,ENT_QUOTES);
 
-            $survey_queue_link = \REDCap::getSurveyQueueLink($_REQUEST['record']);
+            $survey_queue_link = \REDCap::getSurveyQueueLink($record);
             ?>
             <div class="btn-group hidden-xs pull-right">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -330,9 +332,9 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
         <div id="collapse4" class="table-responsive panel-collapse collapse in" aria-expanded="false" style="overflow-y: hidden;">
             <table class="table sortable-theme-bootstrap" data-sortable>
             <?php
-            $q = $module->query("SELECT record FROM redcap_data WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$_REQUEST['record'],$pidsArray['HARMONIST']]);
+            $q = $module->query("SELECT record FROM redcap_data WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$record,$pidsArray['HARMONIST']]);
 
-            $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_visibility] = 2 and [sop_concept_id] = ".$_REQUEST['record']);
+            $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_visibility] = 2 and [sop_concept_id] = ".$record);
             $data_requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
 
             ArrayFunctions::array_sort_by_column($data_requests,'sop_updated_dt',SORT_DESC);
@@ -376,7 +378,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     <col>
                 </colgroup>
                 <?php
-                $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$_REQUEST['record']);
+                $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$record);
                 $uploads = ProjectData::getProjectInfoArray($RecordSetUpload);
                 if(!empty($uploads)){?>
 
@@ -523,7 +525,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
     </div>
 </div>
 <?php }else{ ?>
-    <div class="alert alert-warning fade in col-md-12"><em>Concept #<?=$_REQUEST['record']?> is not available at this time.</em></div>
+    <div class="alert alert-warning fade in col-md-12"><em>Concept #<?=$record?> is not available at this time.</em></div>
 <?php } ?>
 <div class="modal fade" id="hub_view_votes" tabindex="-1" role="dialog" aria-labelledby="Codes">
     <div class="modal-dialog" role="document" style="width: 800px">

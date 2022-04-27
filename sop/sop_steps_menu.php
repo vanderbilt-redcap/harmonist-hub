@@ -1,11 +1,12 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-if($_REQUEST['record'] != ""){
-    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $_REQUEST['record']));
+
+$record_id = htmlentities($_REQUEST['record'],ENT_QUOTES);
+if($record_id != ""){
+    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 }
 
-$record_id = $_REQUEST['record'];
 $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
 
 if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id'] ))){
@@ -156,11 +157,11 @@ if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmoni
     }
 </script>
 <?php
-$step = $_REQUEST['step'];
+$step = htmlentities($_REQUEST['step']);
 
-if($_REQUEST['step'] == '3') {
+if($step == '3') {
     echo '<script>$(document).ready(function () {'.
-                    'var step = '.json_encode($_REQUEST["step"]).';'.
+                    'var step = '.json_encode($step).';'.
                     '$("#title_step_1").removeClass("active");'.
                     '$("#title_step_1").removeClass("disabled");'.
                     '$("#title_step_2").removeClass("disabled");'.
@@ -294,5 +295,5 @@ if($_REQUEST['step'] == '3') {
 </div>
 <?php
 }else{
-    ?><div class="alert alert-warning fade in col-md-12"><em>Data Request #<?=$_REQUEST['record']?> is not available at this time.</em></div> <?php
+    ?><div class="alert alert-warning fade in col-md-12"><em>Data Request #<?=$record_id?> is not available at this time.</em></div> <?php
  } ?>

@@ -8,7 +8,7 @@ use ExternalModules\ExternalModules;
 include_once(__DIR__ . "/classes/REDCapManagement.php");
 include_once(__DIR__ . "/classes/ArrayFunctions.php");
 include_once(__DIR__ . "/classes/ProjectData.php");
-include_once(__DIR__ . "functions.php");
+include_once(__DIR__ . "/functions.php");
 
 require_once(dirname(__FILE__)."/vendor/autoload.php");
 

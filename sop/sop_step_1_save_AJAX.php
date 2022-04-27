@@ -2,11 +2,11 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
-$selectConcept = $_REQUEST['selectConcept'];
-$option = $_REQUEST['option'];
-$record = $_REQUEST['id'];
-$save_option = $_REQUEST['save_option'];
-$sop_hubuser = $_REQUEST['sop_hubuser'];
+$selectConcept = htmlentities($_REQUEST['selectConcept'],ENT_QUOTES);
+$option = htmlentities($_REQUEST['option'],ENT_QUOTES);
+$record = htmlentities($_REQUEST['id'],ENT_QUOTES);
+$save_option = htmlentities(['save_option'],ENT_QUOTES);
+$sop_hubuser = htmlentities($_REQUEST['sop_hubuser'],ENT_QUOTES);
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $selectConcept));
 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];

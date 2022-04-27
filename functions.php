@@ -1531,7 +1531,9 @@ function getTBLCenterUpdatePercentRegions($TBLCenter,$regions,$pastlastreview_du
             }
         }
         //percentage no decimals
-        $region_array = number_format((float)($total_centers_updated / $total_centers * 100), 0, '.', '');
+        if($total_centers != 0) {
+            $region_array = number_format((float)($total_centers_updated / $total_centers * 100), 0, '.', '');
+        }
     }else{
         $region_array = array();
         foreach ($regions as $region){
@@ -1546,7 +1548,9 @@ function getTBLCenterUpdatePercentRegions($TBLCenter,$regions,$pastlastreview_du
                 }
             }
             //percentage no decimals
-            $region_array[$region['region_code']] = number_format((float)($total_centers_updated / $total_centers * 100), 0, '.', '');;
+            if($total_centers != 0) {
+                $region_array[$region['region_code']] = number_format((float)($total_centers_updated / $total_centers * 100), 0, '.', '');
+            }
         }
     }
     return $region_array;

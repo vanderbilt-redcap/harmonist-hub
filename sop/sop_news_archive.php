@@ -1,6 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
+$type = htmlentities($_REQUEST['type'],ENT_QUOTES);
+
 $news_type = $module->getChoiceLabels('news_type', $pidsArray['NEWITEMS']);
 $news_category = $module->getChoiceLabels('news_category', $pidsArray['NEWITEMS']);
 $RecordSetNewItems = \REDCap::getData($pidsArray['NEWITEMS'], 'array');
@@ -50,7 +52,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
         }
     );
     $(document).ready(function() {
-        var type = <?=json_decode($_REQUEST['type'])?>;
+        var type = <?=json_decode($type)?>;
         if(type != ""){
             $('#selectCat').val(type);
         }

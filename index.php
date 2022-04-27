@@ -12,6 +12,7 @@ define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
 $pid = (int)$_GET['pid'];
+$option = htmlentities($_REQUEST['option'],ENT_QUOTES);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -124,7 +125,7 @@ $pid = (int)$_GET['pid'];
                                 );
                             });
 
-                            var pageurloption = <?=json_encode($_REQUEST['option'])?>;
+                            var pageurloption = <?=json_encode($option)?>;
                             $('[option='+pageurloption+']').addClass('navbar-active');
 
                         } );
@@ -162,7 +163,7 @@ $pid = (int)$_GET['pid'];
                 session_start();
 
                 $token = "";
-                if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd')  || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'iut') || (array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
+                if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $option === 'dnd')  || (array_key_exists('option', $_REQUEST) && $option === 'iut') || (array_key_exists('option', $_REQUEST) && $option === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
                     $_SESSION['token'] = array();
                     $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = \Vanderbilt\HarmonistHubExternalModule\getToken(USERID, $pidsArray['PEOPLE']);
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
@@ -172,7 +173,7 @@ $pid = (int)$_GET['pid'];
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
                 }
 
-                if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dfq'){
+                if( array_key_exists('option', $_REQUEST) && $option === 'dfq'){
                     //No header
                 }else{
                     include('hub_header.php');
@@ -188,10 +189,10 @@ $pid = (int)$_GET['pid'];
                     if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
                         $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $_REQUEST['token'];
                     }
-                    if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'map' )
+                    if( array_key_exists('option', $_REQUEST) && $option === 'map' )
                     {
                         include('map/index.php');
-                    }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dfq')
+                    }else if( array_key_exists('option', $_REQUEST) && $option === 'dfq')
                     {
                         include('faq/datatoolkit_faq.php');
                     }else if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])){
@@ -202,63 +203,63 @@ $pid = (int)$_GET['pid'];
                         if( !array_key_exists('option', $_REQUEST)){
                             include('hub/hub_home.php');
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'log')
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'log')
                         {
                             include('hub/hub_changelog.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'iut')
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'iut')
                         {
                             include('hub/hub_unit_test.php');
-                        } else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'smn' && !$deactivate_datahub)
+                        } else if( array_key_exists('option', $_REQUEST) && $option === 'smn' && !$deactivate_datahub)
                         {
                             include('sop/sop_request_data.php');
-                        } else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'sra' && !$deactivate_datahub)
+                        } else if( array_key_exists('option', $_REQUEST) && $option === 'sra' && !$deactivate_datahub)
                         {
                             include('sop/sop_recent_activity.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'tbl' && !$deactivate_datahub && !$deactivate_tblcenter)
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'tbl' && !$deactivate_datahub && !$deactivate_tblcenter)
                         {
                             include('sop/sop_table_center.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'ofs' && !$deactivate_datahub)
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'ofs' && !$deactivate_datahub)
                         {
                             include('sop/sop_document_library.php');
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'sop' && !$deactivate_datahub)
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'sop' && !$deactivate_datahub)
                         {
                             include('sop/sop_data_request_title.php');
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dna' && !$deactivate_datahub)
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'dna' && !$deactivate_datahub)
                         {
                             include('sop/sop_news_archive.php');
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'ss1' && !$deactivate_datahub)
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'ss1' && !$deactivate_datahub)
                         {
                             include('sop/sop_steps_menu.php');
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'ss5' && !$deactivate_datahub)
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'ss5' && !$deactivate_datahub)
                         {
                             include('sop/sop_step_5.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'spr' && !$deactivate_datahub)
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'spr' && !$deactivate_datahub)
                         {
                             include('sop/sop_make_public_request_review.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'lgd' && !$deactivate_datahub)
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'lgd' && !$deactivate_datahub)
                         {
                             include('sop/sop_data_activity_log.php');
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'cpt' )
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'cpt' )
                         {
                             include('hub/hub_concepts.php');
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'ttl' )
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'ttl' )
                         {
                             include('hub/hub_concept_title.php');
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'hub')
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'hub')
                         {
                             if(array_key_exists('record', $_REQUEST) && !empty($_REQUEST['record'])) {
                                 include('hub/hub_request_title.php');
                             }else{
                                 include('hub/hub_requests.php');
                             }
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'adm')
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'adm')
                         {
                             if($isAdmin){
                                 include('hub/hub_admin.php');
@@ -266,59 +267,59 @@ $pid = (int)$_GET['pid'];
                                 include('hub/hub_error_page.php');
                             }
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'usr'){
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'usr'){
                             include('hub/hub_users.php');
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'mra')
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'mra')
                         {
                             include('hub/hub_my_requests_archive.php');
-                        } else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'mrr')
+                        } else if( array_key_exists('option', $_REQUEST) && $option === 'mrr')
                         {
                             include('hub/hub_my_requests_archive_rejected.php');
                         }
-                        else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'hra')
+                        else if( array_key_exists('option', $_REQUEST) && $option === 'hra')
                         {
                             include('hub/hub_recent_activity.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'upd' && !$deactivate_datahub)
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'upd' && !$deactivate_datahub)
                         {
                             include('sop/sop_submit_data.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dat' && !$deactivate_datahub)
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'dat' && !$deactivate_datahub)
                         {
                             include('hub/hub_data.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'pdc' && !$deactivate_datahub)
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'pdc' && !$deactivate_datahub)
                         {
                             include('sop/sop_data_call_archive.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown'][1] != "1")
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown'][1] != "1")
                         {
                             include('sop/sop_download_data.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'out')
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'out')
                         {
                             include('hub/hub_publications.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'mts' && ($settings['deactivate_metrics'][1] != "1" || $isAdmin))
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'mts' && ($settings['deactivate_metrics'][1] != "1" || $isAdmin))
                         {
                             include('hub/hub_metrics_stats.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'mth' && ($settings['deactivate_datametrics'][1] != "1" || $isAdmin))
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'mth' && ($settings['deactivate_datametrics'][1] != "1" || $isAdmin))
                         {
                             include('hub/hub_metrics_general_stats.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'faq')
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'faq')
                         {
                             include('faq/hub_faq.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'pro')
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'pro')
                         {
                             include('hub/hub_profile.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'bug')
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'bug')
                         {
                             include('hub/hub_report_bug.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'unf')
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'unf')
                         {
                             include('hub/hub_request_title.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'und' && !$deactivate_datahub)
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'und' && !$deactivate_datahub)
                         {
                             include('sop/sop_data_request_title.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'cal' && $settings['calendar_active'][1] == "1")
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'cal' && $settings['calendar_active'][1] == "1")
                         {
                             include('hub/hub_calendar.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'abt')
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'abt')
                         {
                             include('hub/hub_about.php');
                         }

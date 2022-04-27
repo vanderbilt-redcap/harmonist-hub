@@ -2,9 +2,9 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
-$record = $_REQUEST['id'];
+$record = htmlentities($_REQUEST['id'],ENT_QUOTES);
 
-$dataformat_prefer = explode(',',$_REQUEST['dataformat_prefer']);
+$dataformat_prefer = explode(',',htmlentities($_REQUEST['dataformat_prefer'],ENT_QUOTES));
 
 #checkboxes
 if(!isset($_REQUEST['sop_downloaders_dummy'])){
@@ -16,24 +16,24 @@ if(!isset($_REQUEST['sop_downloaders_dummy'])){
 $Proj = new \Project($pidsArray['SOP']);
 $event_id = $Proj->firstEventId;
 
-$sop_inclusion = ($_REQUEST['sop_inclusion'] == "") ? "<i>None</i>" : $_REQUEST['sop_inclusion'];
-$sop_exclusion = ($_REQUEST['sop_exclusion'] == "") ? "<i>None</i>" : $_REQUEST['sop_exclusion'];
+$sop_inclusion = (htmlentities($_REQUEST['sop_inclusion'],ENT_QUOTES) == "") ? "<i>None</i>" : htmlentities($_REQUEST['sop_inclusion'],ENT_QUOTES);
+$sop_exclusion = (htmlentities($_REQUEST['sop_exclusion'],ENT_QUOTES) == "") ? "<i>None</i>" : htmlentities($_REQUEST['sop_exclusion'],ENT_QUOTES);
 
 $arraySOP = array();
 $arraySOP[$record][$event_id]['sop_downloaders'] = $_REQUEST['downloaders'];
 $arraySOP[$record][$event_id]['sop_downloaders_dummy'][1] = $downDummy;
 $arraySOP[$record][$event_id]['sop_inclusion'] = $sop_inclusion;
 $arraySOP[$record][$event_id]['sop_exclusion'] = $sop_exclusion;
-$arraySOP[$record][$event_id]['sop_notes'] = $_REQUEST['sop_notes'];
-$arraySOP[$record][$event_id]['sop_due_d'] = $_REQUEST['sop_due_d'];
-$arraySOP[$record][$event_id]['sop_creator'] = $_REQUEST['sop_creator'];
-$arraySOP[$record][$event_id]['sop_creator_org'] = $_REQUEST['sop_creator_org'];
-$arraySOP[$record][$event_id]['sop_creator2'] = $_REQUEST['sop_creator2'];
-$arraySOP[$record][$event_id]['sop_creator2_org'] = $_REQUEST['sop_creator2_org'];
-$arraySOP[$record][$event_id]['sop_datacontact'] = $_REQUEST['sop_datacontact'];
-$arraySOP[$record][$event_id]['sop_datacontact_org'] = $_REQUEST['sop_datacontact_org'];
-$arraySOP[$record][$event_id]['dataformat_prefer'] = ($_REQUEST['dataformat_prefer'] == "") ? array() : $_REQUEST['dataformat_prefer'];
-$arraySOP[$record][$event_id]['dataformat_notes'] = $_REQUEST['dataformat_notes'];
+$arraySOP[$record][$event_id]['sop_notes'] = htmlentities(['sop_notes'],ENT_QUOTES);
+$arraySOP[$record][$event_id]['sop_due_d'] = htmlentities($_REQUEST['sop_due_d'],ENT_QUOTES);
+$arraySOP[$record][$event_id]['sop_creator'] = htmlentities(['sop_creator'],ENT_QUOTES);
+$arraySOP[$record][$event_id]['sop_creator_org'] = htmlentities($_REQUEST['sop_creator_org'],ENT_QUOTES);
+$arraySOP[$record][$event_id]['sop_creator2'] = htmlentities($_REQUEST['sop_creator2'],ENT_QUOTES);
+$arraySOP[$record][$event_id]['sop_creator2_org'] = htmlentities(['sop_creator2_org'],ENT_QUOTES);
+$arraySOP[$record][$event_id]['sop_datacontact'] = htmlentities(['sop_datacontact'],ENT_QUOTES);
+$arraySOP[$record][$event_id]['sop_datacontact_org'] = htmlentities($_REQUEST['sop_datacontact_org'],ENT_QUOTES);
+$arraySOP[$record][$event_id]['dataformat_prefer'] = (htmlentities($_REQUEST['dataformat_prefer'],ENT_QUOTES) == "") ? array() : htmlentities($_REQUEST['dataformat_prefer'],ENT_QUOTES);
+$arraySOP[$record][$event_id]['dataformat_notes'] = htmlentities(['dataformat_notes'],ENT_QUOTES);
 
 $date = new \DateTime();
 $sop_updated_dt = $date->format('Y-m-d H:i:s');
@@ -47,7 +47,7 @@ $data['sop_version_date'] = "Data Request Version: ".date('d F Y');
 $data['sop_inclusion'] = $sop_inclusion;
 $data['sop_exclusion'] = $sop_exclusion;
 
-$date = new \DateTime($_REQUEST['sop_due_d']);
+$date = new \DateTime(htmlentities($_REQUEST['sop_due_d']));
 $data['sop_due_d_preview'] = $date->format('d F Y');
 
 $data['selectConcept'] = $data['sop_concept_id'];
@@ -58,21 +58,21 @@ $data['sop_concept_id'] = $concept['concept_id'];
 $data['sop_concept_title'] = $concept['concept_title'];
 
 if($_REQUEST['sop_creator'] != ""){
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $_REQUEST['sop_creator']));
+    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => htmlentities($_REQUEST['sop_creator'],ENT_QUOTES)));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $data['sop_creator_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_creator_email'] = $people['email'];
 }
 
 if($_REQUEST['sop_creator2'] != ""){
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $_REQUEST['sop_creator2']));
+    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => htmlentities($_REQUEST['sop_creator2'],ENT_QUOTES)));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $data['sop_creator2_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_creator2_email'] = $people['email'];
 }
 
 if($_REQUEST['sop_datacontact'] != "") {
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $_REQUEST['sop_datacontact']));
+    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => htmlentities($_REQUEST['sop_datacontact'],ENT_QUOTES)));
     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
     $data['sop_datacontact_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_datacontact_email'] = $people['email'];
