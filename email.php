@@ -4,10 +4,9 @@ require_once 'vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-function sendEmail($to, $sender_email, $sender_name, $subject, $message, $record_id, $action_description="", $pid="", $cc=""){
-
-    if($sender_email == ""){
-        $sender_email = " harmonist@vumc.org";
+function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $action_description="", $pid="", $cc=""){
+    if($from == ""){
+        $from = " harmonist@vumc.org";
     }
 
     $environment = "";
@@ -15,54 +14,15 @@ function sendEmail($to, $sender_email, $sender_name, $subject, $message, $record
         $environment = " ".ENVIRONMENT;
     }
 
-    $mail = new PHPMailer(true);
+    $send = \REDCap::email ($to,  $from, $subject,  $message ,  $cc ,  '' ,  $fromName.$environment);
 
-    $mail = setFrom($mail, $sender_email, $sender_name.$environment);
-    $mail->addAddress($to);
-
-    if($cc != ""){
-        $emails = explode(';', $cc);
-        foreach ($emails as $email) {
-            if($email != "") {
-                $mail->addCC($email);
-            }
-        }
-    }
-
-    $mail->CharSet = 'UTF-8';
-    $mail->Subject = $subject;
-    $mail->IsHTML(true);
-    $mail->Body = $message;
-
-
-    //DKIM to make sure the email does not go into spam folder
-    $privatekeyfile = 'dkim_private.key';
-    //Make a new key pair
-    //(2048 bits is the recommended minimum key length -
-    //gmail won't accept less than 1024 bits)
-    $pk = openssl_pkey_new(
-        array(
-            'private_key_bits' => 2048,
-            'private_key_type' => OPENSSL_KEYTYPE_RSA
-        )
-    );
-    openssl_pkey_export_to_file($pk, $privatekeyfile);
-    $mail->DKIM_private = $privatekeyfile;
-    $mail->DKIM_selector = 'PHPMailer';
-    $mail->DKIM_passphrase = ''; //key is not encrypted
-    if (!$mail->send()) {
-        \REDCap::email('datacore@vumc.org', 'harmonist@vumc.org',"Mailer Error", "Mailer Error:".$mail->ErrorInfo." in project ".$pid);
-
+    if (!$send) {
+        \REDCap::email('datacore@vumc.org', 'harmonist@vumc.org',"Mailer Error", "Mailer Error: the email could not be sent in project ".$pid);
     } else {
         //Add some logs
         $changes_made = "[record_id]:".$record_id.", [email]: ".$to;
         \REDCap::logEvent($action_description,$changes_made,NULL,null,null,$pid);
-
     }
-    unlink($privatekeyfile);
-    // Clear all addresses and attachments for next loop
-    $mail->clearAddresses();
-    $mail->clearAttachments();
 }
 
 function setFrom($mail, $sender, $sender_name){
