@@ -1,8 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once 'vendor/autoload.php';
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $action_description="", $pid="", $cc=""){
     if($from == ""){
