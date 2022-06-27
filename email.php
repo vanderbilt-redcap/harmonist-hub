@@ -15,7 +15,6 @@ function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $actio
     }
 
     $send = \REDCap::email ($to,$from,$subject,$message,$cc,'' ,$fromName.$environment);
-    \REDCap::email ($to, "harmonist@vumc.org", "test","my little test".$from);
 
     if (!$send) {
         //datacore@vumc.org;
