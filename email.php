@@ -15,7 +15,8 @@ function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $actio
     $send = \REDCap::email ($to,  $from, $subject,  $message ,  $cc ,  '' ,  $fromName.$environment);
 
     if (!$send) {
-        \REDCap::email('datacore@vumc.org;harmonist@vumc.org', 'harmonist@vumc.org',"Mailer Error:".
+        //datacore@vumc.org;
+        \REDCap::email('eva.bascompte.moragas@vumc.org;harmonist@vumc.org', 'harmonist@vumc.org',"Mailer Error:".
             $action_description, "Mailer Error: the email could not be sent in project ".$pid." record #".$record_id.
             "<br>Email To:".$to."<br>Email From (".$fromName.$environment."):".$from."<br>Email subject:".$subject."<br>Email To:".$to);
     } else {
