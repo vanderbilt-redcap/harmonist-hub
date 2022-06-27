@@ -14,7 +14,7 @@ function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $actio
         $environment = " ".ENVIRONMENT;
     }
 
-    $send = \REDCap::email ($to,  $from, $subject,  $message ,  $cc ,  '' ,  $fromName.$environment);
+    $send = \REDCap::email ($to,  $from, $subject,  $message);//  $cc ,  '' ,  $fromName.$environment);
 
     if (!$send) {
         //datacore@vumc.org;
