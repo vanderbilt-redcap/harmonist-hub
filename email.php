@@ -5,7 +5,7 @@ include_once(__DIR__ . "/classes/REDCapManagement.php");
 
 function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $action_description="", $pid="", $cc=""){
     if($from == ""){
-        $from = " harmonist@vumc.org";
+        $from = "harmonist@vumc.org";
     }
 
     REDCapManagement::getEnvironment();
