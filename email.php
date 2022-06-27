@@ -1,12 +1,14 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once 'vendor/autoload.php';
+include_once(__DIR__ . "/classes/REDCapManagement.php");
 
 function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $action_description="", $pid="", $cc=""){
     if($from == ""){
         $from = " harmonist@vumc.org";
     }
 
+    REDCapManagement::getEnvironment();
     $environment = "";
     if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
         $environment = " ".ENVIRONMENT;
@@ -18,7 +20,8 @@ function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $actio
         //datacore@vumc.org;
         \REDCap::email('eva.bascompte.moragas@vumc.org;harmonist@vumc.org', 'harmonist@vumc.org',"Mailer Error:".
             $action_description, "Mailer Error: the email could not be sent in project ".$pid." record #".$record_id.
-            "<br>Email To:".$to."<br>Email From (".$fromName.$environment."):".$from."<br>Email subject:".$subject."<br>Email To:".$to);
+            "<br><br>To: ".$to."<br>CC: ".$cc."<br>From (".$fromName.$environment."): ".$from."<br>Subject: ".$subject.
+            "<br>Message: <br>".$message);
     } else {
         //Add some logs
         $changes_made = "[record_id]:".$record_id.", [email]: ".$to;
