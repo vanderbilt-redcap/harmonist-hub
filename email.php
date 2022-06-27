@@ -22,7 +22,6 @@ function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $actio
             $action_description, "Mailer Error (send = ".$send."): the email could not be sent in project ".$pid." record #".$record_id.
             "<br><br>To: ".$to."<br>CC: ".$cc."<br>From (".$fromName.$environment."): ".$from."<br>Subject: ".$subject.
             "<br>Message: <br>".$message);
-        \REDCap::email ($to,  $from, $subject,  $message,  $cc,  '' ,  $fromName.$environment);
         \REDCap::email ($to,  $from, "test");
     } else {
         //Add some logs
