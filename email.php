@@ -16,6 +16,17 @@ function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $actio
 
     $send = \REDCap::email ($to,$from,$subject,$message,$cc,'' ,$fromName.$environment);
 
+    #We use the message class so the emails get recorded in the Email Logging section in REDCap
+    $email = new \Message($pid, $record_id);
+    $email->setTo($to);
+    if ($cc != '') $email->setCc($cc);
+    $email->setFrom($from);
+    $email->setFromName($fromName.$environment);
+    $email->setSubject($subject);
+    $email->setBody($message);
+
+    $send = $email->send();
+
     if (!$send) {
         \REDCap::email('eva.bascompte.moragas@vumc.org;harmonist@vumc.org', 'harmonist@vumc.org',"Mailer Error:".
             $action_description, "Mailer Error (send = ".$send."): the email could not be sent in project ".$pid." record #".$record_id.
