@@ -917,6 +917,16 @@ $projects_array_sql = array(
             'autocomplete' => '1',
             'label' => ""
         ),
+        'variable_splitdate_m' => array (
+            'query' => "SELECT CONCAT(a.record, ':', b.instance), CONCAT(a.value, ':', b.value) FROM (SELECT record,value FROM redcap_data WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM redcap_data WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'variable_splitdate_d' => array (
+            'query' => "SELECT CONCAT(a.record, ':', b.instance), CONCAT(a.value, ':', b.value) FROM (SELECT record,value FROM redcap_data WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM redcap_data WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
         'code_list_ref' =>  array (
             'query' => "select record, value from redcap_data where project_id = ".$pidsArray['CODELIST']." and field_name = 'list_name' order by value asc",
             'autocomplete' => '0',
