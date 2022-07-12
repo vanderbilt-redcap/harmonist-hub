@@ -282,6 +282,7 @@ function createProject0AJSON($module, $pidsArray){
                     "variable_replacedby" => htmlentities($data['variable_replacedby'][$id]),
                     "variable_splitdate_m" => htmlentities($data['variable_splitdate_m'][$id]),
                     "variable_splitdate_d" => htmlentities($data['variable_splitdate_d'][$id]),
+                    "variable_splitdate_y" => $data['variable_splitdate_y'][$id][1],
                     "variable_deprecatedinfo" => htmlentities($data['variable_deprecatedinfo'][$id]),
                     "has_codes" => $has_codes,
                     "code_list_ref" => $code_list_ref,
