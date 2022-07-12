@@ -406,13 +406,12 @@ function createProject0CJSON($module, $pidsArray){
 
 function getTableVariableJsonName($project_id,$data,$varName,$jsonArray){
     if($data != ""){
-        $variable = explode(":",$data);
-        $dataTableDataModelRecords = \REDCap::getData($project_id, 'array',array('record_id' => $variable[0]));
-        $tableData = ProjectData::getProjectInfoArray($dataTableDataModelRecords)[0];
-        if($variable[1] == "1"){
-            $variable[1] = "";
+        if($data != ""){
+            $variable = explode(":",$data);
+            $dataTableDataModelRecords = \REDCap::getData($project_id, 'array',array('record_id' => $variable[0]));
+            $tableData = ProjectData::getProjectInfoArrayRepeatingInstruments($dataTableDataModelRecords);
+            $jsonArray[$varName] = $tableData[0]['table_name'].":".$tableData[0]['variable_name'][$variable[1]];
         }
-        $jsonArray[$varName] = $tableData['table_name'].":".$tableData['variable_name'][$variable[1]];
     }
     return $jsonArray;
 }
