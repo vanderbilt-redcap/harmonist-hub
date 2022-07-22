@@ -1,7 +1,5 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-
-$default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
 ?>
 <script>
     $(document).ready(function() {

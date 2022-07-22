@@ -1968,15 +1968,20 @@ function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata
     $regionalmrdata['r'] = array();
     $regionalmrdata['mr'] = array();
     $regionalmrdata['mrw'] = array();
+    $regionalmrdata['outputsAll'] = array();
     $concept_outputs_by_year = array();
     ${"years_label_regional_pubs_".$type} = array();
     if($startyear != "") {
         for ($year = $startyear; $year <= $currentYear; $year++) {
+            array_push(${"years_label_regional_pubs_".$type}, $year);
+
             $RecordSetExtraOutputsSingleReg = \REDCap::getData($pidExtraOutputs, 'array', null, null, null, null, false, false, false, "[output_year] = '" . $year . "' AND [output_type] = '" . $output_type . "' AND [producedby_region] = '1'");
             array_push($regionalmrdata['r'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputsSingleReg)));
             $RecordSetExtraOutMultipleReg = \REDCap::getData($pidExtraOutputs, 'array', null, null, null, null, false, false, false, "[output_year] = '" . $year . "' AND [output_type] = '" . $output_type . "' AND [producedby_region] = '2'");
             array_push($regionalmrdata['mrw'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg)));
             ${"outputs_mrw_" . $type} = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg);
+            $RecordSetExtraOutputs = \REDCap::getData($pidExtraOutputs, 'array', null, null, null, null, false, false, false, "[output_year] = '" . $year . "' AND [output_type] = '" . $output_type . "'");
+            array_push($regionalmrdata['outputsAll'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputs)));
 
             $regionalmrdata['mr'][$year] = 0;
             foreach ($conceptsData as $concepts) {

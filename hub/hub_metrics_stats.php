@@ -97,8 +97,8 @@ foreach ($concept_type as $output_type=>$type){
     ${"data_".$type} = \Vanderbilt\HarmonistHubExternalModule\getDataRMRTable(${"regionalmrdata_".$type}['outputs'],$type);
 }
 
-$regionalmrpubs_color_manuscripts = ['#aa2600','#d1691f','#f5a549'];
-$regionalmrpubs_color_abstracts = ['#006238','#3c9d68','#6ddc9c'];
+$regionalmrpubs_color_manuscripts = ['#f5a549','#d1691f'];
+$regionalmrpubs_color_abstracts = ['#6ddc9c','#3c9d68'];
 
 /**
 #Multi-regional Activity by Year
@@ -221,9 +221,6 @@ foreach ($regions as $region){
     }
 }
 
-$array_sections_req = array(0=>'requests',1=>'requestsreq');
-$array_sections_title_req = array(0=>'requests', 1=>'requests by region');
-
 $requests_values = array(0 => $number_concepts,1=> $number_abstracts,2 => $number_manuscripts,3 => $number_fastTrack,4 => $number_poster ,5 => $number_other );
 $requests_labels = array(0 => "Concepts",1 => "Abstracts",2 => "Manuscripts",3 => "Fast Track",4 => "Poster", 5=>"Other");
 $requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777");
@@ -273,6 +270,19 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         var url_base64 = save64Img(chart.toBase64Image());
     }
     $(function () {
+        var show_donuts = <?=json_encode($settings['hub_stats_section1_y'])?>;
+        var show_donuts_single = <?=json_encode($settings['hub_stats_consortium_select'])?>;
+        var show_publications = <?=json_encode($settings['hub_stats_section2_y'])?>;
+        var show_manuscripts_single = <?=json_encode($settings['pub_data'])?>;
+        var show_manuscripts_single_label1 = <?=json_encode(($settings['pub_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>;
+        var show_manuscripts_single_label2 = <?=json_encode(($settings['pub_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>;
+        var show_abstracts = <?=json_encode($settings['hub_stats_section3_y'])?>;
+        var show_abstracts_single = <?=json_encode($settings['abs_data'])?>;
+        var show_abstracts_single_label1 = <?=json_encode(($settings['abs_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>;
+        var show_abstracts_single_label2 = <?=json_encode(($settings['abs_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>;
+        var show_activity = <?=json_encode($settings['hub_stats_section4_y'])?>;
+        var show_activity_single = <?=json_encode($settings['activity_data'])?>;
+
         var url = <?=json_encode($module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'?option=cpt'))?>;
 
         var array_sections = <?=json_encode($array_sections)?>;
@@ -295,11 +305,11 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 
         //Multiregional and Regional Publications
         var concept_type = <?=json_encode($concept_type)?>;
-
         var years_label_regional_pubs_manuscripts = <?=json_encode($regionalmrdata_manuscripts['years'])?>;
         var regionalmrpubs_mr_manuscripts = <?=json_encode(array_values($regionalmrdata_manuscripts['mr']))?>;
         var regionalmrpubs_mrw_manuscripts = <?=json_encode($regionalmrdata_manuscripts['mrw'])?>;
         var regionalmrpubs_r_manuscripts = <?=json_encode($regionalmrdata_manuscripts['r'])?>;
+        var regionalmrpubs_outputs_manuscripts = <?=json_encode($regionalmrdata_manuscripts['outputsAll'])?>;
         var regionalmrpubs_color_manuscripts = <?=json_encode(array_values($regionalmrpubs_color_manuscripts))?>;
 
         //Multiregional and Regional Abstracts
@@ -307,6 +317,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         var regionalmrpubs_mr_abstracts = <?=json_encode(array_values($regionalmrdata_abstracts['mr']))?>;
         var regionalmrpubs_mrw_abstracts = <?=json_encode($regionalmrdata_abstracts['mrw'])?>;
         var regionalmrpubs_r_abstracts = <?=json_encode($regionalmrdata_abstracts['r'])?>;
+        var regionalmrpubs_outputs_abstracts = <?=json_encode($regionalmrdata_abstracts['outputsAll'])?>;
         var regionalmrpubs_color_abstracts = <?=json_encode(array_values($regionalmrpubs_color_abstracts))?>;
 
         //Multi-regional Activity by Year
@@ -325,342 +336,351 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         var requestsreq_colors = <?=json_encode($requestsreq_colors)?>;
 
         //DONUTS
-        Object.keys(array_sections_all).forEach(function (section) {
-            var  ctx = $("#"+array_sections_all[section]+"Chart");
-            if(array_sections_all[section] == 'conceptswg'){
-                var customTooltips = function(tooltip) {
-                    // Tooltip Element
-                    var tooltipEl = document.getElementById(array_sections_all[section]+"tooltip");
-                    $('#conceptswgtooltip').show();
+        if(show_donuts == "1") {
+            Object.keys(array_sections_all).forEach(function (section) {
+                if(show_donuts_single[(parseInt(section)+1)] == '1') {
+                    var ctx = $("#" + array_sections_all[section] + "Chart");
+                    if (array_sections_all[section] == 'conceptswg') {
+                        var customTooltips = function (tooltip) {
+                            // Tooltip Element
+                            var tooltipEl = document.getElementById(array_sections_all[section] + "tooltip");
+                            $('#conceptswgtooltip').show();
 
-                    if (!tooltipEl) {
-                        tooltipEl = document.createElement('div');
-                        tooltipEl.id = array_sections_all[section]+"tooltip";
-                        tooltipEl.innerHTML = "<table></table>"
-                        document.body.appendChild(tooltipEl);
-                    }
-                    // Hide if no tooltip
-                    if (tooltip.opacity === 0) {
-                        // tooltipEl.style.opacity = 0;
-                        //  return;
-                    }
-                    // Set caret Position
-                    tooltipEl.classList.remove('above', 'below', 'no-transform');
-                    if (tooltip.yAlign) {
-                        tooltipEl.classList.add(tooltip.yAlign);
+                            if (!tooltipEl) {
+                                tooltipEl = document.createElement('div');
+                                tooltipEl.id = array_sections_all[section] + "tooltip";
+                                tooltipEl.innerHTML = "<table></table>"
+                                document.body.appendChild(tooltipEl);
+                            }
+                            // Hide if no tooltip
+                            if (tooltip.opacity === 0) {
+                                // tooltipEl.style.opacity = 0;
+                                //  return;
+                            }
+                            // Set caret Position
+                            tooltipEl.classList.remove('above', 'below', 'no-transform');
+                            if (tooltip.yAlign) {
+                                tooltipEl.classList.add(tooltip.yAlign);
+                            } else {
+                                tooltipEl.classList.add('no-transform');
+                            }
+
+                            function getBody(bodyItem) {
+                                return bodyItem.lines;
+                            }
+
+                            // Set Text
+                            if (tooltip.body) {
+                                var titleLines = tooltip.title || [];
+                                var bodyLines = tooltip.body.map(getBody);
+
+                                var label = bodyLines[0][0].substr(0, bodyLines[0][0].indexOf(':'));
+                                var labelIndex = "";
+                                var labelLong = "";
+                                Object.keys(conceptswg_short_label_index).forEach(function (index) {
+                                    if (conceptswg_short_label_index[index] == label) {
+                                        if (index == "") {
+                                            labelLong = "No WG";
+                                        } else {
+                                            labelLong = conceptswg_labels[index];
+                                        }
+                                        labelIndex = index;
+                                    }
+                                });
+
+                                //CUSTOM HTML TOOLTIP CONTENT
+                                var innerHtml = '<thead>';
+                                titleLines.forEach(function (title) {
+                                    innerHtml += '<tr><th>' + title + '</th></tr>';
+                                });
+                                innerHtml += '</thead><tbody>';
+                                bodyLines.forEach(function (body, i) {
+                                    var colors = tooltip.labelColors[i];
+                                    var style = 'background:' + colors.backgroundColor;
+                                    style += '; border-color:' + colors.borderColor;
+                                    style += '; border-width: 2px';
+                                    var span = '<span class="chartjs-tooltip-key" style="' + style + '"></span>';
+                                    var custom_url = url + '&type=' + labelIndex;
+                                    innerHtml += '<tr><td><a href="' + custom_url + '" target="_blank" class="linkWG">' + span + labelLong + '</a><a href="#" onclick="$(\'#conceptswgtooltip\').hide()" class="closeWG" >x</a></td></tr>';
+                                });
+                                innerHtml += '</tbody>';
+                                $('#' + array_sections_all[section] + "tooltip").html(innerHtml);
+
+                            }
+                            var position = this._chart.canvas.getBoundingClientRect();
+                            // Display, position, and set styles for font
+                            tooltipEl.style.opacity = 1;
+                            tooltipEl.style.left = position.left + tooltip.caretX + 'px';
+                            tooltipEl.style.top = position.top + tooltip.caretY + 'px';
+
+
+                            tooltipEl.style.fontFamily = tooltip._fontFamily;
+                            tooltipEl.style.fontSize = tooltip.fontSize;
+                            tooltipEl.style.fontStyle = tooltip._fontStyle;
+                            tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
+                        };
+                        var config = {
+                            type: 'doughnut',
+                            data: {
+                                labels: eval(array_sections_all[section] + "_short_label"),
+                                datasets: [{
+                                    backgroundColor: eval(array_sections_all[section] + "_colors"),
+                                    data: eval(array_sections_all[section] + "_values")
+                                }]
+                            },
+                            options: {
+                                responsive: false,
+                                title: {
+                                    display: false,
+                                    position: "top",
+                                    text: array_sections_title_all[section].toUpperCase(),
+                                    fontSize: 18,
+                                    fontColor: "#111"
+                                },
+                                legend: {
+                                    display: false
+                                },
+                                plugins: {
+                                    labels: [
+                                        {
+                                            render: 'label',
+                                            position: 'outside',
+                                            fontSize: 9,
+                                            fontStyle: 'normal',
+                                            textMargin: 5,
+                                            outsidePadding: 20
+                                        },
+                                        {
+                                            render: 'value',
+                                            fontColor: '#fff',
+                                            fontSize: 12
+                                        }
+                                    ]
+                                },
+                                tooltips: {
+                                    enabled: false,
+                                    mode: 'index',
+                                    position: 'nearest',
+                                    custom: customTooltips
+                                },
+                                animation: {
+                                    onComplete: function (animation) {
+                                        document.querySelector('#down' + array_sections_all[section]).setAttribute('href', this.toBase64Image());
+                                    }
+                                }
+                            }
+                        }
+
+                        var donuts_chart = new Chart(ctx, config);
+
                     } else {
-                        tooltipEl.classList.add('no-transform');
-                    }
-                    function getBody(bodyItem) {
-                        return bodyItem.lines;
-                    }
-                    // Set Text
-                    if (tooltip.body) {
-                        var titleLines = tooltip.title || [];
-                        var bodyLines = tooltip.body.map(getBody);
-
-                        var label = bodyLines[0][0].substr(0, bodyLines[0][0].indexOf(':'));
-                        var labelIndex = "";
-                        var labelLong = "";
-                        Object.keys(conceptswg_short_label_index).forEach(function (index) {
-                            if(conceptswg_short_label_index[index] == label){
-                                if(index == ""){
-                                    labelLong = "No WG";
-                                }else{
-                                    labelLong = conceptswg_labels[index];
-                                }
-                                labelIndex = index;
-                            }
-                        });
-
-                        //CUSTOM HTML TOOLTIP CONTENT
-                        var innerHtml = '<thead>';
-                        titleLines.forEach(function(title) {
-                            innerHtml += '<tr><th>' + title + '</th></tr>';
-                        });
-                        innerHtml += '</thead><tbody>';
-                        bodyLines.forEach(function(body, i) {
-                            var colors = tooltip.labelColors[i];
-                            var style = 'background:' + colors.backgroundColor;
-                            style += '; border-color:' + colors.borderColor;
-                            style += '; border-width: 2px';
-                            var span = '<span class="chartjs-tooltip-key" style="' + style + '"></span>';
-                            var custom_url = url +'&type='+labelIndex;
-                            innerHtml += '<tr><td><a href="'+custom_url+'" target="_blank" class="linkWG">' + span + labelLong + '</a><a href="#" onclick="$(\'#conceptswgtooltip\').hide()" class="closeWG" >x</a></td></tr>';
-                        });
-                        innerHtml += '</tbody>';
-                        $('#'+array_sections_all[section]+"tooltip").html(innerHtml);
-
-                    }
-                    var position = this._chart.canvas.getBoundingClientRect();
-                    // Display, position, and set styles for font
-                    tooltipEl.style.opacity = 1;
-                    tooltipEl.style.left = position.left + tooltip.caretX + 'px';
-                    tooltipEl.style.top = position.top + tooltip.caretY + 'px';
-
-
-                    tooltipEl.style.fontFamily = tooltip._fontFamily;
-                    tooltipEl.style.fontSize = tooltip.fontSize;
-                    tooltipEl.style.fontStyle = tooltip._fontStyle;
-                    tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
-                };
-                var config = {
-                    type: 'doughnut',
-                    data: {
-                        labels: eval(array_sections_all[section]+"_short_label"),
-                        datasets: [{
-                            backgroundColor: eval(array_sections_all[section]+"_colors"),
-                            data: eval(array_sections_all[section]+"_values")
-                        }]
-                    },
-                    options: {
-                        responsive: false,
-                        title: {
-                            display: false,
-                            position: "top",
-                            text: array_sections_title_all[section].toUpperCase(),
-                            fontSize: 18,
-                            fontColor: "#111"
-                        },
-                        legend: {
-                            display: false
-                        },
-                        plugins: {
-                            labels: [
-                                {
-                                    render: 'label',
-                                    position: 'outside',
-                                    fontSize:9,
-                                    fontStyle: 'normal',
-                                    textMargin: 5,
-                                    outsidePadding: 20
+                        var config = {
+                            type: 'doughnut',
+                            data: {
+                                labels: eval(array_sections_all[section] + "_labels"),
+                                datasets: [{
+                                    backgroundColor: eval(array_sections_all[section] + "_colors"),
+                                    data: eval(array_sections_all[section] + "_values")
+                                }]
+                            },
+                            options: {
+                                responsive: false,
+                                title: {
+                                    display: false,
+                                    position: "top",
+                                    text: array_sections_title_all[section].toUpperCase(),
+                                    fontSize: 18,
+                                    fontColor: "#111"
                                 },
-                                {
-                                    render: 'value',
-                                    fontColor: '#fff',
-                                    fontSize:12
+                                legend: {
+                                    display: false
+                                },
+                                plugins: {
+                                    labels: [
+                                        {
+                                            render: 'label',
+                                            position: 'outside',
+                                            fontSize: 9,
+                                            fontStyle: 'normal',
+                                            textMargin: 5,
+                                            outsidePadding: 20
+                                        },
+                                        {
+                                            render: 'value',
+                                            fontColor: '#fff',
+                                            fontSize: 12
+                                        }
+                                    ]
+                                },
+                                tooltips: {
+                                    mode: 'dataset'
+                                },
+                                animation: {
+                                    onComplete: function (animation) {
+                                        document.querySelector('#down' + array_sections_all[section]).setAttribute('href', this.toBase64Image());
+                                    }
                                 }
-                            ]
-                        },
-                        tooltips: {
-                            enabled: false,
-                            mode: 'index',
-                            position: 'nearest',
-                            custom: customTooltips
-                        },
-                        animation: {
-                            onComplete: function(animation){
-                                document.querySelector('#down'+array_sections_all[section]).setAttribute('href', this.toBase64Image());
                             }
                         }
+                        var donuts_chart = new Chart(ctx, config);
                     }
                 }
-
-                var donuts_chart = new Chart(ctx, config);
-
-            }else{
-                var config = {
-                    type: 'doughnut',
-                    data: {
-                        labels: eval(array_sections_all[section]+"_labels"),
-                        datasets: [{
-                            backgroundColor: eval(array_sections_all[section]+"_colors"),
-                            data: eval(array_sections_all[section]+"_values")
-                        }]
-                    },
-                    options: {
-                        responsive: false,
-                        title: {
-                            display: false,
-                            position: "top",
-                            text: array_sections_title_all[section].toUpperCase(),
-                            fontSize: 18,
-                            fontColor: "#111"
-                        },
-                        legend: {
-                            display: false
-                        },
-                        plugins: {
-                            labels: [
-                                {
-                                    render: 'label',
-                                    position: 'outside',
-                                    fontSize:9,
-                                    fontStyle: 'normal',
-                                    textMargin: 5,
-                                    outsidePadding: 20
-                                },
-                                {
-                                    render: 'value',
-                                    fontColor: '#fff',
-                                    fontSize:12
-                                }
-                            ]
-                        },
-                        tooltips: {
-                            mode: 'dataset'
-                        },
-                        animation: {
-                            onComplete: function(animation){
-                                document.querySelector('#down'+array_sections_all[section]).setAttribute('href', this.toBase64Image());
-                            }
-                        }
-                    }
-                }
-                var donuts_chart = new Chart(ctx, config);
-            }
-
-            Chart.defaults.global.defaultFontStyle = 'bold';
-        });
+                Chart.defaults.global.defaultFontStyle = 'bold';
+            });
+        }
 
         //Multiregional and Regional Publications / ABSTRACTS
         Object.keys(concept_type).forEach(function (section) {
-            var  ctxPubs = $("#"+concept_type[section]+"Chart");
-            var configdataTimelineChart = {
-                type: 'bar',
-                data: {
-                    labels: eval("years_label_regional_pubs_"+concept_type[section]),
-                    datasets: [
+            if((show_publications == '1' && section == '1') || (show_abstracts == '1' && section == "2")) {
+                var dataset = [];
+                if(eval("show_" + concept_type[section] + "_single")['1'] == '1'){
+                    dataset.push(
                         {
-                            label: 'Multiregional (MR)',
-                            data: eval("regionalmrpubs_mr_"+concept_type[section]),
-                            backgroundColor: eval("regionalmrpubs_color_"+concept_type[section])[0],
-                            borderWidth: 0
-                        },
-                        {
-                            label: 'MR without concept',
-                            data: eval("regionalmrpubs_mrw_"+concept_type[section]),
-                            backgroundColor: eval("regionalmrpubs_color_"+concept_type[section])[1],
-                            borderWidth: 0
-                        },
-                        {
-                            label: 'Regional',
-                            data: eval("regionalmrpubs_r_"+concept_type[section]),
-                            backgroundColor: eval("regionalmrpubs_color_"+concept_type[section])[2],
+                            label: eval("show_" + concept_type[section] + "_single_label1"),
+                            data: eval("regionalmrpubs_mr_" + concept_type[section]),
+                            backgroundColor: eval("regionalmrpubs_color_" + concept_type[section])[0],
                             borderWidth: 0
                         }
-                    ]
-                },
-                options: {
-                    legend: {
-                        display: true,
-                        onHover: function(event, legendItem) {
-                            document.getElementById(concept_type[section]+"Chart").style.cursor = 'pointer';
-                        },
-                        onClick: function(e, legendItem) {
-                            var index = legendItem.datasetIndex;
-                            var ci = this.chart;
-                            var alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
+                    );
+                }
+                if(eval("show_" + concept_type[section] + "_single")['2'] == '1'){
+                    dataset.push(
+                        {
+                            label: eval("show_" + concept_type[section] + "_single_label2"),
+                            data: eval("regionalmrpubs_outputs_" + concept_type[section]),
+                            backgroundColor: eval("regionalmrpubs_color_" + concept_type[section])[1],
+                            borderWidth: 0
+                        }
+                    );
+                }
+                var ctxPubs = $("#" + concept_type[section] + "Chart");
+                var configdataTimelineChart = {
+                    type: 'bar',
+                    data: {
+                        labels: eval("years_label_regional_pubs_" + concept_type[section]),
+                        datasets: []
+                    },
+                    options: {
+                        legend: {
+                            display: true,
+                            onHover: function (event, legendItem) {
+                                document.getElementById(concept_type[section] + "Chart").style.cursor = 'pointer';
+                            },
+                            onClick: function (e, legendItem) {
+                                var index = legendItem.datasetIndex;
+                                var ci = this.chart;
+                                var alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
 
-                            ci.data.datasets.forEach(function(e, i) {
-                                var meta = ci.getDatasetMeta(i);
-                                if (i !== index) {
-                                    if (!alreadyHidden) {
-                                        meta.hidden = meta.hidden === null ? !meta.hidden : null;
-                                    } else if (meta.hidden === null) {
-                                        meta.hidden = true;
+                                ci.data.datasets.forEach(function (e, i) {
+                                    var meta = ci.getDatasetMeta(i);
+                                    if (i !== index) {
+                                        if (!alreadyHidden) {
+                                            meta.hidden = meta.hidden === null ? !meta.hidden : null;
+                                        } else if (meta.hidden === null) {
+                                            meta.hidden = true;
+                                        }
+                                    } else if (i === index) {
+                                        meta.hidden = null;
                                     }
-                                } else if (i === index) {
-                                    meta.hidden = null;
-                                }
-                            });
+                                });
 
-                            ci.update();
-                        }
-                    },
-                    tooltips: {
-                        custom: function(tooltip) {
-                            if (!tooltip.opacity) {
-                                document.getElementById(concept_type[section]+"Chart").style.cursor = 'default';
-                                return;
+                                ci.update();
                             }
                         },
-                        mode:'index',
-                        intersect: false
-                    },
-                    respondive:true,
-                    scales : {
-                        xAxes : [{
-                            stacked : true
+                        tooltips: {
+                            custom: function (tooltip) {
+                                if (!tooltip.opacity) {
+                                    document.getElementById(concept_type[section] + "Chart").style.cursor = 'default';
+                                    return;
+                                }
+                            },
+                            mode: 'index',
+                            intersect: false
+                        },
+                        respondive: true,
+                        scales: {
+                            xAxes: [{
+                                stacked: true
 
-                        }],
-                        yAxes : [{
-                            stacked : true,
-                            ticks: {
-                                stepSize: 10,
-                                beginAtZero:true,
+                            }],
+                            yAxes: [{
+                                stacked: true,
+                                ticks: {
+                                    stepSize: 10,
+                                    beginAtZero: true,
+                                }
+                            }]
+                        },
+                        plugins: {
+                            labels: false
+                        },
+                        animation: {
+                            onComplete: function (animation) {
+                                document.querySelector('#down' + concept_type[section]).setAttribute('href', this.toBase64Image());
                             }
-                        }]
-                    },
-                    plugins: {
-                        labels: false
-                    },
-                    animation: {
-                        onComplete: function(animation){
-                            document.querySelector('#down'+concept_type[section]).setAttribute('href', this.toBase64Image());
                         }
                     }
-                }
-            };
-            var communication_chart = new Chart(ctxPubs, configdataTimelineChart);
+                };
+                var communication_chart = new Chart(ctxPubs, configdataTimelineChart);
+
+                Object.keys(dataset).forEach(function (index) {
+                    communication_chart.data.datasets.push(dataset[index]);
+                    communication_chart.update();
+                });
+            }
         });
 
         //MULTIREGIONAL ACTIVITY BY YEAR
-        var  ctx_iedea = $("#IedeaChart");
-        var config_iedea = {
-            type: 'line',
-            data: {
-                labels: years_label_concepts,
-                datasets: [
-                    {
-                        label:'New concepts',
-                        fill: false,
-                        borderColor:'#337ab7',
-                        backgroundColor:'#337ab7',
-                        data:iedea_concepts
-                    },
-                    {
-                        label:'Manuscripts',
-                        fill: false,
-                        borderColor:'#ffa64d',
-                        backgroundColor:'#ffa64d',
-                        data:iedea_manuscripts
-                    },
-                    {
-                        label:'Abstracts',
-                        fill: false,
-                        borderColor:'#00b386',
-                        backgroundColor:'#00b386',
-                        data:iedea_abstracts
-                    },
-                    {
-                        label:'MR Data Requests',
-                        fill: false,
-                        borderColor:'#bf80ff',
-                        backgroundColor:'#bf80ff',
-                        data:iedea_mrdatarequests
-                    }
-                ]
-            },
-            options: {
-                elements: {
-                    line: {
-                        tension: 0, // disables bezier curves
-                    }
+        if(show_activity == '1') {
+            var dataset = [];
+            var activity_labels = ['New concepts','Manuscripts','Abstracts','MR Data Requests'];
+            var activity_color = ['#337ab7','#ffa64d','#00b386','#bf80ff'];
+            var activity_data = ['concepts','manuscripts','abstracts','mrdatarequests'];
+            Object.keys(activity_data).forEach(function (index) {
+                if (show_activity_single[parseInt(index)+1] == '1') {
+                    dataset.push(
+                        {
+                            label: activity_labels[index],
+                            data: eval("iedea_"+activity_data[index]),
+                            backgroundColor: activity_color[index],
+                            borderColor: activity_color[index],
+                            fill: false
+                        }
+                    );
+                }
+            });
+            var ctx_iedea = $("#IedeaChart");
+            var config_iedea = {
+                type: 'line',
+                data: {
+                    labels: years_label_concepts,
+                    datasets: []
                 },
-                tooltips: {
-                    mode:'index',
-                    intersect: false
-                },
-                animation: {
-                    onComplete: function(animation){
-                        document.querySelector('#downmultiregionalyear').setAttribute('href', this.toBase64Image());
+                options: {
+                    elements: {
+                        line: {
+                            tension: 0, // disables bezier curves
+                        }
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    animation: {
+                        onComplete: function (animation) {
+                            document.querySelector('#downmultiregionalyear').setAttribute('href', this.toBase64Image());
+                        }
                     }
                 }
             }
-        }
 
-        var iedea_chart = new Chart(ctx_iedea, config_iedea);
+            var iedea_chart = new Chart(ctx_iedea, config_iedea);
+
+            Object.keys(dataset).forEach(function (index) {
+                iedea_chart.data.datasets.push(dataset[index]);
+                iedea_chart.update();
+            });
+        }
     });
 </script>
 <div class="container">
@@ -669,17 +689,19 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
     </div>
 </div>
 <div class="container">
-    <h3><?=$settings['hub_name']?> Stats</h3>
-    <p class="hub-title"><?=$settings['hub_statistics_text']?></p>
+    <h3><?=$settings['hub_name']?> Metrics</h3>
+    <p class="hub-title"><?=($settings['hub_statistics_text']=="")? $default_values_settings['hub_statistics_text']:$settings['hub_statistics_text']?></p>
 </div>
 
+<!-- DONUTS -->
+<?php if($settings['hub_stats_section1_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
-    <h4>Multiregional Research Concepts</h4>
-    <p class="hub-title"><?=$settings['hub_stats_consortium']?></p>
+    <h4><?=($settings['hub_stats_consortium_title']=="")? $default_values_settings['hub_stats_consortium_title']:$settings['hub_stats_consortium_title']?></h4>
+    <p class="hub-title"><?=($settings['hub_stats_consortium']=="")? $default_values_settings['hub_stats_consortium']:$settings['hub_stats_consortium']?></p>
 </div>
 <div class="container">
     <?php foreach ($array_sections_title_all as $index=>$section){
-        if($index <= 2){?>
+        if($index <= 2 && $settings['hub_stats_consortium_select'][$index+1] == '1'){?>
         <div class="canvas_title"><?=$section?>
             <a href="#" download="<?=$array_sections_all[$index].".png"?>" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="<?="down".$array_sections_all[$index]?>" name="<?="down".$array_sections_all[$index]?>"></a>
         </div>
@@ -687,99 +709,117 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         }?>
 </div>
 <div class="container">
-    <?php foreach ($array_sections as $section){
+    <?php foreach ($array_sections as $index => $section){
         $id = $section."Chart";
-        if($section == 'conceptswg'){
-            $idtool = $section."tooltip";
-            ?><div id="<?=$idtool?>"></div><?php
-        }
-        ?>
-        <canvas id="<?=$id?>" class="canvas_statistics" width="360px" height="330px"></canvas>
-    <?php }?>
+        if($settings['hub_stats_consortium_select'][$index+1] == '1'){
+            if($section == 'conceptswg'){
+                $idtool = $section."tooltip";
+                ?><div id="<?=$idtool?>"></div><?php
+            }
+            ?>
+            <canvas id="<?=$id?>" class="canvas_statistics" width="360px" height="330px"></canvas>
+    <?php }
+    }?>
 </div>
+<?php } ?>
 
+<!-- PUBLICATIONS -->
+<?php if($settings['hub_stats_section2_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
     <h4>
-        Multiregional and Regional Publications
+        <?=($settings['hub_stats_pubs_title']=="")?$default_values_settings['hub_stats_pubs_title']:$settings['hub_stats_pubs_title']?>
         <a href="#" download="mr_r_publications.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downmanuscripts" name="downmanuscripts"></a>
     </h4>
-    <p class="hub-title"><?=$settings['hub_stats_rmr_publications']?></p>
+    <p class="hub-title"><?=($settings['hub_stats_rmr_publications']=="")?$default_values_settings['hub_stats_rmr_publications']:$settings['hub_stats_rmr_publications']?></p>
 </div>
 <div class="container">
     <canvas id="manuscriptsChart" class="canvas_statistics" width="1100px" height="310px"></canvas>
 </div>
 <br>
 <br>
-<div class="container">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <a data-toggle="collapse" href="#collapse_manuscripts">Multiregional Publications List <span class="badge badge-primary"><?=$data_manuscripts['total']?></span></a>
-            </h3>
-        </div>
-        <div id="collapse_manuscripts" class="panel-collapse collapse" aria-expanded="true">
-            <table class="table table_requests sortable-theme-bootstrap" data-sortable id="sortable_table">
-                <thead>
-                <th width="150px" style="text-align: center">Year</th>
-                <th width="150px" style="text-align: center">Total</th>
-                <th>Conference</th>
-                </thead>
-                <tbody>
-                <?php echo $data_manuscripts['content']; ?>
-                </tbody>
-            </table>
+    <?php if($settings['hub_stats_section2a_y'] == '1'){?>
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" href="#collapse_manuscripts"><?=($settings['hub_stats_pubs2_title']=="")?$default_values_settings['hub_stats_pubs2_title']:$settings['hub_stats_pubs2_title']?> <span class="badge badge-primary"><?=$data_manuscripts['total']?></span></a>
+                </h3>
+            </div>
+            <div id="collapse_manuscripts" class="panel-collapse collapse" aria-expanded="true">
+                <table class="table table_requests sortable-theme-bootstrap" data-sortable id="sortable_table">
+                    <thead>
+                    <th width="150px" style="text-align: center">Year</th>
+                    <th width="150px" style="text-align: center">Total</th>
+                    <th>Conference</th>
+                    </thead>
+                    <tbody>
+                    <?php echo $data_manuscripts['content']; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+    <?php } ?>
+<?php } ?>
 
+<!-- ABSTRACTS -->
+<?php if($settings['hub_stats_section3_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
     <h4>
-        Multiregional and Regional Abstracts
+        <?=($settings['hub_stats_abs_title']=="")?$default_values_settings['hub_stats_abs_title']:$settings['hub_stats_abs_title']?>
         <a href="#" download="mr_r_abstracts.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downabstracts" name="downabstracts"></a>
     </h4>
-    <p class="hub-title"><?=$settings['hub_stats_rmr_abstratcs']?></p>
+    <p class="hub-title"><?=($settings['hub_stats_rmr_abstratcs']=="")?$default_values_settings['hub_stats_rmr_abstratcs']:$settings['hub_stats_rmr_abstratcs']?></p>
 </div>
 <div class="container">
     <canvas id="abstractsChart" class="canvas_statistics" width="1100px" height="310px"></canvas>
 </div>
 <br>
 <br>
-<div class="container">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <a data-toggle="collapse" href="#collapse_abstracts">Multiregional Abstract List <span class="badge badge-primary"><?=$data_abstracts['total']?></span></a>
-            </h3>
-        </div>
-        <div id="collapse_abstracts" class="panel-collapse collapse" aria-expanded="true">
-            <table class="table table_requests sortable-theme-bootstrap" data-sortable id="sortable_table">
-                <thead>
-                <th width="150px" style="text-align: center">Year</th>
-                <th width="150px" style="text-align: center">Total</th>
-                <th>Conference</th>
-                </thead>
-                <tbody>
-                <?php echo $data_abstracts['content']; ?>
-                </tbody>
-            </table>
+<?php if($settings['hub_stats_section3a_y'] == '1'){?>
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" href="#collapse_abstracts"><?=($settings['hub_stats_abs2_title']=="")?$default_values_settings['hub_stats_abs2_title']:$settings['hub_stats_abs2_title']?> <span class="badge badge-primary"><?=$data_abstracts['total']?></span></a>
+                </h3>
+            </div>
+            <div id="collapse_abstracts" class="panel-collapse collapse" aria-expanded="true">
+                <table class="table table_requests sortable-theme-bootstrap" data-sortable id="sortable_table">
+                    <thead>
+                    <th width="150px" style="text-align: center">Year</th>
+                    <th width="150px" style="text-align: center">Total</th>
+                    <th>Conference</th>
+                    </thead>
+                    <tbody>
+                    <?php echo $data_abstracts['content']; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+    <?php } ?>
+<?php } ?>
 
+<!-- ACTIVITY -->
+<?php if($settings['hub_stats_section4_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
     <h4>
-        <?=$settings['hub_name']?> Multiregional Activity by Year
+        <?=$settings['hub_name']?> <?=($settings['hub_stats_activity_title']=="")?$default_values_settings['hub_stats_activity_title']:$settings['hub_stats_activity_title']?>
         <a href="#" download="multiregional_activity_year.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downmultiregionalyear" name="downmultiregionalyear"></a>
     </h4>
-    <p class="hub-title"><?=$settings['hub_stats_mr_activity_year']?></p>
+    <p class="hub-title"><?=($settings['hub_stats_mr_activity_year']=="")?$default_values_settings['hub_stats_mr_activity_year']:$settings['hub_stats_mr_activity_year']?></p>
 </div>
 <div class="container">
     <canvas id="IedeaChart" class="canvas_statistics" width="350px" height="100px"></canvas>
 </div>
+<?php } ?>
 
+<!-- MAP -->
+<?php if($settings['hub_stats_section5_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
-    <h4><?=$settings['hub_name']?> Map</h4>
-    <p class="hub-title"><?=$settings['hub_stats_map']?></p>
+    <h4><?=$settings['hub_name']?> <?=($settings['hub_stats_map_title']=="")?$default_values_settings['hub_stats_map_title']:$settings['hub_stats_map_title']?></h4>
+    <p class="hub-title"><?=($settings['hub_stats_map']=="")?$default_values_settings['hub_stats_map']:$settings['hub_stats_map']?></p>
 </div>
 <div class="container" style="padding-top: 20px">
     <?php include(dirname(dirname(__FILE__)).'/map/map_stats.php');?>
@@ -789,11 +829,13 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         setDataset("");
     } );
 </script>
-
+<?php } ?>
+<?php if($settings['hub_stats_section5a_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
-    <h4><?=$settings['hub_name']?> Site List</h4>
-    <p class="hub-title"><?=$settings['hub_stats_site_list']?></p>
+    <h4><?=$settings['hub_name']?> <?=($settings['hub_stats_sitelist_title']=="")?$default_values_settings['hub_stats_sitelist_title']:$settings['hub_stats_sitelist_title']?></h4>
+    <p class="hub-title"><?=($settings['hub_stats_site_list']=="")?$default_values_settings['hub_stats_site_list']:$settings['hub_stats_site_list']?></p>
 </div>
+
 <div class="container">
     <?php
     $RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
@@ -812,6 +854,9 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
     }
 
     $tbl_adultped_array = array();
+    $tbl_adultped_array['adultstotalcountry'] = array();
+    $tbl_adultped_array['pedsstotalcountry'] = array();
+    $tbl_array['country'] = array();
     foreach($TBLCenter as $record ){
         if(($record['drop_center'] == "" || !array_key_exists('drop_center',$record)) && $record['region'] != ""){
             $tbl_array[$record['region']]['sites'] += 1;
@@ -885,7 +930,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <a data-toggle="collapse" href="#collapse_consortium"><?=$settings['hub_name']?> Site List <span class="badge badge-primary"><?=$tbl_adultped_array['sites']?></span></a>
+                <a data-toggle="collapse" href="#collapse_consortium"><?=$settings['hub_name']?> <?=($settings['hub_stats_sitelist_title']=="")?$default_values_settings['hub_stats_sitelist_title']:$settings['hub_stats_sitelist_title']?> <span class="badge badge-primary"><?=$tbl_adultped_array['sites']?></span></a>
             </h3>
         </div>
         <div id="collapse_consortium" class="panel-collapse collapse" aria-expanded="true">
@@ -903,4 +948,5 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         </div>
     </div>
 </div>
+<?php } ?>
 <div style="padding-bottom: 100px"></div>
