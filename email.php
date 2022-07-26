@@ -14,8 +14,6 @@ function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $actio
         $environment = " ".ENVIRONMENT;
     }
 
-    $send = \REDCap::email ($to,$from,$subject,$message,$cc,'' ,$fromName.$environment);
-
     #We use the message class so the emails get recorded in the Email Logging section in REDCap
     $email = new \Message($pid, $record_id);
     $email->setTo($to);
