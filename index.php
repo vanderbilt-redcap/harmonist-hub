@@ -44,10 +44,12 @@ $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
             </div>';
         }else {
             #User rights
-            $UserRights = \REDCap::getUserRights(USERID)[USERID];
             $isAdmin = false;
-            if ($UserRights['user_rights'] == '1') {
-                $isAdmin = true;
+            if(defined('USERID')) {
+                $UserRights = \REDCap::getUserRights(USERID)[USERID];
+                if ($UserRights['user_rights'] == '1') {
+                    $isAdmin = true;
+                }
             }
 
             $dd_array = \REDCap::getDataDictionary('array');
