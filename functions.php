@@ -31,6 +31,9 @@ function parseCSVtoArray($module, $DocID){
 function createArrayFromCSV($filepath,$filename, $addHeader = false){
     $file = $filepath.$filename;
     $csv = array_map('str_getcsv', file($file));
+    #Remove hidden characters in file
+    $csv[0][0] = trim(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $csv[0][0]));
+    $csv[0][1] = trim(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $csv[0][1]));
     array_walk($csv, function(&$a) use ($csv) {
         $a = array_combine($csv[0], $a);
     });

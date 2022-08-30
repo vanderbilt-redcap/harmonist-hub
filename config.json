@@ -18,13 +18,13 @@
       {
         "name": "Harmonist Hub",
         "icon": "fas fa-database",
-        "url": "index.php",
+        "url": "index.php?NOAUTH",
         "target": "_blank"
       }
     ]
   },
 
-  "no-auth-pages":["downloadFile","startDDProjects","functions", "index"],
+  "no-auth-pages":["downloadFile","startDDProjects","functions", "index","hub_login"],
 
   "description": "Installs the Harmonist Hub consortium management platform, a series of SQL-linked REDCap projects with a web interface and auto-email workflow for managing concept sheets, review requests, voting, publications, data requests, and metrics for multi-site research consortia. Demo and training videos available at dataharmonist.org. Caution: this module will install ~30 REDCap projects.",
 
