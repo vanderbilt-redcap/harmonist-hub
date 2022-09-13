@@ -157,8 +157,6 @@ $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
 
                 #TOKEN
                 session_write_close();
-                session_module_name("IEDEA_user");
-                session_name("IEDEA");
                 // server should keep session data for AT LEAST 2 days
                 ini_set('session.cookie_lifetime', 172800);
                 session_set_cookie_params(172800);
