@@ -6,31 +6,6 @@ $record = htmlentities($_GET['record'],ENT_QUOTES);
 
 $module->log("HUB: " . $pidsArray['PROJECTS'] . " - LOGIN");
 ?>
-<div>
-    <div style="padding-left: 15px;font-size: 20px;color: #404040;"><p>Access <?=$hub_projectname?> Hub</p></div>
-    <div style="padding-left: 15px;color: #404040;"><?=$settings['hub_login_text']?></div>
-
-    <div class="col-md-10">
-        <div class="alert alert-info" id="blue-alert" style="display:none">
-            <?=$settings['hub_login_blue_text']?>
-        </div>
-        <div class="alert alert-danger" id="hub_error_message" style="display: none;"></div>
-        <p></p>
-        <div class="panel panel-default">
-            <div class="panel-heading"><h3 class="panel-title"><strong>Request Access Link</strong></h3></div>
-            <div class="panel-body">
-                <form role="form" id="form_login">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Email Address</label>
-                        <input type="email" class="form-control" id="hub_email" name="hub_email" placeholder="Type your email address.">
-                    </div>
-                    <button type="submit" class="btn btn-sm btn-primary" style="font-weight: bold">Get Link</button>
-
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     $(document).ready(function() {
@@ -62,3 +37,29 @@ $module->log("HUB: " . $pidsArray['PROJECTS'] . " - LOGIN");
         });
     } );
 </script>
+
+<div>
+    <div style="padding-left: 15px;font-size: 20px;color: #404040;"><p>Access <?=$hub_projectname?> Hub</p></div>
+    <div style="padding-left: 15px;color: #404040;"><?=$settings['hub_login_text']?></div>
+
+    <div class="col-md-10">
+        <div class="alert alert-info" id="blue-alert" style="display:none">
+            <?=$settings['hub_login_blue_text']?>
+        </div>
+        <div class="alert alert-danger" id="hub_error_message" style="display: none;"></div>
+        <p></p>
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title"><strong>Request Access Link</strong></h3></div>
+            <div class="panel-body">
+                <form role="form" id="form_login">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email Address</label>
+                        <input type="email" class="form-control" id="hub_email" name="hub_email" placeholder="Type your email address.">
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary" style="font-weight: bold">Get Link</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
