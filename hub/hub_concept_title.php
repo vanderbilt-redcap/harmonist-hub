@@ -3,11 +3,9 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
 $RecordSetTable = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $record));
-$concept = ProjectData::getProjectInfoArray($RecordSetTable)[0];
-
+$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0];
 $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
-
 if(!empty($concept)) {
     $active = ($concept['active_y'] == "Y") ? "<span style='color:#00e600;font-weight: bold'>Active</span>" : "<span style='color:grey'>Inactive</span>";
 
@@ -267,7 +265,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <?php
                     if($concept['adminupdate_d'] == "" && $concept['update_d'] == ""){
                         echo '<tr><td colspan="3">No updates available</td></tr>';
-                    }else{
+                    }else if($concept['adminupdate_d'] != ""){
                         #sort elements by most recent date Admin
                         arsort($concept['adminupdate_d']);
                         foreach ($concept['adminupdate_d'] as $index=>$value){

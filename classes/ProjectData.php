@@ -48,7 +48,6 @@ class ProjectData
                                     if(!array_key_exists($field_name,$array[$index])){
                                         $array[$index][$field_name] = array();
                                     }
-
                                     if($value != "" && (!is_array($value) || (is_array($value) && !empty($value)))){
                                         $datarepeat[$field_name][$instance] = $value;
                                         $count = 0;
@@ -67,7 +66,7 @@ class ProjectData
                         foreach ($datarepeat as $field=>$datai){
                             #check if non repeatable value is empty and add repeatable value
                             #empty value or checkboxes
-                            if($array[$index][$field] == "" || (is_array($array[$index][$field]) && empty($array[$index][$field][1]))){
+                            if($array[$index][$field] == "" || (is_array($array[$index][$field]) && empty($array[$index][$field]))){
                                 $array[$index][$field] = $datarepeat[$field];
                             }
                         }
