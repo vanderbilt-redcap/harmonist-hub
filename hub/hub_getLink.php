@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
-
+$module->log("HUB: " . $pidsArray['PROJECTS'] . " - GET LINK");
 $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
 $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
@@ -13,7 +13,6 @@ $options = array(0=>"map",1=>"sop",2=>"ss1",3=>"cpt",4=>"ttl",5=>"pup",6=>"cup",
     21=>"gac",22=>"sra",23=>"tbl",24=>"ofs",25=>"fsa",26=>"dna",27=>"ss5",28=>"spr",29=>"lgd",30=>"usr",
     31=>"mra",32=>"mrr",33=>"dat",34=>"pdc",35=>"mts",36=>"mth",37=>"unf",38=>"und",39=>"cal");
 
-$module->log("HUB: " . $pidsArray['PROJECTS'] . " - GET LINK");
 if(!empty($_POST['email'])) {
     $module->log("HUB: " . $pidsArray['PROJECTS'] . " - link requested for ".$_POST['email']);
     $RecordSetEmail = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[email] ='".$_POST['email']."'");
