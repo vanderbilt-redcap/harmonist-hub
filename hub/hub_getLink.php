@@ -13,12 +13,14 @@ $options = array(0=>"map",1=>"sop",2=>"ss1",3=>"cpt",4=>"ttl",5=>"pup",6=>"cup",
     21=>"gac",22=>"sra",23=>"tbl",24=>"ofs",25=>"fsa",26=>"dna",27=>"ss5",28=>"spr",29=>"lgd",30=>"usr",
     31=>"mra",32=>"mrr",33=>"dat",34=>"pdc",35=>"mts",36=>"mth",37=>"unf",38=>"und",39=>"cal");
 
+$this->log("HUB: " . $pidsArray['PROJECTS'] . " - GET LINK");
 if(!empty($_POST['email'])) {
+    $this->log("HUB: " . $pidsArray['PROJECTS'] . " - link requested for ".$_POST['email']);
     $RecordSetEmail = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[email] ='".$_POST['email']."'");
     $people = ProjectData::getProjectInfoArray($RecordSetEmail)[0];
     if(strtolower($people['email']) == strtolower($_POST['email']) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
         $arrayLogin = array(array('record_id' => $people['record_id']));
-
+        $this->log("HUB: " . $pidsArray['PROJECTS'] . " - Email found in database. Proceeding to send link");
         $token = \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(12);
         $send_option = "";
         if(!empty($current_option)){
@@ -44,8 +46,9 @@ if(!empty($_POST['email'])) {
         if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
-        \Vanderbilt\HarmonistHubExternalModule\sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $settings['hub_name']." Hub Access Link".$environment, $message,$people['record_id'],"Review Hub Access Sent",$pidsArray['PEOPLE']);
 
+        \Vanderbilt\HarmonistHubExternalModule\sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $settings['hub_name']." Hub Access Link".$environment, $message,$people['record_id'],"Review Hub Access Sent",$pidsArray['PEOPLE']);
+        $this->log("HUB: " . $pidsArray['PROJECTS'] . " - Token sent");
         #Default to 7 days if empty
         if($settings['accesslink_dur'] == ""){
             $settings['accesslink_dur'] = 7;
