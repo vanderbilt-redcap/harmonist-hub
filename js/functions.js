@@ -91,7 +91,6 @@ function loadAjax(data, url, loadAJAX){
                 alert(xhr.responseText);
             },
             success: function (result) {
-                console.log(result)
                 jsonAjax = jQuery.parseJSON(result);
 
                 if(jsonAjax.html != '' && jsonAjax.html != undefined) {
