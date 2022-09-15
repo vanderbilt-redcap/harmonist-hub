@@ -79,6 +79,8 @@ function loadAjax(data, url, loadAJAX){
     $('#errMsgContainer').hide();
     $('#succMsgContainer').hide();
     $('#warnMsgContainer').hide();
+    console.log(url)
+    console.log(data)
     if(data != '') {
         $.ajax({
             type: "POST",
@@ -89,6 +91,7 @@ function loadAjax(data, url, loadAJAX){
                 alert(xhr.responseText);
             },
             success: function (result) {
+                console.log(result)
                 jsonAjax = jQuery.parseJSON(result);
 
                 if(jsonAjax.html != '' && jsonAjax.html != undefined) {

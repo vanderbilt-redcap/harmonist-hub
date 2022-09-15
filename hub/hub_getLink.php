@@ -1,6 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
+$module->log("HUB: GETLINK 1");
 $module->log("HUB: " . $pidsArray['PROJECTS'] . " - GET LINK");
 $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
 $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
