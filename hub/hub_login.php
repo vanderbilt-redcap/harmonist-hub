@@ -10,7 +10,7 @@ $module->log("HUB: " . $pidsArray['PROJECTS'] . " - LOGIN");
 <script>
     $(document).ready(function() {
         $('#form_login').submit(function () {
-            var url_getLink = <?=json_encode($module->getUrl('hub_getLink.php?NOAUTH'))?>;
+            var url_getLink = <?=json_encode($module->getUrl('hub/hub_getLink.php?NOAUTH'))?>;
             var errMsg = [];
             $('#hub_error_message').hide();
             if(!validateEmail($('#hub_email').val())){
