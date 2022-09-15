@@ -128,7 +128,9 @@ $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
                             });
 
                             var pageurloption = <?=json_encode($option)?>;
-                            $('[option='+pageurloption+']').addClass('navbar-active');
+                            if(pageurloption != '') {
+                                $('[option=' + pageurloption + ']').addClass('navbar-active');
+                            }
 
                         } );
                     </script>
