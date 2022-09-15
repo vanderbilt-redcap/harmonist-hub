@@ -3,8 +3,6 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 $option = htmlentities($_GET['option'],ENT_QUOTES);
 $record = htmlentities($_GET['record'],ENT_QUOTES);
-
-$module->log("HUB: " . $pidsArray['PROJECTS'] . " - LOGIN");
 ?>
 
 <script>
