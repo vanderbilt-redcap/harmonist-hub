@@ -3,22 +3,24 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $module->log("HUB: " . $pidsArray['PROJECTS'] . " - GET LINK");
+
 $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
 $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
 $result = "";
 $current_record = $_POST['record'];
 $current_option = $_POST['option'];
+$email = $_REQUEST['email'];
 $options = array(0=>"map",1=>"sop",2=>"ss1",3=>"cpt",4=>"ttl",5=>"pup",6=>"cup",7=>"bug",8=>"hub",9=>"adm",10=>"hra",
     11=>"upd",12=>"ups",13=>"uph",14=>"dnd",15=>"out",16=>"abt",17=>"faq",18=>"arc",19=>"pro",20=>"smn",
     21=>"gac",22=>"sra",23=>"tbl",24=>"ofs",25=>"fsa",26=>"dna",27=>"ss5",28=>"spr",29=>"lgd",30=>"usr",
     31=>"mra",32=>"mrr",33=>"dat",34=>"pdc",35=>"mts",36=>"mth",37=>"unf",38=>"und",39=>"cal");
 
-if(!empty($_POST['email'])) {
-    $module->log("HUB: " . $pidsArray['PROJECTS'] . " - link requested for ".$_POST['email']);
-    $RecordSetEmail = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[email] ='".$_POST['email']."'");
+if(!empty($_REQUEST['email'])) {
+    $module->log("HUB: " . $pidsArray['PROJECTS'] . " - link requested for ".$email);
+    $RecordSetEmail = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[email] ='".$email."'");
     $people = ProjectData::getProjectInfoArray($RecordSetEmail)[0];
-    if(strtolower($people['email']) == strtolower($_POST['email']) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
+    if(strtolower($people['email']) == strtolower($email) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
         $arrayLogin = array(array('record_id' => $people['record_id']));
         $module->log("HUB: " . $pidsArray['PROJECTS'] . " - Email found in database. Proceeding to send link");
         $token = \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(12);
@@ -64,7 +66,7 @@ if(!empty($_POST['email'])) {
         $json = json_encode($arrayLogin);
         $results = \Records::saveData($pidsArray['PEOPLE'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache($pidsArray['PEOPLE'], $people['record_id'],1);
-    }else if($people == "" || strtolower($people['email']) != strtolower($_POST['email'])){
+    }else if($people == "" || strtolower($people['email']) != strtolower($email)){
         $message = "<html>This email address does not exist in the Hub.<br><br>".
                     "Your email address may not be registered in the system or you may be registered under a different email. Please e-mail ".$settings['hub_contact_email']." to confirm.</html>";
 
@@ -72,7 +74,7 @@ if(!empty($_POST['email'])) {
         if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
-        \Vanderbilt\HarmonistHubExternalModule\sendEmail(strtolower($_POST['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database","Access denied",$pidsArray['PEOPLE']);
+        \Vanderbilt\HarmonistHubExternalModule\sendEmail(strtolower($email), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database","Access denied",$pidsArray['PEOPLE']);
     }
 }
 
