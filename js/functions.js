@@ -79,8 +79,6 @@ function loadAjax(data, url, loadAJAX){
     $('#errMsgContainer').hide();
     $('#succMsgContainer').hide();
     $('#warnMsgContainer').hide();
-    console.log(url)
-    console.log(data)
     if(data != '') {
         $.ajax({
             type: "POST",
