@@ -14,8 +14,12 @@ include_once(__DIR__ . "/classes/ExcelFunctions.php");
 
 REDCapManagement::getEnvironment();
 
+$module->log("HUB: GET LINK");
 #Mapper Project
 $project_id_main = ($project_id != '')?$project_id:$_GET['pid'];
+$module->log("HUB: " . $project_id_main . " - GET LINK");
+$module->log("HUB: " . $_GET['pid'] . " - GET LINK");
+$module->log("HUB: " . $_REQUEST['pid'] . " - GET LINK");
 #Get Projects ID's
 $pidsArray = REDCapManagement::getPIDsArray($project_id_main);
 
