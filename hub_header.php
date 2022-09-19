@@ -60,32 +60,32 @@ if($isAdmin) {
         <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('NOAUTH_access.php')?>" role="button" option="null">Home</a>
+                    <a href="<?=$module->getUrl('index.php')?>" role="button" option="null">Home</a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('NOAUTH_access.php?pid='.$pidsArray['PROJECTS'].'&option=hub')?>" role="button" option="hub">Requests <span class="badge label-default"><?=$numberOfOpenRequest?></span></a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub')?>" role="button" option="hub">Requests <span class="badge label-default"><?=$numberOfOpenRequest?></span></a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('NOAUTH_access.php?pid='.$pidsArray['PROJECTS'].'&option=cpt')?>"role="button" option="cpt">Concepts</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=cpt')?>"role="button" option="cpt">Concepts</a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('NOAUTH_access.php?pid='.$pidsArray['PROJECTS'].'&option=out')?>"role="button" option="out">Publications</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=out')?>"role="button" option="out">Publications</a>
                 </li>
             </ul>
 
             <?php if($settings['deactivate_datahub'][1] != "1"){ ?>
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('NOAUTH_access.php?pid='.$pidsArray['PROJECTS'].'&option=dat')?>"role="button" option="dat">Data Hub</a>
+                    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dat')?>"role="button" option="dat">Data Hub</a>
 
                 </li>
             </ul>
@@ -94,7 +94,7 @@ if($isAdmin) {
             <?php if($isAdmin){ ?>
                 <ul class="nav navbar-nav navbar-links">
                     <li class="menu-item dropdown">
-                        <a href="<?=$module->getUrl('NOAUTH_access.php?pid='.$pidsArray['PROJECTS'].'&option=adm')?>"role="button" option="adm">Admin <span class="badge label-default"><?=$numberOfAdminRequest?></span></a>
+                        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=adm')?>"role="button" option="adm">Admin <span class="badge label-default"><?=$numberOfAdminRequest?></span></a>
                     </li>
                 </ul>
             <?php } ?>
