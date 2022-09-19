@@ -257,22 +257,52 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     <tr>
                         <th class="archive_grid_dued sorted_class">Date</th>
                         <th class="archive_grid_dued sorted_class">Project Update</th>
-                        <th class="archive_grid_dued">File</th>
+                        <th class="archive_grid_dued">Statys</th>
                     </tr>
                 </thead>
 
                 <tbody>
                 <?php
+                    $project_status = $module->getChoiceLabels('project_status', $pidsArray['HARMONIST']);
+                    $admin_status = $module->getChoiceLabels('admin_status', $pidsArray['HARMONIST']);
                     if($concept['adminupdate_d'] == "" && $concept['update_d'] == ""){
                         echo '<tr><td colspan="3">No updates available</td></tr>';
-                    }else if($concept['adminupdate_d'] != ""){
+                    }else if($concept['adminupdate_d'] != "" && $concept['update_d'] != ""){
+                        $adminUpdateD = array();
+                        foreach ($concept['adminupdate_d'] as $aindex => $adminupdate){
+                            $adminUpdateD[$aindex."-admin"] = $adminupdate;
+                        }
+                        $updateD = array();
+                        foreach ($concept['update_d'] as $uindex => $update){
+                            $updateD[$uindex."-project"] = $update;
+                        }
+                        $allUpdates = array_merge($updateD,$adminUpdateD);
                         #sort elements by most recent date Admin
-                        arsort($concept['adminupdate_d']);
+                        arsort($allUpdates);
+                        foreach ($allUpdates as $index=>$value){
+                            $index_data = explode('-',$index);
+                            echo '<tr>';
+                            echo  '<td style="width: 10%;">' . $value. '</td>';
+                            echo  '<td>' . $concept[$index_data[1]."_update"][$index_data[0]]. '</td>';
+                            echo  '<td style="width: 25%;">'.${$index_data[1]."_status"}[$concept[$index_data[1]."_status"][$index_data[0]]].'</td>';
+                            echo '</tr>';
+                        }
+                    }else if($concept['adminupdate_d'] != "" && $concept['update_d'] == ""){
+                        asort($concept['adminupdate_d']);
                         foreach ($concept['adminupdate_d'] as $index=>$value){
                             echo '<tr>';
                             echo  '<td style="width: 10%;">' . $value. '</td>';
-                            echo  '<td>' . $concept['admin_update'][$index]. '</td>';
-                            echo  '<td style="width: 5%;">' . \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept['adminupdate_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],""). '</td>';
+                            echo  '<td>' . $concept["admin_update"][$index]. '</td>';
+                            echo  '<td style="width: 25%;">'.$admin_status[$concept["admin_status"][$index]].'</td>';
+                            echo '</tr>';
+                        }
+                    }else if($concept['adminupdate_d'] == "" && $concept['update_d'] != ""){
+                        asort($concept['update_d']);
+                        foreach ($concept['update_d'] as $index=>$value){
+                            echo '<tr>';
+                            echo  '<td style="width: 10%;">' . $value. '</td>';
+                            echo  '<td>' . $concept["project_update"][$index]. '</td>';
+                            echo  '<td style="width: 25%;">'.$project_status[$concept["project_status"][$index]].'</td>';
                             echo '</tr>';
                         }
                     }
