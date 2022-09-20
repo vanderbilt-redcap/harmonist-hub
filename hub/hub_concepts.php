@@ -43,7 +43,7 @@ if (!empty($concepts)) {
             '<td>' . $concept['active_y'].'</td>' .
             '<td>' . $concept['wg2_link'].'</td>' .
             '<td style="">' . $name. '</td>' .
-            '<td><a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$concept['record_id']).'">' . $concept['concept_title'] . '</a></td>' ;
+            '<td><a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$concept['record_id']).'">' . $concept['concept_title'] . '</a></td>' ;
 
         #Only check if they are final
         $row = "";
@@ -384,7 +384,7 @@ $img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJE
                 $newconcept_btn_css = "display: inline-block";
                 ?>
                 <div style="display: inline-block">
-                    <form method="POST" action="<?=$module->getUrl('hub/hub_concepts_tracker_spreadsheet.php')?>" id="form_concepts_tracker">
+                    <form method="POST" action="<?=$module->getUrl('hub/hub_concepts_tracker_spreadsheet.php?NOAUTH')?>" id="form_concepts_tracker">
                         <button type="submit" class="btn btn-primary"><span class="fa fa-arrow-down"></span> Concept Tracker</button>
                     </form>
                 </div>

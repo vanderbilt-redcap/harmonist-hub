@@ -21,7 +21,7 @@ $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
         <head>
             <?php include_once("head_scripts.php");?>
             <script>
-                var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php'))?>;
+                var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php?NOAUTH'))?>;
                 var pid = <?=json_encode($pid)?>;
             </script>
         </head>
@@ -59,7 +59,7 @@ $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
                 <head>
                     <?php include_once("head_scripts.php");?>
                     <script>
-                        var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php'))?>;
+                        var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php?NOAUTH'))?>;
                         var pid = <?=json_encode($pid)?>;
                     </script>
                 </head>

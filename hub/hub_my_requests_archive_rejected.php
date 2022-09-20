@@ -37,7 +37,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=mra&type=a')?>">< Back to Requests Archive</a>
+        <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mra&type=a')?>">< Back to Requests Archive</a>
     </div>
     <h3>Rejected & Deactivated Requests Archive</h3>
     <p class="hub-title"><?=$settings['hub_req_arc_rejected_text']?></p>

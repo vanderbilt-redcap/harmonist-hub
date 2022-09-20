@@ -20,7 +20,7 @@ if($option == "0"){
         $string_userid = implode(",",$array_userid);
         $recordRM[$request_id][$event_id_RM]["follow_activity"] = $string_userid;
     }
-    $button = '<button onclick="follow_activity(\'1\',\''.$userid.'\',\''.$request_id.'\','.$module->getUrl('hub/hub_request_follow_activity_AJAX.php').'" class="btn btn-default actionbutton"><i class="fa fa-plus-square"></i> <span class="hidden-xs">Follow Activity</span></button>';
+    $button = '<button onclick="follow_activity(\'1\',\''.$userid.'\',\''.$request_id.'\','.$module->getUrl('hub/hub_request_follow_activity_AJAX.php?NOAUTH').'" class="btn btn-default actionbutton"><i class="fa fa-plus-square"></i> <span class="hidden-xs">Follow Activity</span></button>';
 }else if($option == "1"){
     #FOLLOW
     if($follow_activity == ''){
@@ -30,7 +30,7 @@ if($option == "0"){
         $string_userid = implode(",",$array_userid);
         $recordRM[$request_id][$event_id_RM]["follow_activity"] = $string_userid;
     }
-    $button = '<button onclick="follow_activity(\'0\',\''.$userid.'\',\''.$request_id.'\','.$module->getUrl('hub/hub_request_follow_activity_AJAX.php').')" class="btn btn-primary actionbutton"><i class="fa fa-check-square"></i> <span class="hidden-xs">Following</span></button>';
+    $button = '<button onclick="follow_activity(\'0\',\''.$userid.'\',\''.$request_id.'\','.$module->getUrl('hub/hub_request_follow_activity_AJAX.php?NOAUTH').')" class="btn btn-primary actionbutton"><i class="fa fa-check-square"></i> <span class="hidden-xs">Following</span></button>';
 }
 $results = \Records::saveData($pidsArray['RMANAGER'], 'array', $recordRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 \Records::addRecordToRecordListCache($pidsArray['RMANAGER'], $request_id,1);

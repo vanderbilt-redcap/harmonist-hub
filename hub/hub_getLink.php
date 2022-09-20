@@ -39,7 +39,7 @@ if(!empty($_REQUEST['email'])) {
             $send_record = "&record=".$current_record;
         }
 
-        $url = $module->getUrl("index.php?token=".$token.$send_option.$send_record."&pid=".$pidsArray['PROJECTS']."&NOAUTH");
+        $url = $module->getUrl("index.php?NOAUTH&token=".$token.$send_option.$send_record."&pid=".$pidsArray['PROJECTS']."&NOAUTH");
         $message = "<html>Here is your link to access the ".$settings['hub_name']." Hub:<br/><a href='".$url."'>".$url."</a><br/><br/><span style='color:#e74c3c'>**This link is unique to you and should not be forwarded to others.</span><br/>".
             "This link will expire in ".$settings['accesslink_dur']." days. You can request a new link at any time, which will invalidate the old link. If you are logging into the Hub from a public computer, please remember to log out of the Hub to invalidate the link.</html>";
 

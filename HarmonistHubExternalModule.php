@@ -96,7 +96,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             #Depending on the project que add one hook or another
             if ($project_id == $pidsArray['SOP'] && $instrument == 'dhwg_review_request') {
                 include_once("sop/sop_make_public_request_AJAX.php?record=" . $record);
-                echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=smn&record='.$record.'&message=P")) . '</script>';
+                echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php?NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=smn&record='.$record.'&message=P")) . '</script>';
             }else{
                 echo '<script>';
                 include_once("js/iframe.js");
@@ -295,7 +295,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
             echo "<script>var missing = ".json_encode($missing).";</script>\n";
             echo "<div id='metadataWarning' class='install-metadata-box install-metadata-box-danger'>
-                        <i class='fa fa-exclamation-circle' aria-hidden='true'></i> An upgrade in your Data Dictionary exists. <a href='javascript:;' onclick='installMetadata(missing,".json_encode($this->getUrl("installMetadata.php?pid=".$pidsArray['PROJECTS'])).");'>Click here to install.</a>
+                        <i class='fa fa-exclamation-circle' aria-hidden='true'></i> An upgrade in your Data Dictionary exists. <a href='javascript:;' onclick='installMetadata(missing,".json_encode($this->getUrl("installMetadata.php?NOAUTH&pid=".$pidsArray['PROJECTS'])).");'>Click here to install.</a>
                         <ul><li>The following fields will be added: ".(empty($alert_text_additions) ? "<i>None</i>" : $alert_text_additions)."</li>
                         <li>The following fields will be changed: ".(empty($alert_text_changed) ? "<i>None</i>" : $alert_text_changed)."</li></ul>
                     </div>";
@@ -341,7 +341,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         if(count($alert) > 0){
             echo "<script>var forms = ".json_encode($alert).";</script>\n";
             echo "<div id='formsWarning' class='install-metadata-box install-metadata-box-danger'>
-                        <i class='fa fa-exclamation-circle' aria-hidden='true'></i> New Repeatable Forms were found <a href='javascript:;' onclick='installRepeatingForms(forms,".json_encode($this->getUrl("installRepeatingForms.php?pid=".$pidsArray['PROJECTS'])).");'>Click here to install.</a>";
+                        <i class='fa fa-exclamation-circle' aria-hidden='true'></i> New Repeatable Forms were found <a href='javascript:;' onclick='installRepeatingForms(forms,".json_encode($this->getUrl("installRepeatingForms.php?NOAUTH&pid=".$pidsArray['PROJECTS'])).");'>Click here to install.</a>";
             foreach ($alert as $project_id => $repeat){
                 $title = $this->framework->getProject($project_id)->getTitle();
                 echo "<ul>

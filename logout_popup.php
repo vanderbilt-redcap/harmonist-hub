@@ -25,7 +25,7 @@ if($settings['session_timeout_countdown'] != ""){
                 <span style="color:red;">Please choose to stay signed in otherwise you will be logged out automatically.</span>
             </div>
             <div class="modal-footer">
-                <?php $url_logout = $module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&sout');?>
+                <?php $url_logout = $module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&sout');?>
                 <a href="#" onclick="destroy_session(<?="'".$url_logout."'"?>)" class="btn btn-default btn-cancel" data-dismiss="modal">Log Out</a>
                 <a type="submit" onclick="" class="btn btn-default btn-success" id='btnStayLoggedIn'>Stay Signed In (<span id="countdownLogOut">60</span>)</a>
             </div>
@@ -37,7 +37,7 @@ if($settings['session_timeout_countdown'] != ""){
     var timeleft = <?=json_encode($countdown)?>;
     var timeleftcounter = timeleft;
     var showPopup = <?=json_encode($timer)?>;
-    var urlLogOut = <?=json_encode($module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&sout'))?>;
+    var urlLogOut = <?=json_encode($module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&sout'))?>;
 
     $(document).ready(function() {
         this.lastActiveTime = new Date();

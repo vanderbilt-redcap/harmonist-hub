@@ -139,8 +139,8 @@ class AllCrons
                 if ($email) {
                     $subject = "Successful " . $settings['hub_name'] . " data upload for " . $concept_id;
                     $message = "<div>Dear " . $firstname . ",</div><br/><br/>" .
-                        "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=sop&record=" . $upload['data_assoc_request']) . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
-                        "<div>You may log into the " . $settings['hub_name'] . " Hub and view the <a href='" . $module->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=slgd") . "' target='_blank'>Data Activity Log</a> report, track downloads, and delete your dataset. Your dataset will be available for " .
+                        "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl("index.php?NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=sop&record=" . $upload['data_assoc_request']) . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
+                        "<div>You may log into the " . $settings['hub_name'] . " Hub and view the <a href='" . $module->getUrl("index.php?NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=slgd") . "' target='_blank'>Data Activity Log</a> report, track downloads, and delete your dataset. Your dataset will be available for " .
                         "download by the approved data downloaders <strong>until " . $expire_date . " 23:59</strong> ET unless you choose to delete it before then. </div><br/>" .
                         "<div>Approved Data Downloaders:</div>" .
                         $downloaders_list . "<br/>" .
@@ -164,7 +164,7 @@ class AllCrons
                             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
                                 "<div>A new dataset has been submitted to secure cloud storage by <strong>" . $name_uploader . "</strong> from <strong>" . $region_code_uploader . "</strong> in response to \"" . $sop['sop_name'] . "\" for concept <b>" . $concept_id . "</b>. The upload was received at " . $date_time . " Eastern US Time (ET). </div><br/>" .
                                 "<div>The data will be available to download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .
-                                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select <strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
+                                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select <strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
                                 "A summary report for the dataset is also available on that page. The dataset will be deleted on " . $expire_date . " 23:59 ET</div><br/>" .
                                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
@@ -225,7 +225,7 @@ class AllCrons
                 }
                 $email_req .= ", ".$req['contact_name']."</div>";
 
-                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&record=".$req['request_id'])."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
+                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=".$req['request_id'])."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
                 $votes = array();
                 foreach ($req['region_response_status'] as $region => $vote_status){
                     if($vote_status != 0 && in_array($req['region_vote_status'],$req)){
@@ -272,7 +272,7 @@ class AllCrons
                 }
                 $email_req .= ", ".$req['contact_name']."</div>";
 
-                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".$pidsArray['DATAMODEL']."&option=hub&record=".$req['request_id'])."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
+                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['DATAMODEL']."&option=hub&record=".$req['request_id'])."' target='_blank' alt='concept_link'>".$req['request_title']."</a></div>";
 
                 if($req['finalize_y'] == "1"){
                     $color_text = "color:#5cb85c";
@@ -315,7 +315,7 @@ class AllCrons
                     $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;'><div style='padding: 3px;'><strong>Due: <span style='$date_color_text'>" . $sop['sop_due_d'] . "</span></strong></span></div>";
                 }
 
-                $email_req .= "<div style='padding: 3px;'><a href='" . $module->getUrl("index.php?pid=" . $pidsArray['DATAMODEL'] . "&option=hub&record=" . $sop['request_id']) . "' target='_blank' alt='concept_link'>" . $sop['request_title'] . "</a></div>";
+                $email_req .= "<div style='padding: 3px;'><a href='" . $module->getUrl("index.php?NOAUTH&pid=" . $pidsArray['DATAMODEL'] . "&option=hub&record=" . $sop['request_id']) . "' target='_blank' alt='concept_link'>" . $sop['request_title'] . "</a></div>";
                 $RecordSetCreator = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator']));
                 $creator = ProjectData::getProjectInfoArray($RecordSetCreator)[0];
                 $RecordSetCreator2 = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator2']));
@@ -335,7 +335,7 @@ class AllCrons
                 $sop_people_all = implode(', ',array_unique(explode(', ' , $sop_people)));
 
                 $email_req .= "<div style='padding: 3px;'><strong>Data Request for " . $concept_sheet . ", </strong>" . $sop_people_all . "</div>";
-                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=sop&record=".$sop['record_id']). "'>" . $sop['sop_name'] . "</a></div>";
+                $email_req .= "<div style='padding: 3px;'><a href='".$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=sop&record=".$sop['record_id']). "'>" . $sop['sop_name'] . "</a></div>";
 
                 $votes = array();
                 foreach ($regions as $region){
@@ -413,7 +413,7 @@ class AllCrons
                     $date_time = $date->format("Y-m-d H:i");
 
                     #to uploader user
-                    $url = $module->getUrl("index.php?&option=dat=&pid=" . $pidsArray['PROJECTS']);
+                    $url = $module->getUrl("index.php?NOAUTH&option=dat=&pid=" . $pidsArray['PROJECTS']);
                     $subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
                     $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
                         "<div>The dataset you submitted to secure cloud storage in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
@@ -855,7 +855,7 @@ class AllCrons
             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
                 "<div>This is a reminder that you have not downloaded the dataset that was submitted to secure cloud storage by&nbsp;<strong>" . $name_uploader . "</strong> from&nbsp;<strong>" . $region_code_uploader . "</strong> in response to your data request \"" . $concept_title . "\" for concept&nbsp;<b>" . $concept_id . "</b>, <i>Draft ID: " . $sop['record_id'] . "</i>. The upload was received at " . $date_time . " Eastern US Time (ET). </div><br/>" .
                 "<div>The dataset will be deleted on&nbsp;<strong><span style='color:red;'>" . $expired_date_delete . " 23:59 ET (" . $settings['downloadreminder_dur'] . " days)</span></strong>.</div><br/>" .
-                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
+                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
                 "A summary report for the dataset is also available on that page.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
             $reminder_num = $settings['downloadreminder_dur'];
@@ -865,7 +865,7 @@ class AllCrons
             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
                 "<div>This is a reminder that you have not downloaded the dataset that was submitted to secure cloud storage by&nbsp;<strong>" . $name_uploader . "</strong> from&nbsp;<strong>" . $region_code_uploader . "</strong> in response to your data request \"" . $concept_title . "\" for concept&nbsp;<b>" . $concept_id . "</b>, <i>Draft ID: " . $sop['record_id'] . "</i>. The upload was received at " . $date_time . " Eastern US Time (ET). </div><br/>" .
                 "<div>The dataset will be deleted on&nbsp;<strong><span style='color:red;'>" . $expired_date_delete . " 23:59 ET (" . $settings['downloadreminder2_dur'] . " days)</span></strong>.</div><br/>" .
-                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?pid=" . $pidsArray['PROJECTS'] . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
+                "<div>To download the dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Retrieve Data on the <a href='" . $module->getUrl("index.php?NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=dat") . "' target='_blank'>Data page</a></strong>. " .
                 "A summary report for the dataset is also available on that page.</div><br/>" .
                 "<div>This is the final reminder for this dataset.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
@@ -1015,7 +1015,7 @@ class AllCrons
             if($data['table_name'] != "") {
                 foreach ($data['variable_order'] as $id => $value) {
                     if ($data['variable_name'][$id] != '') {
-                        $url = $module->getUrl("browser.php?pid=" . $_GET['pid'] . '&tid=' . $data['record_id'] . '&vid=' . $id . '&option=variableInfo');
+                        $url = $module->getUrl("browser.php?NOAUTH&pid=" . $_GET['pid'] . '&tid=' . $data['record_id'] . '&vid=' . $id . '&option=variableInfo');
                         $jsonVarArrayAux[trim($data['variable_name'][$id])] = array();
                         $variables_array = array(
                             "instance" => $id,
@@ -1031,7 +1031,7 @@ class AllCrons
                     }
                 }
                 $jsonVarArray = $jsonVarArrayAux;
-                $urltid = $module->getUrl("browser.php?pid=" . $_GET['pid'] . '&tid=' . $data['record_id'] . '&option=variables');
+                $urltid = $module->getUrl("browser.php?NOAUTH&pid=" . $_GET['pid'] . '&tid=' . $data['record_id'] . '&option=variables');
                 $jsonVarArray['table_link'] = $urltid;
                 $jsonArray[trim($data['table_name'])] = $jsonVarArray;
             }
@@ -1214,7 +1214,7 @@ class AllCrons
                 }
                 $body .= "<div>".$writing_group."</div></td></tr>";
             }
-            $url = $module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=hub&record=".$request['request_id']);
+            $url = $module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=".$request['request_id']);
             $body .= "</tbody>
             </table>
             </br><div>Link to review request #".$request['request_id'].": <a href='".$url."'>".$url."</a></div>";

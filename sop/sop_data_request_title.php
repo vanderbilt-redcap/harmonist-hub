@@ -80,18 +80,18 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
         });
         $('#deleteDataRequest').submit(function () {
             var data = $('#deleteDataRequest').serialize();
-            CallAJAXAndRedirect(data, <?=json_encode($module->getUrl('sop/sop_delete_data_request.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=smn&message=D"))?>);
+            CallAJAXAndRedirect(data, <?=json_encode($module->getUrl('sop/sop_delete_data_request.php?NOAUTH'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=smn&message=D"))?>);
             return false;
         });
         $('#makePrivate').submit(function () {
             $('#sop-make-private-confirmation').modal('hide');
             var data = $('#makePrivate').serialize();
-            CallAJAXAndShowMessage(data,<?=json_encode($module->getUrl('sop/sop_make_private.php'))?>, "X",window.location.href);
+            CallAJAXAndShowMessage(data,<?=json_encode($module->getUrl('sop/sop_make_private.php?NOAUTH'))?>, "X",window.location.href);
             return false;
         });
         $('#dataUploadForm').submit(function () {
             var data = $('#dataUploadForm').serialize();
-            uploadDataToolkit(data,<?=json_encode($module->getUrl("hub/hub_data_upload_security_AJAX.php"))?>);
+            uploadDataToolkit(data,<?=json_encode($module->getUrl("hub/hub_data_upload_security_AJAX.php?NOAUTH"))?>);
             return false;
         });
         $('#changeStatus').submit(function () {
@@ -100,7 +100,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
             data += "&status_record="+$('#status_record').val();
             data += "&data_response_notes="+encodeURIComponent($('#data_response_notes').val());
             var record = <?=json_encode($record)?>;
-            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=sop&record=".$record."&message=D"))?>);
+            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php?NOAUTH'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=sop&record=".$record."&message=D"))?>);
             return false;
         });
     });
@@ -136,12 +136,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
 
     <div class="backTo">
         <?php
-        $back_button = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=smn').'">< Back to Request Data</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=smn').'">< Back to Request Data</a>';
         if($_REQUEST['type'] != ""){
             if($_REQUEST['type'] == 's'){
-                $back_button = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=upd').'">< Back to Check and Submit Data</a>';
+                $back_button = '<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd').'">< Back to Check and Submit Data</a>';
             }else if($_REQUEST['type'] == 'r'){
-                $back_button = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dnd').'">< Back to Retrieve Data</a>';
+                $back_button = '<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dnd').'">< Back to Retrieve Data</a>';
             }
         }
         echo $back_button;
@@ -165,7 +165,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             <?php
                                 if(($sop['sop_status'] == '2' && ($isAdmin || $harmonist_perm)) || $sop['sop_status'] != '2'){
                                     ?> <li>
-                                        <a href='<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=ss1&record=".$record."&step=3")?>' target="_blank">Edit Data Request</a>
+                                        <a href='<?=$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=ss1&record=".$record."&step=3")?>' target="_blank">Edit Data Request</a>
                                     </li>
                                     <?php
                                 }
@@ -190,12 +190,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             }
                             if($sop['sop_status'] != "1") {
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "finalization_of_data_request", "");
-                                $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                                $survey_link = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" style="cursor:pointer">Start Data Call</a></li>';
                             }
                             if($sop['sop_status'] == "1" && $sop['sop_visibility'] == "2" && $sop['sop_finalize_y'][1] == '1' && empty($sop['sop_closed_y'][0])){
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "data_call_closure", "");
-                                $survey_link_closure = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                                $survey_link_closure = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-closure\',\'redcap-closure-frame\',\'' . $survey_link_closure . '\');" style="cursor:pointer">Archive Data Call</a></li>';
                             }
                             ?>
@@ -309,7 +309,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-default btn-save" onclick='save_status(<?=json_encode($module->getUrl('sop/sop_data_request_title_admin_status_AJAX.php'))?>,<?=json_encode($current_user['record_id'])?>,<?=json_encode($current_user['person_region'])?>)' data-dismiss="modal">Save</button>
+                                    <button type="button" class="btn btn-default btn-save" onclick='save_status(<?=json_encode($module->getUrl('sop/sop_data_request_title_admin_status_AJAX.php?NOAUTH'))?>,<?=json_encode($current_user['record_id'])?>,<?=json_encode($current_user['person_region'])?>)' data-dismiss="modal">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -446,7 +446,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     <?php
                     if ($sop['sop_visibility'] == '1') {
                         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $_REQUEST['record_id'], "dhwg_review_request", "");
-                        $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                        $survey_link = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                         echo '<a href="#" onclick="editIframeModal(\'sop-make-public\',\'redcap-edit-frame-make-public\',\'' . $survey_link . '\');" class="btn btn-success open-codesModal"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send for Review</a>';
                     }
@@ -669,12 +669,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
 
                     if (!empty($row_sop_file['doc_name'])) {
                         $extension = ($row_sop_file['file_extension'] == 'pdf') ? "pdf-icon.png" : "word-icon.png";
-                        $pdf_path = $module->getUrl("loadPDF.php?pid=".$pidsArray['PROJECTS']."&edoc=" . $sop["sop_finalpdf"]."#navpanes=0&scrollbar=0");
+                        $pdf_path = $module->getUrl("loadPDF.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&edoc=" . $sop["sop_finalpdf"]."#navpanes=0&scrollbar=0");
 
                         $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $sop["sop_finalpdf"], '1', '', $secret_key, $secret_iv,$current_user['record_id'],"");
                         ?>
                         <span style="float: right;padding-right: 15px;"><?= $file_icon; ?></span>
-                        <a href="<?=$module->getUrl('downloadFile.php?code='.\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row_sop_file['stored_name'] . "&file=" . urlencode($row_sop_file['doc_name'])."&edoc=".$sop["sop_finalpdf"]."&pid=".$current_user['record_id'], 'e', $secret_key, $secret_iv)) ?>"
+                        <a href="<?=$module->getUrl('downloadFile.php?NOAUTH&code='.\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row_sop_file['stored_name'] . "&file=" . urlencode($row_sop_file['doc_name'])."&edoc=".$sop["sop_finalpdf"]."&pid=".$current_user['record_id'], 'e', $secret_key, $secret_iv)) ?>"
                            target="_blank" style="float: right;padding-right: 10px;">Download PDF </a>
                     <?php } ?>
                 </h3>
@@ -700,7 +700,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Data Request Uploads
-                    <a href="<?=$module->geturl("index.php?pid=".$pidsArray['PROJECTS']."option=lgd&record=".$record);?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->geturl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."option=lgd&record=".$record);?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <div id="collapse_dataReqUp" class="panel-collapse" aria-expanded="true">
@@ -823,7 +823,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                 "<td  style='width:5%'>";
                             if ($comment['response_person'] == $current_user['record_id']) {
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOPCOMMENTS'], $comment['record_id'], "sop_comments", "");
-                                $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                                $survey_link = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                                 $group_discussion .= '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
                             }

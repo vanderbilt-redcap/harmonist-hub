@@ -283,7 +283,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         var show_activity = <?=json_encode($settings['hub_stats_section4_y'])?>;
         var show_activity_single = <?=json_encode($settings['activity_data'])?>;
 
-        var url = <?=json_encode($module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'?option=cpt'))?>;
+        var url = <?=json_encode($module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'?option=cpt'))?>;
 
         var array_sections = <?=json_encode($array_sections)?>;
         var array_sections_title = <?=json_encode($array_sections_title)?>;
@@ -685,7 +685,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>">< Back to Home</a>
+        <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'])?>">< Back to Home</a>
     </div>
 </div>
 <div class="container">

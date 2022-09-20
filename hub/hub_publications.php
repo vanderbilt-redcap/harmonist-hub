@@ -28,10 +28,10 @@ if($harmonist_perm || $isAdmin) {
 
 <div class="optionSelect">
     <div style="margin: 0 auto;width: 40%;">
-        <form method="POST" action="<?=$module->getUrl('hub/generate_publications_pdf.php')?>" style="float: left;">
+        <form method="POST" action="<?=$module->getUrl('hub/generate_publications_pdf.php?NOAUTH')?>" style="float: left;">
             <button type="submit" class="btn btn-primary">Download Manuscript List</button>
         </form>
-        <form method="POST" action="<?=$module->getUrl('hub/generate_outputs_excel.php')?>" style="float: left;padding-left: 10px;">
+        <form method="POST" action="<?=$module->getUrl('hub/generate_outputs_excel.php?NOAUTH')?>" style="float: left;padding-left: 10px;">
             <button type="submit" class="btn btn-default">Download Outputs List</button>
         </form>
     </div>

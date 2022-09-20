@@ -12,7 +12,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         $("#sortable_table").dataTable( {"pageLength": 50});
         $('#dataUploadForm').submit(function () {
             var data = $('#dataUploadForm').serialize();
-            uploadDataToolkit(data,<?=json_encode($module->getUrl("hub/hub_data_upload_security_AJAX.php"))?>);
+            uploadDataToolkit(data,<?=json_encode($module->getUrl("hub/hub_data_upload_security_AJAX.php?NOAUTH"))?>);
             return false;
         });
 
@@ -21,7 +21,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             data += "&region="+$('#region').val();
             data += "&status_record="+$('#status_record').val();
             data += "&data_response_notes="+encodeURIComponent($('#data_response_notes').val());
-            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=upd&message=S"))?>);
+            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php?NOAUTH'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=upd&message=S"))?>);
             return false;
         });
 
@@ -88,7 +88,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
 }
 ?>
 <div class="backTo">
-    <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a>
+    <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a>
 </div>
 <div class="optionSelect">
     <h3>Check and Submit Data</h3>
@@ -97,7 +97,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
 </div>
 
 <div class="pull-right">
-    <p><a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=lgd&type=upload')?>">View Data Activity Log</a> | <a href="<?=$module->getUrl('index.php?'.$pidsArray['PROJECTS'].'&option=pdc')?>">View Past Data Calls</a></p>
+    <p><a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=lgd&type=upload')?>">View Data Activity Log</a> | <a href="<?=$module->getUrl('index.php?'.$pidsArray['PROJECTS'].'&option=pdc')?>">View Past Data Calls</a></p>
 </div>
 
 <div>

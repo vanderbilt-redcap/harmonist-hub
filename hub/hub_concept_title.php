@@ -115,14 +115,14 @@ if($concept['revised_y'][0] == '1'){
 <div class="container">
     <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;display: none;" id="succMsgContainer">If you've made any changes, they have been saved.</div>
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=cpt')?>">< Back to Concepts</a>
+        <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=cpt')?>">< Back to Concepts</a>
     </div>
     <?php if($concept != "") {?>
     <h3 class="concepts-title-title"><?=$concept['concept_id']?></h3>
 
         <?php if($isAdmin || $harmonist_perm_edit_concept){
             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $record, "concept_sheet", "");
-            $survey_link = $module->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
+            $survey_link = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
 
             $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$record,ENT_QUOTES);
 

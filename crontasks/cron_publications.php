@@ -48,12 +48,12 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                 }
 
                 $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "output_record", "");
-                $survey_link = $moduleAux->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                $survey_link = $moduleAux->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                 $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
                 $table_aux = array();
-                $table_aux['concept'] = '<a href="'.$moduleAux->getUrl('index.php?pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']) . '">' . htmlentities($concept['concept_id']) . '</a>';
+                $table_aux['concept'] = '<a href="'.$moduleAux->getUrl('index.php?NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']) . '">' . htmlentities($concept['concept_id']) . '</a>';
                 $table_aux['year'] = '<strong>' . htmlentities($concept['output_year'][$index]) . '</strong>';
                 $table_aux['region'] = '<span class="badge badge-pill badge-draft">MR</span>';
                 $table_aux['conf'] = htmlentities($concept['output_venue'][$index]);
@@ -95,7 +95,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
 
             $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
-            $survey_link = $moduleAux->getUrl('surveyPassthru.php?&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+            $survey_link = $moduleAux->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
             $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
             $table_aux = array();

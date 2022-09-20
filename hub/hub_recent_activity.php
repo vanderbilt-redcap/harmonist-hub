@@ -57,7 +57,7 @@ if($person_record != ""){
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'])?>">< Back to Home</a>
+        <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'])?>">< Back to Home</a>
     </div>
     <h3>Recent Activity</h3>
     <p class="hub-title"><?=$settings['hub_recent_act_text']?></p>
@@ -152,7 +152,7 @@ if($person_record != ""){
                             if(!empty($requestComment['assoc_concept'])){
                                 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $requestComment['assoc_concept']));
                                 $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
-                                $concept_id = '<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$concept['record_id']).'">'.$concept['concept_id'].'</a>';
+                                $concept_id = '<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$concept['record_id']).'">'.$concept['concept_id'].'</a>';
                             }else if($requestComment['mr_temporary'] != ""){
                                 $concept_id = $requestComment['mr_temporary'];
                             }
@@ -219,7 +219,7 @@ if($person_record != ""){
                                 }
                             }
 
-                            echo    $comment_vote.'<a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id']) . '" target="_blank">' . $requestComment['request_title'] . '</a></td>';
+                            echo    $comment_vote.'<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id']) . '" target="_blank">' . $requestComment['request_title'] . '</a></td>';
                             if($comment['revised_file'] != ''){
                                 echo '<td>'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
                             }else{
