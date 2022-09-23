@@ -147,7 +147,7 @@ if($request !="") {
 
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "admin_review", "");
 //                $changeApproval = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
-                $changeApproval = $module->getUrl(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
+                $changeApproval = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
                 ?>
                 <div class="btn-group hidden-xs pull-right">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -161,7 +161,7 @@ if($request !="") {
                         <?php
                         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $record, "finalization_of_request", "");
 //                        $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
-                        $survey_link = $module->getUrl(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
+                        $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
                         echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\''.$survey_link.'\');" style="cursor:pointer">Finalize Request</a></li>';
                         ?>
                         <li role="separator" class="divider"></li>
