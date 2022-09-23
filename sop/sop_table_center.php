@@ -186,7 +186,7 @@ if(array_key_exists('message', $_REQUEST)){
                                 $buttons = "";
                                 if (($harmonist_perm && $center['region'] == $map_region) || $isAdmin) {
                                     $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SURVEYTBLCENTERREVISED'], $center['record_id'], "tblcenter", "");
-                                    $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                                    $survey_link =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
                                     $buttons = '<div><a href="#" onclick="editIframeModal(\'update_center\',\'redcap-upload-center\',\'' . $survey_link . '\')" class="btn btn-primary btn-xs">Update</a></div>';
                                 }
 

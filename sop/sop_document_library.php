@@ -170,7 +170,7 @@ $upload_type = $module->getChoiceLabels('upload_type', $pidsArray['FILELIBRARY']
 
                             if ($isAdmin) {
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['FILELIBRARY'], $filel['record_id'], "file_information","");
-                                $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                                $survey_link =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
 
                                 $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'sop_other_files_modal\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
                                 echo '<td width="55px">' . $edit . '</td>';

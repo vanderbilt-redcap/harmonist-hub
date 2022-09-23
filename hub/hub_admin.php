@@ -111,11 +111,11 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                     <td class="hidden-xs"><a href="'.$module->getUrl('index.php?NOAUTH&option=hub&record='.$req['request_id']).'" target="_blank">'.$req['request_title'].'</a></td>';
 
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "request", "");
-                            $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
+                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
                             echo '<td><div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\',\''.$check_submission_text.'\');" class="btn btn-primary btn-xs actionbutton"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> '.$check_submission_text.'</a></div>';
 
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "admin_review", "");
-                            $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
+                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
 
                             echo '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\',\''.$set_deadline_text.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> '.$set_deadline_text.'</a></div></td>';
                         }
@@ -177,11 +177,11 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                         }else{
                             $any_request_found = true;
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "finalization_of_request", "");
-                            $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
+                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
                             $passthru_link_doc = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "final_docs_request_survey", "");
-                            $survey_link_doc = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_doc['hash']."&modal=modal");
+                            $survey_link_doc = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
                             $passthru_link_mr = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "tracking_number_assignment_survey", "");
-                            $survey_link_mr = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_mr['hash']."&modal=modal");
+                            $survey_link_mr = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
 
                             $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $req['assoc_concept'], "");
                             if($req_type == "" && $req['mr_temporary'] != ""){
@@ -289,11 +289,11 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                         if($req['workflowcomplete_d'] != "" && strtotime ($expire_date) >= strtotime(date('Y-m-d'))){
                             $any_request_found = true;
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "finalization_of_request", "");
-                            $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
+                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
                             $passthru_link_doc = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "final_docs_request_survey", "");
-                            $survey_link_doc = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_doc['hash']."&modal=modal");
+                            $survey_link_doc = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
                             $passthru_link_mr = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "tracking_number_assignment_survey", "");
-                            $survey_link_mr = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link_mr['hash']."&modal=modal");
+                            $survey_link_mr = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
 
                             $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $req['assoc_concept'], "");
                             if($req_type == "" && $req['mr_temporary'] != ""){

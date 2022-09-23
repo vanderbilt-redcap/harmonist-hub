@@ -122,7 +122,7 @@ if($concept['revised_y'][0] == '1'){
 
         <?php if($isAdmin || $harmonist_perm_edit_concept){
             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $record, "concept_sheet", "");
-            $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']."&modal=modal");
+            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
 
             $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$record,ENT_QUOTES);
 
@@ -257,7 +257,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     <tr>
                         <th class="archive_grid_dued sorted_class">Date</th>
                         <th class="archive_grid_dued sorted_class">Project Update</th>
-                        <th class="archive_grid_dued">Statys</th>
+                        <th class="archive_grid_dued">Status</th>
                     </tr>
                 </thead>
 
