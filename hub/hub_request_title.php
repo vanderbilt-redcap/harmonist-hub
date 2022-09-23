@@ -141,12 +141,12 @@ if($request !="") {
             <?php if($isAdmin){
                 $editRequestButton ='';
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "request", "");
-                $editRequest = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                $editRequest = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                 $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['RMANAGER']."&arm=1&id=".$request['request_id'];
 
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "admin_review", "");
-                $changeApproval = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                $changeApproval = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                 ?>
                 <div class="btn-group hidden-xs pull-right">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -159,7 +159,7 @@ if($request !="") {
                         <li><a href="<?=$changeApproval?>"target="_blank">Change Approval</a></li>
                         <?php
                         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $record, "finalization_of_request", "");
-                        $survey_link = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                        $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                         echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\''.$survey_link.'\');" style="cursor:pointer">Finalize Request</a></li>';
                         ?>
                         <li role="separator" class="divider"></li>
@@ -508,7 +508,7 @@ if($request !="") {
                                         "<td  style='width:5%'>";
                                     if($comment['response_person'] == $current_user['record_id']){
                                         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['COMMENTSVOTES'], $comment['record_id'], "comments_and_votes", "");
-                                        $survey_link = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                                        $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                         $group_discussion .= '<button class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button>';
                                     }
                                     $group_discussion .= "</td></tr>";

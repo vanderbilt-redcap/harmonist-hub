@@ -190,12 +190,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             }
                             if($sop['sop_status'] != "1") {
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "finalization_of_data_request", "");
-                                $survey_link = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                                $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" style="cursor:pointer">Start Data Call</a></li>';
                             }
                             if($sop['sop_status'] == "1" && $sop['sop_visibility'] == "2" && $sop['sop_finalize_y'][1] == '1' && empty($sop['sop_closed_y'][0])){
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "data_call_closure", "");
-                                $survey_link_closure = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                                $survey_link_closure = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-closure\',\'redcap-closure-frame\',\'' . $survey_link_closure . '\');" style="cursor:pointer">Archive Data Call</a></li>';
                             }
                             ?>
@@ -446,7 +446,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     <?php
                     if ($sop['sop_visibility'] == '1') {
                         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $_REQUEST['record_id'], "dhwg_review_request", "");
-                        $survey_link = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                        $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                         echo '<a href="#" onclick="editIframeModal(\'sop-make-public\',\'redcap-edit-frame-make-public\',\'' . $survey_link . '\');" class="btn btn-success open-codesModal"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send for Review</a>';
                     }
@@ -823,7 +823,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                 "<td  style='width:5%'>";
                             if ($comment['response_person'] == $current_user['record_id']) {
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOPCOMMENTS'], $comment['record_id'], "sop_comments", "");
-                                $survey_link = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                                $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                                 $group_discussion .= '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
                             }

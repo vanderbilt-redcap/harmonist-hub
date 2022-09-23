@@ -276,7 +276,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
                             $edit = "";
                             if($isAdmin || $news['news_person'] == $current_user['record_id']){
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['NEWITEMS'], $news['record_id'], "news_item", "");
-                                $survey_link = $module->getUrl('surveyPassthru.php?NOAUTH&surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
+                                $survey_link = $module->getUrl('surveyPassthru.php?surveyLink='.APP_PATH_SURVEY_FULL . "?s=".$passthru_link['hash']);
 
                                 $edit .= '<a class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_news\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></a>';
                             }
