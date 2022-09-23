@@ -114,7 +114,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
         echo "<script>
             $(document).ready(function() {
-                $('.formtbody .header').hide();
                 window.onbeforeunload = null;
             });
         </script>";
