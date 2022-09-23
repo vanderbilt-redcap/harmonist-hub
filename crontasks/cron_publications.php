@@ -28,43 +28,45 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
         $records = 0;
         foreach ($concepts as $concept) {
             $output_year = $concept['output_year'];
-            arsort($output_year);
-            foreach ($output_year as $index => $value) {
-                $records++;
-                $available = '';
-                if (!empty($concept['output_citation'][$index])) {
-                    $available = htmlentities($concept['output_citation'][$index]) . " ";
+            if(!empty($output_year)) {
+                arsort($output_year);
+                foreach ($output_year as $index => $value) {
+                    $records++;
+                    $available = '';
+                    if (!empty($concept['output_citation'][$index])) {
+                        $available = htmlentities($concept['output_citation'][$index]) . " ";
+                    }
+                    if (!empty($concept['output_pmcid'][$index])) {
+                        $available .= 'PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/' . $concept['output_pmcid'][$index] . '" target="_blank">' . $concept['output_pmcid'][$index] . '<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';
+                    }
+                    if (!empty($concept['output_url'][$index])) {
+                        $available .= ' <a href="' . $concept['output_url'][$index] . '" target="_blank">Link<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';
+                    }
+
+                    $file = '';
+                    if ($concept['output_file'][$index] != "") {
+                        $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $pidsArray['PROJECTS'], $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                    }
+
+                    $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "");
+                    $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $passthru_link['hash'];
+
+                    $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
+
+                    $table_aux = array();
+                    $table_aux['concept'] = '<a href="' . $moduleAux->getUrl('index.php?NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']) . '">' . htmlentities($concept['concept_id']) . '</a>';
+                    $table_aux['year'] = '<strong>' . htmlentities($concept['output_year'][$index]) . '</strong>';
+                    $table_aux['region'] = '<span class="badge badge-pill badge-draft">MR</span>';
+                    $table_aux['conf'] = htmlentities($concept['output_venue'][$index]);
+                    $table_aux['type'] = htmlentities($abstracts_publications_type[$concept['output_type'][$index]]);
+                    $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$concept['output_type'][$index]] . '">' . htmlentities($abstracts_publications_type[$concept['output_type'][$index]]) . '</span><span style="display:none">.</span> <strong>' . htmlentities($concept['output_title'][$index]) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($concept['output_authors'][$index]) . '</span>';
+                    $table_aux['available'] = $available;
+                    $table_aux['file'] = $file;
+                    $table_aux['edit'] = $edit;
+
+                    array_push($table_array['data'], $table_aux);
+
                 }
-                if (!empty($concept['output_pmcid'][$index])) {
-                    $available .= 'PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/' . $concept['output_pmcid'][$index] . '" target="_blank">' . $concept['output_pmcid'][$index] . '<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';
-                }
-                if (!empty($concept['output_url'][$index])) {
-                    $available .= ' <a href="' . $concept['output_url'][$index] . '" target="_blank">Link<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';
-                }
-
-                $file = '';
-                if ($concept['output_file'][$index] != "") {
-                    $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $pidsArray['PROJECTS'], $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
-                }
-
-                $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "output_record", "");
-                $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
-
-                $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
-
-                $table_aux = array();
-                $table_aux['concept'] = '<a href="'.$moduleAux->getUrl('index.php?NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']) . '">' . htmlentities($concept['concept_id']) . '</a>';
-                $table_aux['year'] = '<strong>' . htmlentities($concept['output_year'][$index]) . '</strong>';
-                $table_aux['region'] = '<span class="badge badge-pill badge-draft">MR</span>';
-                $table_aux['conf'] = htmlentities($concept['output_venue'][$index]);
-                $table_aux['type'] = htmlentities($abstracts_publications_type[$concept['output_type'][$index]]);
-                $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$concept['output_type'][$index]] . '">' . htmlentities($abstracts_publications_type[$concept['output_type'][$index]]) . '</span><span style="display:none">.</span> <strong>' . htmlentities($concept['output_title'][$index]) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($concept['output_authors'][$index]) . '</span>';
-                $table_aux['available'] = $available;
-                $table_aux['file'] = $file;
-                $table_aux['edit'] = $edit;
-
-                array_push($table_array['data'], $table_aux);
-
             }
         }
         #Regional Content
@@ -94,7 +96,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                 $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $pidsArray['PROJECTS'], $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
             }
 
-            $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
+            $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "outputs", "");
             $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
             $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
