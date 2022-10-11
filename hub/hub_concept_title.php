@@ -195,12 +195,12 @@ if($concept['revised_y'][0] == '1'){
         <div class="row request">
             <div class="col-md-2 col-sm-12"><strong>Working Group:</strong></div>
             <div class="col-md-6 col-sm-12"><?=$group_name_total?> </div>
-            <div class="col-md-4 hidden-sm hidden-xs"><strong>Start Date: </strong><?=$start_date;?> </span></div>
+            <div class="col-md-4"><strong>Start Date: </strong><?=$start_date;?> </span></div>
         </div>
         <div class="row request">
             <div class="col-md-2 col-sm-12"><strong>Contact:</strong> </div>
             <div class="col-md-6 col-sm-12"><?=$name_concept?></div>
-            <div class="col-md-4 hidden-sm hidden-xs"><strong>Status: </strong><span class="label label-as-badge <?=$active_color_button;?>"><?=$active;?></span> <?=$revised?></div>
+            <div class="col-md-4"><strong>Status: </strong><span class="label label-as-badge <?=$active_color_button;?>"><?=$active;?></span> <?=$revised?></div>
         </div>
         <div class="row request">
             <div class="col-md-2"><strong>Participants:</strong></div>
@@ -223,7 +223,7 @@ if($concept['revised_y'][0] == '1'){
                 }
                 ?>
             </div>
-            <div class="col-md-4 hidden-sm hidden-xs" style="display: flex">
+            <div class="col-md-4" style="display: flex">
                 <div>
                     <strong>Tags: </strong>
                 </div>
@@ -329,7 +329,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                     ?>
                     <span style="float: right;padding-right: 15px;"><?=$file_icon;?></span>
-                    <a href="downloadFile.php?code=<?=\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv)?>" target="_blank" style="float: right;padding-right: 10px;"><span class="hidden-sm hidden-xs">Download </span>PDF </a>
+                    <a href="downloadFile.php?code=<?=\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv)?>" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>
                 <?php }?>
             </h3>
         </div>
