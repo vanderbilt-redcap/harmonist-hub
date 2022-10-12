@@ -2002,10 +2002,11 @@ function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata
                                 $regionalmrdata['mr'][$year] += 1;
                             }
 
+                            if($type == "manuscripts"){
+                                print_array($concepts);
+                                print_array($index.': '.$concepts['output_venue'][$index]);
+                            }
                             if ($concepts['output_venue'][$index] != "") {
-                                if($type == "manuscripts"){
-                                    print_array( $concepts['output_venue'][$index]);
-                                }
                                 if ($concepts['output_type'][$index] == "1" && $type == 'manuscripts') {
                                     $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] += 1;
                                 } else if ($concepts['output_type'][$index] == "2" && $type == 'abstracts') {
