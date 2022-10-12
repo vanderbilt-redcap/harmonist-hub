@@ -1974,11 +1974,7 @@ function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata
     $regionalmrdata['outputsAll'] = array();
     $concept_outputs_by_year = array();
     ${"years_label_regional_pubs_".$type} = array();
-    if($type == "manuscripts"){
-        print_array("startyear: ".$startyear);
-        print_array("currentYear: ".$currentYear);
-        print_array("output_type: ".$output_type);
-    }
+
     if($startyear != "") {
         for ($year = $startyear; $year <= $currentYear; $year++) {
             array_push(${"years_label_regional_pubs_".$type}, $year);
@@ -2000,11 +1996,6 @@ function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata
                                 $regionalmrdata['mr'][$year] += 1;
                             } else if ($concepts['output_type'][$index] == '2' && $type == 'abstracts') {
                                 $regionalmrdata['mr'][$year] += 1;
-                            }
-
-                            if($type == "manuscripts"){
-                                print_array($concepts);
-                                print_array($index.': '.$concepts['output_venue'][$index]);
                             }
                             if ($concepts['output_venue'][$index] != "") {
                                 if ($concepts['output_type'][$index] == "1" && $type == 'manuscripts') {
