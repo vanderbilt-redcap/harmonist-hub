@@ -1974,6 +1974,11 @@ function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata
     $regionalmrdata['outputsAll'] = array();
     $concept_outputs_by_year = array();
     ${"years_label_regional_pubs_".$type} = array();
+    if($type == "manuscripts"){
+        print_array("startyear: ".$startyear);
+        print_array("currentYear: ".$currentYear);
+        print_array("output_type: ".$output_type);
+    }
     if($startyear != "") {
         for ($year = $startyear; $year <= $currentYear; $year++) {
             array_push(${"years_label_regional_pubs_".$type}, $year);
@@ -1998,6 +2003,9 @@ function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata
                             }
 
                             if ($concepts['output_venue'][$index] != "") {
+                                if($type == "manuscripts"){
+                                    print_array( $concepts['output_venue'][$index]);
+                                }
                                 if ($concepts['output_type'][$index] == "1" && $type == 'manuscripts') {
                                     $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] += 1;
                                 } else if ($concepts['output_type'][$index] == "2" && $type == 'abstracts') {
@@ -2029,16 +2037,10 @@ function getDataRMRTable($concept_outputs_by_year,$type){
     ${"data_".$type."_total"} = 0;
     ${"data_".$type."_venue"} = array();
 
-    if($type == "manuscripts"){
-        print_array($concept_outputs_by_year);
-    }
     foreach ($concept_outputs_by_year as $year=>$venue_year){
         ${'data_'.$type} .= "<tr><td style='text-align: center'>".$year."</td>";
         $total_out = 0;
         $total_venue = "";
-        if($type == "manuscripts"){
-            print_array($venue_year);
-        }
         arsort($venue_year);
         foreach ($venue_year as $venue=>$total){
             $total_out += $total;
