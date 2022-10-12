@@ -2029,11 +2029,16 @@ function getDataRMRTable($concept_outputs_by_year,$type){
     ${"data_".$type."_total"} = 0;
     ${"data_".$type."_venue"} = array();
 
+    if($type == "manuscripts"){
+        print_array($concept_outputs_by_year);
+    }
     foreach ($concept_outputs_by_year as $year=>$venue_year){
         ${'data_'.$type} .= "<tr><td style='text-align: center'>".$year."</td>";
         $total_out = 0;
         $total_venue = "";
-
+        if($type == "manuscripts"){
+            print_array($venue_year);
+        }
         arsort($venue_year);
         foreach ($venue_year as $venue=>$total){
             $total_out += $total;
