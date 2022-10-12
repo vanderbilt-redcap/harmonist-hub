@@ -96,6 +96,7 @@ foreach ($concept_type as $output_type=>$type){
     ${"regionalmrdata_".$type} = \Vanderbilt\HarmonistHubExternalModule\getRegionalAndMR($pidsArray['EXTRAOUTPUTS'], $conceptsData,$type, $regionalmrdata,$settings['oldestyear_rmr_'.$type],$output_type);
     ${"data_".$type} = \Vanderbilt\HarmonistHubExternalModule\getDataRMRTable(${"regionalmrdata_".$type}['outputs'],$type);
 }
+print_array($data_manuscripts);
 
 $regionalmrpubs_color_manuscripts = ['#f5a549','#d1691f'];
 $regionalmrpubs_color_abstracts = ['#6ddc9c','#3c9d68'];
