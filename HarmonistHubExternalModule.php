@@ -60,6 +60,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function redcap_save_record($project_id,$record,$instrument,$event_id){
         echo '<script>';
+        echo 'alert("1")';
         include_once("js/iframe.js");
         echo '</script>';
 
@@ -79,6 +80,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 include_once("hooks/save_record_SOP_comments.php");
             }
             echo '<script>';
+            echo 'alert("2")';
             include_once("js/iframe.js");
             echo '</script>';
 
@@ -99,6 +101,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php?NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=smn&record='.$record.'&message=P")) . '</script>';
             }else{
                 echo '<script>';
+                echo 'alert("3")';
                 include_once("js/iframe.js");
                 echo '</script>';
             }
