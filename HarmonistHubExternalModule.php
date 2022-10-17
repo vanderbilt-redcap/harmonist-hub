@@ -97,9 +97,9 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 include_once("sop/sop_make_public_request_AJAX.php?record=" . $record);
                 echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php?NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=smn&record='.$record.'&message=P")) . '</script>';
             }else{
-                $random = \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(12);
                 echo '<script>';
-                include_once("js/iframe.js?".$random);
+                echo 'alert('+$_SESSION+')';
+                include_once("js/iframe.js");
                 echo '</script>';
             }
         }catch (Throwable $e) {
