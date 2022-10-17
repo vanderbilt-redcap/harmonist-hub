@@ -91,7 +91,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         #Get Projects ID's
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-        \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Hook Error", $_SESSION['token']['eMERGE1741']);
         try {
             #Depending on the project que add one hook or another
             if ($project_id == $pidsArray['SOP'] && $instrument == 'dhwg_review_request') {
