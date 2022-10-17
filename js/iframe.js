@@ -34,7 +34,7 @@ function addMessageLetter(url,letter){
             url = url.replace( /(&message=)([A-Z]{1})/, "" );
         }
     }
-    alert("url1: "+url);
+    url = url.replace('NOAUTH', '');
     return url;
 }
 function redirect_hub(url){
