@@ -97,10 +97,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 include_once("sop/sop_make_public_request_AJAX.php?record=" . $record);
                 echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php?NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=smn&record='.$record.'&message=P")) . '</script>';
             }else{
-                $settings = \REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$this->framework->getEventId($pidsArray['SETTINGS'])];
-
                 echo '<script>';
-                echo 'var token ='.json_encode($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]);
                 include_once("js/iframe.js");
                 echo '</script>';
             }

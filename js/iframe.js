@@ -1,9 +1,9 @@
 var isInIframe = inIframe();
 if(isInIframe == true) {
     if (window.frameElement.getAttribute("stayrequest_y") == "0") {
-        parent.location.href = redirect_hub(parent.location.href+"&token="+token);
+        parent.location.href = redirect_hub(parent.location.href);
     } else {
-        parent.location.href = addMessageLetter(parent.location.href+"&token="+token, window.frameElement.getAttribute("message"));
+        parent.location.href = addMessageLetter(parent.location.href, window.frameElement.getAttribute("message"));
     }
 }
 function inIframe(){

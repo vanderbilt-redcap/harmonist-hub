@@ -156,7 +156,6 @@ $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
                 if($settings['deactivate_toolkit'][1] == "1"){
                     $deactivate_toolkit = true;
                 }
-                print_array($_SESSION);
                 #TOKEN
 //                session_write_close();
                 // server should keep session data for AT LEAST 2 days
