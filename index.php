@@ -165,7 +165,7 @@ $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
                 session_start();
                 $cookie_name = $settings['hub_name'];
                 $cookie_value = $settings['hub_name'];
-                setcookie($cookie_name, $cookie_value, time() + 3600, "/"); //1 hour
+                setcookie($cookie_name, $cookie_value, time() + 7200, "/"); //2 hour
 
                 $token = "";
                 if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $option === 'dnd')  || (array_key_exists('option', $_REQUEST) && $option === 'iut') || (array_key_exists('option', $_REQUEST) && $option === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){

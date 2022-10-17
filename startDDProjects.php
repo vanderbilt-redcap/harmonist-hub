@@ -1023,9 +1023,9 @@ if($pidHome != ""){
     $aux['links_sectionorder'] = '5';
     $aux['links_sectionicon'] = '6';
     $aux['links_text1'] = 'About us';
-    $aux['links_link1'] = 'index.php?option=abt';
+    $aux['links_link1'] = 'index.php?NOAUTH&option=abt';
     $aux['links_text2'] = 'Report a bug';
-    $aux['links_link2'] = 'index.php?option=bug';
+    $aux['links_link2'] = 'index.php?NOAUTH&option=bug';
     $aux['links_stay2'] = array("1" => "1");
 
     $array_repeat_instances[1]['repeat_instances'][$event_id]['quick_links_section'][2] = $aux;
