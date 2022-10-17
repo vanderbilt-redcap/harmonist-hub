@@ -181,7 +181,6 @@ $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
                 }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
                 }
-                print_array($_SESSION);
 
                 if( array_key_exists('option', $_REQUEST) && $option === 'dfq'){
                     //No header
