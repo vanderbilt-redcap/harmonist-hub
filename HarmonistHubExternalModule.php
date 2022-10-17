@@ -98,7 +98,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php?NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=smn&record='.$record.'&message=P")) . '</script>';
             }else{
                 echo '<script>';
-//                include_once("js/iframe.js");
+                include_once("js/iframe.js");
                 echo '</script>';
             }
         }catch (Throwable $e) {
