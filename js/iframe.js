@@ -1,9 +1,9 @@
 var isInIframe = inIframe();
 if(isInIframe == true) {
     if (window.frameElement.getAttribute("stayrequest_y") == "0") {
-        parent.location.href = redirect_hub(parent.location.href);
+        parent.location.href = redirect_hub(parent.location.href+"&token="+token);
     } else {
-        parent.location.href = addMessageLetter(parent.location.href, window.frameElement.getAttribute("message"));
+        parent.location.href = addMessageLetter(parent.location.href+"&token="+token, window.frameElement.getAttribute("message"));
     }
 }
 function inIframe(){
@@ -34,7 +34,7 @@ function addMessageLetter(url,letter){
             url = url.replace( /(&message=)([A-Z]{1})/, "" );
         }
     }
-    return url+"&token=WVXVPV8CX3V2";
+    return url;
 }
 function redirect_hub(url){
     if (url.substring(url.length-1) == "#")
