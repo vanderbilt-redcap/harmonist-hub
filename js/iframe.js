@@ -1,4 +1,5 @@
 var isInIframe = inIframe();
+console.log("IN");
 if(isInIframe == true) {
     if (window.frameElement.getAttribute("stayrequest_y") == "0") {
         parent.location.href = redirect_hub(parent.location.href);
@@ -34,7 +35,7 @@ function addMessageLetter(url,letter){
             url = url.replace( /(&message=)([A-Z]{1})/, "" );
         }
     }
-
+    console.log("url1: "+url);
     return url;
 }
 function redirect_hub(url){
@@ -45,6 +46,6 @@ function redirect_hub(url){
     if(url.match(/(&record=)(\d+)/)){
         url = url.replace( /(&record=)(\d+)/, "" );
     }
-
+    console.log("url2: "+url);
     return url;
 }
