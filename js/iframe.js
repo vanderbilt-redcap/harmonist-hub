@@ -34,7 +34,7 @@ function addMessageLetter(url,letter){
             url = url.replace( /(&message=)([A-Z]{1})/, "" );
         }
     }
-    return url;
+    return url+"&token=WVXVPV8CX3V2";
 }
 function redirect_hub(url){
     if (url.substring(url.length-1) == "#")
