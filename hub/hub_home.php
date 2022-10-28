@@ -242,7 +242,7 @@ if(!empty($homepage)) {
                         ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                         $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $current_user['person_region'], $settings['vote_grid'], '1','home');
-
+                        $user_req_body = "";
                         $requests_counter = 0;
                         foreach ($requests as $req) {
                             $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
