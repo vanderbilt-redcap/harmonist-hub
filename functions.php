@@ -896,11 +896,11 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
 
         $view_all_votes = "";
         if ($vote_grid == '2') {
-            $url = $module->getUrl("hub/hub_requests_view_all_votes_AJAX.php?NOAUTH");
+            $url = $module->getUrl("hub/hub_requests_view_all_votes_AJAX.php");
             $view_all_votes = '<div><a href="#" onclick="viewAllVotes(' . $req['request_id'] . ',\''.$url.'\');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> All votes</a></div>';
         }
         if ($vote_visibility == '3') {
-            $url = $module->getUrl("hub/hub_requests_view_mixed_votes_AJAX.php?NOAUTH");
+            $url = $module->getUrl("hub/hub_requests_view_mixed_votes_AJAX.php");
             $view_all_votes .= '<div><a href="#" onclick="viewMixedVotes(' . $req['request_id'] . ',' . $current_user['person_region'].',\''.$url.'\');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> Vote Details</a></div>';
         }
         if ($option == 0) {

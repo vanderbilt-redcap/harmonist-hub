@@ -109,11 +109,13 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     function redcap_survey_page_top($project_id){
         #Get Projects ID's
         $hub_mapper = $this->getProjectSetting('hub-mapper');
-        $pidsArray = REDCapManagement::getPIDsArray($project_id);
+        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
 
         echo "<script>
             $(document).ready(function() {
                 window.onbeforeunload = null;
+                //Hide save and return button for all surveys
+                $('[name=submit-btn-savereturnlater]').hide();
             });
         </script>";
 
@@ -121,7 +123,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         if($project_id == $pidsArray['HARMONIST']){
             echo "<script>
                 $(document).ready(function() {
-                    $('[name=submit-btn-savereturnlater]').hide();
                     $('#return_code_completed_survey_div').hide();
                     $('#surveytitlelogo').hide();
                     $('.bubbleInfo').hide();
@@ -141,7 +142,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             if (array_key_exists('modal', $_REQUEST)) {
                 echo "<script>
                     $(document).ready(function() {
-                        $('[name=submit-btn-savereturnlater]').hide();
                         $('#return_code_completed_survey_div').hide();
                         $('#surveytitlelogo').hide();
                         $('.bubbleInfo').hide();
