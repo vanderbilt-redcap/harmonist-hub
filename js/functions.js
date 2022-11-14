@@ -1075,19 +1075,15 @@ function isDonutEmpty(values_array){
 }
 
 function viewAllVotes(request_id,url){
-    console.log("viewAllVotes****************")
-    console.log("request_id: "+request_id)
-    console.log("url: "+url)
     $.ajax({
         type: "POST",
-        url: url,
+        url: url+"&NOAUTH",
         data: "request_id="+request_id,
         error: function (xhr, status, error) {
             alert(xhr.responseText);
         },
         success: function (result) {
             var data = JSON.parse(result);
-            console.log(data)
             $('#allvotes').html(data);
             $('#hub_view_votes').modal('show');
         }
