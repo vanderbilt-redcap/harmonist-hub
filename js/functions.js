@@ -1075,8 +1075,9 @@ function isDonutEmpty(values_array){
 }
 
 function viewAllVotes(request_id,url){
-    console.log("request_id: ".request_id)
-    console.log("url: ".url)
+    console.log("viewAllVotes****************")
+    console.log("request_id: "+request_id)
+    console.log("url: "+url)
     $.ajax({
         type: "POST",
         url: url,
@@ -1085,7 +1086,6 @@ function viewAllVotes(request_id,url){
             alert(xhr.responseText);
         },
         success: function (result) {
-            console.log(result)
             var data = JSON.parse(result);
             console.log(data)
             $('#allvotes').html(data);
