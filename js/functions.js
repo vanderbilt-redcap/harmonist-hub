@@ -1086,6 +1086,7 @@ function viewAllVotes(request_id,url){
             alert(xhr.responseText);
         },
         success: function (result) {
+            console.log(result)
             var data = JSON.parse(result);
             console.log(data)
             $('#allvotes').html(data);
