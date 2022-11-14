@@ -1077,7 +1077,7 @@ function isDonutEmpty(values_array){
 function viewAllVotes(request_id,url){
     $.ajax({
         type: "POST",
-        url: url+"&NOAUTH",
+        url: url,
         data: "request_id="+request_id,
         error: function (xhr, status, error) {
             alert(xhr.responseText);
