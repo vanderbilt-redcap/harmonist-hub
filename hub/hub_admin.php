@@ -172,7 +172,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                         '</tr></thead>';
 
                     foreach ($requests as $req) {
-                        if(($req['finalize_y'] != "" && ($req['request_type'] != '1' && $req['request_type'] != '5')) || ($req['finalize_y'][0] == "2" && ($req['request_type'] == '1' || $req['request_type'] == '5')) || ($req['mr_assigned'] != "" && $req['finalconcept_doc'] != "" && $req['finalconcept_pdf'] != "")) {
+                        if(($req['finalize_y'] != "" && ($req['request_type'] != '1' && $req['request_type'] != '5')) || ($req['finalize_y'] == "2" && ($req['request_type'] == '1' || $req['request_type'] == '5')) || ($req['mr_assigned'] != "" && $req['finalconcept_doc'] != "" && $req['finalconcept_pdf'] != "")) {
                            //Do not show request
                         }else{
                             $any_request_found = true;
