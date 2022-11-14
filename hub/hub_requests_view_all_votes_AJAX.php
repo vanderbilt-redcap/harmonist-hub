@@ -1,21 +1,21 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
-
+error_log("View All Votes");
 $request_id = htmlentities($_REQUEST['request_id'],ENT_QUOTES);
 $project_id = (int)$_REQUEST['pid'];
 
 $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
-
+error_log("View All Votes: 1");
 $RecordSetRequest = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequest,null)[0];
-
+error_log("View All Votes: 2");
 $region_vote_icon_view = array("1" => "fa fa-check", "0" => "fa fa-times", "9" => "fa fa-ban");
 $region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" => "text-default");
 $region_vote_status = $module->getChoiceLabels('region_vote_status', $pidsArray['RMANAGER']);
-
+error_log("View All Votes: 3");
 $region_row = '';
 foreach ($regions as $region){
     $region_id = $region['record_id'];
@@ -53,7 +53,7 @@ foreach ($regions as $region){
         '<td><span class="'.$class.'">'.$region_time.'</span></td>'.
         '</tr>';
 }
-
+error_log("View All Votes: 4");
 $votes_table = '<table class="table table-striped">
                     <thead>
                     <tr>
