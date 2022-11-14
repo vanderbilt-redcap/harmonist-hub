@@ -1,21 +1,21 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
-\Vanderbilt\HarmonistHubExternalModule\sendEmail('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', 'TESTING 1', "All votes test", 'This is a Test 1','',"",'');
+\Vanderbilt\HarmonistHubExternalModule\sendEmail('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', 'TESTING 1', "All votes test 1", 'This is a Test 1','',"",'');
 $request_id = htmlentities($_REQUEST['request_id'],ENT_QUOTES);
 $project_id = (int)$_REQUEST['pid'];
 
 $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
-\Vanderbilt\HarmonistHubExternalModule\sendEmail('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', 'TESTING 2', "All votes test", 'This is a Test 2','',"",'');
+\Vanderbilt\HarmonistHubExternalModule\sendEmail('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', 'TESTING 2', "All votes test 2", 'This is a Test 2','',"",'');
 $RecordSetRequest = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequest,null)[0];
-\Vanderbilt\HarmonistHubExternalModule\sendEmail('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', 'TESTING 3', "All votes test", 'This is a Test 3','',"",'');
+\Vanderbilt\HarmonistHubExternalModule\sendEmail('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', 'TESTING 3', "All votes test 3", 'This is a Test 3','',"",'');
 $region_vote_icon_view = array("1" => "fa fa-check", "0" => "fa fa-times", "9" => "fa fa-ban");
 $region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" => "text-default");
 $region_vote_status = $module->getChoiceLabels('region_vote_status', $pidsArray['RMANAGER']);
-\Vanderbilt\HarmonistHubExternalModule\sendEmail('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', 'TESTING 4', "All votes test", 'This is a Test 4','',"",'');
+\Vanderbilt\HarmonistHubExternalModule\sendEmail('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', 'TESTING 4', "All votes test 4", 'This is a Test 4','',"",'');
 $region_row = '';
 foreach ($regions as $region){
     $region_id = $region['record_id'];
@@ -53,7 +53,7 @@ foreach ($regions as $region){
         '<td><span class="'.$class.'">'.$region_time.'</span></td>'.
         '</tr>';
 }
-\Vanderbilt\HarmonistHubExternalModule\sendEmail('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', 'TESTING 5', "All votes test", 'This is a Test 5','',"",'');
+\Vanderbilt\HarmonistHubExternalModule\sendEmail('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', 'TESTING 5', "All votes test 5", 'This is a Test 5','',"",'');
 $votes_table = '<table class="table table-striped">
                     <thead>
                     <tr>
