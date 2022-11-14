@@ -16,6 +16,7 @@ $region_vote_icon_view = array("1" => "fa fa-check", "0" => "fa fa-times", "9" =
 $region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" => "text-default");
 $region_vote_status = $module->getChoiceLabels('region_vote_status', $pidsArray['RMANAGER']);
 $test .= "4,";
+echo json_encode($test);
 $region_row = '';
 foreach ($regions as $region){
     $region_id = $region['record_id'];
@@ -67,6 +68,5 @@ $votes_table = '<table class="table table-striped">
                     </tbody>
                 </table>';
 
-echo json_encode($test);
 //echo json_encode($votes_table);
 ?>
