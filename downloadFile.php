@@ -1,6 +1,7 @@
 <?php
-use Vanderbilt\HarmonistHubExternalModule\ProjectData;
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once "projects.php";
+use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 $code = \Vanderbilt\HarmonistHubExternalModule\getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 $exploded = array();

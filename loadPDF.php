@@ -1,5 +1,5 @@
 <?php
-define('NOAUTH',true);
+namespace Vanderbilt\HarmonistHubExternalModule;
 require_once "projects.php";
 
 $edoc = $_REQUEST['edoc'];
