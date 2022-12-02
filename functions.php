@@ -845,11 +845,17 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
                     <td '.$width[1].'>
                         <strong>'.$request_type_label[$req['request_type']].'</strong><br>';
 
-    $current_req .= \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray,$req['assoc_concept'],"");
-
-    if($req['mr_temporary'] != ""){
+    if($req['mr_temporary'] != "") {
         $current_req .= $req['mr_temporary'];
+        if ($req['assoc_concept'] != "") {
+            $current_req .= " (";
+            $current_req .= \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $req['assoc_concept'], "");
+            $current_req .= ")";
+        }
+    } else if ($req['assoc_concept'] != "") {
+        $current_req .= \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $req['assoc_concept'], "");
     }
+
     if($req_type != 'home'){
         $current_req .= '</td>
                     <td>'.$req['contact_name'].'</td>';
