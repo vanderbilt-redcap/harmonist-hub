@@ -90,7 +90,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $req_id = array_unique($req_id);
 
     $query = $this->framework->createQuery();
-    $query->add("SELECT record FROM redcap_data WHERE field_name = ? AND project_id = ? AND 'value' = ?", ["approval_y", $pidsArray['RMANAGER'], "9"]);
+    $query->add("SELECT record FROM redcap_data WHERE field_name = ? AND project_id = ? AND value = ?", ["approval_y", $pidsArray['RMANAGER'], "9"]);
     $query->add('and')->addInClause('record ', $req_id);
     $query->add('group by record');
     $q = $query->execute();
