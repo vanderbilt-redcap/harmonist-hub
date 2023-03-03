@@ -78,13 +78,16 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $concept_id = $this->framework->addAutoNumberedRecord($pidsArray['HARMONIST']);
         $arrayConcepts = array(array('record_id' => $concept_id));
         $arrayConcepts[0]['lastupdate_d'] = $last_update;
+        $arrayConcepts[0]['active_y'] = "1";
         $arrayConcepts[0]['concept_id'] = $request['mr_assigned'];
         $arrayConcepts[0]['concept_title'] = $request['request_title'];
         $arrayConcepts[0]['contact_link'] = $request['contactperson_id'];
         $arrayConcepts[0]['start_year'] = $start_year;
         $arrayConcepts[0]['ec_approval_d'] = $request['final_d'];
         $arrayConcepts[0]['wg_link'] = $request['wg_name'];
-        $arrayConcepts[0]['wg_link'] = $request['wg2_name'];
+        $arrayConcepts[0]['wg2_link'] = $request['wg2_name'];
+        $arrayConcepts[0]['wg3_link'] = $request['wg3_name'];
+        $arrayConcepts[0]['wg4_link'] = $request['wg4_name'];
         $arrayConcepts[0]['concept_sheet_complete'] = '2';
 
         if ($request['request_type'] == "5") {
@@ -119,7 +122,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
                 $docId = db_insert_id();
 
-                $arrayConcepts[0]['concept_file'] = $docId;
+                $arrayConcepts[0]['concept_word'] = $docId;
             }
         }
 
@@ -215,7 +218,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 }
 
-#We save the date for Recenty Finalized Requests table
+#We save the date for Recently Finalized Requests table
 if(($request['finalize_y'] != "" && ($request['request_type'] != '1' && $request['request_type'] != '5')) || ($request['finalize_y'][0] == "2" && ($request['request_type'] == '1' || $request['request_type'] == '5')) || ($request['mr_assigned'] != "" && $request['finalconcept_doc'] != "" && $request['finalconcept_pdf'] != "")) {
     $arrayRM = array(array('record_id' => $record));
     $arrayRM[0]['workflowcomplete_d'] = date("Y-m-d");
