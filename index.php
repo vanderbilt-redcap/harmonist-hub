@@ -172,7 +172,7 @@ $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
                 session_start();
 
                 $token = "";
-                if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $option === 'dnd')  || (array_key_exists('option', $_REQUEST) && $option === 'iut') || (array_key_exists('option', $_REQUEST) && $option === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
+                if(defined("USERID") && !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $option === 'dnd')  || (array_key_exists('option', $_REQUEST) && $option === 'iut') || (array_key_exists('option', $_REQUEST) && $option === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
                     $_SESSION['token'] = array();
                     $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = \Vanderbilt\HarmonistHubExternalModule\getToken(USERID, $pidsArray['PEOPLE']);
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
