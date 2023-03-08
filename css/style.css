@@ -825,6 +825,9 @@ table[data-sortable].sortable-theme-bootstrap.sop_discuss tbody td{
 .home-panel{
     margin-bottom: 140px;
 }
+table.dataTable.no-footer {
+    border-bottom: 1px solid #ddd;
+}
 /***Small Devices, Tablets**/
 @media (max-width: 768px) {
     .optionSelectData{

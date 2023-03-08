@@ -17,6 +17,22 @@ foreach ($request_DU as $down){
     array_push($array_downloads_by_concept[$down['data_assoc_concept']][$down['data_assoc_request']],$down);
 }
 ?>
+<style>
+    .dtr-control{
+        width: 130px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('.child_notes')
+            .dataTable({
+                responsive: true,
+                bFilter: false,
+                bPaginate: false,
+                bInfo: false
+            });
+    });
+</script>
 <div class="optionSelect">
     <div class="backTo">
         <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a>
@@ -129,17 +145,14 @@ foreach ($request_DU as $down){
                             $color_notes = "retrieve-notes";
                         }
 
-                        $body .= "<tr>" .
-                            "<td><a href='#' data-target='#accordion_" . $concept_id . "_" . $sop_id . "_" . $data_up['record_id'] . "' id='" . $concept_id . "_" . $sop_id . "_" . $data_up['record_id'] . "' data-toggle='collapse' class='accordion_pointer' onclick='change_icon(this.id)' symbol='0'><span id='" . $concept_id . "_" . $sop_id . "_" . $data_up['record_id'] . "_span' class='fa fa-plus-square ".$color_notes."'></span></a></td>" .
-                            "<td>" . $data_up['responsecomplete_ts'] . "</td>" .
+                        $body = "<td>" . $data_up['responsecomplete_ts'] . "</td>" .
                             "<td>" . $region_code . "</td>" .
                             "<td>" . $contact_person . "</td>" .
                             "<td>" . $data_up['data_upload_zip'] . $deleted . "</td>" .
                             "<td style='text-align: center;'>" . $file_pdf . "</td>" .
                             "<td>" . $expiration_date . "</td>" .
                             "<td>" . $buttons . "</td>" .
-                            "</tr>" .
-                            "<tr id='accordion_" . $concept_id . "_" . $sop_id . "_" . $data_up['record_id'] . "' class='collapse'><td colspan='8'>" . $notes . "</td></tr>";
+                            "<td>" . $notes . "</td>" ;
                     }
                 }
 
@@ -166,24 +179,24 @@ foreach ($request_DU as $down){
                         </div>
                         <div class="row request"></div>
                     </table>
-    
-                    <table class="table table_requests sortable-theme-bootstrap" data-sortable id="sortable_table">
+                    <div class="table-responsive">
+                    <table class="table table_requests sortable-theme-bootstrap dt-responsive child_notes" data-sortable id="sortable_table" width="100%">
                         <thead>
                         <tr>
-                            <th class="sorted_class" style="width:30px"></th>
-                            <th class="sorted_class" style="width:160px" data-sorted="true" data-sorted-direction="descending">Upload Date</th>
+                            <th class="sorted_class" width="160px" data-sorted="true" data-sorted-direction="descending">Upload Date</th>
                             <th class="sorted_class" style="width:80px">Region</th>
                             <th class="sorted_class" style="width:150px">Submitted By</th>
                             <th class="sorted_class" style="width:250px">Filename</th>
                             <th class="sorted_class" style="width:60px">PDF</th>
                             <th class="sorted_class" style="width:180px">Available Until</th>
                             <th class="sorting_disabled" style="width:96px" data-sortable="false">Actions</th>
+                            <th class="none"></th>
                         </tr>
                         </thead>
                         <tbody>';
 
                 $header .= $body;
-                $header .= '</tbody></table></div></div>';
+                $header .= '</tbody></table></div></div></div>';
 
                 if ($permission_granted) {
                     echo $header;

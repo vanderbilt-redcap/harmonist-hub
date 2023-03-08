@@ -20,12 +20,16 @@
 <script type="text/javascript" src="<?=$module->getUrl('js/Chart.min.js')?>"></script>
 <script type="text/javascript" src="<?=$module->getUrl('js/chartjs-plugin-labels.js')?>"></script>
 <script type='text/javascript' href='<?=$module->getUrl('manifest.json')?>'></script>
+<script type="text/javascript" src="<?=$module->getUrl('js/dataTables.responsive.min.js')?>"></script>
 
 <script type="text/javascript" src="<?=$module->getUrl('js/functions.js')?>"></script>
 
 <link type='text/css' href='<?=$module->getUrl('css/sortable-theme-bootstrap.css')?>' rel='stylesheet' media='screen' />
 <link type='text/css' href='<?=$module->getUrl('bootstrap-3.3.7/css/bootstrap.min.css')?>' rel='stylesheet' media='screen' />
+<link type='text/css' href='<?=$module->getUrl('css/jquery.dataTables.min.css')?>' rel='stylesheet' media='screen' />
 <link type='text/css' href='<?=$module->getUrl('css/style.css')?>' rel='stylesheet' media='screen' />
 <link type='text/css' href='<?=$module->getUrl('css/tabs-steps-menu.css')?>' rel='stylesheet' media='screen' />
 <link type='text/css' href='<?=$module->getUrl('css/jquery-ui.min.css')?>' rel='stylesheet' media='screen' />
 <link type='text/css' href='<?=$module->getUrl('js/fonts-awesome/css/font-awesome.min.css')?>' rel='stylesheet' media='screen' />
+<link rel="stylesheet" href='<?=$module->getUrl('css/responsive.jqueryui.min.css')?>'/>
+<link rel="stylesheet" href='<?=$module->getUrl('css/responsive.dataTables.min.css')?>'/>
