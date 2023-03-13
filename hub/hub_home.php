@@ -415,7 +415,13 @@ if(!empty($homepage)) {
                     <a data-toggle="collapse" href="#collapse_quicklinks">Quick Links</a>
                 </h3>
             </div>
-            <div id="collapse_quicklinks" class="panel-collapse collapse" aria-expanded="true" style="margin-bottom: 0px;border:0px;">
+            <?php
+            $collapseOrExpand = "collapse";
+            if($settings['home_quicklinks_expand'] == '1'){
+                $collapseOrExpand = "";
+            }
+            ?>
+            <div id="collapse_quicklinks" class="panel-collapse <?=$collapseOrExpand?>" aria-expanded="true" style="margin-bottom: 0px;border:0px;">
                 <ul class="list-group">
                     <?php
                     if(!empty($homepage)) {
