@@ -1,6 +1,6 @@
 "Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
 record_id,issue_report_survey,,text,"Record ID",,,,,,,,,,,,,
-name,issue_report_survey,,text,"Name (optional)",,"To submit this anonymously, omit your name and e-mail address.",,,,,,,,,,,
+name,issue_report_survey,"Harmonist Hub Issue Reporting Survey",text,"Name (optional)",,"To submit this anonymously, omit your name and e-mail address.",,,,,,,,,,,
 email,issue_report_survey,,text,"E-mail Address (optional)",,"To submit this anonymously, omit your name and e-mail address.",email,,,,,,,,,,
 issue_type,issue_report_survey,,checkbox,"How can we help you today?","1, I've encountered an urgent problem | 2, I've encountered a bug or non-urgent problem | 3, I don't have the right access level | 4, I'm having issues with the login/access link | 5, There is incorrect/outdated information on the site | 6, I'm having issues with the request management system | 7, I'm having issues with site-based emails | 8, I have feedback or a feature request | 9, Something else",,,,,,,,LV,,,,
 issue_text,issue_report_survey,,notes,"We're sorry you've encountered an issue, but thanks for reaching out to us! 

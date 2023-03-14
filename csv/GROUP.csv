@@ -6,6 +6,7 @@ group_name,group_information,,text,"Working Group name
 <div style=""font-weight:lighter;font-style:italic"">(e.g., Pediatric Working Group, Data Harmonization Working Group)</div>",,,,,,,,y,,,,,
 group_abbr,group_information,,text,"Working Group abbreviation
 <div style=""font-weight:lighter;font-style:italic"">(e.g., PWG, DHWG)</div>",,,,,,,,y,,,,,
+meeting_alert,meetings,,descriptive,"<div class='red'>The Working Groups section of the Hub is <b>not yet implemented</b>. This form is not currently used.</div>",,,,,,,,,,,,,
 mtgheader_txt,meetings,,descriptive,"<div style=""color:white; text-align:center; border: 1px #2c2c54; background-color: #40407a;""><h3 style=""margin:0px; padding:10px"">Meeting Record: [group_abbr]</h3></div>",,,,,,,,,,,,,
 meeting_d,meetings,,text,"Working Group meeting date",,,date_ymd,,,,,y,LV,,,,
 meeting_description,meetings,,notes,"Working Group meeting description (brief)",,,,,,,,,LV,,,,

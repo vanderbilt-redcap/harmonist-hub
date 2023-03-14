@@ -1,12 +1,12 @@
-Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
-record_id,faq_item,,text,Record ID,,,,,,,,,,,,,
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,faq_item,,text,"Record ID",,,,,,,,,,,,,
 help_show_y,faq_item,,yesno,"<div style=""color:black; text-align:center; border: 1px #d35400; background-color: #e67e22; padding:6px; max-width:800px;"">Show this FAQ Item?</div>",,,,,,,,,RH,,,,
-help_category,faq_item,,dropdown,Question Category,"1, General Questions | 2, Requests | 3, Concept Sheets | 4, Data Checks | 5, Accounts and Login | 99, Harmonist Project",,,,,,,,RH,,,,
-help_question,faq_item,,notes,Question,,,,,,,,,LV,,,,
-help_answer,faq_item,,notes,Answer,,,,,,,,,LV,,,,
-help_image,faq_item,,file,Supporting Image,,,,,,,,,RH,,,,
-help_videoformat,faq_item,,radio,Choose Video Format,"1, URL (won't work with Youtube) | 2, Embed code",,,,,,,,,,,,
+help_category,faq_item,,dropdown,"<div class=""rich-text-field-label""><p>Question Category<br /><em><span style=""font-weight: normal;"">This field can be edited in the REDCap form to add new categories.</span></em></p></div>","1, General Questions | 2, Requests | 3, Concept Sheets | 4, Data Checks | 5, Accounts and Login | 99, Harmonist Project",,,,,,,,RH,,,,
+help_question,faq_item,,notes,Question,,,,,,,,,LV,,,," @RICHTEXT"
+help_answer,faq_item,,notes,Answer,,,,,,,,,LV,,,," @RICHTEXT"
+help_image,faq_item,,file,"Supporting Image",,,,,,,,,RH,,,,
+help_videoformat,faq_item,,radio,"Choose Video Format","1, URL (won't work with Youtube) | 2, Embed code",,,,,,,,,,,,
 help_videolink,faq_item,,text,"Supporting Video Link
-(e.g. Youtube)",,,,,,,[help_videoformat] = '1',,RH,,,,
-help_embedcode,faq_item,,notes,Video Embed Code,,,,,,,[help_videoformat] = '2',,,,,,
-help_test,faq_item,,radio,Choose Video Format,"1, URL (won't work with Youtube) | 2, Embed code",,,,,,,,RH,,,,
+(e.g. Youtube)",,,,,,,"[help_videoformat] = '1'",,RH,,,,
+help_embedcode,faq_item,,notes,"Video Embed Code",,,,,,,"[help_videoformat] = '2'",,,,,,
+help_test,faq_item,,radio,"Choose Video Format","1, URL (won't work with Youtube) | 2, Embed code",,,,,,,,RH,,,,
