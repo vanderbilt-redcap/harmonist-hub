@@ -23,12 +23,30 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     #If it's not the main PID project hide the Harmonist Hub link
     public function redcap_module_link_check_display($project_id, $link) {
         $hub_projectname = $this->getProjectSetting('hub-projectname');
+        $hub_profile = $this->getProjectSetting('hub-profile');
+        $dd_array = \REDCap::getDataDictionary('array');
+        $data_array = \REDCap::getData($_GET['pid'], 'array');
+
+        #User rights
+        $isAdmin = false;
+        if(defined('USERID')) {
+            $UserRights = \REDCap::getUserRights(USERID)[USERID];
+            if ($UserRights['user_rights'] == '1') {
+                $isAdmin = true;
+            }
+        }
+
+        if (count($dd_array) == 1 && $isAdmin && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
+            $link['url'] = $this->getUrl("installProjects.php");
+        }else{
+            $link['url'] = $this->getUrl("index.php?NOAUTH");
+        }
 
         if($hub_projectname != "" && ($_REQUEST['pid'] == $this->getProjectSetting('hub-mapper') || $this->getProjectSetting('hub-mapper') == "")){
             $link['name'] = $hub_projectname." Hub";
-        }else{
-            return false;
         }
+        error_log(json_encode($link,JSON_PRETTY_PRINT));
+
         return parent::redcap_module_link_check_display($project_id,$link);
     }
 

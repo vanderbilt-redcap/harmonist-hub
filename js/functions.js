@@ -8,7 +8,7 @@ function startDDProjects(){
             var data = JSON.parse(returnData);
             if (data.status == 'success') {
                 $('#create_spinner').removeClass('fa fa-spinner fa-spin');
-                window.location = getMessageLetterUrl(window.location.href, "D");
+                window.location = getMessageLetterUrl(indexPage_url, "D");
             }
         }
     });
