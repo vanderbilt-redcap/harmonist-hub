@@ -1,5 +1,6 @@
 "Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
 record_id,project_info,,text,"Record ID",,,,,,,,,,,,,
-project_show_y,project_info,,yesno,"Show project on pages?",,,,,,,,,,,,,
-project_id,project_info,,text,"Project ID",,,,,,,,,,,,,
-project_constant,project_info,,text,"Constant Name",,,,,,,,,,,,,
+map_txt,project_info,,descriptive,"<div class=""yellow""><b>CAUTION:</b> This project links together the 30+ REDCap projects that are used by the Harmonist Hub External Module. These fields <b>should not be edited</b> -- please consult the Harmonist Hub development team.</div>",,,,,,,,,,,,,
+project_id,project_info,,text,"Project ID",,,,,,,,,,,,," @READONLY"
+project_constant,project_info,,text,"Constant Name",,,,,,,,,,,,," @READONLY"
+project_show_y,project_info,,yesno,"<div class=""rich-text-field-label""><p>List this Project on the Admin Page?<br /><em><span style=""font-weight: normal;"">Optional, can provide quick access to the projects from within the Hub.</span></em></p></div>",,,,,,,,,,,,,
