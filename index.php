@@ -121,16 +121,20 @@ if($hub_projectname != '' && $hub_profile != ''){
                 }
                 #TOKEN
 //                session_write_close();
-                session_name($settings['hub_name']);
-                session_id($_COOKIE[$settings['hub_name']]);
-                session_start();
+//                session_name($settings['hub_name']);
+//                session_id($_COOKIE[$settings['hub_name']]);
+//                session_start();
 
                 $token = "";
                 if(defined("USERID") && !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $option === 'dnd')  || (array_key_exists('option', $_REQUEST) && $option === 'iut') || (array_key_exists('option', $_REQUEST) && $option === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
+                    session_name($settings['hub_name']);
+                    session_id($_COOKIE[$settings['hub_name']]);
+                    session_start();
+
                     $_SESSION['token'] = array();
                     $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = \Vanderbilt\HarmonistHubExternalModule\getToken(USERID, $pidsArray['PEOPLE']);
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
-                }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])){
+                }else if(array_key_exists('token', $_REQUEST) && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])){
                     $token = $_REQUEST['token'];
                 }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
