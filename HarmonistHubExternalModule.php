@@ -41,13 +41,9 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
         if (count($dd_array) == 1 && $isAdmin && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
             $link['url'] = $this->getUrl("installProjects.php");
-        }else{
-            return true;
+            return parent::redcap_module_link_check_display($project_id,$link);
         }
-
-
-
-        return parent::redcap_module_link_check_display($project_id,$link);
+        return true;
     }
 
     function setPIDMapperProject($project_id){
