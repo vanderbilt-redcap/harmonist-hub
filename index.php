@@ -52,9 +52,7 @@ if($hub_projectname != '' && $hub_profile != ''){
 //                    $module->compareDataDictionaries();
 //                    $module->compareRepeatingForms();
                 }
-                if($settings['deactivate_analytics'][1] != "1") {
-                    include_once("analyticstracking.php");
-                }
+                include_once("analyticstracking.php");
                 ?>
                 <head>
                     <meta charset="utf-8">
