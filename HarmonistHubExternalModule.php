@@ -23,7 +23,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     #If it's not the main PID project hide the Harmonist Hub link
     public function redcap_module_link_check_display($project_id, $link) {
         $hub_projectname = $this->getProjectSetting('hub-projectname');
-        $hub_profile = $this->getProjectSetting('hub-profile');
         $dd_array = \REDCap::getDataDictionary('array');
         $data_array = \REDCap::getData($_GET['pid'], 'array');
 
@@ -45,7 +44,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         if($hub_projectname != "" && ($_REQUEST['pid'] == $this->getProjectSetting('hub-mapper') || $this->getProjectSetting('hub-mapper') == "")){
             $link['name'] = $hub_projectname." Hub";
         }
-        error_log(json_encode($link,JSON_PRETTY_PRINT));
 
         return parent::redcap_module_link_check_display($project_id,$link);
     }
