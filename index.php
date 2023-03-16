@@ -121,18 +121,9 @@ if($hub_projectname != '' && $hub_profile != ''){
                 }
                 #TOKEN
 //                session_write_close();
-//                // server should keep session data for AT LEAST 2 days
-//                ini_set('session.cookie_lifetime', 172800);
-//                session_set_cookie_params(172800);
+//                session_name($settings['hub_name']);
+//                session_id($_COOKIE[$settings['hub_name']]);
 //                session_start();
-//                $cookie_name = $settings['hub_name'];
-//                $cookie_value = $settings['hub_name'];
-//                setcookie($cookie_name, $cookie_value, time() + 7200, "/"); //2 hour
-
-                session_write_close();
-                session_name($settings['hub_name']);
-                session_id($_COOKIE[$settings['hub_name']]);
-                session_start();
 
                 $token = "";
                 if(defined("USERID") && !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $option === 'dnd')  || (array_key_exists('option', $_REQUEST) && $option === 'iut') || (array_key_exists('option', $_REQUEST) && $option === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
