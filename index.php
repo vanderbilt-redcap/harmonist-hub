@@ -137,6 +137,9 @@ if($hub_projectname != '' && $hub_profile != ''){
                 }else if(array_key_exists('token', $_REQUEST) && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])){
                     $token = $_REQUEST['token'];
                 }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
+                    session_name($settings['hub_name']);
+                    session_id($_COOKIE[$settings['hub_name']]);
+                    session_start();
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
                 }
 
