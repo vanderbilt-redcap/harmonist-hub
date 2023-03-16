@@ -120,7 +120,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                     $deactivate_toolkit = true;
                 }
                 #TOKEN
-                if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])){
+                if(!array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]) && !array_key_exists('option', $_REQUEST)){
 
                 }else if(empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])){
                    session_write_close();
