@@ -145,14 +145,14 @@ foreach ($request_DU as $down){
                             $color_notes = "retrieve-notes";
                         }
 
-                        $body = "<td>" . $data_up['responsecomplete_ts'] . "</td>" .
+                        $body .= "<tr><td>" . $data_up['responsecomplete_ts'] . "</td>" .
                             "<td>" . $region_code . "</td>" .
                             "<td>" . $contact_person . "</td>" .
                             "<td>" . $data_up['data_upload_zip'] . $deleted . "</td>" .
                             "<td style='text-align: center;'>" . $file_pdf . "</td>" .
                             "<td>" . $expiration_date . "</td>" .
                             "<td>" . $buttons . "</td>" .
-                            "<td>" . $notes . "</td>" ;
+                            "<td>" . $notes . "</td></tr>" ;
                     }
                 }
 
