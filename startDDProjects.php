@@ -279,6 +279,16 @@ $projects_array_sql = array(
             'autocomplete' => '0',
             'label' => ""
         ),
+        'wg3_name' => array (
+            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from redcap_data record left join redcap_data active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join redcap_data group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join redcap_data group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY record.value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
+        'wg4_name' => array (
+            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from redcap_data record left join redcap_data active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join redcap_data group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join redcap_data group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY record.value",
+            'autocomplete' => '0',
+            'label' => ""
+        ),
         'contact_region' => array (
             'query' => "select record.record as record, CONCAT( max(if(region_name.field_name = 'region_name',region_name.value, '')), ' (', max(if(region_code.field_name = 'region_code', region_code.value, '')), ') ' ) as value from redcap_data record left join redcap_data activeregion_y on activeregion_y.project_id = ".$pidsArray['REGIONS']." and activeregion_y.record = record.value and activeregion_y.field_name = 'activeregion_y' and activeregion_y.value ='1' left join redcap_data region_code on region_code.project_id = ".$pidsArray['REGIONS']." and region_code.record = record.value and region_code.field_name = 'region_code' left join redcap_data region_name on region_name.project_id = ".$pidsArray['REGIONS']." and region_name.record = record.value and region_name.field_name = 'region_name' where record.field_name = 'record_id' and record.record=activeregion_y.record and record.project_id = ".$pidsArray['REGIONS']." group by record.value ORDER BY region_name.value",
             'autocomplete' => '0',
