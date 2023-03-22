@@ -1,15 +1,21 @@
 "Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
-record_id,region_information,,text,"Record ID",,,,,,,,,,,,,
-region_name,region_information,,text,"Region name",,,,,,,,,,,,,
-region_full_name,region_information,,text,"Region full name
-(write out long name, no abbreviations)",,,,,,,,,,,,,
-region_code,region_information,,text,"Region code",,,,,,,,,,,,,
-region_tbl_option,region_information,"Region tblCENTER map",radio,"What tblCENTER map should display?","0, Single Region | 1, All",,,,,,,,,,,,
-region_latitude,region_information,,text,Latitude,,,,,,,"[region_tbl_option] = '0'",,,,,,
-region_longitude,region_information,,text,Longitude,,,,,,,"[region_tbl_option] = '0'",,,,,,
-region_zoom,region_information,,text,Zoom,,,,,,,"[region_tbl_option] = '0'",,,,,,
-region_color,region_information,,text,"Map color",,,,,,,"[region_tbl_option] = '0'",,,,,,
-region_legend,region_information,,text,"Legend text",,,,,,,"[region_tbl_option] = '0'",,,,,,
-showregion_y,region_information,"Region Access Settings ",yesno,"Should this region be listed in the main interface?<span style=""font-weight:lighter;font-style:italic"">
-(ex. core IeDEA regions are listed, but non-voting groups are not)</span>",,,,,,,,,,,,,
-voteregion_y,region_information,,yesno,"Will this region participate in voting?",,,,,,,,,,,,,
+record_id,research_group_information,,text,"Record ID",,,,,,,,,,,,,
+region_name,research_group_information,,text,"Research Group primary name
+<div style=""font-weight:lighter;font-style:italic"">(e.g. CCASAnet, NA-ACCORD)</div>",,,,,,,,y,,,,,
+region_full_name,research_group_information,,text,"Research Group full name 
+<div style=""font-weight:lighter;font-style:italic"">Write out long name, no abbreviations (e.g. Caribbean, Central and South America network for HIV Epidemiology, North American AIDS Cohort Collaboration on Research and Design)</div>",,,,,,,,y,,,,,
+region_code,research_group_information,,text,"Research Group short code
+<div style=""font-weight:lighter;font-style:italic"">A short code for each research group is needed for Hub display purposes. (e.g. CN, NA)</div>",,,,,,,,y,,,,,
+activeregion_y,research_group_information,"Research Group Hub Settings ",yesno,"Is this an Active Research Group in the Consortium?
+<div style=""font-weight:lighter;font-style:italic"">(ex. use this to indicate current research groups vs. those that have left or been dropped from the Consortium.)</div>",,,,,,,,,,,,,
+showregion_y,research_group_information,,yesno,"Should this Research Group be listed in the main interface?
+<div style=""font-weight:lighter;font-style:italic"">(ex. this can be used to exclude groups such as a Testing group from the Consortium Metrics.)</div>",,,,,,,,,,,,,
+voteregion_y,research_group_information,,yesno,"Will this Research Group participate in voting?
+<div style=""font-weight:lighter;font-style:italic"">Only these Research Groups will appear on the voting dashboard. Active groups that do not participate in voting could include an NIH group, or a Hub Testing group.</div>",,,,,,,,,,,,,
+region_tbl_option,research_group_map_settings,"Display Settings for Research Group Map
+(Map data is stored separately in the Site Census project)",radio,"What map should display for users from this Research Group?","0, This Research Group's geographic area (defined below) | 1, World Map",,,,,,,,,,,,
+region_latitude,research_group_map_settings,,text,Latitude,,,,,,,"[region_tbl_option] = '0'",,,,,,
+region_longitude,research_group_map_settings,,text,Longitude,,,,,,,"[region_tbl_option] = '0'",,,,,,
+region_zoom,research_group_map_settings,,text,"Zoom level",,,,,,,"[region_tbl_option] = '0'",,,,,,
+region_color,research_group_map_settings,,text,"Map color",,,,,,,"[region_tbl_option] = '0'",,,,,,
+region_legend,research_group_map_settings,,text,"Legend text",,,,,,,"[region_tbl_option] = '0'",,,,,,
