@@ -667,9 +667,6 @@ function getArchiveHeader($region){
  * @return bool
  */
 function showOpenRequest($req,$instance){
-    if ($instance == 1) {
-        $instance = '';
-    }
     if ($req['region_response_status'][$instance] != 2 && (!array_key_exists('finalize_y', $req) || $req['finalize_y'] == "")) {
         return true;
     }
