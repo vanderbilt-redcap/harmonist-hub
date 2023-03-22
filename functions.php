@@ -688,7 +688,7 @@ function showClosedRequest($settings,$req,$instance){
     if ($instance == 1) {
         $instance = '';
     }
-    if (($req['region_response_status'][$instance] == 2 || $req['finalize_y'] != "") && !empty($req['due_d'])) {
+    if (($req['region_response_status'][$instance] == "2" || $req['finalize_y'] != "") && !empty($req['due_d'])) {
         $extra_days = ' + ' . $settings['pastrequest_dur'] . " days";
         $due_date_time = date('Y-m-d', strtotime($req['due_d'] . $extra_days));
         $today = date('Y-m-d');
