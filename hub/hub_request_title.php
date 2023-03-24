@@ -191,40 +191,42 @@ if($request !="") {
 
                                     $region_row = '';
                                     foreach ($regions as $region){
-                                        $region_id = $region['record_id'];
-                                        $region_time = $request['region_close_ts'][$region_id];
-                                        if(!empty($region_time)) {
-                                            $region_time = date('Y-m-d H:i', strtotime($region_time));
-                                            $class = "";
-                                            if (strtotime($request['due_d']) < strtotime($region_time)){
-                                                $class = "overdue";
+                                        if ($region['voteregion_y'] != 0) {
+                                            $region_id = $region['record_id'];
+                                            $region_time = $request['region_close_ts'][$region_id];
+                                            if (!empty($region_time)) {
+                                                $region_time = date('Y-m-d H:i', strtotime($region_time));
+                                                $class = "";
+                                                if (strtotime($request['due_d']) < strtotime($region_time)) {
+                                                    $class = "overdue";
+                                                }
                                             }
-                                        }
-                                        $menu = '<li><span><em>No vote recorded</em></li></span><input type="hidden" value="" class="dropdown_votes" request="'.$request['request_id'].'" id="'.$region_id.'_none" >';
-                                        $selected = '<span><em>No vote recorded</em></span><input type="hidden" value="" class="dropdown_votes" request="'.$request['request_id'].'" id="'.$region_id.'_none">';
-                                        foreach ($region_vote_status as $index=>$vote_text){
-                                            $menu .= '<li><span class="fa '.$region_vote_icon_view[$index].' '.$region_vote_icon_text[$index].'" aria-hidden="true"></span><span class="'.$region_vote_icon_text[$index].'"> '.$vote_text.'</span>';
-                                            $menu .= '<input type="hidden" value="'.$index.'" class="dropdown_votes" request="'.$request['request_id'].'" id="'.$region_id.'_'.$index.'"></li>';
-                                            if($request['region_vote_status'][$region_id] == $index && $request['region_vote_status'][$region_id] != ''){
-                                                $selected = '<span class="fa '.$region_vote_icon_view[$index].' '.$region_vote_icon_text[$index].'" aria-hidden="true"></span><span class="'.$region_vote_icon_text[$index].'"> '.$vote_text.'</span>';
-                                                $selected .= '<input type="hidden" value="'.$index.'" class="dropdown_votes" request="'.$request['request_id'].'" id="'.$region_id.'_'.$index.'"">';
+                                            $menu = '<li><span><em>No vote recorded</em></li></span><input type="hidden" value="" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_none" >';
+                                            $selected = '<span><em>No vote recorded</em></span><input type="hidden" value="" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_none">';
+                                            foreach ($region_vote_status as $index => $vote_text) {
+                                                $menu .= '<li><span class="fa ' . $region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index] . '" aria-hidden="true"></span><span class="' . $region_vote_icon_text[$index] . '"> ' . $vote_text . '</span>';
+                                                $menu .= '<input type="hidden" value="' . $index . '" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_' . $index . '"></li>';
+                                                if ($request['region_vote_status'][$region_id] == $index && $request['region_vote_status'][$region_id] != '') {
+                                                    $selected = '<span class="fa ' . $region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index] . '" aria-hidden="true"></span><span class="' . $region_vote_icon_text[$index] . '"> ' . $vote_text . '</span>';
+                                                    $selected .= '<input type="hidden" value="' . $index . '" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_' . $index . '"">';
+                                                }
                                             }
+                                            $region_row .= '<tr>' .
+                                                '<td>' . $region['region_code'] . '/' . $region['region_name'] . '</td>' .
+                                                '<td>
+                                                                <div style="float:left;">
+                                                                    <ul class="nav navbar-nav navbar-right">
+                                                                        <li class="menu-item dropdown">
+                                                                            <a href="#" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-custom form-control output_select btn-group" id="default-select-value" style="width: 200px;">' . $selected . '<span class="caret" style="float: right;margin-top:8px"></span></a>
+                                                                            <ul class="dropdown-menu dropdown-menu-custom output-dropdown-menu" style="width: 200px;">
+                                                                                 ' . $menu . '
+                                                                            </ul>
+                                                                        </li>
+                                                                    </ul>
+                                                                    </div></td>' .
+                                                '<td><span class="' . $class . '">' . $region_time . '</span></td>' .
+                                                '</tr>';
                                         }
-                                       $region_row .= '<tr>'.
-                                                            '<td>'.$region['region_code'].'/'.$region['region_name'].'</td>'.
-                                                            '<td>
-                                                            <div style="float:left;">
-                                                                <ul class="nav navbar-nav navbar-right">
-                                                                    <li class="menu-item dropdown">
-                                                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-custom form-control output_select btn-group" id="default-select-value" style="width: 200px;">'.$selected.'<span class="caret" style="float: right;margin-top:8px"></span></a>
-                                                                        <ul class="dropdown-menu dropdown-menu-custom output-dropdown-menu" style="width: 200px;">
-                                                                             '.$menu.'
-                                                                        </ul>
-                                                                    </li>
-                                                                </ul>
-                                                                </div></td>'.
-                                                            '<td><span class="'.$class.'">'.$region_time.'</span></td>'.
-                                                        '</tr>';
                                     }
                                     echo $region_row;
                                     ?>
