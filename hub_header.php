@@ -60,7 +60,7 @@ if($isAdmin) {
         <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php?NOAUTH')?>" role="button" option="null">Home</a>
+                    <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'])?>" role="button" option="null">Home</a>
                 </li>
             </ul>
 
