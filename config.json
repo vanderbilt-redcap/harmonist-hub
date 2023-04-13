@@ -24,7 +24,7 @@
     ]
   },
 
-  "no-auth-pages":["downloadFile","loadPDF","functions", "index","hub/hub_login","hub/hub_getLink","surveyPassthru","hub/hub_requests_view_all_votes_AJAX","hub/hub_requests_view_mixed_votes_AJAX"],
+  "no-auth-pages":["downloadFile","loadPDF","functions", "index","hub/hub_login","hub/hub_getLink","surveyPassthru","hub/hub_requests_view_all_votes_AJAX","hub/hub_requests_view_mixed_votes_AJAX","hub/generate_publications_pdf","hub/generate_outputs_excel"],
 
   "description": "Installs the Harmonist Hub consortium management platform, a series of SQL-linked REDCap projects with a web interface and auto-email workflow for managing concept sheets, review requests, voting, publications, data requests, and metrics for multi-site research consortia. Demo and training videos available at dataharmonist.org. Caution: this module will install ~30 REDCap projects.",
 

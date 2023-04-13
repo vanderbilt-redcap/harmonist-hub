@@ -4,7 +4,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 class ExcelFunctions
 {
-    function getExcelHeaders($sheet,$headers,$letters,$width,$row_number){
+    public static function getExcelHeaders($sheet,$headers,$letters,$width,$row_number){
         foreach ($headers as $index=>$header) {
             $sheet->setCellValue($letters[$index] . $row_number, $header);
             $sheet->getStyle($letters[$index] . $row_number)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
@@ -20,7 +20,7 @@ class ExcelFunctions
         return $sheet;
     }
 
-    function getExcelData($sheet,$data_array,$headers,$letters,$section_centered,$row_number,$option){
+    public static function getExcelData($sheet,$data_array,$headers,$letters,$section_centered,$row_number,$option){
         $found = false;
         $active_n_found = false;
         foreach ($data_array as $row => $data) {

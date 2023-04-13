@@ -57,7 +57,6 @@ $html_pdf = "<html><body style='font-family:\"Calibri\";font-size:10pt;'>".$page
     ."</body></html>";
 //echo $html_pdf;
 
-
 $filename = $settings['hub_name']." Manuscript List_".date("Y-m-d_h-i",time());
 
 //SAVE PDF ON DB

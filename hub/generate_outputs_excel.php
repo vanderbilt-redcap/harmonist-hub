@@ -8,60 +8,67 @@ $RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 
 $RecordSetExtraOutputs = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'array', null);
-$extra_outputs = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
-
-ArrayFunctions::array_sort_by_column($extra_outputs,'output_year',SORT_DESC);
-ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'concept_id',SORT_DESC);
+$extra_outputs = ProjectData::getProjectInfoArray($RecordSetConcetps);
+if(!empty($extra_outputs)) {
+    ArrayFunctions::array_sort_by_column($extra_outputs, 'output_year', SORT_DESC);
+}
+if(!empty($comments_sevenDaysYoung)) {
+    ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'concept_id', SORT_DESC);
+}
 
 $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $excel_data = array();
-foreach ($concepts as $concept) {
-    $output_year = $concept['output_year'];
-    arsort ($output_year);
-    foreach ($output_year as $index =>$value){
-        $excel_data_aux = array();
-        $excel_data_aux[0] = $abstracts_publications_type[$concept['output_type'][$index]];
-        $excel_data_aux[1] = $concept['output_title'][$index];
-        $excel_data_aux[2] = $concept['output_authors'][$index];
-        $excel_data_aux[3] = $concept['output_venue'][$index];
-        $excel_data_aux[4] = $concept['output_year'][$index];
-        $excel_data_aux[5] = $concept['output_citation'][$index];
-        $excel_data_aux[6] = $concept['output_pmcid'][$index];
-        $excel_data_aux[7] = $concept['output_url'][$index];
-        $excel_data_aux[8] = "MR";
-        $excel_data_aux[9] = "H:1";
-        array_push($excel_data, $excel_data_aux);
+
+if(!empty($concepts)) {
+    foreach ($concepts as $concept) {
+        $output_year = $concept['output_year'];
+        if(!empty($output_year)) {
+            arsort($output_year);
+        }
+        foreach ($output_year as $index => $value) {
+            $excel_data_aux = array();
+            $excel_data_aux[0] = $abstracts_publications_type[$concept['output_type'][$index]];
+            $excel_data_aux[1] = $concept['output_title'][$index];
+            $excel_data_aux[2] = $concept['output_authors'][$index];
+            $excel_data_aux[3] = $concept['output_venue'][$index];
+            $excel_data_aux[4] = $concept['output_year'][$index];
+            $excel_data_aux[5] = $concept['output_citation'][$index];
+            $excel_data_aux[6] = $concept['output_pmcid'][$index];
+            $excel_data_aux[7] = $concept['output_url'][$index];
+            $excel_data_aux[8] = "MR";
+            $excel_data_aux[9] = "H:1";
+            array_push($excel_data, $excel_data_aux);
+        }
     }
 }
 #Regional Content
-foreach ($extra_outputs as $output){
+if(!empty($extra_outputs)) {
+    foreach ($extra_outputs as $output) {
+        $excel_data_aux = array();
+        $excel_data_aux[0] = $abstracts_publications_type[$output['output_type']];
+        $excel_data_aux[1] = $output['output_title'];
+        $excel_data_aux[2] = $output['output_authors'];
+        $excel_data_aux[3] = $output['output_venue'];
+        $excel_data_aux[4] = $output['output_year'];
+        $excel_data_aux[5] = $output['output_citation'];
+        $excel_data_aux[6] = $output['output_pmcid'];
+        $excel_data_aux[7] = $output['output_url'];
 
-    $excel_data_aux = array();
-    $excel_data_aux[0] = $abstracts_publications_type[$output['output_type']];
-    $excel_data_aux[1] = $output['output_title'];
-    $excel_data_aux[2] = $output['output_authors'];
-    $excel_data_aux[3] = $output['output_venue'];
-    $excel_data_aux[4] = $output['output_year'];
-    $excel_data_aux[5] = $output['output_citation'];
-    $excel_data_aux[6] = $output['output_pmcid'];
-    $excel_data_aux[7] = $output['output_url'];
-
-    if($output['producedby_region'] == 2){
-        $excel_data_aux[8] = "MR";
-    }else if($output['producedby_region'] == 1){
-        $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $output['lead_region']));
-        $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
-        $region = "";
-        if($my_region != ""){
-            $region = " (".$my_region.")";
+        if ($output['producedby_region'] == 2) {
+            $excel_data_aux[8] = "MR";
+        } else if ($output['producedby_region'] == 1) {
+            $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $output['lead_region']));
+            $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
+            $region = "";
+            if ($my_region != "") {
+                $region = " (" . $my_region . ")";
+            }
+            $excel_data_aux[8] = "R" . $region;
         }
-        $excel_data_aux[8] = "R".$region;
+        $excel_data_aux[9] = "H:27";
+        array_push($excel_data, $excel_data_aux);
     }
-    $excel_data_aux[9] = "H:27";
-    array_push($excel_data, $excel_data_aux);
 }
-
-
 
 #EXEL SHEET
 $filename = "Outputs- " . date("Y-m-d_hi",time()) . ".xlsx";
