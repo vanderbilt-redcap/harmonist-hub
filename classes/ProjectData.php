@@ -100,7 +100,7 @@ class ProjectData
         return $array;
     }
 
-    public function setDefaultValues($project_id){
+    public function getDefaultValues($project_id){
         $data_dictionary_settings = \REDCap::getDataDictionary($project_id, 'array',false);
         $default_value = array();
         foreach ($data_dictionary_settings as $row) {
@@ -111,10 +111,15 @@ class ProjectData
 
         }
         $this->default_value = $default_value;
+        return $this->default_value[$project_id];
     }
 
-    public function getDefaultValues($project_id){
-        return $this->default_value[$project_id];
+    public static function installDefault($module, $project_id, $event_id, $record){
+        $default_values = new ProjectData;
+        $dv = $default_values->getDefaultValues($project_id);
+        foreach ($dv as $variable=>$value){
+            $module->addProjectToList($project_id, $event_id, $record, $variable, $value);
+        }
     }
 
     public function getHideChoice($project_id){

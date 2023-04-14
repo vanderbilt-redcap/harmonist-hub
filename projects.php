@@ -37,5 +37,4 @@ $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
 $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
 $default_values = new ProjectData;
-$default_values->setDefaultValues($pidsArray['SETTINGS']);
 $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);

@@ -69,7 +69,8 @@ foreach ($projects_array as $index=>$name){
                 \Vanderbilt\HarmonistHubExternalModule\sendEmail("harmonist@vumc.org", "noreply.harmonist@vumc.org", "noreply.harmonist@vumc.org", $subject, $message, "Not in database","New DataTolkit setup needed",$project_id_new);
             }
         }
-
+        #Add the Default values or they get deleted with the saved new record
+        ProjectData::installDefault($module,$project_id_new,$rowtype['event_id'],1);
         \Records::addRecordToRecordListCache($project_id_new, $record,1);
     }else if($name == "HOME"){
         $pidHome = $project_id_new;
@@ -199,6 +200,9 @@ if($pidHome != ""){
 
     $array_repeat_instances[1]['repeat_instances'][$event_id]['quick_links_section'][2] = $aux;
     $results = \REDCap::saveData($pidHome, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+
+    #Add the Default values or they get deleted with the saved new record
+    ProjectData::installDefault($module,$pidHome,$event_id,1);
 }
 
 #Get Projects ID's
