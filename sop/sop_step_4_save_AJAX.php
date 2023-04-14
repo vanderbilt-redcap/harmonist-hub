@@ -171,6 +171,9 @@ $filePath = EDOC_PATH.$storedName;
 $dompdf = new \Dompdf\Dompdf();
 $dompdf->loadHtml($html_pdf);
 $dompdf->setPaper('A4', 'portrait');
+$options = $dompdf->getOptions();
+$options->setChroot(EDOC_PATH);
+$dompdf->setOptions($options);
 ob_start();
 $dompdf->render();
 //#Download option
