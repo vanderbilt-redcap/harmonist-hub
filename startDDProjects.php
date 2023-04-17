@@ -200,9 +200,6 @@ if($pidHome != ""){
 
     $array_repeat_instances[1]['repeat_instances'][$event_id]['quick_links_section'][2] = $aux;
     $results = \REDCap::saveData($pidHome, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
-
-    #Add the Default values or they get deleted with the saved new record
-    ProjectData::installDefault($module,$pidHome,$event_id,1);
 }
 
 #Get Projects ID's
