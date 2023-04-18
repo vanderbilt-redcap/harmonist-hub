@@ -177,6 +177,35 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function cronMethod($cronAttributes){
+        //Only perform actions between 12am and 6am for crons that update at night
+        if($cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
+            $hourRange = 6;
+            if (date('G') > $hourRange) {
+                // Only perform actions between 12am and 6am.
+                return;
+            }
+            $lastRunSettingName = 'last-cron-run-time-'.$cronAttributes['cron_name'];
+            $lastRun = empty($this->getSystemSetting($lastRunSettingName)) ? $this->getSystemSetting($lastRunSettingName) : 0;
+            $hoursSinceLastRun = (time() - $lastRun) / 60 / 60;
+            if ($hoursSinceLastRun < $hourRange) {
+                // We're already run recently
+                return;
+            }
+            if ($cronAttributes['cron_name'] == 'cron_monthly_digest') {
+                if(date('w', strtotime(date('Y-m-d'))) !== '1'){
+                    //It's not Monday
+                    return;
+                }
+                $firstMondayDate = new \DateTime(date());
+                $firstMondayMonth = date("j", strtotime($firstMondayDate->modify('first monday of this month')->format('Y-m-j')));
+                if ($firstMondayMonth != date('j')) {
+                    // We only want it to send on the first Monday of the month
+                    return;
+                }
+            }
+        }
+
+        //Perform cron actions here
         if(APP_PATH_WEBROOT[0] == '/'){
             $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
         }
@@ -203,7 +232,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                             include("crontasks/cron_data_upload_expiration_reminder.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown'][1] != "1" || $settings['deactivate_datahub'][1] != "1")) {
                            include("crontasks/cron_data_upload_notification.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_monthly_digest' && date('w', strtotime(date('Y-m-d'))) === '1') {
+                        } else if ($cronAttributes['cron_name'] == 'cron_monthly_digest') {
                             //Every First Monday of the Month
                             include("crontasks/cron_monthly_digest.php");
                         } else if ($cronAttributes['cron_name'] == 'cron_req_finalized_notification') {
@@ -219,6 +248,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 }
             }
         }
+        $this->setSystemSetting($lastRunSettingName, time());
     }
 
     function hook_every_page_before_render($project_id=null) {
