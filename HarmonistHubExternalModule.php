@@ -248,7 +248,10 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 }
             }
         }
-        $this->setSystemSetting($lastRunSettingName, time());
+
+        if($cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
+            $this->setSystemSetting($lastRunSettingName, time());
+        }
     }
 
     function hook_every_page_before_render($project_id=null) {
