@@ -106,6 +106,7 @@ foreach ($projects_array as $index=>$name){
     #ADD USER PERMISSIONS
     $fields_rights = "project_id, username, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
     $instrument_names = \REDCap::getInstrumentNames(null,$project_id_new);
+    #Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
     $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
     foreach ($userPermission as $user){
         if($user != null && $user != USERID) {
@@ -114,6 +115,7 @@ foreach ($projects_array as $index=>$name){
                 [$project_id_new, $user, 1, 1, 1, 1, 1, 1, $data_entry]);
         }
     }
+
 
     \Records::addRecordToRecordListCache($project_id, $record,1);
     $record++;
@@ -154,7 +156,19 @@ foreach ($projects_array as $index=>$name){
         \Records::addRecordToRecordListCache($project_id, $record,1);
         $record++;
     }
+}
 
+#SET USER PERMISSIONS AS READONLY ON MAIN PROJECT
+$fields_rights = "project_id, username, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
+$instrument_names = \REDCap::getInstrumentNames(null,$project_id);
+#Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
+$data_entry = "[".implode(',2][',array_keys($instrument_names)).",2]";
+foreach ($userPermission as $user){
+    if($user != null && $user != USERID) {
+        $module->query("INSERT INTO redcap_user_rights (" . $fields_rights . ")
+                    VALUES (?,?,?,?,?,?,?,?,?)",
+            [$project_id, $user, 1, 1, 1, 1, 1, 1, $data_entry]);
+    }
 }
 
 #Get Projects ID's
