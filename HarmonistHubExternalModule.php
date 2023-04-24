@@ -45,6 +45,12 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             $link['url'] = $this->getUrl("index.php?NOAUTH");
         }
 
+        #Do not show link unless we are in the main project
+        $hub_mapper = $this->getProjectSetting('hub-mapper');
+        if($hub_mapper != "" && $project_id != $hub_mapper){
+            return false;
+        }
+
         return parent::redcap_module_link_check_display($project_id,$link);
     }
 
