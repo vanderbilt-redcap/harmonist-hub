@@ -41,8 +41,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
         if (count($dd_array) == 1 && $isAdmin && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
             $link['url'] = $this->getUrl("installProjects.php");
-        }else{
-            $link['url'] = $this->getUrl("index.php?NOAUTH");
         }
 
         #Do not show link unless we are in the main project
