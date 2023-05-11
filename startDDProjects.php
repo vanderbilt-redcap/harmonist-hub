@@ -1,9 +1,9 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-
+error_log("startDDProjects");
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
-
+error_log("startDDProjects");
 $project_id = $_REQUEST['pid'];
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');

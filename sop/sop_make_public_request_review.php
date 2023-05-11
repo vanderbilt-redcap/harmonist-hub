@@ -3,7 +3,7 @@ $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
 ?>
 <div class="optionSelect">
     <div style="margin-bottom:5px">
-        <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ss5&record='.$record)?>">&lt; Back to Steps Complete</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ss5&record='.$record?>">&lt; Back to Steps Complete</a>
     </div>
     <h3>Share Data Request for Review</h3>
     <p class="hub-title"><?=$settings['hub_datareq_for_review']?></p>

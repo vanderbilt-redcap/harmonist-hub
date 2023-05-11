@@ -21,7 +21,7 @@ if(($hub_projectname == '' || $hub_profile == '') || (array_key_exists('message'
         <?php include_once("head_scripts.php");?>
         <script>
             var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php'))?>;
-            var indexPage_url = <?=json_encode($module->getUrl('index.php?NOAUTH'))?>;
+            var indexPage_url = <?=json_encode($module->getUrl('index.php')."&NOAUTH")?>;
             var pid = <?=json_encode($pid)?>;
         </script>
     </head>
@@ -53,7 +53,7 @@ if($hub_projectname == '' || $hub_profile == ''){
         <?php include_once("head_scripts.php");?>
         <script>
             var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php'))?>;
-            var indexPage_url = <?=json_encode($module->getUrl('index.php?NOAUTH'))?>;
+            var indexPage_url = <?=json_encode($module->getUrl('index.php')."&NOAUTH")?>;
             var pid = <?=json_encode($pid)?>;
         </script>
     </head>

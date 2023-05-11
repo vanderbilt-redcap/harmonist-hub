@@ -82,7 +82,7 @@ function getFile($module, $project_id, $edoc, $type){
                 $file = $module->getUrl($url);
             }else if($type = "favicon") {
                 $download = \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row['stored_name']."&file=". urlencode($row['doc_name'])."&edoc=".$edoc,'e',"","");
-                $file = $module->getUrl("downloadFile.php?NOAUTH&pid=".$project_id."&code=".$download);
+                $file = $module->getUrl("downloadFile.php")."&NOAUTH&pid=".$project_id."&code=".$download;
             }else{
                 $file = '<br/><div class="inside-panel-content"><a href="'.$module->getUrl($url,true).'" target="_blank"><span class="fa fa-file-o"></span> ' . $row['doc_name'] . '</a></div>';
             }
@@ -105,7 +105,7 @@ function getFileLink($module, $project_id, $edoc, $option, $outer="",$secret_key
             $name = urlencode($row['doc_name']);
 
             $download = \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv);
-            $file_url = $module->getUrl("downloadFile.php?NOAUTH&pid=".$project_id."&code=".$download);
+            $file_url = $module->getUrl("downloadFile.php")."&NOAUTH&pid=".$project_id."&code=".$download;
 
             if($option == ''){
                 $icon = \Vanderbilt\HarmonistHubExternalModule\getFaIconFile($row['file_extension']);
@@ -125,7 +125,7 @@ function getOtherFilesLink($module, $edoc,$id,$user,$secret_key,$secret_iv,$othe
         while ($row = $q->fetch_assoc()) {
             $name = urlencode($row['doc_name']);
             $download = \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&id=".$id."&pid=".$user,'e',$secret_key,$secret_iv);
-            $file_url = $module->getUrl("downloadFile.php?NOAUTH&code=".$download);
+            $file_url = $module->getUrl("downloadFile.php")."&NOAUTH&code=".$download;
 
 
             $file_row = "<a href='".$file_url."'>".\Vanderbilt\HarmonistHubExternalModule\getFaIconFile($row['file_extension']).$other_title."</a>";
@@ -233,9 +233,9 @@ function getReqAssocConceptLink($module, $pidsArray, $assoc_concept, $option="")
         $concept_sheet = $concepts['concept_id'];
         $concept_title = $concepts['concept_title'];
         if($option == '1'){
-            return '<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$assoc_concept).'" target="_blank">'.$concept_sheet.', '.$concept_title.'</a>';
+            return '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$assoc_concept.'" target="_blank">'.$concept_sheet.', '.$concept_title.'</a>';
         }else{
-            return '<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$assoc_concept).'" target="_blank">'.$concept_sheet.'</a>';
+            return '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$assoc_concept.'" target="_blank">'.$concept_sheet.'</a>';
         }
     }
 }
@@ -873,7 +873,7 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
     if($option == '2') {
         $type = '&type=r';
     }
-    $current_req .= '<td '.$width[2].' class="hidden-xs"><a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id'] . $type).'">'.$text.$req['request_title'].'</a></td>';
+    $current_req .= '<td '.$width[2].' class="hidden-xs"><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id'] . $type.'">'.$text.$req['request_title'].'</a></td>';
 
     $current_req_region = '';
     if($option != '2') {
@@ -896,11 +896,11 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
 
         $view_all_votes = "";
         if ($vote_grid == '2') {
-            $url = $module->getUrl("hub/hub_requests_view_all_votes_AJAX.php?NOAUTH");
+            $url = $module->getUrl("hub/hub_requests_view_all_votes_AJAX.php")."&NOAUTH";
             $view_all_votes = '<div><a href="#" onclick="viewAllVotes(' . $req['request_id'] . ',\''.$url.'\');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> All votes</a></div>';
         }
         if ($vote_visibility == '3') {
-            $url = $module->getUrl("hub/hub_requests_view_mixed_votes_AJAX.php?NOAUTH");
+            $url = $module->getUrl("hub/hub_requests_view_mixed_votes_AJAX.php")."&NOAUTH";
             $view_all_votes .= '<div><a href="#" onclick="viewMixedVotes(' . $req['request_id'] . ',' . $current_user['person_region'].',\''.$url.'\');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> Vote Details</a></div>';
         }
         if ($option == 0) {
@@ -915,14 +915,14 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
             } else {
                 if ($req_type != 'home') {
                     if ($current_user['harmonist_regperm'] == 1) {
-                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa fa-eye"></span> View</a></div>';
+                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id'] . '" class="btn btn-primary btn-xs"><span class="fa fa-eye"></span> View</a></div>';
                     } else {
-                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id']) . '" class="btn btn-primary btn-xs"><span class="fa ' . $button_icon . '"></span> ' . $button_text . '</a></div>';
+                        $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id'] . '" class="btn btn-primary btn-xs"><span class="fa ' . $button_icon . '"></span> ' . $button_text . '</a></div>';
                     }
                 }
             }
         } else {
-            $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id']) . '" class="btn btn-default btn-xs actionbutton"><span class="fa fa-eye"></span> View/Edit</a></div>';
+            $current_req .= '<td ' . $width[0] . '>' . $view_all_votes . '<div><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $req['request_id'] . '" class="btn btn-default btn-xs actionbutton"><span class="fa fa-eye"></span> View/Edit</a></div>';
         }
     }else {
         if ($req['reviewer_id'] != ''){
@@ -1155,7 +1155,7 @@ function getFileRow($module,$edoc, $contact_name, $text, $datetime,$secret_key,$
     if($edoc != "") {
         $q = $module->query("SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
         while ($row = $q->fetch_assoc()) {
-            $file_row = "<td><a href='".$module->getUrl('downloadFile.php?NOAUTH&code='. \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row['stored_name'] . "&file=" . urlencode($row['doc_name']) . "&edoc=" . $edoc . "&pid=" . $user . "&id=" . $lid, 'e', $secret_key, $secret_iv) ). "' target='_blank'>" . $row['doc_name'] . "</a></td>";
+            $file_row = "<td><a href='".$module->getUrl('downloadFile.php').'&NOAUTH&code='. \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row['stored_name'] . "&file=" . urlencode($row['doc_name']) . "&edoc=" . $edoc . "&pid=" . $user . "&id=" . $lid, 'e', $secret_key, $secret_iv). "' target='_blank'>" . $row['doc_name'] . "</a></td>";
             $file_row .= "<td>" . $text . "</td>";
             $file_row .= "<td>" . $contact_name . "</td>";
             $file_row .= "<td>" . $datetime . "</td>";
@@ -1326,7 +1326,7 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
         $data .= "<td><div style='text-align: center'>" . $array_dates['text'] . "</div><div>" . $array_dates['button'] . "</div></td>";
     } else if ($type == "p") {
         if ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id']) {
-            $buttons .= '<div><a href="'.$module->getUrl('index.php?NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ss1&record=' . $sop['record_id'] . '&step=3').'" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
+            $buttons .= '<div><a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ss1&record=' . $sop['record_id'] . '&step=3'.'" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
         }
         if ($isAdmin || $harmonist_perm) {
             $buttons .= '<div style="padding-top: 8px"><a href="#" onclick="confirmMakePrivate(\'' . $sop['record_id'] . '\')" class="btn btn-default btn-xs"><i class="fa fa-thumb-tack" aria-hidden="true"></i> Make private</a></div>';
@@ -1336,7 +1336,7 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
     } else if ($type == 'm') {
         $buttons = '';
         if ($isAdmin || $harmonist_perm || $sop['sop_hubuser'] == $current_user['record_id'] || $sop['sop_creator'] == $current_user['record_id'] || $sop['sop_creator2'] == $current_user['record_id'] || $sop['sop_datacontact'] == $current_user['record_id']) {
-            $buttons .= '<div><a href="'.$module->getUrl('index.php?NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ss1&record=' . $sop['record_id'] . '&step=3').'" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
+            $buttons .= '<div><a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ss1&record=' . $sop['record_id'] . '&step=3'.'" class="btn btn-primary btn-xs " target="_blank" style="color:#fff"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></div>';
         }
 
         if ($sop['sop_visibility'] == '2') {
@@ -1362,7 +1362,7 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
         $file_data = " | ".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $sop['sop_finalpdf'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
     }
 
-    $data .=    "<td><div><strong>" . $concept_id . "</strong> ".$sop_visibility."</div><div>" . $concept_title . "</div><div><em>Draft ID: ".$sop['record_id']."</em></div><div></div><a href='".$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=sop&record=".$sop['record_id'].$url)."'>Data Request </a> | <a href='".$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=ttl&record=".$sop['sop_concept_id'])."'>".$concept_id." Concept</a>".$file_data."</td>" .
+    $data .=    "<td><div><strong>" . $concept_id . "</strong> ".$sop_visibility."</div><div>" . $concept_title . "</div><div><em>Draft ID: ".$sop['record_id']."</em></div><div></div><a href='".$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=sop&record=".$sop['record_id'].$url."'>Data Request </a> | <a href='".$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=ttl&record=".$sop['sop_concept_id'])."'>".$concept_id." Concept</a>".$file_data."</td>" .
         "<td style='width:168px'>" . $contact_person . "</td>" .
         $status_row.
         "<td ".$width.">" . $button_votes.$buttons . "</td>" .

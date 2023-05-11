@@ -70,7 +70,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 </script>
 <?php
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
-$url = json_encode($module->getUrl('sop/sop_step_1_save_AJAX.php?NOAUTH'));
+$url = json_encode($module->getUrl('sop/sop_step_1_save_AJAX.php').'&NOAUTH');
 if($record != ''){?>
     <script>
         $(document).ready(function () {

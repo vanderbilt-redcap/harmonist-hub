@@ -41,7 +41,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=adm')?>">< Back to Admin</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=adm'?>">< Back to Admin</a>
     </div>
     <h3>Hub Users</h3>
     <p class="hub-title">All Hub users with "active" status are listed. To change a user's access level, grant or remove permissions, or deactivate a user account, click on the user's REDCap icon to edit the settings in REDCap (requires REDCap login.) To create a new user or to activate an inactive user account, <a href="<?= APP_PATH_WEBROOT_ALL.'DataEntry/record_status_dashboard.php?pid='.$pidsArray['PEOPLE']?>" target="_blank">log in to REDCap directly</a>.</p>
@@ -138,7 +138,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             '<td>' . $harmonist_regperm[$people['harmonist_regperm']] . '</td>' .
                             '<td>' . $harmonist_perm_text . '</td>' .
                             '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>'.
-                            '<td style="text-align: center;"><div><a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hra&record='.$login['record_id']).'" class="btn btn-primary btn-xs actionbutton"><i class="fa fa-user fa-fw" aria-hidden="true"></i> View Activity</a></div></td>';
+                            '<td style="text-align: center;"><div><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hra&record='.$login['record_id'].'" class="btn btn-primary btn-xs actionbutton"><i class="fa fa-user fa-fw" aria-hidden="true"></i> View Activity</a></div></td>';
 
                     }
                 }else{?>

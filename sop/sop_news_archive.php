@@ -152,7 +152,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a>
     </div>
     <h3>News Archive</h3>
     <p class="hub-title"><?=$settings['hub_news_archive_text']?></p>

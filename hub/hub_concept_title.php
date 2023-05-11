@@ -115,7 +115,7 @@ if($concept['revised_y'][0] == '1'){
 <div class="container">
     <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;display: none;" id="succMsgContainer">If you've made any changes, they have been saved.</div>
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=cpt')?>">< Back to Concepts</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=cpt'?>">< Back to Concepts</a>
     </div>
     <?php if($concept != "") {?>
     <h3 class="concepts-title-title"><?=$concept['concept_id']?></h3>
@@ -324,10 +324,10 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <?php
                 if(!empty($row_concept_file['doc_name'])) {
                     $extension = ($row_concept_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
-                    $pdf_path = $module->getUrl("loadPDF.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&edoc=".$concept["concept_file"]."#page=1&zoom=100");
+                    $pdf_path = $module->getUrl("loadPDF.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&edoc=".$concept["concept_file"]."#page=1&zoom=100";
 
                     $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
-                    $download_link = $module->getUrl("downloadFile.php?NOAUTH&code=".\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv));
+                    $download_link = $module->getUrl("downloadFile.php")."&NOAUTH&code=".\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv);
                     ?>
                     <span style="float: right;padding-right: 15px;"><?=$file_icon;?></span>
                     <a href="<?=$download_link?>" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>

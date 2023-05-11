@@ -43,7 +43,7 @@ if($request !="") {
     if (!empty($request['assoc_concept'])) {
         $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $request['assoc_concept']));
         $concept_sheet = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
-        $concept = '<a href="i'.$module->getUrl('index.php?NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $request['assoc_concept']) . '" target="_blank">' . $concept_sheet . '</a>';
+        $concept = '<a href="i'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $request['assoc_concept'] . '" target="_blank">' . $concept_sheet . '</a>';
     }else if($request['mr_temporary'] != ""){
         $concept = $request['mr_temporary'];
     }
@@ -120,9 +120,9 @@ if($request !="") {
     <div class="backTo">
         <?php
         if($_REQUEST['type'] != "" && $_REQUEST['type'] == 'r'){ ?>
-            <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mrr')?>">< Back to Rejected Requests Archive</a>
+            <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mrr'?>">< Back to Rejected Requests Archive</a>
         <?php }else{ ?>
-            <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub')?>">< Back to Dashboard</a>
+            <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub'?>">< Back to Dashboard</a>
         <?php }
         ?>
 
@@ -242,7 +242,7 @@ if($request !="") {
                                     $response_pi_level = 1;
                                 }
                                 ?>
-                                <button type="button" class="btn btn-default btn-save" onclick='save_votes(<?=json_encode($current_user['record_id'])?>,<?=json_encode($current_user['person_region'])?>,<?=json_encode($response_pi_level)?>,<?=json_encode($module->getUrl('hub/hub_request_admin_vote_AJAX.php?NOAUTH'))?>)' data-dismiss="modal">Save</button>
+                                <button type="button" class="btn btn-default btn-save" onclick='save_votes(<?=json_encode($current_user['record_id'])?>,<?=json_encode($current_user['person_region'])?>,<?=json_encode($response_pi_level)?>,<?=json_encode($module->getUrl('hub/hub_request_admin_vote_AJAX.php').'&NOAUTH')?>)' data-dismiss="modal">Save</button>
                             </div>
                         </div>
                     </div>
@@ -289,7 +289,7 @@ if($request !="") {
                     }
                 }
                 ?>
-                <button onclick="follow_activity('<?=$follow_option?>','<?=$current_user['record_id']?>','<?=$request['request_id']?>','<?=$module->getUrl('hub/hub_request_follow_activity_AJAX.php?NOAUTH')?>')" class="btn <?=$follow_class?> actionbutton"><i class="<?=$follow_icon_class?>"></i> <span class="hidden-xs"><?=$follow_text?></span></button>
+                <button onclick="follow_activity('<?=$follow_option?>','<?=$current_user['record_id']?>','<?=$request['request_id']?>','<?=$module->getUrl('hub/hub_request_follow_activity_AJAX.php').'&NOAUTH'?>')" class="btn <?=$follow_class?> actionbutton"><i class="<?=$follow_icon_class?>"></i> <span class="hidden-xs"><?=$follow_text?></span></button>
             </div>
         </div>
 

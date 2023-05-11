@@ -56,9 +56,9 @@ $upload_type = $module->getChoiceLabels('upload_type', $pidsArray['FILELIBRARY']
     <div class="backTo">
         <?php
         if($_REQUEST['type'] == "home") {
-            ?><a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'])?>">< Back to Home</a><?php
+            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS']?>">< Back to Home</a><?php
         }else{
-            ?><a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a><?php
+            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a><?php
         }
 
         ?>

@@ -114,7 +114,7 @@ $help_category = $module->getChoiceLabels('help_category', $pidsArray['FAQ']);
                         if ($faq['help_image'] != '') {
                             $q = $module->query("SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id = ?",[$faq['help_image']]);
                             while ($row = $q->fetch_assoc()) {
-                                echo '</br><div><img src="'.$module->getUrl('downloadFile.php?NOAUTH&code='.\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row['stored_name']."&file=". urlencode($row['doc_name']),'e',$secret_key,$secret_iv)) . '" style="display: block; margin: 0 auto;" alt="Image"></div>';
+                                echo '</br><div><img src="'.$module->getUrl('downloadFile.php').'&NOAUTH&code='.\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row['stored_name']."&file=". urlencode($row['doc_name']),'e',$secret_key,$secret_iv) . '" style="display: block; margin: 0 auto;" alt="Image"></div>';
                             }
                         }
 

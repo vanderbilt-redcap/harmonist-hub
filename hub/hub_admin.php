@@ -53,7 +53,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
     ?>
     <div class="pull-right">
-        <p><a href="<?=$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mts")?>">View Hub Statistics</a> | <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=mra&type=a")?>">View Archived Requests</a></p>
+        <p><a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mts"?>">View Hub Statistics</a> | <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=mra&type=a")?>">View Archived Requests</a></p>
     </div>
 </div>
 <div class="container">
@@ -108,7 +108,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                     <td><span class="nowrap">'.$req['requestopen_ts'].'</span></td>
                                     <td><strong>'.$request_type_label[$req['request_type']].'</strong><br>'.$concept_link.'</td>
                                     <td><a href="mailto:'.$req['contact_email'].'">'.$req['contact_name'].'</a>'.$region.'</td>
-                                    <td class="hidden-xs"><a href="'.$module->getUrl('index.php?NOAUTH&option=hub&record='.$req['request_id']).'" target="_blank">'.$req['request_title'].'</a></td>';
+                                    <td class="hidden-xs"><a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub&record='.$req['request_id'].'" target="_blank">'.$req['request_title'].'</a></td>';
 
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "request", "");
                             $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
@@ -225,7 +225,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                 '<td><div><strong><span class="fa fa-user fa-square  ' . $abstracts_publications_badge_text[$req['request_type']] . '"></span> ' . $request_type_label[$req['request_type']] . '</strong> (' . $req_type . ')</div>' .
                                 '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . $region . '</div>' .
                                 '<div style="padding-top:5px;">Due on: ' . $array_dates['text'] . '</div></td>' .
-                                '<td><a href="'.$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id']) . '" target="_blank">' . $req['request_title'] . '</a></td>' .
+                                '<td><a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id'] . '" target="_blank">' . $req['request_title'] . '</a></td>' .
                                 '<td><div>' . $finalize_review . '</div></td>' .
                                 '<td><div>' . $request_docs . '</div></td>' .
                                 '<td><div>' . $assign_mr . '</div></td>' .
@@ -337,7 +337,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                 '<td><div><strong><span class="fa fa-user fa-square  ' . $abstracts_publications_badge_text[$req['request_type']] . '"></span> ' . $request_type_label[$req['request_type']] . '</strong> (' . $req_type . ')</div>' .
                                 '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . $region . '</div>' .
                                 '<div style="padding-top:5px;">Completed on: ' . $req['workflowcomplete_d'] . '</div></td>' .
-                                '<td><a href="'.$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id']) . '" target="_blank">' . $req['request_title'] . '</a></td>' .
+                                '<td><a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id'] . '" target="_blank">' . $req['request_title'] . '</a></td>' .
                                 '<td><div>' . $finalize_review . '</div></td>' .
                                 '<td><div>' . $request_docs . '</div></td>' .
                                 '<td><div>' . $assign_mr . '</div></td>' .
@@ -496,7 +496,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                 <div class="panel-heading">
                     <h3 class="panel-title">
                         Hub Users
-                        <a href="<?=$module->getUrl('index.php?NOAUTH&option=usr')?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=usr'?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                     </h3>
                 </div>
 

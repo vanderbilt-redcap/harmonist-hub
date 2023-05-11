@@ -1,17 +1,17 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$back_button = '<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS']).'">< Back to Home</a>';
+$back_button = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'">< Back to Home</a>';
 
 $person_name = "";
 if($_REQUEST['type'] != ""){
     if($_REQUEST['type'] == 'h'){
         $person_name = $name;
-        $back_button = '<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS']).'">< Back to Home</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'">< Back to Home</a>';
     }else if($_REQUEST['type'] == 'r'){
-        $back_button = '<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub').'">< Back to Requests</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub'.'">< Back to Requests</a>';
     }else if($_REQUEST['type'] == 'a'){
-        $back_button = '<a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=adm').'">< Back to Admin</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=adm'.'">< Back to Admin</a>';
     }
 }
 ?>
@@ -68,7 +68,7 @@ if($_REQUEST['type'] != ""){
     <br>
     <?php if($isAdmin){?>
     <div class="pull-right">
-        <p><a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mrr&type=a')?>">View Rejected & Deactivated Requests</a></p>
+        <p><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mrr&type=a'?>">View Rejected & Deactivated Requests</a></p>
     </div>
     <?php }?>
     <div class="optionSelect conceptSheets_optionMenu">

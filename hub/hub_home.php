@@ -140,7 +140,7 @@ if(!empty($homepage)) {
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <a href="<?=$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub")?>" title="open requests" class="home_openrequests_link"><span class="badge label-default" style="float: right;"><?=$numberOfOpenRequest?></span></a>
+                            <a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub"?>" title="open requests" class="home_openrequests_link"><span class="badge label-default" style="float: right;"><?=$numberOfOpenRequest?></span></a>
                             Open Requests</h3>
 
                     </div>
@@ -155,7 +155,7 @@ if(!empty($homepage)) {
                                $total_colors = count($requests_values) - count($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']);
                                $color = \Vanderbilt\HarmonistHubExternalModule\getGradientColor("777777","003D99",$total_colors,$i);
                                echo '<li class="list-group-item">
-                                        <a href="'.$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&type=1").'" title="concept sheets" class="home_openrequests_link">
+                                        <a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&type=1".'" title="concept sheets" class="home_openrequests_link">
                                         <span class="badge" style="background-color:'.$color.'">'.$open_req_value.'</span>
                                         </a>
                                         '.$label.'
@@ -230,7 +230,7 @@ if(!empty($homepage)) {
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">My Requests
-                    <a href="<?=$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mra&type=h")?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mra&type=h"?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <div class="table-responsive">
@@ -274,7 +274,7 @@ if(!empty($homepage)) {
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Recent Activity
-                    <a href="<?=$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hra")?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hra"?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <ul class="list-group">
@@ -301,7 +301,7 @@ if(!empty($homepage)) {
                                 if ($comment['author_revision_y'] == '1') {
                                     echo '<i class="fa fa-fw fa-file-text-o text-success" aria-hidden="true"></i>' .
                                         '<span class="time"> ' . $time . '</span> ' .
-                                        '<strong>' . $name . '</strong> submitted a <b>revision</b> for <a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id']) . '" target="_blank">' . $title . '</a>';
+                                        '<strong>' . $name . '</strong> submitted a <b>revision</b> for <a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id'] . '" target="_blank">' . $title . '</a>';
                                 } else{
                                     $text = '<span class="time"> ' . $time . '</span> <strong>' . $name . '</strong> submited a ';
                                     $itemcount = 0;
@@ -328,7 +328,7 @@ if(!empty($homepage)) {
                                         $text .= '<strong>vote</strong>';
                                     }
 
-                                    echo $icon.$text.' for <a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id']).'" target="_blank">' . $title . '</a>';
+                                    echo $icon.$text.' for <a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id'].'" target="_blank">' . $title . '</a>';
                                 }
                                 echo '</li>';
                                 $i++;
@@ -367,7 +367,7 @@ if(!empty($homepage)) {
             </div>
             <div class="stat-table-outer" aria-expanded="true">
                 <div style="padding-bottom: 10px;text-align: left;"><?=$settings['hub_active_shortcut']?></div>
-                <div style="text-align: center;"><a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd')?>" class="btn btn-default">View Data Calls</a></div>
+                <div style="text-align: center;"><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'?>" class="btn btn-default">View Data Calls</a></div>
             </div>
         </div>
         <?php } ?>
@@ -377,7 +377,7 @@ if(!empty($homepage)) {
                 <h3 class="panel-title panelHeight">
                     <span class="col-sm-6" style="padding:0">Hub Metrics</span>
                     <?php if($settings['deactivate_metrics'][1] != "1" || $isAdmin){ ?>
-                        <span class="col-sm-6" style="text-align:right;padding:0"><a href="<?=$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mts")?>">View more</a></span>
+                        <span class="col-sm-6" style="text-align:right;padding:0"><a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mts"?>">View more</a></span>
                     <?php } ?>
                 </h3>
             </div>
@@ -400,7 +400,7 @@ if(!empty($homepage)) {
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Calendar
-                    <span style="float: right"><a href="<?=$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=cal")?>">View more</a></span>
+                    <span style="float: right"><a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=cal"?>">View more</a></span>
                 </h3>
             </div>
             <div class="stat-table-outer" aria-expanded="true">

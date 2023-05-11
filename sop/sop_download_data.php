@@ -35,7 +35,7 @@ foreach ($request_DU as $down){
 </script>
 <div class="optionSelect">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a>
     </div>
     <div class="optionSelect">
         <h3>Retrieve Data</h3>
@@ -85,7 +85,7 @@ foreach ($request_DU as $down){
 
 
 
-                $concept_header = '<a href="'.$module->getUrl('index.php?NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $concept_id) . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_sheet . '</a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . '</a>';
+                $concept_header = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $concept_id . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_sheet . '</a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . '</a>';
                 $concept_header = $concept_sheet . ' | Data Request #' . $sop_id;
 
                 $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1');
@@ -121,7 +121,7 @@ foreach ($request_DU as $down){
                         $buttons = "";
                         if ($data_up['deleted_y'] != '1' && strtotime ($expire_date) >= strtotime(date('Y-m-d'))) {
                             $downloads_active++;
-                            $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&code=' . \Vanderbilt\HarmonistHubExternalModule\getCrypt("id=". $data_up['record_id']."&pid=".$user,'e',$secret_key,$secret_iv) ). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
+                            $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&code=' . \Vanderbilt\HarmonistHubExternalModule\getCrypt("id=". $data_up['record_id']."&pid=".$user,'e',$secret_key,$secret_iv). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
                         } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != ""){
                             if($data_up['deletion_type'] == '2'){
                                 $RecordSetPeopleDelete = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $data_up['deletion_hubuser']));
@@ -169,7 +169,7 @@ foreach ($request_DU as $down){
                 <div id="collapse_concept_' . $concept_id . $sop_id . '" class="panel-collapse collapse" aria-expanded="true">
                     <table class="table table_requests sortable-theme-bootstrap">
                         <div class="row request">
-                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Title: </strong><a href="'.$module->getUrl('index.php?NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept_id) . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_title . ' <i class="fa fa-external-link"></i></a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . ' <i class="fa fa-external-link"></i></a></div>
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Title: </strong><a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept_id . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_title . ' <i class="fa fa-external-link"></i></a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . ' <i class="fa fa-external-link"></i></a></div>
                         </div>
                         <div class="row request">
                             <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Contact: </strong>' . $contact_concept_person . '</div>

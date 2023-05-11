@@ -73,14 +73,14 @@ $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-
         <div class="well centerwell data_boxes">
             <i class="fa fa-2x fa-fw fa-bullhorn" aria-hidden="true"></i>
             <div class="welltitle"><strong>Request</strong> <?=$settings['hub_name']?> data for your approved concept</div>
-            <a href="<?=$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=smn");?>" class="btn btn-primary">Create Data Request</a>
+            <a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=smn";?>" class="btn btn-primary">Create Data Request</a>
         </div>
     </div>
     <div class="col-sm-3">
         <div class="well centerwell data_boxes">
             <i class="fa fa-2x fa-fw fa-cloud-upload" aria-hidden="true"></i>
             <div class="welltitle"><strong>Check and submit</strong> data for an active data call</div>
-            <a href="<?=$module->getUrl("index.php?NOAUTH&pid=".$pidsArray['PROJECTS']."&option=upd");?>" class="btn btn-success">View Data Calls <span class="badge" style="padding: 2px 6px;"><?=$open_data_calls?></span></a>
+            <a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=upd";?>" class="btn btn-success">View Data Calls <span class="badge" style="padding: 2px 6px;"><?=$open_data_calls?></span></a>
         </div>
     </div>
     <?php
@@ -109,7 +109,7 @@ if($settings['deactivate_datadown'][1] != "1"){
     ?>
 <div class="hidden-xs" style="margin-bottom: 20px;"></div>
 <div class="modal fade" id="modal-data-download-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
-    <form class="form-horizontal" action="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dnd')?>" method="post" id='dataDownloadForm'>
+    <form class="form-horizontal" action="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dnd'?>" method="post" id='dataDownloadForm'>
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -212,7 +212,7 @@ if($settings['deactivate_datadown'][1] != "1"){
             <div class="panel-heading" style="border: none;">
                 <h3 class="panel-title">
                     Data News
-                    <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dna&type=1')?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dna&type=1'?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <div id="collapse3" class="table-responsive panel-collapse collapse in" aria-expanded="true">
@@ -258,7 +258,7 @@ if($settings['deactivate_datadown'][1] != "1"){
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Recent Data Activity
-                    <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sra')?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sra'?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <ul class="list-group">
@@ -286,7 +286,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                                 if ($recent_activity['author_revision_y'] == '1') {
                                     echo '<i class="fa fa-fw fa-file-text-o text-success" aria-hidden="true"></i>' .
                                         '<span class="time"> ' . $time . '</span> ' .
-                                        '<strong>' . $name . '</strong> submitted a <strong>revision</strong> for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id']) . '" target="_blank">'.$title . '</a>';
+                                        '<strong>' . $name . '</strong> submitted a <strong>revision</strong> for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.$title . '</a>';
                                 } else{
                                     $text = '<span class="time"> ' . $time . '</span> <strong>' . $name . '</strong> submited a ';
                                     $itemcount = 0;
@@ -305,7 +305,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                                         $text .= '<strong>file</strong>';
                                     }
 
-                                    echo $icon.$text.' for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id']) . '" target="_blank">'.$title . '</a>';
+                                    echo $icon.$text.' for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.$title . '</a>';
                                 }
                                 echo '</li>';
                                 $i++;
@@ -359,7 +359,7 @@ if($settings['deactivate_datadown'][1] != "1"){
     </div>
     <div class="col-sm-3">
         <div class="list-group">
-            <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=lgd')?>" style="cursor:pointer" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=lgd'?>" style="cursor:pointer" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
                         <span style="float:left;font-weight: bold">Data Log</span>
@@ -399,7 +399,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                 </div>
             </a>
             <?php if($settings['deactivate_tblcenter'][1] != "1"){?>
-            <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=tbl')?>" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=tbl'?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
                         <span style="float:left;font-weight: bold">tblCENTER</span>
@@ -418,7 +418,7 @@ if($settings['deactivate_datadown'][1] != "1"){
             <?php } ?>
 
             <?php if($settings['deactivate_datametrics'][1] != "1" || $isAdmin){?>
-            <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mth')?>" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mth'?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div style="display: inline-block;width: 50%;vertical-align:top;padding-right:5px">
                     <div style="font-weight:bold; padding-bottom:20px">
                         Hub Stats
@@ -431,7 +431,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                 </div>
             </a>
             <?php } ?>
-            <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ofs')?>" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ofs'?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
                         <span style="float:left;font-weight: bold">Document Library</span>

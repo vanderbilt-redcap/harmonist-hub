@@ -4,7 +4,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once(dirname(dirname(__FILE__))."/classes/UnitTestFunctions.php");
 
 $project_id = (int)$_GET['pid'];
-$url = json_encode($module->getUrl("hub/hub_unit_test_AJAX.php?NOAUTH&pid=".$project_id));
+$url = json_encode($module->getUrl("hub/hub_unit_test_AJAX.php")."&NOAUTH&pid=".$project_id);
 
 ?>
 <h3>Unit Testing</h3>

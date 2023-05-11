@@ -126,7 +126,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                 if(window.location.href.match(/(&del=)([0-9a-zA-Z]{32})/)){
                     refresh_url = window.location.href.replace( /(&del=)([0-9a-zA-Z]{32})/, '' );
                 }
-                CallAJAXAndShowMessage("&deletion_rs="+$('#dataUpReason').val()+'&code='+$('#deleted_record').val(),<?=json_encode($module->getUrl('hub/aws/AWS_deleteFile.php?NOAUTH'))?>,'D',refresh_url);
+                CallAJAXAndShowMessage("&deletion_rs="+$('#dataUpReason').val()+'&code='+$('#deleted_record').val(),<?=json_encode($module->getUrl('hub/aws/AWS_deleteFile.php').'&NOAUTH')?>,'D',refresh_url);
             }
             return false;
         });
@@ -148,11 +148,11 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
         }
 
         if($_REQUEST['type'] == "upload") {
-            ?><a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd')?>">< Back to Submit Data</a><?php
+            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'?>">< Back to Submit Data</a><?php
         }else if($datareq_id != "") {
-            ?><a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record='.$datareq_id.'&type=s')?>">< Back to Data Request</a><?php
+            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record='.$datareq_id.'&type=s'?>">< Back to Data Request</a><?php
         }else{
-            ?><a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat')?>">< Back to Data</a><?php
+            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a><?php
         }
         ?>
     </div>

@@ -51,7 +51,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php?NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd')?>">< Back to Submit Data</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'?>">< Back to Submit Data</a>
     </div>
     <h3>Data Call Archive</h3>
     <p class="hub-title"><?=$settings['hub_datacall_archive']?></p>
