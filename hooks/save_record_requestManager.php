@@ -63,6 +63,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $jsonRM = json_encode($arrayRM);
     $results = \Records::saveData($project_id, 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 }else if($instrument == 'tracking_number_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
+    error_log('tracking_number_assignment_survey');
     $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', array('record_id' => '1'));
     $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
 
@@ -76,7 +77,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $concept_id = $this->framework->addAutoNumberedRecord($pidsArray['HARMONIST']);
         $arrayConcepts = array(array('record_id' => $concept_id));
         $arrayConcepts[0]['lastupdate_d'] = $last_update;
-        $arrayConcepts[0]['active_y'] = "1";
+        $arrayConcepts[0]['active_y'] = "Y";
         $arrayConcepts[0]['concept_id'] = $request['mr_assigned'];
         $arrayConcepts[0]['concept_title'] = $request['request_title'];
         $arrayConcepts[0]['contact_link'] = $request['contactperson_id'];
