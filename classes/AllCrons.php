@@ -984,7 +984,7 @@ class AllCrons
             if (!empty($projectData)) {
                 $jsoncopyPID = $pidsArray['JSONCOPY'];
                 $sqltype = "SELECT record as record FROM redcap_data WHERE project_id='".db_escape(IEDEA_JSONCOPY)."' AND field_name='".db_escape('type')."' and value='".db_escape($type)."' order by record";
-                while($rowtype[] = $qtype->fetch_assoc());
+                while($rowtype[] = $sqltype->fetch_assoc());
                 $maxRecord = max(array_column($rowtype, 'record'));
 
                 $RecordSetJsonCopy = \REDCap::getData($jsoncopyPID, 'array', array('record_id' => $maxRecord));
