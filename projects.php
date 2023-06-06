@@ -35,7 +35,8 @@ $secret_iv="";
 
 $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
 $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
-$settings["hub_name"] = htmlentities($settings["hub_name"],ENT_QUOTES);
+#Escape name just in case they add quotes
+$settings["hub_name"] = json_encode($settings["hub_name"]);
 
 $default_values = new ProjectData;
 $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
