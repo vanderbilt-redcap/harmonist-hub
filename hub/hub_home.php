@@ -103,7 +103,7 @@ if(!empty($homepage)) {
     }else{
         echo '<div class="alert alert-info"><ul class="fa-ul"><li><i class="fa-li fa fa-bell-o"></i>No Announcements. ';
         if($isAdmin){
-            echo '<a href="#" onclick="javascript:iframemessage(\'F\');$(\'#announcements_survey\').modal(\'show\');" style="cursor: pointer;font-weight: bold">Create NEW.</a> <a href="#" onclick="javascript:$(\'#announcements_survey\').modal(\'show\');" style="cursor: pointer"><span class="fa fa-cog" style="float: right;padding-right: 10px;"></span></a>';
+            echo '<a href="#" onclick="javascript:$(\'#announcements_survey\').modal(\'show\');" style="cursor: pointer;font-weight: bold">Create NEW.</a> <a href="#" onclick="javascript:$(\'#announcements_survey\').modal(\'show\');" style="cursor: pointer"><span class="fa fa-cog" style="float: right;padding-right: 10px;"></span></a>';
         }
         echo '</li></ul></div>';
     }
