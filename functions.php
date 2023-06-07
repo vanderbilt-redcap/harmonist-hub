@@ -500,9 +500,6 @@ function returnJSONCopyVersion($type, $jsoncopyID){
 function numberOfOpenRequest($request,$instance){
     $number=0;
     foreach ($request as $req) {
-        if ($instance == 1) {
-            $instance = '';
-        }
         if(is_array($req['region_response_status'])) {
             if ($req['finalize_y'] == "" && ($req['region_response_status'][$instance] == 0 || $req['region_response_status'][$instance] == 1)) {
                 $number++;
