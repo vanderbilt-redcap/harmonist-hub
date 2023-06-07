@@ -1012,7 +1012,7 @@ function getArchiveHTML($module,$pidsArray,$req,$request_type_label,$person_regi
 
     $current_req .= $current_req_region;
 
-    $current_req .= '<td><div><a href="index.php?option=hub&record=' . $req['request_id'] . '" class="btn btn-default btn-xs actionbutton">View/Edit</a></div>';
+    $current_req .= '<td><div><a href="'.$module->getUrl('index.php').'&NOAUTH&record='.$req['request_id'].'&option=hub'.'" class="btn btn-default btn-xs actionbutton">View/Edit</a></div>';
     $current_req .= '</td>';
 
     return $current_req;
