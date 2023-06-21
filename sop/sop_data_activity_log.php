@@ -76,9 +76,9 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 
         var person_name = <?=json_encode($person_name)?>;
         if(person_name != "" && person_name != null){
-            $('#table_archive').dataTable( {"pageLength": 50,"order": [0, "desc"],"oSearch": {"sSearch": person_name}, "deferRender": true});
+            $('#table_archive').dataTable( {"pageLength": 50,"order": [0, "desc"],"oSearch": {"sSearch": person_name}});
         }else{
-            $('#table_archive').dataTable( {"pageLength": 50,"order": [0, "desc"], "deferRender": true});
+            $('#table_archive').dataTable( {"pageLength": 50,"order": [0, "desc"]});
         }
 
         $('#table_archive_filter').appendTo( '#options_wrapper' );
