@@ -221,7 +221,7 @@ $pidsArray = REDCapManagement::getPIDsArray($project_id);
 
 #We must clear the project cache so our updates are pulled from the DB.
 $module->clearProjectCache();
-
+error_log("HARMONIST HUB - after clear cache ".time());
 #Upload SQL fields to projects
 $projects_array_sql = array(
     $pidsArray['DATAMODEL']=>array(
@@ -566,10 +566,11 @@ $projects_array_sql = array(
         )
     )
 );
-
+error_log("HARMONIST HUB - after creating array ".time());
 foreach ($projects_array_sql as $projectid=>$projects){
     foreach ($projects as $varid=>$options){
         foreach ($options as $optionid=>$value){
+            error_log("HARMONIST HUB - SLQ: ".$projectid.", ".$varid.", ".$optionid." ".time());
             if($optionid == 'query') {
                 $module->query("UPDATE redcap_metadata SET element_enum = ? WHERE project_id = ? AND field_name=?",[$value,$projectid,$varid]);
             }
@@ -582,6 +583,7 @@ foreach ($projects_array_sql as $projectid=>$projects){
         }
     }
 }
+error_log("HARMONIST HUB - after SQL loop ".time());
 
 echo json_encode(array(
         'status' =>'success'
