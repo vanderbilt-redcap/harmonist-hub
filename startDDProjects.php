@@ -1,9 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-error_log("startDDProjects");
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
-error_log("startDDProjects");
+
 $project_id = $_REQUEST['pid'];
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
@@ -75,7 +74,6 @@ foreach ($projects_array as $index=>$name){
     }else if($name == "HOME"){
         $pidHome = $project_id_new;
     }
-
     #Add Repeatable projects
     foreach($projects_array_repeatable[$index] as $repeat_event){
         if($repeat_event['status'] == 1){
@@ -86,7 +84,6 @@ foreach ($projects_array as $index=>$name){
             }
         }
     }
-
     #enable modules in projects
     if($projects_array_hooks[$index] == '1') {
         #enable current module to activate hooks
@@ -116,7 +113,6 @@ foreach ($projects_array as $index=>$name){
         }
     }
 
-
     \Records::addRecordToRecordListCache($project_id, $record,1);
     $record++;
 
@@ -145,6 +141,7 @@ foreach ($projects_array as $index=>$name){
             }
         }
     }
+
     #We add the analytics
     if($index == 1){
         $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'record_id', $record);
@@ -159,16 +156,15 @@ foreach ($projects_array as $index=>$name){
 }
 error_log("HARMONIST HUB - SET USER PERMISSIONS AS READONLY ON MAIN PROJECT ".time());
 #SET USER PERMISSIONS AS READONLY ON MAIN PROJECT
-$fields_rights = "project_id, username, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
+$fields_rights = "data_entry";
 $instrument_names = \REDCap::getInstrumentNames(null,$project_id);
 #Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
 $data_entry = "[".implode(',2][',array_keys($instrument_names)).",2]";
 foreach ($userPermission as $user){
     if($user != null && $user != USERID) {
-        error_log("HARMONIST HUB - USER: ".$user." ".time());
-        $module->query("INSERT INTO redcap_user_rights (" . $fields_rights . ")
-                    VALUES (?,?,?,?,?,?,?,?,?)",
-            [$project_id, $user, 1, 1, 1, 1, 1, 1, $data_entry]);
+        $module->query("UPDATE redcap_user_rights SET " . $fields_rights . " = ?
+                    WHERE  project_id = ? AND username = ?",
+            [$data_entry,$project_id,$user]);
     }
 }
 
