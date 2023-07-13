@@ -157,7 +157,7 @@ foreach ($projects_array as $index=>$name){
         $record++;
     }
 }
-
+error_log("HARMONIST HUB - SET USER PERMISSIONS AS READONLY ON MAIN PROJECT ".time());
 #SET USER PERMISSIONS AS READONLY ON MAIN PROJECT
 $fields_rights = "project_id, username, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
 $instrument_names = \REDCap::getInstrumentNames(null,$project_id);
@@ -165,6 +165,7 @@ $instrument_names = \REDCap::getInstrumentNames(null,$project_id);
 $data_entry = "[".implode(',2][',array_keys($instrument_names)).",2]";
 foreach ($userPermission as $user){
     if($user != null && $user != USERID) {
+        error_log("HARMONIST HUB - USER: ".$user." ".time());
         $module->query("INSERT INTO redcap_user_rights (" . $fields_rights . ")
                     VALUES (?,?,?,?,?,?,?,?,?)",
             [$project_id, $user, 1, 1, 1, 1, 1, 1, $data_entry]);
@@ -176,6 +177,7 @@ $pidsArray = REDCapManagement::getPIDsArray($project_id);
 
 #We must clear the project cache so our updates are pulled from the DB.
 $module->clearProjectCache();
+error_log("HARMONIST HUB - Save instances in Homepage project ".time());
 #Save instances in Homepage project
 if($pidHome != ""){
     $Proj = new \Project($pidHome);
