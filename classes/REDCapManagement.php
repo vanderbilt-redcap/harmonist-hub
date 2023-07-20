@@ -19,7 +19,7 @@ class REDCapManagement {
             4=>'Comments and Votes (2B)',5=>'Data Requests (3)',6=>'Data Request Comments (3B)', 7=>'Research Groups (4)',8=>'People (5)',
             9=>'Working Groups (6)', 10=>'Hub FAQ (7)',11=>'Homepage Content (8)',12=>'Data Upload Log (9)',13=>'Data Download Log (10)',
             14=>'Data Model JSON (11)',15=>'Metrics (12)',16=>'Data Availability (13)',17=>'Issue Reporting (14)',
-            18=>'Toolkit Usage Metrics (15)',19=>'Toolkit Upload Security (16)',20=>'Toolkit FAQ (17)', 21=>'Changelog (18)',
+            18=>'Toolkit Usage Metrics (15)',19=>'External Tool Security (16)',20=>'Toolkit FAQ (17)', 21=>'Changelog (18)',
             22=>'File Library (19)',23=>'File Library Log (20)',24=>'News Items (21)',25=>'About (22)',26=>'Extra Outputs (23)',
             27=>'Consortium Site List (24)',28=>'Settings (99)',29=>'Toolkit Metadata (0C)');
 
