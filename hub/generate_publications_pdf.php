@@ -51,8 +51,8 @@ $html_pdf = "<html><body style='font-family:\"Calibri\";font-size:10pt;'>".$page
     ."<div class='footer' style='left: 600px;'><span class='page-number'>Page </span></div>"
     ."<div class='mainPDF'><table style='width: 100%;'><tr><td align='center'><img src='".$img."' style='padding-bottom: 30px;width: 100;' alt='Publications'></td></tr></table></div>"
     ."<div class='mainPDF'><table style='width: 100%;'><tr><td align='center'><strong>Manuscript List for the ".$settings['hub_name_long']." (".$settings['hub_name'].")</strong></td></tr></table></div>"
-    ."<div class='mainPDF'><table style='width: 100%;'><tr><td align='center'>Downloaded ".$download_date." from <a href='http://iedeahub.org' style='text-decoration:none;color: #23527c;'>iedeahub.org</a></td></tr></table></div>"
-    ."<div class='mainPDF'><table style='width: 100%;'><tr><td align='center'><em>Note: this list only includes IeDEA-wide analyses. For regional publications visit <a href='http://iedea.org' style='text-decoration:none;color: #23527c;'>iedea.org</a></em></td></tr></table></div>"
+    ."<div class='mainPDF'><table style='width: 100%;'><tr><td align='center'>Downloaded ".$download_date." from <a href='".$settings['hub_organization']."' style='text-decoration:none;color: #23527c;'>".$settings['hub_organization'].".org</a></td></tr></table></div>"
+    ."<div class='mainPDF'><table style='width: 100%;'><tr><td align='center'><em>".$settings['hub_pubpdf_note']."</em></td></tr></table></div>"
     ."<div class='mainPDF'>".$page."</div>"
     ."</div>"
     ."</body></html>";
