@@ -427,6 +427,10 @@ if($request !="") {
                             }
                         }
 
+                        if(!empty($request['author_doc'])){
+                            echo "<tr class='author_doc'>".\Vanderbilt\HarmonistHubExternalModule\getFileRow($request['author_doc'], $request['contact_name'], "Final", "",$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
+                        }
+
                         if(!empty($comments)){
                             foreach ($comments as $comment_record) {
                                 foreach ($comment_record as $comment) {

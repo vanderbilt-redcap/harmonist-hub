@@ -695,6 +695,9 @@ colgroup col.active {
 .last_file{
     background-color: #cae8ca;
 }
+.author_doc{
+    background-color: #d4edda !important;
+}
 table[data-sortable] th:after {
     margin-left: 0px !important;
 }

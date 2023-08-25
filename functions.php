@@ -1150,8 +1150,11 @@ function getNumberOfDaysLeftButtonHTML($date_deadline, $region_response_status,$
 function getFileRow($module,$edoc, $contact_name, $text, $datetime,$secret_key,$secret_iv,$user,$lid){
     $file_row = '';
     if($edoc != "") {
-        $q = $module->query("SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
+        $q = $module->query("SELECT stored_name,doc_name,doc_size,stored_date FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
         while ($row = $q->fetch_assoc()) {
+            if($datetime == ""){
+                $datetime = $row['stored_date'];
+            }
             $file_row = "<td><a href='".$module->getUrl('downloadFile.php').'&NOAUTH&code='. \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=" . $row['stored_name'] . "&file=" . urlencode($row['doc_name']) . "&edoc=" . $edoc . "&pid=" . $user . "&id=" . $lid, 'e', $secret_key, $secret_iv). "' target='_blank'>" . $row['doc_name'] . "</a></td>";
             $file_row .= "<td>" . $text . "</td>";
             $file_row .= "<td>" . $contact_name . "</td>";
