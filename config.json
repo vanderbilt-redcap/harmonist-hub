@@ -80,21 +80,21 @@
       "cron_description": "Cron that saves metrics every morning",
       "method": "cronMethod",
       "cron_frequency": "21600",
-      "cron_max_run_time": "21600"
+      "cron_max_run_time": "3600"
     },
     {
       "cron_name": "cron_delete",
       "cron_description": "Cron that deletes expired datasets",
       "method": "cronMethod",
       "cron_frequency": "21600",
-      "cron_max_run_time": "21600"
+      "cron_max_run_time": "3600"
     },
     {
       "cron_name": "cron_data_upload_expiration_reminder",
       "cron_description": "Cron that sends datasets expiration notifications",
       "method": "cronMethod",
       "cron_frequency": "21600",
-      "cron_max_run_time": "21600"
+      "cron_max_run_time": "3600"
     },
     {
       "cron_name": "cron_data_upload_notification",
@@ -108,14 +108,14 @@
       "cron_description": "Cron that sends a status report monthly",
       "method": "cronMethod",
       "cron_frequency": "21600",
-      "cron_max_run_time": "21600"
+      "cron_max_run_time": "3600"
     },
     {
       "cron_name": "cron_publications",
       "cron_description": "Cron that saves the publications txt file to generate the table in the HUB",
       "method": "cronMethod",
       "cron_frequency": "21600",
-      "cron_max_run_time": "21600"
+      "cron_max_run_time": "3600"
     },
     {
       "cron_name": "cron_req_finalized_notification",
@@ -129,14 +129,14 @@
       "cron_description": "Cron that sends an email and generates an uploads records if there are any pending files",
       "method": "cronMethod",
       "cron_frequency": "21600",
-      "cron_max_run_time": "21600"
+      "cron_max_run_time": "3600"
     },
     {
       "cron_name": "cron_json",
       "cron_description": "Cron that runs once a day to check if there are changes and create a JSON",
       "method": "cronMethod",
       "cron_frequency": "21600",
-      "cron_max_run_time": "21600"
+      "cron_max_run_time": "3600"
     }
   ],
 
