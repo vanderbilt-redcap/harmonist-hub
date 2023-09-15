@@ -5,7 +5,7 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 $selectConcept = htmlentities($_REQUEST['selectConcept'],ENT_QUOTES);
 $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
 $record = htmlentities($_REQUEST['id'],ENT_QUOTES);
-$save_option = htmlentities(['save_option'],ENT_QUOTES);
+$save_option = htmlentities($_REQUEST['save_option'],ENT_QUOTES);
 $sop_hubuser = htmlentities($_REQUEST['sop_hubuser'],ENT_QUOTES);
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $selectConcept));
@@ -26,13 +26,12 @@ if($option == "1" && $save_option == ""){
 
     $arraySOP = array();
     $arraySOP[$record][$event_id]['sop_status'] = "0";//DRAFT
-    $arraySOP[$record][$event_id]['sop_hubuser'] = "0";
-    $arraySOP[$record][$event_id]['sop_concept_id'] = $sop_hubuser;
-    $arraySOP[$record][$event_id]['sop_visibility'] = $selectConcept;
+    $arraySOP[$record][$event_id]['sop_hubuser'] = $sop_hubuser;
+    $arraySOP[$record][$event_id]['sop_concept_id'] = $selectConcept;
+    $arraySOP[$record][$event_id]['sop_visibility'] = "1";
     $arraySOP[$record][$event_id]['sop_active'] = "1";
-    $arraySOP[$record][$event_id]['sop_status'] = "1";
 
-    $sop_name = $recordSOP.". Data Request for ".$concept_id.", ".$concept_title;
+    $sop_name = $record.". Data Request for ".$concept_id.", ".$concept_title;
     $arraySOP[$record][$event_id]['sop_name'] = $sop_name;
     $arraySOP[$record][$event_id]['sop_created_dt'] = $sop_created_dt;
     $arraySOP[$record][$event_id]['sop_updated_dt'] = $sop_created_dt;

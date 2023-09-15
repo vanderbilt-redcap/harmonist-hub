@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
-$request_id = $_REQUEST['request_id'];
+$request_id = htmlentities($_REQUEST['request_id'],ENT_QUOTES);
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
@@ -11,7 +11,7 @@ $event_id_RM = $Proj->firstEventId;
 $recordRM = array();
 $recordRM[$request_id][$event_id_RM]["request_id"] = $request_id;
 
-$region_vote_values = explode(',',$_REQUEST['region_vote_values']);
+$region_vote_values = explode(',',htmlentities($_REQUEST['region_vote_values'],ENT_QUOTES));
 $all_votes_completed = true;
 foreach ($region_vote_values as $votes_info){
     $region = explode('_',$votes_info)[0];
