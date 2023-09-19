@@ -18,7 +18,7 @@ $options = array(0=>"map",1=>"sop",2=>"ss1",3=>"cpt",4=>"ttl",5=>"pup",6=>"cup",
 
 if(!empty($_REQUEST['email'])) {
     $module->log("HUB: " . $pidsArray['PROJECTS'] . " - link requested for ".$email);
-    $RecordSetEmail = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[email] ='".$email."'");
+    $RecordSetEmail = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[email] ='".strtolower($email)."' OR [email] ='".$email."'");
     $people = ProjectData::getProjectInfoArray($RecordSetEmail)[0];
     if(strtolower($people['email']) == strtolower($email) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
         $arrayLogin = array(array('record_id' => $people['record_id']));
