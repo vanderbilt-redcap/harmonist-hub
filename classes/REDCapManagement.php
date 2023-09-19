@@ -37,7 +37,8 @@ class REDCapManagement {
             36=>'REPORTBUGSURVEY',
             37=>'SURVEYFILELIBRARY',
             38=>'SURVEYNEWS',
-            39=>'SURVEYTBLCENTERREVISED');
+            39=>'SURVEYTBLCENTERREVISED',
+            40=>'DATARELEASEREQUEST');
 
         return $projects_array;
     }

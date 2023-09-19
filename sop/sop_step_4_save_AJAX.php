@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
-$record_id = $_REQUEST['id'];
+$record_id = htmlentities($_REQUEST['id'],ENT_QUOTES);
 $Proj = new \Project($pidsArray['SOP']);
 $event_id = $Proj->firstEventId;
 
@@ -13,10 +13,7 @@ $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', nu
 $regions = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown);
 foreach ($regions as $region){
     $instance = $region['record_id'];
-    if($instance == 1){
-        $instance = '';
-    }
-    if($sop["data_response_status"][$instance] == "") {
+    if($sop["data_response_status"][$instance] == 1) {
         $array_repeat_instances = array();
         $arraySOP = array();
         $arraySOP['data_response_status'] = "0";
@@ -64,7 +61,7 @@ if(!empty($tablefields)){
     $arraySOP[$record_id][$event_id]['shiny_json'] = json_encode($tablefields);
 }
 $results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-\Records::addRecordToRecordListCache($pidsArray['SOP'], $record,1);
+\Records::addRecordToRecordListCache($pidsArray['SOP'], $record_id,1);
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
 $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
@@ -189,7 +186,7 @@ $docId = db_insert_id();
 //Add document DB ID to project
 $jsonConcepts = json_encode(array(array('record_id' => $record_id, 'sop_finalpdf' => $docId)));
 $results = \Records::saveData($pidsArray['SOP'], 'json', $jsonConcepts,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-\Records::addRecordToRecordListCache($pidsArray['SOP'], $record,1);
+\Records::addRecordToRecordListCache($pidsArray['SOP'], $record_id,1);
 
 echo json_encode('success');
 ?>

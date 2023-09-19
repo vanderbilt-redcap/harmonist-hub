@@ -3,8 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 require_once APP_PATH_DOCROOT.'Classes/Files.php';
 
-
-$record_id = $_REQUEST['record'];
+$record_id = htmlentities($_REQUEST['record'],ENT_QUOTES);
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
@@ -17,7 +16,6 @@ if(!empty($dataTable)) {
     $requested_tables = \Vanderbilt\HarmonistHubExternalModule\generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
 }
 
-
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
 $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
 $concept_id = $concept['concept_id'];
@@ -27,11 +25,6 @@ $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record
 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 $sop_creator_name = $people['firstname'].' '.$people['lastname'];
 $sop_creator_email = $people['email'];
-
-$projectPeople = new \Plugin\Project($pidsArray['PEOPLE']);
-$RecordSetPeople = new \Plugin\RecordSet($projectPeople, array("record_id" => $sop['sop_creator']));
-$sop_creator_name = $RecordSetPeople->getDetails()[0]['firstname'].' '.$RecordSetPeople->getDetails()[0]['lastname'];
-$sop_creator_email = $RecordSetPeople->getDetails()[0]['email'];
 
 $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_creator2']));
 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
@@ -55,18 +48,18 @@ $first_page .= "<p><span style='font-size: 14pt;font-weight: bold; color:#449d44
 if(trim($sop_creator_name) != "" || trim($sop_creator2_name) != "") {
     $first_page .= "<p><span style='border-bottom: 1px solid;font-weight: bold;font-size: 14pt'>Research Contact(s)</span>";
     $first_page .= "<div>" . $sop_creator_name . "</div>";
-    $first_page .= "<div>" . $sop['sop_creator_org'] . "</div>";
+    $first_page .= "<div>" . $sop_creator_email . "</div>";
     $first_page .= "<div><a href='mailto:" . $sop_creator_email . "' style='text-decoration:none'>" . $sop_creator_email . "</a></div><br/>";
     if ($sop['sop_creator2'] != "" && $sop['sop_creator2'] != "Select Name") {
         $first_page .= "<div>" . $sop_creator2_name . "</div>";
-        $first_page .= "<div>" . $data['sop_creator2_org'] . "</div>";
+        $first_page .= "<div>" . $sop_creator2_email . "</div>";
         $first_page .= "<div><a href='mailto:" . $sop_creator2_email . "' style='text-decoration:none'>" . $sop_creator2_email . "</a></div><br/>";
     }
 }
 if(trim($sop['sop_datacontact']) != "" && $sop['sop_datacontact'] != "Select Name"){
     $first_page .= "<p><span style='border-bottom: 1px solid;font-weight: bold;font-size: 14pt'>Data Contact</span>";
     $first_page .= "<div>" . $sop_datacontact_name . "</div>";
-    $first_page .= "<div>" . $data['sop_datacontact_org'] . "</div>";
+    $first_page .= "<div>" . $sop_datacontact_email . "</div>";
     $first_page .= "<div><a href='mailto:" . $sop_datacontact_email . "' style='text-decoration:none'>" .$sop_datacontact_email . "</a></div><br/>";
 }
 $first_page .= "<span style='font-size: 12pt'>";
@@ -108,7 +101,7 @@ $page_num = '<style>a{text-decoration: none;}</style>';
 $html_print = "<html><body style='font-family:\"Calibri\";font-size:12pt;'>".$page_num
     ."<div class='footer'><span left: 0px;>".$concept_id."</span></div>"
     ."<div class='footer' style='left: 600px;'><span class='page-number'>Page </span></div>"
-    ."<div class='mainPDF'><table style='width: 100%;'><tr><td align='center'><img src='data:image/png;base64,".$img."' style='padding-bottom: 30px;' alt='Logo'></td></tr></table></div>"
+    ."<div class='mainPDF'><table style='width: 100%;'><tr><td align='center'><img src='data:image/png;base64,".$img."' style='padding-bottom: 30px;width:200px;' alt='Logo'></td></tr></table></div>"
     ."<div class='mainPDF' style='width: 995px;margin:0 auto;'><table style='width: 100%;'>".$first_page."<div style='page-break-before: always;'></div>"
     ."<div class='mainPDF'>".$second_page.'<div style="page-break-before: always;"></div>'
     ."<p><span style='font-size:16pt'><strong>6. Requested DES Tables</strong></span></p>"
@@ -116,50 +109,37 @@ $html_print = "<html><body style='font-family:\"Calibri\";font-size:12pt;'>".$pa
     ."</div></div>"
     ."</body></html>";
 
-
-$file_row = '';
-$q = $module->query("SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id= ?",[$sop['sop_finalpdf']]);
+$q = $module->query("SELECT stored_name,doc_size FROM redcap_edocs_metadata WHERE doc_id= ?",[$sop['sop_finalpdf']]);
 $pdf_file='';
-$pdf_file_name='';
 while ($row = $q->fetch_assoc()) {
     $pdf_file = $row['stored_name'];
-    $pdf_file_name = $row['doc_name'];
 }
 
-
-
+#CREATE ZIP FILE
 $filename = $concept_id."_DataRequest_".date("Y-m-d_hi",time());
-$archive_file_name = $filename.'.zip';
-//SAVE PDF ON DB
-$storedName = md5($reportHash);
-$filePath = EDOC_PATH.$storedName;
+$zipname = $filename.'.zip';
 
-$zipname = $archive_file_name;
-
-$zip = new ZipArchive;
-$zip->open($zipname, ZipArchive::CREATE);
-
-// Add your files here
-$zip->addFromString(basename($filename.'.html'),$html_print);
-$zip->addFile(EDOC_PATH.$pdf_file,$filename.'.pdf');
-
-
-if ($zip->close() === false) {
+$zip = new \ZipArchive();
+if ( $zip->open(EDOC_PATH.$zipname, \ZipArchive::CREATE) !== TRUE) {
     exit("Error creating ZIP file");
-};
-
-//download file from temporary file on server as '$filename.zip'
-if (file_exists($zipname)) {
-    header('Content-Type: application/zip');
-    header('Content-disposition: attachment; filename='.$filename.'.zip');
-    header('Content-Length: ' . filesize($zipname));
-    header("Pragma: no-cache");
-    header("Expires: 0");
-    readfile($zipname);
-    @unlink("$zipname");
-} else {
-    exit("Could not find Zip file to download");
 }
+#Add a file to zip and rename it
+$zip->addFile(EDOC_PATH.$pdf_file, $filename.'.pdf');
 
+# Add a file new file to zip using the text specified
+$download_file = file_get_contents( $filename.'.html' );
+$zip->addFromString(basename($filename.'.html'),$html_print);
+
+$zip->close();
+
+header("Content-type: application/zip");
+header("Content-Disposition: attachment; filename=$zipname");
+header("Content-length: " . filesize(EDOC_PATH.$zipname));
+header("Pragma: no-cache");
+header("Expires: 0");
+ob_clean();
+flush();
+readfile(EDOC_PATH.$zipname);
+unlink(EDOC_PATH.$zipname);
 ?>
 
