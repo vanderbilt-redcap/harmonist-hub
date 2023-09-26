@@ -309,7 +309,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-default btn-save" onclick='save_status(<?=json_encode($module->getUrl('sop/sop_data_request_title_admin_status_AJAX.php').'&NOAUTH)?>,<?=json_encode($current_user['record_id'])?>,<?=json_encode($current_user['person_region'])?>)' data-dismiss="modal">Save</button>
+                                    <button type="button" class="btn btn-default btn-save" onclick='save_status(<?=json_encode($module->getUrl('sop/sop_data_request_title_admin_status_AJAX.php').'&NOAUTH')?>,<?=json_encode($current_user['record_id'])?>,<?=json_encode($current_user['person_region'])?>)' data-dismiss="modal">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -438,7 +438,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                         }
                     }
                     ?>
-                    <button onclick="follow_activity('<?= $follow_option ?>','<?= $current_user['record_id'] ?>','<?= $sop['record_id'] ?>','sop/sop_data_request_follow_activity_AJAX.php')"
+                    <button onclick="follow_activity('<?= $follow_option ?>','<?= $current_user['record_id'] ?>','<?= $sop['record_id'] ?>','<?= $module->getUrl("sop/sop_data_request_follow_activity_AJAX.php") ?>')"
                             class="btn <?= $follow_class ?> actionbutton"><i
                                 class="<?= $follow_icon_class ?>"></i> <span class="hidden-xs"><?= $follow_text ?></span></button>
                 </div>

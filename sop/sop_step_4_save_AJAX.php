@@ -60,8 +60,6 @@ $arraySOP[$record_id][$event_id]['sop_updated_dt'] = $sop_updated_dt;
 if(!empty($tablefields)){
     $arraySOP[$record_id][$event_id]['shiny_json'] = json_encode($tablefields);
 }
-$results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-\Records::addRecordToRecordListCache($pidsArray['SOP'], $record_id,1);
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
 $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
@@ -88,6 +86,21 @@ $data = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
 $date = new \DateTime($sop['sop_due_d']);
 $sop_due_d = $date->format('d F Y');
+
+#FOLLOW COMMENTS
+$follow_activity = $sop['follow_activity'];
+$array_userid = explode(',',$follow_activity);
+
+array_push($array_userid,$current_user['record_id']);
+array_push($array_userid,$sop['sop_creator']);
+array_push($array_userid,$sop['sop_creator2']);
+array_push($array_userid,$sop['sop_datacontact']);
+$array_userid = array_filter(array_unique($array_userid));
+$string_userid = implode(",",$array_userid);
+$arraySOP[$record_id][$event_id]['follow_activity'] = $string_userid;
+
+$results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+\Records::addRecordToRecordListCache($pidsArray['SOP'], $record_id,1);
 
 #FIRST PAGE
 $first_page = "<tr><td align='center'>";

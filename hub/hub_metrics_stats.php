@@ -750,7 +750,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
                     <thead>
                     <th width="150px" style="text-align: center">Year</th>
                     <th width="150px" style="text-align: center">Total</th>
-                    <th>Conference</th>
+                    <th>Journal</th>
                     </thead>
                     <tbody>
                     <?php echo $data_manuscripts['content']; ?>
@@ -759,6 +759,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
             </div>
         </div>
     </div>
+    <div style="padding-left: 15px;"><i class="fa fa-info-circle fa-fw " aria-hidden="true"></i> <em>Table shows publications between <?=$settings['oldestyear_rmr_manuscripts']?> and the current year. Publications with no year listed are not shown.</em></div>
     <?php } ?>
 <?php } ?>
 
@@ -798,6 +799,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
             </div>
         </div>
     </div>
+    <div style="padding-left: 15px;"><i class="fa fa-info-circle fa-fw " aria-hidden="true"></i> <em>Table shows abstracts between <?=$settings['oldestyear_rmr_abstracts']?> and the current year. Abstracts with no year listed are not shown.</em></div>
     <?php } ?>
 <?php } ?>
 
