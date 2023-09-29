@@ -2003,6 +2003,8 @@ function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata
                                 } else if ($concepts['output_type'][$index] == "2" && $type == 'abstracts') {
                                     $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] += 1;
                                 }
+                            }else{
+                                $concept_outputs_by_year[$year]["<em>Unknown</em>"] += 1;
                             }
                         }
                     }
