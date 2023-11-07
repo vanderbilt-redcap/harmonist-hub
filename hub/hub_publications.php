@@ -77,7 +77,7 @@ if($harmonist_perm || $isAdmin) {
                 <thead>
                     <tr>
                         <th class="sorted_class">Concept</th>
-                        <th class="sorted_class" data-sorted="true" data-sorted-direction="descending">Year</th>
+                        <th class="sorted_class" data-sorted="true">Year</th>
                         <th class="sorted_class" data-sorted="false">Region</th>
                         <th class="sorted_class"><span style="display:block">Journal /</span><span>Conference</span></th>
                         <th class="sorted_class" data-sorted="false">Publication Type</th>
@@ -168,7 +168,11 @@ if($harmonist_perm || $isAdmin) {
         }
     );
 
-    var table = $('#client-side-table').DataTable({"pageLength": 50,dom: "<'row'<'col-sm-3'l><'col-sm-4'f><'col-sm-5'p>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>","order": [[ 1, "desc" ]]});
+    var table = $('#client-side-table').DataTable(
+        {
+            pageLength: 50,dom: "<'row'<'col-sm-3'l><'col-sm-4'f><'col-sm-5'p>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            order: [[ 1, "desc" ]]
+        });
 
     if(showcolumn ==  false){
         table.column(8).visible(false);
@@ -176,6 +180,12 @@ if($harmonist_perm || $isAdmin) {
 
 
     $(document).ready(function() {
+        //Fix for columns to sort correctly
+        $('#client-side-table').on( 'click', 'thead th', function () {
+            table.column(table.column(this).index()).data().sort();
+            table.draw();
+        });
+
         Sortable.init();
 
         var docname = <?=json_encode($export_name)?>;
@@ -394,7 +404,6 @@ if($harmonist_perm || $isAdmin) {
 
         //To change the text on select
         $(".dropdown-menu li").click(function(){
-
             var selText = $(this).html();
             $(this).parents('.dropdown').find('.dropdown-toggle').html(selText+" <input type='hidden' value='"+$(this).text()+"' id='publication_type'/><span class='caret' style='float: right;margin-top:8px'></span>");
             //when any of the filters is called upon change datatable data

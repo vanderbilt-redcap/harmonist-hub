@@ -19,8 +19,7 @@ $all_votes_completed = true;
 foreach ($region_vote_values as $votes_info){
     $region = explode('_',$votes_info)[0];
     $vote = (explode('_',$votes_info)[1] == "0")? "":explode('_',$votes_info)[1];
-
-    if($sop['data_response_status'][$region] != $vote && $vote != ""){
+    if($sop['data_response_status'][$region] != $vote){
         $date = new \DateTime();
         $timestamp = $date->format('Y-m-d H:i:s');
 
