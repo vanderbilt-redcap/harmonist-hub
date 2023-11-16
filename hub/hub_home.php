@@ -44,7 +44,6 @@ for($i = 1; $i<$number_of_deadlines+1; $i++){
 }
 ArrayFunctions::array_sort_by_column($dealines, 'date');
 
-
 /***GRAPH***/
 ksort($request_type);
 ksort($home_metrics_values);
@@ -148,11 +147,11 @@ if(!empty($homepage)) {
                        <?php
                        $i=0;
                        foreach ($request_type as $value => $label){
-                           if($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'] != "" && !in_array($value,$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])){
-                               $open_req_value = ($open_requests_values[$value] == 0)?"":$open_requests_values[$value];
+                           $open_req_value = ($open_requests_values[$value] == 0)?"":$open_requests_values[$value];
+                           if($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'] == "" || $default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'] != "" && !in_array($value,$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])){
 
                                #GRADIENT for the Badge
-                               $total_colors = count($requests_values) - count($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']);
+                               $total_colors = count($requests_values) - count(empty($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']) ? $request_type:$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']);
                                $color = \Vanderbilt\HarmonistHubExternalModule\getGradientColor("777777","003D99",$total_colors,$i);
                                echo '<li class="list-group-item">
                                         <a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&type=1".'" title="concept sheets" class="home_openrequests_link">
@@ -185,7 +184,7 @@ if(!empty($homepage)) {
                             if(!empty($homepage)) {
                                 echo '<thead>'.'
                                     <tr>'.'
-                                        <th class="sorted_class" data-sorted-direction="descending" data-sorted="true" style="">Date</th>'.'
+                                        <th class="sorted_class" data-sorted-direction="descending" data-sorted="true" style="min-width: 180px;">Date</th>'.'
                                         <th class="sorted_class" data-sorted-direction="descending" style="">Text</th>'.'
                                     </tr>'.'
                                     </thead>';

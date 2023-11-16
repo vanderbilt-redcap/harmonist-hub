@@ -360,7 +360,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
         <div id="collapse4" class="table-responsive panel-collapse collapse in" aria-expanded="false" style="overflow-y: hidden;">
             <table class="table sortable-theme-bootstrap" data-sortable>
             <?php
-            $q = $module->query("SELECT record FROM redcap_data WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$record,$pidsArray['HARMONIST']]);
+            $q = $module->query("SELECT record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['HARMONIST'])." WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$record,$pidsArray['HARMONIST']]);
 
             $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_visibility] = 2 and [sop_concept_id] = ".$record);
             $data_requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);

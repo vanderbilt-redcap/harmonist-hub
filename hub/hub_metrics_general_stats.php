@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$q = $module->query("SELECT MAX(record) as record FROM redcap_data WHERE project_id = ?",[$pidsArray['METRICS']]);
+$q = $module->query("SELECT MAX(record) as record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['METRICS'])." WHERE project_id = ?",[$pidsArray['METRICS']]);
 $row = $q->fetch_assoc();
 $RecordSetMetrics = \REDCap::getData($pidsArray['METRICS'], 'array', array('record_id' => $row['record']));
 $metrics = ProjectData::getProjectInfoArray($RecordSetMetrics)[0];

@@ -789,7 +789,24 @@ function deleteFile(record) {
 
     });
 };
-
+/**
+ * Copy a data request and redirect to the editor
+ * @param record_id
+ */
+function copy_data_request(record_id){
+    $.ajax({
+        type: "POST",
+        url: "sop/sop_copy_data_request_AJAX.php",
+        data: "&id="+record_id,
+        error: function (xhr, status, error) {
+            alert(xhr.responseText);
+        },
+        success: function (result) {
+            var record = jQuery.parseJSON(result);
+            window.location = "index.php?&option=ss1&record="+record+"&step=3";
+        }
+    });
+}
 /**
  * Generate the pdf and save it in the DB
  * @param record_id

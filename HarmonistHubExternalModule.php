@@ -64,7 +64,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function addProjectToList($project_id, $eventId, $record, $fieldName, $value){
-        $this->query("INSERT INTO redcap_data (project_id, event_id, record, field_name, value) VALUES (?, ?, ?, ?, ?)",
+        $this->query("INSERT INTO ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($project_id)." (project_id, event_id, record, field_name, value) VALUES (?, ?, ?, ?, ?)",
             [$project_id, $eventId, $record, $fieldName, $value]);
     }
 
