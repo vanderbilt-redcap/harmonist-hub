@@ -45,7 +45,7 @@ class ProjectData
                             $count = 0;
                             foreach ($instrumentdata as $instance=>$instancedata){
                                 foreach ($instancedata as $field_name=>$value){
-                                    if(!array_key_exists($field_name,$array[$index])){
+                                    if(!empty($array[$index]) && !array_key_exists($field_name,$array[$index])){
                                         $array[$index][$field_name] = array();
                                     }
                                     if($value != "" && (!is_array($value) || (is_array($value) && !empty($value)))){

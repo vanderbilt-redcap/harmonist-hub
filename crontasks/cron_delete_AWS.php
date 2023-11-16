@@ -45,7 +45,7 @@ $securityTokens = ProjectData::getProjectInfoArray($RecordSetSecurity);
 $today = strtotime(date("Y-m-d"));
 foreach ($securityTokens as $token){
     if(strtotime($token['tokenexpiration_ts']) <= $today){
-        $module->query("DELETE FROM redcap_data WHERE project_id = ? AND field_name=? AND value = ?",[$pidsArray['DATATOOLUPLOADSECURITY'],"record_id",$token["record_id"]]);
+        $module->query("DELETE FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['DATATOOLUPLOADSECURITY'])." WHERE project_id = ? AND field_name=? AND value = ?",[$pidsArray['DATATOOLUPLOADSECURITY'],"record_id",$token["record_id"]]);
         \Records::deleteRecordFromRecordListCache($pidsArray['DATATOOLUPLOADSECURITY'], $token["record_id"], 1);
 
         #Logs

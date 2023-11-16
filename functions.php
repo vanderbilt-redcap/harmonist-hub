@@ -1496,7 +1496,7 @@ function getDataCallConceptsRow($module, $pidsArray, $sop, $isAdmin, $current_us
         $sop_status = '<span class="label label-as-badge '.$status.'">'. $sop_status[$sop['sop_status']].'</span>&nbsp;&nbsp;';
 
         $url = "&type=s";
-        $details = "<div><em>Draft ID: ".$sop['record_id']."</em></div><div><a href='index.php?option=sop&record=".$sop['record_id'].$url."'>Data Request </a></div>";
+        $details = "<div><em>Draft ID: ".$sop['record_id']."</em></div><div><a href='".$module->getUrl("index.php?option=sop&record=".$sop['record_id'].$url)."'>Data Request </a></div>";
     }
 
 
@@ -2146,5 +2146,9 @@ function interpolate($pBegin, $pEnd, $pStep, $pMax) {
     } else {
         return (($pBegin - $pEnd) * (1 - ($pStep / $pMax))) + $pEnd;
     }
+}
+
+function getDataTable($project_id){
+    return method_exists('\REDCap', 'getDataTable') ? \REDCap::getDataTable($project_id) : "redcap_data";
 }
 ?>

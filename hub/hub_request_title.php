@@ -319,7 +319,7 @@ if($request !="") {
             <div class="row request">
                 <div class="col-md-8 col-sm-12"><strong>Working Group:</strong> <?=$wg_name;?></div>
                 <?php if(($settings['vote_visibility'] == '1' || $settings['vote_visibility'] == '') || ($settings['vote_visibility'] == '2' && $current_user['harmonist_regperm'] == '3')){
-                    $region_id = ($current_user['person_region'] == '1')? "" : $current_user['person_region'];
+                    $region_id = $current_user['person_region'];
                     $vote = empty($region_vote_status[$request['region_vote_status'][$region_id]])?"<em>No vote recorded</em>":$region_vote_status[$request['region_vote_status'][$region_id]];
                 ?>
                 <div class="col-md-4 hidden-sm hidden-xs"><strong>Vote: </strong><span class="<?=$region_vote_icon_text[$request['region_vote_status'][$region_id]]?>"><?=$vote?> <i class="<?=$region_vote_icon_view[$request['region_vote_status'][$region_id]]?>" aria-hidden="true"></i></span></div>
@@ -428,7 +428,7 @@ if($request !="") {
                         }
 
                         if(!empty($request['author_doc'])){
-                            echo "<tr class='author_doc'>".\Vanderbilt\HarmonistHubExternalModule\getFileRow($request['author_doc'], $request['contact_name'], "Final", "",$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
+                            echo "<tr class='author_doc'>".\Vanderbilt\HarmonistHubExternalModule\getFileRow($module,$request['author_doc'], $request['contact_name'], "Final", "",$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
                         }
 
                         if(!empty($comments)){
