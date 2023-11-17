@@ -169,7 +169,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                     </li>
                                     <?php
                                 }
-
+                                if($isAdmin || $harmonist_perm){
+                                ?> <li>
+                                    <a href="#" onclick="$('#modal-copy-data-request').modal('show');">Copy Data Request</a>
+                                </li>
+                                    <?php
+                                }
                             echo '<li>
                                     <a href="#" onclick="$(\'#hub_view_votes\').modal(\'show\');" >Edit Group Status</a>
                                 </li>';
@@ -207,6 +212,32 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                         </ul>
                     </div>
 
+                    <!-- MODAL COPY DATA REQUEST-->
+                    <div class="modal fade" id="modal-copy-data-request" tabindex="-1" role="dialog" aria-labelledby="Codes">
+                        <form class="form-horizontal" action="" method="post" id='dataDownloadForm'>
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">Copy Data Request</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <span>Are you sure you want to copy this data request?</span>
+                                    </div>
+                                    <input type="hidden" id="assoc_concept" name="assoc_concept">
+                                    <input type="hidden" id="user" name="user">
+                                    <div class="modal-footer">
+                                        <?php
+                                        $url = $module->getUrl('sop/sop_copy_data_request_AJAX.php?id='.$sop['record_id'])."&NOAUTH";
+                                        $urlgoto = $module->getUrl("index.php?&option=ss1&step=3")."&NOAUTH";
+                                        ?>
+                                        <a type="submit" onclick='copy_data_request("<?=$url?>","<?=$urlgoto?>")' class="btn btn-default btn-success" id='btnModalRescheduleForm'>Continue</a>
+                                        <a href="#" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <!-- MODAL FINALIZE-->
                     <div class="modal fade" id="hub-modal-data-finalize" tabindex="-1" role="dialog"
                          aria-labelledby="Codes">
