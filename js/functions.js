@@ -793,17 +793,16 @@ function deleteFile(record) {
  * Copy a data request and redirect to the editor
  * @param record_id
  */
-function copy_data_request(record_id){
+function copy_data_request(url,urlgoto){
     $.ajax({
         type: "POST",
-        url: "sop/sop_copy_data_request_AJAX.php",
-        data: "&id="+record_id,
+        url: url,
         error: function (xhr, status, error) {
             alert(xhr.responseText);
         },
         success: function (result) {
             var record = jQuery.parseJSON(result);
-            window.location = "index.php?&option=ss1&record="+record+"&step=3";
+            window.location = urlgoto+"&record="+record;
         }
     });
 }
