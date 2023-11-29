@@ -165,7 +165,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
                 $url = $this->getUrl("index.php")."&NOAUTH&token=".$people['access_token']."&option=hub&record=".$comment['sop_id']."&pid=".$pidsArray['PROJECTS'];
 
-                $subject = $environment." ".$settings['hub_name']."Request #".$request['request_id']." feedback posted: ".$name.", ".$comment_time;
+                $subject = $environment." ".$settings['hub_name']." Request #".$request['request_id']." feedback posted: ".$name.", ".$comment_time;
 
                 $message = '<h2>Feedback Posted on '.$request_type_label[$request['request_type']].' Request  #'.$request['request_id'].'</h2>
                             <p>A new comment, file, or vote for the following '.$settings["hub_name_req_email"].' request has been posted on the Hub.</p>
