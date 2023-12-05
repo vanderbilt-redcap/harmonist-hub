@@ -750,7 +750,7 @@ class AllCrons
                     ));
 
                     $s3->registerStreamWrapper();
-                    $data = file_get_contents('s3://' . $bucket . '/' . $object['Key']);
+                    $data = file_get_contents($module->getSafePath('s3://' . $bucket . '/' . $object['Key']));
                     // Open a stream in read-only mode
                     if ($stream = fopen('s3://' . $bucket . '/' . $object['Key'], 'r')) {
                         // While the stream is still open
@@ -942,7 +942,7 @@ class AllCrons
             $storedName = md5($reportHash);
             $filePath = EDOC_PATH . $storedName;
             $s3->registerStreamWrapper();
-            $output = file_get_contents('s3://' . $bucket . '/pending/' . $reportHash . ".pdf");
+            $output = file_get_contents($module->getSafePath('s3://' . $bucket . '/pending/' . $reportHash . ".pdf"));
             $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
 
             //Save document on DB
@@ -1057,7 +1057,7 @@ class AllCrons
         fwrite($file,json_encode($jsonArray,JSON_FORCE_OBJECT));
         fclose($file);
 
-        $output = file_get_contents(EDOC_PATH.$storedName);
+        $output = file_get_contents($module->getSafePath(EDOC_PATH.$storedName));
         $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
 
         //Save document on DB
@@ -1079,7 +1079,7 @@ class AllCrons
             $q = $module->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$jsoncocpy["jsoncopy_file"]]);
             while ($row = $q->fetch_assoc()) {
                 $path = EDOC_PATH.$row['stored_name'];
-                $strJsonFileContents = file_get_contents($path);
+                $strJsonFileContents = file_get_contents($module->getSafePath($path));
                 $last_array = json_decode($strJsonFileContents, true);
                 $array_data = call_user_func_array("\Vanderbilt\HarmonistHubExternalModule\createProject".strtoupper($type)."JSON",array($module, $pidsArray));
                 $new_array = json_decode($array_data['jsonArray'],true);

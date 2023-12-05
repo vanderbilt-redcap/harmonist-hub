@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
 $RecordSetTable = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $record));
-$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0];
+$concept = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0]);
 $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
 if(!empty($concept)) {

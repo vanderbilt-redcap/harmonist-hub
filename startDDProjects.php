@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
-$project_id = $_REQUEST['pid'];
+$project_id = (int)$_REQUEST['pid'];
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
 #hardcoded value for now.

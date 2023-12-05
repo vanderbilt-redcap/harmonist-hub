@@ -15,7 +15,7 @@ include_once(__DIR__ . "/classes/ExcelFunctions.php");
 REDCapManagement::getEnvironment();
 
 #Mapper Project
-$project_id_main = ($project_id != '')?$project_id:$_GET['pid'];
+$project_id_main = ($project_id != '')?$project_id:(int)$_GET['pid'];
 #Get Projects ID's
 $pidsArray = REDCapManagement::getPIDsArray($project_id_main);
 
@@ -34,7 +34,7 @@ $secret_key="";
 $secret_iv="";
 
 $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
-$settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+$settings = $module->escape(ProjectData::getProjectInfoArray($RecordSetSettings)[0]);
 #Escape name just in case they add quotes
 $settings["hub_name"] = addslashes($settings["hub_name"]);
 

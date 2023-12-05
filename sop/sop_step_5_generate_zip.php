@@ -94,7 +94,7 @@ if($sop['sop_notes'] != ""){
 $second_page .= "<p><span style='font-size:16pt'><strong>5. List of Requested Tables</strong></span></p>";
 $second_page .= "<p><span style='font-size: 12pt'>".$requested_tables."</span></p>";
 
-$img = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'pdf')));
+$img = base64_encode(file_get_contents($module->getSafePath(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'pdf'))));
 
 $page_num = '<style>a{text-decoration: none;}</style>';
 
@@ -127,7 +127,7 @@ if ( $zip->open(EDOC_PATH.$zipname, \ZipArchive::CREATE) !== TRUE) {
 $zip->addFile(EDOC_PATH.$pdf_file, $filename.'.pdf');
 
 # Add a file new file to zip using the text specified
-$download_file = file_get_contents( $filename.'.html' );
+$download_file = file_get_contents( $module->getSafePath($filename.'.html' ));
 $zip->addFromString(basename($filename.'.html'),$html_print);
 
 $zip->close();

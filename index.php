@@ -41,7 +41,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                 //Do nothing
             } else {
                 include_once("projects.php");
-                $settings = \REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$module->framework->getEventId($pidsArray['SETTINGS'])];
+                $settings = $module->escape(\REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$module->framework->getEventId($pidsArray['SETTINGS'])]);
 
                 /***
                  * Installation updates check to update new/missing variables
