@@ -52,7 +52,6 @@ if($hub_projectname != '' && $hub_profile != ''){
 //                    $module->compareDataDictionaries();
 //                    $module->compareRepeatingForms();
                 }
-                include_once("analyticstracking.php");
                 ?>
                 <head>
                     <meta charset="utf-8">
