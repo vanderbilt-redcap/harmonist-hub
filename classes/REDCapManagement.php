@@ -28,7 +28,6 @@ class REDCapManagement {
 
     public static function getSurveyContantsArray(){
         $projects_array = array(
-            30=>'ANALYTICS',
             31=>'CONCEPTLINK',
             32=>'REQUESTLINK',
             33=>'SURVEYLINK',
@@ -213,7 +212,6 @@ class REDCapManagement {
 
     public static function getProjectsSurveyHashArray() {
         $projects_array_surveys_hash = array(
-            1=>array('constant'=>'ANALYTICS','instrument' => ''),
             2=>array('constant'=>'CONCEPTLINK','instrument' => 'concept_sheet'),
             3=>array('constant'=>'REQUESTLINK','instrument' => 'request'),
             4=>array('constant'=>'SURVEYLINK','instrument' => 'comments_and_votes'),
