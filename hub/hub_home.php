@@ -90,7 +90,7 @@ if(!empty($homepage)) {
     for($i = 1; $i<$number_of_announcements+1; $i++){
         if(!empty($homepage['announce_text'.$i])){
             $announcements .= '<ul class="fa-ul">'.
-                '<li><i class="fa-li fa fa-bell-o"></i>'.$module->escape($homepage['announce_text'.$i]);
+                '<li><i class="fa-li fa fa-bell-o"></i>'.filter_tags($homepage['announce_text'.$i]);
             if($i == 1 && $isAdmin){
                 $announcements .= '<a href="#" onclick="javascript:$(\'#announcements_survey\').modal(\'show\');" style="cursor: pointer"><span class="fa fa-cog" style="float: right;padding-right: 10px;"></span></a>';
             }
@@ -98,7 +98,7 @@ if(!empty($homepage)) {
         }
     }
     if(!empty($announcements)){
-        echo '<div class="alert alert-info">'.$announcements.'</div>';
+        echo '<div class="alert alert-info">'.filter_tags($announcements).'</div>';
     }else{
         echo '<div class="alert alert-info"><ul class="fa-ul"><li><i class="fa-li fa fa-bell-o"></i>No Announcements. ';
         if($isAdmin){
@@ -425,7 +425,7 @@ if(!empty($homepage)) {
                     <?php
                     if(!empty($homepage)) {
                         foreach ($homepage['links_sectionhead'] as $linkid => $linkvalue){
-                            echo '<li class="list-group-item quicklink_header"><i class="fa fa-fw '.$homepage_links_sectionorder[$homepage['links_sectionicon'][$linkid]].'" aria-hidden="true"></i> '.$linkvalue.'</li>';
+                            echo '<li class="list-group-item quicklink_header"><i class="fa fa-fw '.$module->escape($homepage_links_sectionorder[$homepage['links_sectionicon'][$linkid]]).'" aria-hidden="true"></i> '.$module->escape($linkvalue).'</li>';
 
                             for($i = 1; $i<$number_of_quicklinks+1; $i++){
                                 if(!empty($homepage['links_text'.$i][$linkid])){
@@ -433,7 +433,7 @@ if(!empty($homepage)) {
                                     if($homepage['links_stay'.$i][$linkid][0] == '1'){
                                         $stay = "";
                                     }
-                                    echo '<li class="list-group-item"><i class="fa fa-fw" aria-hidden="true"></i><a href="'.$homepage['links_link'.$i][$linkid].'" '.$stay.'>'.$homepage['links_text'.$i][$linkid].'</a></li>';
+                                    echo '<li class="list-group-item"><i class="fa fa-fw" aria-hidden="true"></i><a href="'.$module->escape($homepage['links_link'.$i][$linkid]).'" '.$module->escape($stay).'>'.$module->escape($homepage['links_text'.$i][$linkid]).'</a></li>';
                                 }
                             }
                         }

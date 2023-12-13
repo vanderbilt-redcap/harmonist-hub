@@ -75,13 +75,13 @@ foreach ($people as $person){
     }
 }
 
-$requests_values = array(0 => $number_concepts,1=> $number_abstracts,2 => $number_manuscripts,3 => $number_fastTrack,4 => $number_poster ,5 => $number_other );
-$requests_labels = array(0 => "Concepts",1 => "Abstracts",2 => "Manuscripts",3 => "Fast Track",4 => "Poster", 5=>"Other");
-$requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777");
+$requests_values = $module->escape(array(0 => $number_concepts,1=> $number_abstracts,2 => $number_manuscripts,3 => $number_fastTrack,4 => $number_poster ,5 => $number_other));
+$requests_labels = $module->escape(array(0 => "Concepts",1 => "Abstracts",2 => "Manuscripts",3 => "Fast Track",4 => "Poster", 5=>"Other"));
+$requests_colors = $module->escape(array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777"));
 
-$comments_values = array(0 => $metrics['comments_pi'],1 => $metrics['comments_n']);
-$comments_labels = array(0 => "PI",1 => "non PI");
-$comments_colors = array(0 => "#1ad1ff",1 => "#eb6e60");
+$comments_values = $module->escape(array(0 => $metrics['comments_pi'],1 => $metrics['comments_n']));
+$comments_labels = $module->escape(array(0 => "PI",1 => "non PI"));
+$comments_colors = $module->escape(array(0 => "#1ad1ff",1 => "#eb6e60"));
 
 $users_values = array();
 foreach ($array_region as $number){
@@ -148,8 +148,8 @@ foreach ($regions as $region){
 }
 
 #TITLES AND COLORS
-$fileActivity_labels = array(0 => "Uploads",1 => "Downloads",2 => "Manual Delete");
-$fileActivity_colors = array(0 => "#5cb85c",1 => "#337ab7",2 => "#eb6e60");
+$fileActivity_labels = $module->escape(array(0 => "Uploads",1 => "Downloads",2 => "Manual Delete"));
+$fileActivity_colors = $module->escape(array(0 => "#5cb85c",1 => "#337ab7",2 => "#eb6e60"));
 
 
 /**
@@ -302,6 +302,37 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
         }
     }
 }
+
+#Escape All Data
+$dataCall_timeline_labels = $module->escape($dataCall_timeline_labels);
+$dataCall_ended_timeline = $module->escape($dataCall_ended_timeline);
+$dataCall_started_timeline = $module->escape($dataCall_started_timeline);
+$time_labels = $module->escape($time_labels);
+$array_communications = $module->escape($array_communications);
+$communications_years = $module->escape($communications_years);
+$array_sections = $module->escape($array_sections);
+$array_sections_data = $module->escape($array_sections_data);
+$array_sections_title_data = $module->escape($array_sections_title_data);
+$sections_donuts = $module->escape($sections_donuts);
+$sections_donuts_title = $module->escape($sections_donuts_title);
+$requests_values = $module->escape($requests_values);
+$requests_labels = $module->escape($requests_labels);
+$requests_colors = $module->escape($requests_colors);
+$comments_values = $module->escape($comments_values);
+$comments_labels = $module->escape($comments_labels);
+$comments_colors = $module->escape($comments_colors);
+$users_values = $module->escape($users_values);
+$users_labels = $module->escape($users_labels);
+$users_colors = $module->escape($users_colors);
+$fileActivity_values = $module->escape($fileActivity_values);
+$fileActivity_labels = $module->escape($fileActivity_labels);
+$fileActivity_colors = $module->escape($fileActivity_colors);
+$upRegion_values = $module->escape($upRegion_values);
+$upRegion_labels = $module->escape($upRegion_labels);
+$upRegion_colors = $module->escape($upRegion_colors);
+$downRegion_values = $module->escape($downRegion_values);
+$downRegion_labels = $module->escape($downRegion_labels);
+$downRegion_colors = $module->escape($downRegion_colors);
 ?>
 <script>
     $(document).ready(function() {
