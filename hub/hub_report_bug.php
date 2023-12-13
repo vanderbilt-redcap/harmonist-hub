@@ -11,7 +11,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'R')){
 <div>
     <div class="panel-collapse collapse in" aria-expanded="true">
         <div class="panel-body">
-            <iframe class="commentsform" id="redcap-frame" message="R" src="<?=APP_PATH_WEBROOT_FULL.'/surveys/?s='.$pidsArray['REPORTBUGSURVEY']."&modal=modal"?>" style="border: none;height: 860px;width: 100%;"></iframe>
+            <iframe class="commentsform" id="redcap-frame" message="R" src="<?=$module->escape(APP_PATH_WEBROOT_FULL.'/surveys/?s='.$pidsArray['REPORTBUGSURVEY']."&modal=modal")?>" style="border: none;height: 860px;width: 100%;"></iframe>
         </div>
     </div>
 </div>

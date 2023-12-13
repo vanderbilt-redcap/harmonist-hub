@@ -19,5 +19,5 @@ $results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite',
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record));
 $data = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
-echo json_encode($data);
+echo json_encode($module->escape($data));
 ?>

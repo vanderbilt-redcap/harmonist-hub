@@ -128,11 +128,11 @@ foreach ($request_DU as $down){
                                 $person_info_delete = ProjectData::getProjectInfoArray($RecordSetPeopleDelete)[0];
                                 $contact_person_delete = "<a href='mailto:" . $person_info['email'] . "'>" . $person_info_delete['firstname'] . " " . $person_info_delete['lastname'] . "</a>";
 
-                                $deleted = '<div><i>File deleted by ' . $contact_person_delete . ' on '.$data_up['deletion_ts'].'</i></div>';
-                                $expiration_date = "<span class='text-error'>".date("d M Y",strtotime($data_up['deletion_ts']))."</span>";
+                                $deleted = '<div><i>File deleted by ' . $contact_person_delete . ' on '.htmlspecialchars($data_up['deletion_ts'],ENT_QUOTES).'</i></div>';
+                                $expiration_date = "<span class='text-error'>".htmlspecialchars(date("d M Y",strtotime($data_up['deletion_ts'])),ENT_QUOTES)."</span>";
                             }else{
-                                $expiration_date = "<span class='text-error'>".date("d M Y",strtotime($data_up['deletion_ts']))."</span>";
-                                $deleted = '<div><i>File auto-deleted on ' . $data_up['deletion_ts'] . '</i></div>';
+                                $expiration_date = "<span class='text-error'>".htmlspecialchars(date("d M Y",strtotime($data_up['deletion_ts'])),ENT_QUOTES)."</span>";
+                                $deleted = '<div><i>File auto-deleted on ' . htmlspecialchars($data_up['deletion_ts'],ENT_QUOTES) . '</i></div>';
                             }
                         }else if(strtotime ($expire_date) >= strtotime(date('Y-m-d'))){
 
@@ -145,14 +145,14 @@ foreach ($request_DU as $down){
                             $color_notes = "retrieve-notes";
                         }
 
-                        $body .= "<tr><td>" . $data_up['responsecomplete_ts'] . "</td>" .
-                            "<td>" . $region_code . "</td>" .
-                            "<td>" . $contact_person . "</td>" .
-                            "<td>" . $data_up['data_upload_zip'] . $deleted . "</td>" .
-                            "<td style='text-align: center;'>" . $file_pdf . "</td>" .
-                            "<td>" . $expiration_date . "</td>" .
-                            "<td>" . $buttons . "</td>" .
-                            "<td>" . $notes . "</td></tr>" ;
+                        $body .= "<tr><td>" . htmlspecialchars($data_up['responsecomplete_ts'],ENT_QUOTES) . "</td>" .
+                            "<td>" . htmlspecialchars($region_code,ENT_QUOTES) . "</td>" .
+                            "<td>" . htmlspecialchars($contact_person,ENT_QUOTES) . "</td>" .
+                            "<td>" . htmlspecialchars($data_up['data_upload_zip'] . $deleted,ENT_QUOTES) . "</td>" .
+                            "<td style='text-align: center;'>" . htmlspecialchars($file_pdf,ENT_QUOTES) . "</td>" .
+                            "<td>" . htmlspecialchars($expiration_date,ENT_QUOTES) . "</td>" .
+                            "<td>" . htmlspecialchars($buttons,ENT_QUOTES) . "</td>" .
+                            "<td>" . htmlspecialchars($notes,ENT_QUOTES) . "</td></tr>" ;
                     }
                 }
 
@@ -160,22 +160,22 @@ foreach ($request_DU as $down){
             <div class="panel panel-default" style="margin-bottom: 20px">
                 <div class="panel-heading" style="height: 38px">
                     <h3 class="panel-title">
-                        <a data-toggle="collapse" href="#collapse_concept_' . $concept_id . $sop_id . '">' . $concept_header . '</a>
-                        <span style="float:right;padding-right: 30px;font-size: 14px"> ' . $array_dates['button'] . ' <span class="label label-as-badge btn-info" style="font-weight: normal;"><i class="fa fa-arrow-down"></i> '. $downloads_active . '</span></span>
+                        <a data-toggle="collapse" href="#collapse_concept_' . htmlspecialchars($concept_id . $sop_id,ENT_QUOTES) . '">' . htmlspecialchars($concept_header,ENT_QUOTES) . '</a>
+                        <span style="float:right;padding-right: 30px;font-size: 14px"> ' . htmlspecialchars($array_dates['button'],ENT_QUOTES) . ' <span class="label label-as-badge btn-info" style="font-weight: normal;"><i class="fa fa-arrow-down"></i> '. htmlspecialchars($downloads_active,ENT_QUOTES) . '</span></span>
                     </h3>
     
                 </div>
     
-                <div id="collapse_concept_' . $concept_id . $sop_id . '" class="panel-collapse collapse" aria-expanded="true">
+                <div id="collapse_concept_' . htmlspecialchars($concept_id . $sop_id,ENT_QUOTES) . '" class="panel-collapse collapse" aria-expanded="true">
                     <table class="table table_requests sortable-theme-bootstrap">
                         <div class="row request">
-                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Title: </strong><a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept_id . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_title . ' <i class="fa fa-external-link"></i></a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . ' <i class="fa fa-external-link"></i></a></div>
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Title: </strong><a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . htmlspecialchars($concept_id,ENT_QUOTES) . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . htmlspecialchars($concept_title,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . htmlspecialchars($sop_id,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a></div>
                         </div>
                         <div class="row request">
-                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Contact: </strong>' . $contact_concept_person . '</div>
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Contact: </strong>' . htmlspecialchars($contact_concept_person,ENT_QUOTES) . '</div>
                         </div>
                         <div class="row request">
-                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Due: ' . $array_dates['text'] . '</strong></div>
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Due: ' . htmlspecialchars($array_dates['text'],ENT_QUOTES) . '</strong></div>
                         </div>
                         <div class="row request"></div>
                     </table>

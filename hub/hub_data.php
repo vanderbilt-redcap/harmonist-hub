@@ -220,6 +220,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                     <?php
                     if(!empty($newItems)) {
                         $i=1;
+                        $newItems = $module->escape($newItems);
                         foreach($newItems as $event){
                             if($i <= 5) {
                                 echo "<tr>";
@@ -273,10 +274,10 @@ if($settings['deactivate_datadown'][1] != "1"){
 
                                 $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['response_person']));
                                 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-                                $name = trim($people['firstname'] . ' ' . $people['lastname']);
+                                $name = htmlspecialchars(trim($people['firstname'] . ' ' . $people['lastname']),ENT_QUOTES);
 
                                 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $recent_activity['sop_id']));
-                                $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+                                $sop = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0]);
                                 $sop_concept_id = $sop['sop_concept_id'];
                                 $sop_name = $sop['sop_name'];
                                 $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $sop_concept_id, "");
@@ -314,18 +315,18 @@ if($settings['deactivate_datadown'][1] != "1"){
 
                                 $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['downloader_id']));
                                 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-                                $name = trim($people['firstname'] . ' ' . $people['lastname']);
+                                $name = htmlspecialchars(trim($people['firstname'] . ' ' . $people['lastname']));
 
                                 $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', array('record_id' => $recent_activity['downloader_id']));
                                 $data_upload_region = ProjectData::getProjectInfoArray($RecordSetUpload)[0]['data_upload_region'];
                                 $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $data_upload_region));
-                                $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
+                                $region_code = $module->escape(ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code']);
 
                                 $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept'], "");
 
                                 $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
-                                echo $icon.' <span class="time"> ' . $time . '</span><strong>'.$name.'</strong> downloaded '.$region_code.' data for '.$assoc_concept.'.';
+                                echo filter_tags($icon.' <span class="time"> ' . $time . '</span><strong>'.$name.'</strong> downloaded '.$region_code.' data for '.$assoc_concept.'.');
                                 echo '</li>';
                                 $i++;
                             }else if($recent_activity['data_assoc_request'] != "") {
@@ -333,16 +334,16 @@ if($settings['deactivate_datadown'][1] != "1"){
 
                                 $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['data_upload_person']));
                                 $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-                                $name = trim($people['firstname'] . ' ' . $people['lastname']);
+                                $name = htmlspecialchars(trim($people['firstname'] . ' ' . $people['lastname']),ENT_QUOTES);
 
                                 $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $recent_activity['data_upload_region']));
-                                $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
+                                $region_code = $module->escape(ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code']);
 
                                 $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept'], "");
 
                                 $icon = '<i class="fa fa-fw fa-arrow-up text-info" aria-hidden="true"></i>';
 
-                                echo $icon.' <span class="time"> ' . $time . '</span><strong>'.$name.'</strong> uploaded '.$region_code.' data for '.$assoc_concept.'.';
+                                echo filter_tags($icon.' <span class="time"> ' . $time . '</span><strong>'.$name.'</strong> uploaded '.$region_code.' data for '.$assoc_concept.'.');
                                 echo '</li>';
                                 $i++;
                             }

@@ -29,6 +29,7 @@ ArrayFunctions::array_sort_by_column($changelog,'release_d',SORT_DESC);
                             </tr>'.'
                             </thead></tbody>';
                     foreach($changelog as $log){
+                        $log = $module->escape($log);
                         if($log['release_d'] != '') {
                             echo '<tr>' .
                                 '<td style="text-align: center">' . $log['version_num'] . '</td>' .

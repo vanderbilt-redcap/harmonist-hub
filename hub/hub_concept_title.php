@@ -122,7 +122,7 @@ if($concept['revised_y'][0] == '1'){
 
         <?php if($isAdmin || $harmonist_perm_edit_concept){
             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $record, "concept_sheet", "");
-            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+            $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
 
             $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$record,ENT_QUOTES);
 
@@ -209,13 +209,13 @@ if($concept['revised_y'][0] == '1'){
                 if(!empty($concept['participants_complete'])) {
                     foreach ($concept['participants_complete'] as $id => $participant) {
                         $RecordSetParticipant = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $concept['person_link'][$id]));
-                        $participant_info = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetParticipant)[0];
+                        $participant_info = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetParticipant)[0]);
                         if (!empty($participant_info)) {
                             #get the label from the drop down menu
-                            echo '<div><a href="mailto:' . $participant_info['email'] . '">' . $participant_info['firstname'] . ' ' . $participant_info['lastname'] . '</a> (' . $module->getChoiceLabels('person_role', $pidsArray['HARMONIST'])[$concept['person_role'][$id]]. ')</div>';
+                            echo '<div><a href="mailto:' . $participant_info['email'] . '">' . $participant_info['firstname'] . ' ' . $participant_info['lastname'] . '</a> (' . htmlspecialchars($module->getChoiceLabels('person_role', $pidsArray['HARMONIST'])[$concept['person_role'][$id]],ENT_QUOTES). ')</div>';
                         } else {
 
-                            echo '<div>' . $concept['person_other'][$id] . '</div>';
+                            echo '<div>' . htmlspecialchars($concept['person_other'][$id],ENT_QUOTES) . '</div>';
                         }
                     }
                 }else{
@@ -291,18 +291,18 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                         asort($concept['adminupdate_d']);
                         foreach ($concept['adminupdate_d'] as $index=>$value){
                             echo '<tr>';
-                            echo  '<td style="width: 10%;">' . $value. '</td>';
-                            echo  '<td>' . $concept["admin_update"][$index]. '</td>';
-                            echo  '<td style="width: 25%;">'.$admin_status[$concept["admin_status"][$index]].'</td>';
+                            echo  '<td style="width: 10%;">' . htmlspecialchars($value,ENT_QUOTES). '</td>';
+                            echo  '<td>' . htmlspecialchars($concept["admin_update"][$index],ENT_QUOTES). '</td>';
+                            echo  '<td style="width: 25%;">'.htmlspecialchars($admin_status[$concept["admin_status"][$index]],ENT_QUOTES).'</td>';
                             echo '</tr>';
                         }
                     }else if($concept['adminupdate_d'] == "" && $concept['update_d'] != ""){
                         asort($concept['update_d']);
                         foreach ($concept['update_d'] as $index=>$value){
                             echo '<tr>';
-                            echo  '<td style="width: 10%;">' . $value. '</td>';
-                            echo  '<td>' . $concept["project_update"][$index]. '</td>';
-                            echo  '<td style="width: 25%;">'.$project_status[$concept["project_status"][$index]].'</td>';
+                            echo  '<td style="width: 10%;">' . htmlspecialchars($value,ENT_QUOTES). '</td>';
+                            echo  '<td>' . htmlspecialchars($concept["project_update"][$index],ENT_QUOTES). '</td>';
+                            echo  '<td style="width: 25%;">'.htmlspecialchars($project_status[$concept["project_status"][$index]],ENT_QUOTES).'</td>';
                             echo '</tr>';
                         }
                     }
@@ -435,11 +435,11 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     }
 
                     echo "<tr>";
-                    echo "<td width='200px'>" . $up['responsecomplete_ts'] . "</td>" .
-                        "<td width='250px'>" . $contact_person . "</td>" .
-                        "<td width='500px'>" . $up['upload_notes'] . "</td>" .
-                        "<td width='120px'>" . $region_code . "</td>" .
-                        "<td width='120px'>".$status."</td>" .
+                    echo "<td width='200px'>" . htmlspecialchars($up['responsecomplete_ts'],ENT_QUOTES) . "</td>" .
+                        "<td width='250px'>" . htmlspecialchars($contact_person,ENT_QUOTES) . "</td>" .
+                        "<td width='500px'>" . htmlspecialchars($up['upload_notes'],ENT_QUOTES) . "</td>" .
+                        "<td width='120px'>" . htmlspecialchars($region_code ,ENT_QUOTES). "</td>" .
+                        "<td width='120px'>".htmlspecialchars($status,ENT_QUOTES)."</td>" .
                         "</tr>";
 
                 }
@@ -495,7 +495,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
 
                         $available = '';
                         if(!empty($concept['output_citation'][$index])){
-                            $available = $concept['output_citation'][$index];
+                            $available = htmlspecialchars($concept['output_citation'][$index],ENT_QUOTES);
                         }
                         if(!empty($concept['output_pmcid'][$index])){
                             $available .= 'PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/'.$concept['output_pmcid'][$index].'" target="_blank">'.$concept['output_pmcid'][$index].'<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';

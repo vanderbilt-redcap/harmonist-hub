@@ -90,7 +90,7 @@ if(!empty($homepage)) {
     for($i = 1; $i<$number_of_announcements+1; $i++){
         if(!empty($homepage['announce_text'.$i])){
             $announcements .= '<ul class="fa-ul">'.
-                '<li><i class="fa-li fa fa-bell-o"></i>'.$homepage['announce_text'.$i];
+                '<li><i class="fa-li fa fa-bell-o"></i>'.$module->escape($homepage['announce_text'.$i]);
             if($i == 1 && $isAdmin){
                 $announcements .= '<a href="#" onclick="javascript:$(\'#announcements_survey\').modal(\'show\');" style="cursor: pointer"><span class="fa fa-cog" style="float: right;padding-right: 10px;"></span></a>';
             }
@@ -121,7 +121,7 @@ if(!empty($homepage)) {
                 <input type="hidden" value="0" id="announcement_loaded">
                 <?php
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HOME'], 1, "announcements", "");
-                $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
                 ?>
                 <iframe class="commentsform" id="announcements-frame" name="announcements-frame" message="U" src="<?=$survey_link?>" style="border: none;height: 810px;width: 100%;" message="F"></iframe>
             </div>
@@ -213,7 +213,7 @@ if(!empty($homepage)) {
                         <div class="modal-body">
                             <?php
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HOME'], 1, "deadlines", "");
-                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                            $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
                             ?>
                             <iframe class="commentsform" id="deadlines-frame" message="E" name="deadlines-frame" src="<?=$survey_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
                         </div>

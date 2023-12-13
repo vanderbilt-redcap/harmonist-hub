@@ -118,13 +118,14 @@ while ($row = $q->fetch_assoc()) {
 #CREATE ZIP FILE
 $filename = $concept_id."_DataRequest_".date("Y-m-d_hi",time());
 $zipname = $filename.'.zip';
+$zipPath = $module->getSafePath(EDOC_PATH.$zipname);
 
 $zip = new \ZipArchive();
-if ( $zip->open(EDOC_PATH.$zipname, \ZipArchive::CREATE) !== TRUE) {
+if ( $zip->open($zipPath, \ZipArchive::CREATE) !== TRUE) {
     exit("Error creating ZIP file");
 }
 #Add a file to zip and rename it
-$zip->addFile(EDOC_PATH.$pdf_file, $filename.'.pdf');
+$zip->addFile($module->getSafePath(EDOC_PATH.$pdf_file), $filename.'.pdf');
 
 # Add a file new file to zip using the text specified
 $download_file = file_get_contents( $module->getSafePath($filename.'.html' ));
@@ -134,12 +135,12 @@ $zip->close();
 
 header("Content-type: application/zip");
 header("Content-Disposition: attachment; filename=$zipname");
-header("Content-length: " . filesize(EDOC_PATH.$zipname));
+header("Content-length: " . filesize($zipPath));
 header("Pragma: no-cache");
 header("Expires: 0");
 ob_clean();
 flush();
-readfile(EDOC_PATH.$zipname);
-unlink(EDOC_PATH.$zipname);
+readfile($zipPath);
+unlink($zipPath);
 ?>
 

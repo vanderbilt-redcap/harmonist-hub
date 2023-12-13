@@ -106,16 +106,16 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             }
                             echo '<tr>
                                     <td><span class="nowrap">'.$req['requestopen_ts'].'</span></td>
-                                    <td><strong>'.$request_type_label[$req['request_type']].'</strong><br>'.$concept_link.'</td>
-                                    <td><a href="mailto:'.$req['contact_email'].'">'.$req['contact_name'].'</a>'.$region.'</td>
-                                    <td class="hidden-xs"><a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub&record='.$req['request_id'].'" target="_blank">'.$req['request_title'].'</a></td>';
+                                    <td><strong>'.htmlspecialchars($request_type_label[$req['request_type']],ENT_QUOTES).'</strong><br>'.filter_tags($concept_link).'</td>
+                                    <td><a href="mailto:'.$req['contact_email'].'">'.$req['contact_name'].'</a>'.htmlspecialchars($region,ENT_QUOTES).'</td>
+                                    <td class="hidden-xs"><a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub&record='.$req['request_id'].'" target="_blank">'.htmlspecialchars($req['request_title'],ENT_QUOTES).'</a></td>';
 
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "request", "");
-                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                            $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
                             echo '<td><div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\',\''.$check_submission_text.'\');" class="btn btn-primary btn-xs actionbutton"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> '.$check_submission_text.'</a></div>';
 
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "admin_review", "");
-                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                            $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
 
                             echo '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\',\''.$set_deadline_text.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> '.$set_deadline_text.'</a></div></td>';
                         }
@@ -177,11 +177,11 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                         }else{
                             $any_request_found = true;
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "finalization_of_request", "");
-                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                            $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
                             $passthru_link_doc = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "final_docs_request_survey", "");
-                            $survey_link_doc = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                            $survey_link_doc = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
                             $passthru_link_mr = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "tracking_number_assignment_survey", "");
-                            $survey_link_mr = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                            $survey_link_mr = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
 
                             $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $req['assoc_concept'], "");
                             if($req_type == "" && $req['mr_temporary'] != ""){
@@ -201,20 +201,20 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             $assign_mr_text = ($settings['admintext5']=="")? $default_values_settings['admintext5']:$settings['admintext5'];
 
                             if ($req['finalize_y'] != "") {
-                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$finalize_review_text.'</a>';
+                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.htmlspecialchars($finalize_review_text,ENT_QUOTES).'</a>';
                             } else {
-                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-legal fa-fw" aria-hidden="true"></i> '.$finalize_review_text.'</a>';
+                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-legal fa-fw" aria-hidden="true"></i> '.htmlspecialchars($finalize_review_text,ENT_QUOTES).'</a>';
                             }
                             if($req['request_type'] == '1' || $req['request_type'] == '5'){
                                 if ($req['author_doc'] != "") {
-                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$request_docs_text.'</a>';
+                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.htmlspecialchars($request_docs_text,ENT_QUOTES).'</a>';
                                 } else {
-                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-file fa-fw" aria-hidden="true"></i> '.$request_docs_text.'</a>';
+                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-file fa-fw" aria-hidden="true"></i> '.htmlspecialchars($request_docs_text,ENT_QUOTES).'</a>';
                                 }
                                 if ($req['mr_assigned'] != "" && $req['finalconcept_doc'] != "" && $req['finalconcept_pdf'] != "") {
-                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$assign_mr_text.'</a>';
+                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.htmlspecialchars($assign_mr_text,ENT_QUOTES).'</a>';
                                 } else {
-                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-hashtag fa-fw" aria-hidden="true"></i> '.$assign_mr_text.'</a>';
+                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-hashtag fa-fw" aria-hidden="true"></i> '.htmlspecialchars($assign_mr_text,ENT_QUOTES).'</a>';
                                 }
                             }else{
                                 $request_docs = "";
@@ -222,12 +222,12 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             }
 
                             echo '<tr>' .
-                                '<td><div><strong><span class="fa fa-user fa-square  ' . $abstracts_publications_badge_text[$req['request_type']] . '"></span> ' . $request_type_label[$req['request_type']] . '</strong> (' . $req_type . ')</div>' .
+                                '<td><div><strong><span class="fa fa-user fa-square  ' . htmlspecialchars($abstracts_publications_badge_text[$req['request_type']],ENT_QUOTES) . '"></span> ' . htmlspecialchars($request_type_label[$req['request_type']],ENT_QUOTES) . '</strong> (' . $req_type . ')</div>' .
                                 '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . $region . '</div>' .
-                                '<div style="padding-top:5px;">Due on: ' . $array_dates['text'] . '</div></td>' .
-                                '<td><a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id'] . '" target="_blank">' . $req['request_title'] . '</a></td>' .
+                                '<div style="padding-top:5px;">Due on: ' . filter_tags($array_dates['text']) . '</div></td>' .
+                                '<td><a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id'] . '" target="_blank">' . htmlspecialchars($req['request_title'],ENT_QUOTES) . '</a></td>' .
                                 '<td><div>' . $finalize_review . '</div></td>' .
-                                '<td><div>' . $request_docs . '</div></td>' .
+                                '<td><div>' . $request_docs. '</div></td>' .
                                 '<td><div>' . $assign_mr . '</div></td>' .
                                 '</tr>';
                         }
@@ -289,11 +289,11 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                         if($req['workflowcomplete_d'] != "" && strtotime ($expire_date) >= strtotime(date('Y-m-d'))){
                             $any_request_found = true;
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "finalization_of_request", "");
-                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                            $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
                             $passthru_link_doc = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "final_docs_request_survey", "");
-                            $survey_link_doc = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                            $survey_link_doc = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
                             $passthru_link_mr = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "tracking_number_assignment_survey", "");
-                            $survey_link_mr = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                            $survey_link_mr = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
 
                             $req_type = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $req['assoc_concept'], "");
                             if($req_type == "" && $req['mr_temporary'] != ""){
@@ -313,20 +313,20 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 
                             if ($req['finalize_y'] != "") {
-                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$finalize_review_text.'</a>';
+                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.htmlspecialchars($finalize_review_text,ENT_QUOTES).'</a>';
                             } else {
-                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-legal fa-fw" aria-hidden="true"></i> '.$finalize_review_text.'</a>';
+                                $finalize_review = '<a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\',\'' . $finalize_review_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-legal fa-fw" aria-hidden="true"></i> '.htmlspecialchars($finalize_review_text,ENT_QUOTES).'</a>';
                             }
                             if($req['request_type'] == '1' || $req['request_type'] == '5'){
                                 if ($req['author_doc'] != "") {
-                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$request_docs_text.'</a>';
+                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.htmlspecialchars($request_docs_text,ENT_QUOTES).'</a>';
                                 } else {
-                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-file fa-fw" aria-hidden="true"></i> '.$request_docs_text.'</a>';
+                                    $request_docs = '<a href="#" onclick="editIframeModal(\'hub-modal-doc\',\'redcap-doc-frame\',\'' . $survey_link_doc . '\',\'' . $request_docs_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-file fa-fw" aria-hidden="true"></i> '.htmlspecialchars($request_docs_text,ENT_QUOTES).'</a>';
                                 }
                                 if ($req['mr_assigned'] != "" && $req['finalconcept_doc'] != "" && $req['finalconcept_pdf'] != "") {
-                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.$assign_mr_text.'</a>';
+                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-default btn-xs open-codesModal"><span class="fa fa-check-square text-approved"></span> '.htmlspecialchars($assign_mr_text,ENT_QUOTES).'</a>';
                                 } else {
-                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-hashtag fa-fw" aria-hidden="true"></i> '.$assign_mr_text.'</a>';
+                                    $assign_mr = '<a href="#" onclick="editIframeModal(\'hub-modal-mr\',\'redcap-mr-frame\',\'' . $survey_link_mr . '\',\'' . $assign_mr_text . '\');" class="btn btn-secondary btn-xs open-codesModal"><i class="fa fa-hashtag fa-fw" aria-hidden="true"></i> '.htmlspecialchars($assign_mr_text,ENT_QUOTES).'</a>';
                                 }
                             }else{
                                 $request_docs = "";
@@ -334,13 +334,13 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             }
 
                             echo '<tr>' .
-                                '<td><div><strong><span class="fa fa-user fa-square  ' . $abstracts_publications_badge_text[$req['request_type']] . '"></span> ' . $request_type_label[$req['request_type']] . '</strong> (' . $req_type . ')</div>' .
-                                '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . $region . '</div>' .
+                                '<td><div><strong><span class="fa fa-user fa-square  ' . htmlspecialchars($abstracts_publications_badge_text[$req['request_type']],ENT_QUOTES) . '"></span> ' . htmlspecialchars($request_type_label[$req['request_type']],ENT_QUOTES) . '</strong> (' . htmlspecialchars($req_type,ENT_QUOTES) . ')</div>' .
+                                '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . htmlspecialchars($region,ENT_QUOTES) . '</div>' .
                                 '<div style="padding-top:5px;">Completed on: ' . $req['workflowcomplete_d'] . '</div></td>' .
-                                '<td><a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id'] . '" target="_blank">' . $req['request_title'] . '</a></td>' .
-                                '<td><div>' . $finalize_review . '</div></td>' .
-                                '<td><div>' . $request_docs . '</div></td>' .
-                                '<td><div>' . $assign_mr . '</div></td>' .
+                                '<td><a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id'] . '" target="_blank">' . htmlspecialchars($req['request_title'],ENT_QUOTES) . '</a></td>' .
+                                '<td><div>' . htmlspecialchars($finalize_review,ENT_QUOTES) . '</div></td>' .
+                                '<td><div>' . htmlspecialchars($request_docs,ENT_QUOTES) . '</div></td>' .
+                                '<td><div>' . htmlspecialchars($assign_mr,ENT_QUOTES) . '</div></td>' .
                                 '</tr>';
                         }
                     }
@@ -528,7 +528,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                     $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $login['record']));
                                     $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 
-                                    $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "&arm=1&id=" . $login['record'];
+                                    $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "&arm=1&id=" . $login['record']);
 
                                     $harmonist_perm_text = "";
                                     foreach ($people['harmonist_perms'] as $h_perm){
@@ -538,10 +538,10 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                     }
                                     $harmonist_perm_text = substr($harmonist_perm_text, 0, -3);
 
-                                    echo '<tr><td><a href="mailto:' . $login['email'] . '">' . $login['name'] . '</a></td>' .
-                                        '<td style="text-align: center;">' . $region_code . '</td>' .
-                                        '<td>' . $login['last_requested_token_d'] . '</td>' .
-                                        '<td>' . $harmonist_regperm[$people['harmonist_regperm']] . '</td>' .
+                                    echo '<tr><td><a href="mailto:' . htmlspecialchars($login['email'],ENT_QUOTES) . '">' . htmlspecialchars($login['name'],ENT_QUOTES) . '</a></td>' .
+                                        '<td style="text-align: center;">' . htmlspecialchars($region_code,ENT_QUOTES) . '</td>' .
+                                        '<td>' . htmlspecialchars($login['last_requested_token_d'],ENT_QUOTES) . '</td>' .
+                                        '<td>' . htmlspecialchars($harmonist_regperm[$people['harmonist_regperm']],ENT_QUOTES) . '</td>' .
                                         '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
                                 }
                             }
@@ -576,7 +576,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                         $title = $module->framework->getProject($iedea_constant)->getTitle();
                         $project_plugin = $iedea_constant;
                         echo '<tr>'.
-                            '<td><a href="'.APP_PATH_WEBROOT_ALL."Design/online_designer.php?pid=".$iedea_constant.'" target="_blank">'.$title.'</a></td>'.
+                            '<td><a href="'.APP_PATH_WEBROOT_ALL."Design/online_designer.php?pid=".$iedea_constant.'" target="_blank">'.htmlspecialchars($title,ENT_QUOTES).'</a></td>'.
                              '</tr>';
                     }
                     ?>

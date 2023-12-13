@@ -94,7 +94,7 @@ if(array_key_exists('message', $_REQUEST)){
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" value="0" id="comment_loaded_center">
-                                <iframe class="commentsform" id="redcap-new-center" name="redcap-new-center" message="N" src="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYTBLCENTERREVISED']?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                                <iframe class="commentsform" id="redcap-new-center" name="redcap-new-center" message="N" src="<?=$module->escape(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYTBLCENTERREVISED'])?>" style="border: none;height: 810px;width: 100%;"></iframe>
                             </div>
 
                             <div class="modal-footer">
@@ -109,7 +109,7 @@ if(array_key_exists('message', $_REQUEST)){
         <div style="float:left">
             <?php
             if($person_region['showregion_y'] == '1') {
-                echo '<ul class="list-inline" style="padding-left: 10px;padding-top: 7px;">Your region: <li><span style="padding-right:5px">' . $map_region . '</span>' . \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentLabel($region_array[$map_region]) . '</li></ul>';
+                echo '<ul class="list-inline" style="padding-left: 10px;padding-top: 7px;">Your region: <li><span style="padding-right:5px">' . htmlspecialchars($map_region,ENT_QUOTES) . '</span>' . htmlspecialchars(\Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentLabel($region_array[$map_region]) ,ENT_QUOTES). '</li></ul>';
             }
             ?>
         </div>
@@ -123,6 +123,7 @@ if(array_key_exists('message', $_REQUEST)){
                     <?php
                     if (!empty($regionstbl)) {
                         foreach ($regionstbl as $region){
+                            $region = $module->escape($region);
                             if($region['region_code'] == $map_region){
                                 echo "<option value='".$region['record_id']."' region_code='".$region['region_code']."' selected>".$region['region_code']."</option>";
                             }else{
@@ -142,7 +143,7 @@ if(array_key_exists('message', $_REQUEST)){
         <?php
             foreach ($region_array as $pregion => $percent){
                 if($map_region != $pregion){
-                    echo '<li style="margin-right: 15px;"><span style="padding-right:5px">'.$pregion.'</span>'.\Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentLabel($percent).'</li>';
+                    echo '<li style="margin-right: 15px;"><span style="padding-right:5px">'.htmlspecialchars($pregion,ENT_QUOTES).'</span>'.\Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentLabel($percent).'</li>';
                 }
             }
         ?>
@@ -183,10 +184,11 @@ if(array_key_exists('message', $_REQUEST)){
                     <?php
                         foreach ($TBLCenter as $center) {
                             if($center['drop_center'] == '' || !in_array($center['drop_center'],$center)) {
+                                $center = $module->escape($center);
                                 $buttons = "";
                                 if (($harmonist_perm && $center['region'] == $map_region) || $isAdmin) {
                                     $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SURVEYTBLCENTERREVISED'], $center['record_id'], "tblcenter", "");
-                                    $survey_link =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                                    $survey_link =  $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
                                     $buttons = '<div><a href="#" onclick="editIframeModal(\'update_center\',\'redcap-upload-center\',\'' . $survey_link . '\')" class="btn btn-primary btn-xs">Update</a></div>';
                                 }
 
@@ -204,8 +206,8 @@ if(array_key_exists('message', $_REQUEST)){
                                     '<td width="100px">' . $center['country'] . '</td>' .
                                     '<td width="90px">' . $center['region'] . '</td>' .
                                     '<td width="130px">' . $center['close_d'] . '</td>' .
-                                    '<td width="130px">' . $last_update . '</td>' .
-                                    '<td width="130px">' . $missing_fields . '</td>' ;
+                                    '<td width="130px">' . htmlspecialchars($last_update,ENT_QUOTES) . '</td>' .
+                                    '<td width="130px">' . htmlspecialchars($missing_fields,ENT_QUOTES) . '</td>' ;
 
                                if ($harmonist_perm || $isAdmin) {
                                    echo '<td width="100px">' . $buttons . '</td>';

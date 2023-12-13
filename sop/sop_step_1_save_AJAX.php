@@ -186,5 +186,5 @@ if($selectConcept == "" && $option == "1" && $save_option != "") {
     $data['sop_discuss'] = $data['record_id'];
     $data['selectConcept'] = $sop_concept_id;
 }
-echo json_encode($data);
+echo json_encode($module->escape($data));
 ?>

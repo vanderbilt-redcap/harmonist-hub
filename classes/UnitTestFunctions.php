@@ -81,6 +81,7 @@ class UnitTestFunctions
     }
 
     function getTestOutputMessage($testMsg,$value,$valueTest){
+        $testMsg = $this->module->escape($testMsg);
         if($value == $valueTest) {
             return '<div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;">
                 <span class="fa fa-check text-approved"></span> The test on ' . $testMsg . ' has been successful.
@@ -172,19 +173,18 @@ class UnitTestFunctions
                 array_push($result[$data['concept_title']][$settings['downloadreminder_dur']], empty($data[$settings['downloadreminder_dur']])?0:$data[$settings['downloadreminder_dur']]);
                 array_push($result[$data['concept_title']][$settings['downloadreminder2_dur']], empty($data[$settings['downloadreminder2_dur']])?0:$data[$settings['downloadreminder2_dur']]);
             }
-
             echo '<div class="alert alert-secondary fade in col-md-12">'.
-                '<span class="fa fa-clock-o"></span> Today at 23:59 ET <strong>'.$result['total'].' reminders</strong> will be sent.<br>';
+                '<span class="fa fa-clock-o"></span> Today at 23:59 ET <strong>'.htmlspecialchars($result['total'],ENT_QUOTES).' reminders</strong> will be sent.<br>';
             foreach ($result as $concept_title => $r){
                 if($concept_title != "total") {
-                    echo 'The data request  "' . $concept_title . ' " has:' .
+                    echo 'The data request  "' . htmlspecialchars($concept_title,ENT_QUOTES) . ' " has:' .
                         '<ul>' .
-                        '<li>' . $result[$concept_title]['numDownloaders'] . ' downloaders total.</li>';
+                        '<li>' . htmlspecialchars($result[$concept_title]['numDownloaders'],ENT_QUOTES) . ' downloaders total.</li>';
                     for ($i = 0; $i < count($result[$concept_title]['sop_id']); $i++) {
-                        echo '<li>Draft ID #' . $result[$concept_title]['sop_id'][$i] . '</li>';
+                        echo '<li>Draft ID #' . htmlspecialchars($result[$concept_title]['sop_id'][$i],ENT_QUOTES) . '</li>';
                         echo '<ul>' .
-                            '<li>Reminders in ' . $settings['downloadreminder_dur'] . ' days: ' . $result[$concept_title][$settings['downloadreminder_dur']][$i] . '</li>' .
-                            '<li>Reminders in ' . $settings['downloadreminder2_dur'] . ' days: ' . $result[$concept_title][$settings['downloadreminder2_dur']][$i] . '</li>' .
+                            '<li>Reminders in ' . htmlspecialchars($settings['downloadreminder_dur'],ENT_QUOTES) . ' days: ' . htmlspecialchars($result[$concept_title][$settings['downloadreminder_dur']][$i],ENT_QUOTES) . '</li>' .
+                            '<li>Reminders in ' . htmlspecialchars($settings['downloadreminder2_dur'],ENT_QUOTES) . ' days: ' . htmlspecialchars($result[$concept_title][$settings['downloadreminder2_dur']][$i],ENT_QUOTES) . '</li>' .
                             '</ul>';
                     }
                     echo '</ul>' .
@@ -220,7 +220,7 @@ class UnitTestFunctions
         $total_notifications_sent_today = count(ProjectData::getProjectInfoArray($RecordSetDU));
         if($total_notifications_sent_today > 0) {
             echo '<div class="alert alert-secondary fade in col-md-12">' .
-                '<span class="fa fa-envelope"></span> <strong>' . $total_notifications_sent_today . ' notifications</strong> were sent today.<br>' .
+                '<span class="fa fa-envelope"></span> <strong>' . htmlspecialchars($total_notifications_sent_today,ENT_QUOTES) . ' notifications</strong> were sent today.<br>' .
                 '</div>';
         }
     }
@@ -268,7 +268,7 @@ class UnitTestFunctions
         if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
-
+        $message = $this->module->escape($message);
         echo '<div class="alert alert-secondary fade in col-md-12">' .
             '<span class="fa fa-list-ul"></span> Monthly Summary for <strong>'.date("F",strtotime("-1 months"))." ".date("Y",strtotime("-1 months")).$environment . '</strong>:<br>' .
             '<ul>
@@ -305,7 +305,7 @@ class UnitTestFunctions
         $total_notifications_deleted_today = count(ProjectData::getProjectInfoArray($RecordSetDU));
         if($total_notifications_deleted_today > 0) {
             echo '<div class="alert alert-secondary fade in col-md-12">' .
-                '<span class="fa fa-trash"></span> <strong>' . $total_notifications_deleted_today . ' Data Uploads</strong> were automatically deleted today.<br>' .
+                '<span class="fa fa-trash"></span> <strong>' . htmlspecialchars($total_notifications_deleted_today,ENT_QUOTES) . ' Data Uploads</strong> were automatically deleted today.<br>' .
                 '</div>';
         }
     }
@@ -350,7 +350,7 @@ class UnitTestFunctions
         }
 
         echo '<div class="alert alert-secondary fade in col-md-12">' .
-            '<span class="fa fa-exclamation-triangle"></span> There are ' . $message['pending_total'] . ' Pending Files.<br>' .
+            '<span class="fa fa-exclamation-triangle"></span> There are ' . htmlspecialchars($message['pending_total'],ENT_QUOTES) . ' Pending Files.<br>' .
             '</div>';
 
     }

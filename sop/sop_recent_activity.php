@@ -80,6 +80,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                     $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
                     $regions = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown);
                     if (!empty($regions)) {
+                        $regions = $module->escape($regions);
                         foreach ($regions as $region){
                             echo "<option value='".$region['record_id']."'>".$region['region_code']."</option>";
                         }
@@ -153,9 +154,9 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']),null,null,null,false,false,false,"[showregion_y] = 1");
                             $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
 
-                            echo '<tr><td width="170px">'.$comment_time.'</td>'.
-                                '<td width="80px">'.$assoc_concept.'</td>'.
-                                '<td width="200px">'.$name.'</td>'.
+                            echo '<tr><td width="170px">'.htmlspecialchars($comment_time,ENT_QUOTES).'</td>'.
+                                '<td width="80px">'.htmlspecialchars($assoc_concept,ENT_QUOTES).'</td>'.
+                                '<td width="200px">'.htmlspecialchars($name,ENT_QUOTES).'</td>'.
                                 '<td width="230px">';
 
                             $text = 'submited a ';
@@ -168,11 +169,11 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             }
                             echo $text.'</td>';
 
-                            echo '<td width="40px">'.$region['region_code'].'</td>'.
-                                '<td width="360px"><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.$sop_name.'</a></td>';
+                            echo '<td width="40px">'.htmlspecialchars($region['region_code'],ENT_QUOTES).'</td>'.
+                                '<td width="360px"><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.htmlspecialchars($sop_name,ENT_QUOTES).'</a></td>';
 
                             if($recent_activity['revised_file'] != ''){
-                                echo '<td width="40px">'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
+                                echo '<td width="40px">'.$module->escape(\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"")).'</td>';
                             }else{
                                 echo '<td width="40px"></td>';
                             }
@@ -192,12 +193,12 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
 
                             $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
-                            echo '<tr><td width="170px">'.$comment_time.'</td>'.
-                                '<td width="80px">'.$assoc_concept.'</td>'.
-                                '<td width="200px">'.$name.'</td>'.
+                            echo '<tr><td width="170px">'.htmlspecialchars($comment_time,ENT_QUOTES).'</td>'.
+                                '<td width="80px">'.htmlspecialchars($assoc_concept,ENT_QUOTES).'</td>'.
+                                '<td width="200px">'.htmlspecialchars($name,ENT_QUOTES).'</td>'.
                                 '<td width="230px">downloaded data</td>'.
-                                '<td width="40px">'.$region_code.'</td>'.
-                                '<td width="360px"><i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i> '.$recent_activity['download_files'].'</td>'.
+                                '<td width="40px">'.htmlspecialchars($region_code,ENT_QUOTES).'</td>'.
+                                '<td width="360px"><i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i> '.htmlspecialchars($recent_activity['download_files'],ENT_QUOTES).'</td>'.
                                 '<td width="40px"></td>';
                         }else if($recent_activity['data_assoc_request'] != ""){
                             #UPLOADS
@@ -210,14 +211,13 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
 
                             $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
 
-                            echo '<tr><td width="170px">'.$comment_time.'</td>'.
-                                '<td width="80px">'.$assoc_concept.'</td>'.
-                                '<td width="200px">'.$name.'</td>'.
+                            echo '<tr><td width="170px">'.htmlspecialchars($comment_time,ENT_QUOTES).'</td>'.
+                                '<td width="80px">'.htmlspecialchars($assoc_concept,ENT_QUOTES).'</td>'.
+                                '<td width="200px">'.htmlspecialchars($name,ENT_QUOTES).'</td>'.
                                 '<td width="230px">uploaded data</td>'.
-                                '<td width="40px">'.$region_code.'</td>'.
-                                '<td width="360px"><i class="fa fa-fw fa-arrow-up text-info" aria-hidden="true"></i> '.$recent_activity['data_upload_zip'].'</td>'.
+                                '<td width="40px">'.htmlspecialchars($region_code,ENT_QUOTES).'</td>'.
+                                '<td width="360px"><i class="fa fa-fw fa-arrow-up text-info" aria-hidden="true"></i> '.htmlspecialchars($recent_activity['data_upload_zip'],ENT_QUOTES).'</td>'.
                                 '<td width="40px"></td>';
-
                         }
                     }
                     ?>

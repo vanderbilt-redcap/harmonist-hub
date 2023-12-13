@@ -86,8 +86,8 @@ if($indexSubSet>0) {
                             }
 
 
-                            $record_varname = empty($id) ? $data['record_id'] . '_1' : $data['record_id'] . '_' . $id;
-                            $name = $data['variable_name'][$id];
+                            $record_varname = htmlspecialchars(empty($id) ? $data['record_id'] . '_1' : $data['record_id'] . '_' . $id,ENT_QUOTES);
+                            $name = htmlspecialchars($data['variable_name'][$id],ENT_QUOTES);
 
                             #If the variable is required or not
                             $variable_required = "N";
@@ -97,8 +97,8 @@ if($indexSubSet>0) {
 
                             $RecordSetDA = \REDCap::getData($pidsArray['DATAAVAILABILITY'], 'array', null,null,null,null,false,false,false,"[available_table] = '".$data['record_id']."'");
                             $data_availability = ProjectData::getProjectInfoArray($RecordSetDA);
-                            $type_text = $type_status[99];
-                            $type_color = $type_label[99];
+                            $type_text = htmlspecialchars($type_status[99],ENT_QUOTES);
+                            $type_color = htmlspecialchars($type_label[99],ENT_QUOTES);
                             if($data_availability != ""){
                                 foreach ($data_availability as $available){
                                     $instance_table_var = explode("|",$available['available_variable'])[1];
@@ -107,8 +107,8 @@ if($indexSubSet>0) {
                                         $instance_table_var = "";
                                     }
                                     if($data['variable_name'][$id] == $data['variable_name'][$instance_table_var]){
-                                        $type_text = $type_status[$available['available_status']];
-                                        $type_color = $type_label[$available['available_status']];
+                                        $type_text = htmlspecialchars($type_status[$available['available_status']],ENT_QUOTES);
+                                        $type_color = htmlspecialchars($type_label[$available['available_status']],ENT_QUOTES);
                                     }
                                 }
                             }
@@ -126,9 +126,9 @@ if($indexSubSet>0) {
                                 $dataFormat = $dataTable['data_format_label'][$data['data_format'][$id]];
 
                                 if ($data['has_codes'][$id] == '0') {
-                                    echo $dataFormat;
+                                    echo htmlspecialchars($dataFormat,ENT_QUOTES);
                                     if (!empty($data['code_text'][$id])) {
-                                        echo "<br/>".$data['code_text'][$id];
+                                        echo "<br/>".htmlspecialchars($data['code_text'][$id],ENT_QUOTES);
                                     }
                                 } else if ($data['has_codes'][$id] == '1') {
                                     if(!empty($data['code_list_ref'][$id])){
@@ -140,7 +140,7 @@ if($indexSubSet>0) {
                                                 $dataFormat .= "<div style='padding-left:15px'>";
                                             }
                                             foreach ($codeOptions as $option) {
-                                                $dataFormat .= $option . "<br/>";
+                                                $dataFormat .= htmlspecialchars($option,ENT_QUOTES) . "<br/>";
                                             }
                                             if (!empty($codeOptions[0])) {
                                                 $dataFormat .= "</div>";
@@ -152,11 +152,11 @@ if($indexSubSet>0) {
                                             <?PHP
                                             if (array_key_exists('code_file', $codeformat)) {
                                                 ?>
-                                                <a href="#codesModal<?= $codeformat['code_file']; ?>"
+                                                <a href="#codesModal<?= htmlspecialchars($codeformat['code_file'],ENT_QUOTES); ?>"
                                                    id='btnViewCodes'
                                                    type="button" class="btn_code_modal open-codesModal"
                                                    data-toggle="modal"
-                                                   data-target="#codesModal<?= $codeformat['code_file']; ?>">See
+                                                   data-target="#codesModal<?= htmlspecialchars($codeformat['code_file'],ENT_QUOTES); ?>">See
                                                     Code List</a>
 
                                                 <?PHP require('codes_modal.php');

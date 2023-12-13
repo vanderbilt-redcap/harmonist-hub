@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 $wg_type = $_REQUEST['type'];
 $concepts_table = "";
 $RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
-$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
+$concepts = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps));
 if (!empty($concepts)) {
     $concepts_table .= '<table class="table table_requests sortable-theme-bootstrap concepts-table" data-sortable id="sortable_table">'.
         '<colgroup>'.
@@ -39,10 +39,10 @@ if (!empty($concepts)) {
         $concepts_table .= '<tr wg_id="'.$concept['wg_link'].'">'.
             '<td style="" data-order="'.$concept['concept_id'].'"><strong>' . $concept['concept_id'].'</strong></td>' .
             '<td>' . $concept['wg_link'].'</td>' .
-            '<td>' . $tags.'</td>' .
+            '<td>' . htmlspecialchars($tags,ENT_QUOTES).'</td>' .
             '<td>' . $concept['active_y'].'</td>' .
             '<td>' . $concept['wg2_link'].'</td>' .
-            '<td style="">' . $name. '</td>' .
+            '<td style="">' . htmlspecialchars($name,ENT_QUOTES). '</td>' .
             '<td><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$concept['record_id'].'">' . $concept['concept_title'] . '</a></td>' ;
 
         #Only check if they are final
@@ -404,7 +404,7 @@ $img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJE
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" value="0" id="comment_loaded">
-                                <iframe class="commentsform" id="redcap-new-frame" name="redcap-new-frame" message="N" src="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['CONCEPTLINK']."&modal=modal"?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                                <iframe class="commentsform" id="redcap-new-frame" name="redcap-new-frame" message="N" src="<?=$module->escape(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['CONCEPTLINK']."&modal=modal")?>" style="border: none;height: 810px;width: 100%;"></iframe>
                             </div>
 
                             <div class="modal-footer">
@@ -444,7 +444,7 @@ $img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJE
                                 }
                                 $wg_name = $wg['group_abbr'] . " - ".$wg['group_name'];
                                 $wg_all = (strlen($wg_name) > 30) ? substr($wg_name,0,30)."..." : $wg_name;
-                                echo "<option value='" . $wg['record_id'] . "' " . $selected . ">"  . $wg_all . "</option>";
+                                echo "<option value='" . htmlspecialchars($wg['record_id'],ENT_QUOTES) . "' " . htmlspecialchars($selected,ENT_QUOTES) . ">"  . htmlspecialchars($wg_all,ENT_QUOTES) . "</option>";
                             }
                         }
                     }
@@ -461,7 +461,7 @@ $img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJE
                     $concept_tags = $module->getChoiceLabels('concept_tags', $pidsArray['HARMONIST']);
                     foreach ($concept_tags as $tagid => $text){
                         $tag_text= (strlen($text) > 30) ? substr($text,0,30)."..." : $text;
-                        echo "<option value='".$tagid."'>".$tag_text."</option>";
+                        echo "<option value='".htmlspecialchars($tagid,ENT_QUOTES)."'>".htmlspecialchars($tag_text,ENT_QUOTES)."</option>";
                     }
                     ?>
                 </select>

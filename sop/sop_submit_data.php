@@ -210,7 +210,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
                             $status_icon = array(0=>"fa-times text-default_light",1=>"fa-wrench",2=>"fa-check",3=>"fa-ban",4=>"fa-times",9=>"fa-question");
                             $selected = ' <a href="#" data-toggle="dropdown" style="width:290px" class="dropdown-toggle form-control output_select btn-group" id="default-select-value"><span class="fa-label-legend status fa fa-fw fa-times text-default_light label-default_light " style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="0"><span class="status-text"> Not Started</span><span class="caret" style="float: right;margin-top:8px"></span></a>';
                             foreach ($status_type as $index=>$status){
-                                $menu .= '<li style="width:290px"><a href="#" tabindex="1"><span class="fa-label status fa fa-fw '.$status_icon[$index].' '.$status_icon_color[$index].'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.$status.'</span></a></li>';
+                                $menu .= '<li style="width:290px"><a href="#" tabindex="1"><span class="fa-label status fa fa-fw '.$status_icon[$index].' '.$status_icon_color[$index].'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.htmlspecialchars($index,ENT_QUOTES).'"></span><span class="status-text"> '.htmlspecialchars($status,ENT_QUOTES).'</span></a></li>';
                             }
                             ?>
                             <ul class="nav" style="margin:0;width:290px" id="data_status" name="data_status">

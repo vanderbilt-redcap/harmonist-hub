@@ -133,5 +133,15 @@ class ProjectData
         }
         return $default_value;
     }
+
+    public static function sanitizeALLVariablesFromInstrument($project_id, $instruments, $data){
+        foreach ($instruments as $iid => $instrument_name) {
+            $fields = array_keys(\REDCap::getDataDictionary($project_id, 'array', false, null, $instrument_name));
+            foreach ($fields as $id => $name) {
+                $data[$name] = filter_tags($data[$name]);
+            }
+        }
+        return $data;
+    }
 }
 ?>

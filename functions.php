@@ -229,7 +229,7 @@ function getToken($userid,$pidPeople){
 function getReqAssocConceptLink($module, $pidsArray, $assoc_concept, $option=""){
     if(!empty($assoc_concept)){
         $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $assoc_concept));
-        $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
+        $concepts = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]);
         $concept_sheet = $concepts['concept_id'];
         $concept_title = $concepts['concept_title'];
         if($option == '1'){
@@ -939,18 +939,18 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
         }
 
         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "request", "");
-        $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+        $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
         $current_req .=  '<td><div><a href="'.$survey_link.'" class="btn btn-primary btn-xs actionbutton" target="_blank"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> Check Submission</a></div>';
 
         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "admin_review", "");
-        $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+        $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
 
         $current_req .=  '<div><a href="#" onclick="editIframeModal(\'hub_process_survey\',\'redcap-edit-frame-admin\',\''.$survey_link.'\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> Change Status</a></div>';
     }
 
     if(($req['contactperson_id'] == $current_user['record_id'] || ($current_user['person_region'] == $req['contact_region'] && $current_user['harmonist_regperm'] == 3)) && $req_type != 'archive' && $req_type != 'home'){
         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "request", "");
-        $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+        $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
 
         $current_req .= '<div><a href="'.$survey_link.'" class="btn btn-default btn-xs actionbutton" target="_blank" style="margin-top: 7px;"><span class="fa fa-pencil"></span> '.$req_type.'Edit</a></div>';
     }
@@ -1347,7 +1347,7 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
             $sop_visibility = '<span class="badge badge-pill badge-private">Private</span>';
 
             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $sop['record_id'], "dhwg_review_request", "");
-            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+            $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
 
             $buttons .= '<div><a href="#" onclick="editIframeModal(\'sop-make-public\',\'redcap-edit-frame-make-public\',\'' . $survey_link . '\');" class="btn btn-success btn-xs open-codesModal" style="margin-top: 7px;"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send for Review</a></div>';
         }

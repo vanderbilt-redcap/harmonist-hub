@@ -141,12 +141,12 @@ if($request !="") {
             <?php if($isAdmin){
                 $editRequestButton ='';
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "request", "");
-                $editRequest = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                $editRequest = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
 
-                $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['RMANAGER']."&arm=1&id=".$request['request_id'];
+                $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['RMANAGER']."&arm=1&id=".$request['request_id']);
 
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "admin_review", "");
-                $changeApproval = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                $changeApproval = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
                 ?>
                 <div class="btn-group hidden-xs pull-right">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -159,7 +159,7 @@ if($request !="") {
                         <li><a href="<?=$changeApproval?>"target="_blank">Change Approval</a></li>
                         <?php
                         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $record, "finalization_of_request", "");
-                        $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                        $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
                         echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\''.$survey_link.'\');" style="cursor:pointer">Finalize Request</a></li>';
                         ?>
                         <li role="separator" class="divider"></li>
@@ -372,7 +372,7 @@ if($request !="") {
                             </div>
                             <div class="modal-body">
                                 <?php
-                                $survey_path = htmlentities(APP_PATH_WEBROOT_FULL."/surveys/?s=".$pidsArray['SURVEYLINK']."&author_revision_y=1"."&request_id=".$record."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal",ENT_QUOTES);
+                                $survey_path = $module->escape(APP_PATH_WEBROOT_FULL."/surveys/?s=".$pidsArray['SURVEYLINK']."&author_revision_y=1"."&request_id=".$record."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal");
                                 ?>
                                 <iframe class="commentsform" id="redcap-author-revision" name="redcap-author-revision" message="R" src="<?=$survey_path?>" style="border: none;height: 810px;width: 100%;"></iframe>
                             </div>
@@ -514,7 +514,7 @@ if($request !="") {
                                         "<td  style='width:5%'>";
                                     if($comment['response_person'] == $current_user['record_id']){
                                         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['COMMENTSVOTES'], $comment['record_id'], "comments_and_votes", "");
-                                        $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                                        $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
                                         $group_discussion .= '<button class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button>';
                                     }
                                     $group_discussion .= "</td></tr>";
@@ -582,7 +582,7 @@ if($request !="") {
             if($current_user['harmonist_regperm'] == '3'){
                 $response_pi_level = 1;
             }
-            $survey_path = htmlentities(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYLINK']."&request_id=".$record."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal",ENT_QUOTES);
+            $survey_path = $module->escape(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYLINK']."&request_id=".$record."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal");
         ?>
         <div id="collapse_review" class="panel-collapse collapse in" aria-expanded="true">
             <div class="panel-body">

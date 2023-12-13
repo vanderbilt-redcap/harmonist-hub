@@ -37,6 +37,8 @@ $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
 $settings = $module->escape(ProjectData::getProjectInfoArray($RecordSetSettings)[0]);
 #Escape name just in case they add quotes
 $settings["hub_name"] = addslashes($settings["hub_name"]);
+#Sanitize text title and descrition for pages
+$settings = ProjectData::sanitizeALLVariablesFromInstrument($pidsArray['SETTINGS'],array(0=>"harmonist_text"),$settings);
 
 $default_values = new ProjectData;
 $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);

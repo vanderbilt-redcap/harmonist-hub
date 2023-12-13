@@ -93,5 +93,5 @@ if($data['dataformat_prefer'] != ""){
     $data['dataformat_prefer_text']=rtrim($dataformat_prefer_text,", ");
 }
 
-echo json_encode($data);
+echo json_encode($module->escape($data));
 ?>

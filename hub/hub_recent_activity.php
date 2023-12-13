@@ -77,6 +77,7 @@ if($person_record != ""){
                     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                     ArrayFunctions::array_sort_by_column($regions,'region_code');
                     if (!empty($regions)) {
+                        $regions = $module->escape($regions);
                         foreach ($regions as $region){
                             echo "<option value='".$region['record_id']."'>".$region['region_code']."</option>";
                         }
@@ -156,8 +157,8 @@ if($person_record != ""){
                             }else if($requestComment['mr_temporary'] != ""){
                                 $concept_id = $requestComment['mr_temporary'];
                             }
-                            echo '<td width="50px">'.$concept_id.'</td>'.
-                                '<td width="160px">'.$name.'</td>';
+                            echo '<td width="50px">'.htmlspecialchars($concept_id,ENT_QUOTES).'</td>'.
+                                '<td width="160px">'.htmlspecialchars($name,ENT_QUOTES).'</td>';
 
                             echo '<td width="160px">';
 
@@ -184,7 +185,7 @@ if($person_record != ""){
 
                                 echo $text.'</td>';
                             }
-                            echo '<td width="65px">'.$region['region_code'].'</td>'.
+                            echo '<td width="65px">'.htmlspecialchars($region['region_code'],ENT_QUOTES).'</td>'.
                                  '<td width="450px">';
 
                             $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
@@ -205,15 +206,15 @@ if($person_record != ""){
                                     if ($comment['pi_vote'] != '') {
                                         if ($comment['pi_vote'] == "1") {
                                             //Approved
-                                            $comment_vote = '<div style="padding-bottom: 10px;"><span class="label label-approved" title="Approved"><i class="fa fa-check" aria-hidden="true"></i></span> <span class="' . $region_vote_icon_text[$comment['pi_vote']] . '">Approved</span></div>';
+                                            $comment_vote = '<div style="padding-bottom: 10px;"><span class="label label-approved" title="Approved"><i class="fa fa-check" aria-hidden="true"></i></span> <span class="' . htmlspecialchars($region_vote_icon_text[$comment['pi_vote']],ENT_QUOTES) . '">Approved</span></div>';
                                         } else if ($comment['pi_vote'] == "0") {
                                             //Not Approved
-                                            $comment_vote = '<div style="padding-bottom: 10px;"><span class="label label-notapproved" title="Not Approved"><i class="fa fa-times" aria-hidden="true"></i></span> <span class="' . $region_vote_icon_text[$comment['pi_vote']] . '">Not Approved</span></div>';
+                                            $comment_vote = '<div style="padding-bottom: 10px;"><span class="label label-notapproved" title="Not Approved"><i class="fa fa-times" aria-hidden="true"></i></span> <span class="' . htmlspecialchars($region_vote_icon_text[$comment['pi_vote']],ENT_QUOTES) . '">Not Approved</span></div>';
                                         } else if ($comment['pi_vote'] == "9") {
                                             //Complete
-                                            $comment_vote = '<div style="padding-bottom: 10px;"><span class="label label-default" title="Abstained"><i class="fa fa-ban" aria-hidden="true"></i></span> <span class="' . $region_vote_icon_text[$comment['pi_vote']] . '">Abstained</span></div>';
+                                            $comment_vote = '<div style="padding-bottom: 10px;"><span class="label label-default" title="Abstained"><i class="fa fa-ban" aria-hidden="true"></i></span> <span class="' . htmlspecialchars($region_vote_icon_text[$comment['pi_vote']],ENT_QUOTES) . '">Abstained</span></div>';
                                         } else {
-                                            $comment_vote = '<div style="padding-bottom: 10px;"><span class="label label-default" title="Abstained"><i class="fa fa-ban" aria-hidden="true"></i></span> <span class="' . $region_vote_icon_text[$comment['pi_vote']] . '">Abstained</span></div>';
+                                            $comment_vote = '<div style="padding-bottom: 10px;"><span class="label label-default" title="Abstained"><i class="fa fa-ban" aria-hidden="true"></i></span> <span class="' . htmlspecialchars($region_vote_icon_text[$comment['pi_vote']],ENT_QUOTES) . '">Abstained</span></div>';
                                         }
                                     }
                                 }
@@ -221,7 +222,7 @@ if($person_record != ""){
 
                             echo    $comment_vote.'<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id'] . '" target="_blank">' . $requestComment['request_title'] . '</a></td>';
                             if($comment['revised_file'] != ''){
-                                echo '<td>'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
+                                echo '<td>'.$module->escape(\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"")).'</td>';
                             }else{
                                 echo '<td></td>';
                             }

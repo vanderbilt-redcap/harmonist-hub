@@ -49,7 +49,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     }
 
                     $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "");
-                    $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $passthru_link['hash'];
+                    $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $passthru_link['hash']);
 
                     $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
@@ -97,7 +97,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
 
             $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
-            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+            $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
             $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
             $table_aux = array();

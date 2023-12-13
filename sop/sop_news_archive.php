@@ -1,6 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
+use PhpParser\Lexer\TokenEmulator\EnumTokenEmulator;
+
 $type = htmlentities($_REQUEST['type'],ENT_QUOTES);
 
 $news_type = $module->getChoiceLabels('news_type', $pidsArray['NEWITEMS']);
@@ -160,7 +162,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
     <div class="optionSelect">
         <div style="margin: 0 auto;width: 200px;">
             <?php if($isAdmin || $harmonist_perm_news){?>
-                <a href="#" onclick="editIframeModal('hub_add_news','redcap-add-news','<?=APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYNEWS']."&news_person=".$current_user['record_id']?>');" class="btn btn-success btn-md"><span class="fa fa-plus"></span> Add News</a>
+                <a href="#" onclick="editIframeModal('hub_add_news','redcap-add-news','<?=$module->escape(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYNEWS']."&news_person=".$current_user['record_id'])?>');" class="btn btn-success btn-md"><span class="fa fa-plus"></span> Add News</a>
 
                 <!-- MODAL ADD NEWS-->
                 <div class="modal fade" id="hub_add_news" tabindex="-1" role="dialog" aria-labelledby="Codes">
@@ -194,7 +196,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
                 $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
                 $selected = ' <a href="#" data-toggle="dropdown" style="width:200px" class="dropdown-toggle form-control output_select btn-group" id="default-select-value"><span class="status-text"> Select All</span><span class="caret" style="float: right;margin-top:8px"></span></a>';
                 foreach ($news_type as $index=>$status){
-                    $menu .= '<li style="width:200px"><span class="fa-label status fa fa-fw '.$index.'" style="background-color:'.$news_icon_color[$index].';padding: 3px;border-radius:3px;color:#fff;font-size: 13px;height: 20px;" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.$status.'</span></li>';
+                    $menu .= '<li style="width:200px"><span class="fa-label status fa fa-fw '.htmlspecialchars($index,ENT_QUOTES).'" style="background-color:'.htmlspecialchars($news_icon_color[$index],ENT_QUOTES).';padding: 3px;border-radius:3px;color:#fff;font-size: 13px;height: 20px;" aria-hidden="true" status="'.htmlspecialchars($index,ENT_QUOTES).'"></span><span class="status-text"> '.htmlspecialchars($status,ENT_QUOTES).'</span></li>';
                 }
                 ?>
                 <ul class="nav" style="margin:0;width:200px" id="data_status" name="data_status">
@@ -218,7 +220,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
                     <?php
                     if (!empty($news_category)) {
                         foreach ($news_category as $index=>$value){
-                            echo "<option value='".$index."'>".$value."</option>";
+                            echo "<option value='".htmlspecialchars($index,ENT_QUOTES)."'>".htmlspecialchars($value,ENT_QUOTES)."</option>";
                         }
                     }
                     ?>
@@ -262,21 +264,21 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
                         $region_code = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
 
                         echo '<tr>'.
-                            '<td width="8%">'.$news['news_d'].'</td>'.
-                            '<td>'.$news_type[$news['news_type']].'</td>'.
-                            '<td>'.$news['news_category'].'</td>'.
-                            '<td width="13%">'.\Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $news['news_person'], 'email').' ('.$region_code.')</td>'.
+                            '<td width="8%">'.htmlspecialchars($news['news_d'],ENT_QUOTES).'</td>'.
+                            '<td>'.htmlspecialchars($news_type[$news['news_type']],ENT_QUOTES).'</td>'.
+                            '<td>'.htmlspecialchars($news['news_category'],ENT_QUOTES).'</td>'.
+                            '<td width="13%">'.\Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $news['news_person'], 'email').' ('.htmlspecialchars($region_code,ENT_QUOTES).')</td>'.
                             '<td style="width: 60%">'.
-                                        '<div><span class="label news-label-tiny" style="background-color:'.$news_icon_color[$news['news_type']].';margin-right: 10px;" title="'.$news_type[$news['news_type']].'"><i class="fa '.$news['news_type'].'"></i></span></div>'.
-                                        '<div style="padding-bottom: 10px;"><strong>'.$news['news_title'].'</strong></div>'.
-                                        '<div class="more">'.$news['news']." ".'</div></td>'.
-                            '<td style="width: 15%;word-break: break-all"><div>'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").'</div>'.
-                            '<div>'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").' </div></td>';
+                                        '<div><span class="label news-label-tiny" style="background-color:'.htmlspecialchars($news_icon_color[$news['news_type']],ENT_QUOTES).';margin-right: 10px;" title="'.htmlspecialchars($news_type[$news['news_type']],ENT_QUOTES).'"><i class="fa '.htmlspecialchars($news['news_type'],ENT_QUOTES).'"></i></span></div>'.
+                                        '<div style="padding-bottom: 10px;"><strong>'.htmlspecialchars($news['news_title'],ENT_QUOTES).'</strong></div>'.
+                                        '<div class="more">'.htmlspecialchars($news['news'],ENT_QUOTES)." ".'</div></td>'.
+                            '<td style="width: 15%;word-break: break-all"><div>'.$module->escape(\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")).'</div>'.
+                            '<div>'.$module->escape(\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")).' </div></td>';
                         if($isAdmin || $harmonist_perm_news){
                             $edit = "";
                             if($isAdmin || $news['news_person'] == $current_user['record_id']){
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['NEWITEMS'], $news['record_id'], "news_item", "");
-                                $survey_link =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                                $survey_link =  $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
 
                                 $edit .= '<a class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_news\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></a>';
                             }

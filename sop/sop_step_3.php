@@ -175,7 +175,7 @@ if (!empty($people)) {
                 <select class="form-control data-form-control" name="sop_hubuser" id="sop_hubuser" disabled>
                     <?php
                     $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null);
-                    $people = ProjectData::getProjectInfoArray($RecordSetPeople);
+                    $people = $module->escape(ProjectData::getProjectInfoArray($RecordSetPeople));
                     if (!empty($people)) {
                         foreach ($people as $person){
                             if($current_user['record_id'] == $person['record_id']){
@@ -194,6 +194,7 @@ if (!empty($people)) {
                     <?php
                     $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
                     $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                    $regions = $module->escape($regions);
                     if (!empty($regions)) {
                         foreach ($regions as $region){
                             if($current_user['person_region'] == $region['record_id']){
@@ -218,7 +219,7 @@ if (!empty($people)) {
                 <label class="steps_sub_label"></label>
                 <div style="display: inline-block">
             <?php
-            $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']);
+            $dataformat_prefer = $module->escape($module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']));
             foreach($dataformat_prefer as $dataid => $dataformat){
                 echo '<div><input type="checkbox" class="" id="dataformat_prefer_'.$dataid.'" name="dataformat_prefer[]" value="'.$dataid.'" onkeyup="checkStep(3);"><span style="padding-left: 10px">'.$dataformat.'</span></div>';
             }
@@ -240,6 +241,7 @@ if (!empty($people)) {
                 $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
                 $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
                 if (!empty($regions)) {
+                    $regions = $module->escape($regions);
                     foreach ($regions as $region){
                         echo "<option value='".$region['record_id']."'>".$region['region_name']. "</option>";
                     }
@@ -253,6 +255,7 @@ if (!empty($people)) {
             $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[active_y] = '1' AND [redcap_name] <> '' AND [allowgetdata_y(1)] = 1");
             $people_sop = ProjectData::getProjectInfoArray($RecordSetPeople);
             ArrayFunctions::array_sort_by_column($people_sop,'firstname');
+            $people_sop = $module->escape($people_sop);
             foreach ($people_sop as $person){
                 if($current_user['person_region'] == $person['person_region']){
                     echo ' <li tabindex="0" class="ui-state-default" id="'.$person['record_id'].'" region="'.$person['person_region'].'">'.$person['firstname'].' '.$person['lastname'].'</li>';

@@ -44,7 +44,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
                     </div>
                 <?php }else if($harmonist_perm){
                     $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], 1, "finalization_of_data_request","");
-                    $survey_link =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                    $survey_link =  $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
                     ?>
                     <div style="display: inline-block">
                         <a href="#" onclick="editIframeModal('hub-modal-data-finalize','redcap-finalize-frame','<?=$survey_link?>');" class="btn btn-primary btn-md">Finalize Data Request</a>
