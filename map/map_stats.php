@@ -91,11 +91,11 @@ $jsonLegendData = json_encode($totalLegend);
 <html>
 <head>
     <script>
-        var jsonLocationData = <?=$jsonLocationData?>;
-        var jsonAreaDataAll = <?=$jsonAreaData?>;
-        var jsonAreaData = <?=$jsonTotalAreasByRegionData?>;
-        var jsonLegendData = <?=$jsonLegendData?>;
-        var totalAreasByRegionZoom = <?=$totalAreasByRegionZoom?>;
+        var jsonLocationData = <?=$module->escape($jsonLocationData)?>;
+        var jsonAreaDataAll = <?=$module->escape($jsonAreaData)?>;
+        var jsonAreaData = <?=$module->escape($jsonTotalAreasByRegionData)?>;
+        var jsonLegendData = <?=$module->escape($jsonLegendData)?>;
+        var totalAreasByRegionZoom = <?=$module->escape($totalAreasByRegionZoom)?>;
         function setDataset(index) {
             map.dataProvider.getAreasFromMap = true;
             if(index == ""){

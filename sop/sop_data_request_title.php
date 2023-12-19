@@ -6,7 +6,7 @@ use PhpParser\Lexer\TokenEmulator\EnumTokenEmulator;
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record));
-$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0]);
 
 if($sop !="") {
     $sop_status = $module->getChoiceLabels('sop_status', $pidsArray['SOP']);
@@ -197,12 +197,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             }
                             if($sop['sop_status'] != "1") {
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "finalization_of_data_request", "");
-                                $survey_link =  $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
+                                $survey_link =  $module->escape($module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']));
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" style="cursor:pointer">Start Data Call</a></li>';
                             }
                             if($sop['sop_status'] == "1" && $sop['sop_visibility'] == "2" && $sop['sop_finalize_y'][1] == '1' && empty($sop['sop_closed_y'][0])){
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "data_call_closure", "");
-                                $survey_link_closure =  $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
+                                $survey_link_closure =  $module->escape($module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']));
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-closure\',\'redcap-closure-frame\',\'' . $survey_link_closure . '\');" style="cursor:pointer">Archive Data Call</a></li>';
                             }
                             ?>
@@ -230,8 +230,8 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                     <input type="hidden" id="user" name="user">
                                     <div class="modal-footer">
                                         <?php
-                                        $url = $module->getUrl('sop/sop_copy_data_request_AJAX.php?id='.$sop['record_id'])."&NOAUTH";
-                                        $urlgoto = $module->getUrl("index.php?&option=ss1&step=3")."&NOAUTH";
+                                        $url = $module->escape($module->getUrl('sop/sop_copy_data_request_AJAX.php?id='.$sop['record_id'])."&NOAUTH");
+                                        $urlgoto = $module->escape($module->getUrl("index.php?&option=ss1&step=3")."&NOAUTH");
                                         ?>
                                         <a type="submit" onclick='copy_data_request("<?=$url?>","<?=$urlgoto?>")' class="btn btn-default btn-success" id='btnModalRescheduleForm'>Continue</a>
                                         <a href="#" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</a>
@@ -310,12 +310,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                             }
                                             $current_region_status = htmlentities($status_icons . '<span class="status-text"> ' . htmlspecialchars($status_text,ENT_QUOTES) . '</span>');
 
-                                            $selected = $status_icons .'<span class="status-text"> ' . htmlspecialchars($status_text,ENT_QUOTES) . '</span>';
-                                            $selected .= '<input type="hidden" value="" class="dropdown_votes" record="'.$sop['record_id'].'" id="'.$region_id.'_'.$sop['data_response_status'][$region['record_id']].'">';
+                                            $selected = $module->escape($status_icons) .'<span class="status-text"> ' . htmlspecialchars($status_text,ENT_QUOTES) . '</span>';
+                                            $selected .= '<input type="hidden" value="" class="dropdown_votes" record="'.$module->escape($sop['record_id']).'" id="'.$module->escape($region_id.'_'.$sop['data_response_status'][$region['record_id']]).'">';
                                             $menu = '';
                                             foreach ($status_type as $index=>$status){
-                                                $menu .= '<li style="width:290px"><span class="fa-label status fa fa-fw '.$status_icon[$index].' '.$status_icon_color[$index].'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.htmlspecialchars($status,ENT_QUOTES).'</span>';
-                                                $menu .= '<input type="hidden" value="'.$index.'" class="dropdown_votes" record="'.$sop['record_id'].'" id="'.$region_id.'_'.$index.'"></li>';
+                                                $menu .= '<li style="width:290px"><span class="fa-label status fa fa-fw '.$module->escape($status_icon[$index].' '.$status_icon_color[$index]).'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.htmlspecialchars($status,ENT_QUOTES).'</span>';
+                                                $menu .= '<input type="hidden" value="'.$module->escape($index).'" class="dropdown_votes" record="'.$module->escape($sop['record_id']).'" id="'.$module->escape($region_id.'_'.$index).'"></li>';
                                             }
 
                                             $region_row .= '<tr>'.
@@ -363,19 +363,19 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                             <div style="float: left;line-height: 30px;">Set my status:</div>
                                             <div style="float: left;padding-left: 10px">
                                                 <?php
-                                                $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
-                                                $status_icon_color = array(0=>"label-default_light",1=>"label-warning",2=>"label-approved",3=>"label-default",4=>"label-default",9=>"label-other");
-                                                $status_icon = array(0=>"fa-times text-default_light",1=>"fa-wrench",2=>"fa-check",3=>"fa-ban",4=>"fa-times",9=>"fa-question");
-                                                $selected .= '<input type="hidden" value="" class="dropdown_votes" record="'.$sop['record_id'].'" id="'.$region_id.'_'.$sop['data_response_status'][$region['record_id']].'">';
+                                                $status_type = $module->escape($module->getChoiceLabels('data_response_status', $pidsArray['SOP']));
+                                                $status_icon_color = $module->escape(array(0=>"label-default_light",1=>"label-warning",2=>"label-approved",3=>"label-default",4=>"label-default",9=>"label-other"));
+                                                $status_icon = $module->escape(array(0=>"fa-times text-default_light",1=>"fa-wrench",2=>"fa-check",3=>"fa-ban",4=>"fa-times",9=>"fa-question"));
+                                                $selected .= '<input type="hidden" value="" class="dropdown_votes" record="'.$module->escape($sop['record_id']).'" id="'.$module->escape($region_id.'_'.$sop['data_response_status'][$region['record_id']]).'">';
                                                 $menu = '';
                                                 foreach ($status_type as $index=>$status){
                                                     $menu .= '<li style="width:290px"><span class="fa-label status fa fa-fw '.$status_icon[$index].' '.$status_icon_color[$index].'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.htmlspecialchars($status,ENT_QUOTES).'</span>';
-                                                    $menu .= '<input type="hidden" value="'.$index.'" class="dropdown_votes" record="'.$sop['record_id'].'" id="'.$region_id.'_'.$index.'"></li>';
+                                                    $menu .= '<input type="hidden" value="'.$module->escape($index).'" class="dropdown_votes" record="'.$module->escape($sop['record_id']).'" id="'.$module->escape($region_id.'_'.$index).'"></li>';
                                                 }
                                                 ?>
                                                 <ul class="nav" style="margin:0;width:290px" id="data_status" name="data_status">
                                                     <li class="menu-item dropdown">
-                                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-custom form-control output_select btn-group" id="default-select-value" style="width: 300px;"><?=$selected?><span class="caret" style="float: right;margin-top:8px"></span></a>
+                                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-custom form-control output_select btn-group" id="default-select-value" style="width: 300px;"><?=$module->escape($selected)?><span class="caret" style="float: right;margin-top:8px"></span></a>
                                                         <ul class="dropdown-menu output-dropdown-menu dropdown-menu-custom" style="width:290px">
                                                             <?=$menu?>
                                                         </ul>
@@ -471,9 +471,9 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                         }
                     }
                     ?>
-                    <button onclick="follow_activity('<?= $follow_option ?>','<?= $current_user['record_id'] ?>','<?= $sop['record_id'] ?>','<?= $module->getUrl("sop/sop_data_request_follow_activity_AJAX.php") ?>')"
-                            class="btn <?= $follow_class ?> actionbutton"><i
-                                class="<?= $follow_icon_class ?>"></i> <span class="hidden-xs"><?= htmlspecialchars($follow_text,ENT_QUOTES) ?></span></button>
+                    <button onclick="follow_activity('<?= $module->escape($follow_option) ?>','<?= $module->escape($current_user['record_id']) ?>','<?= $module->escape($sop['record_id']) ?>','<?= $module->getUrl("sop/sop_data_request_follow_activity_AJAX.php") ?>')"
+                            class="btn <?= $module->escape($follow_class) ?> actionbutton"><i
+                                class="<?= $module->escape($follow_icon_class) ?>"></i> <span class="hidden-xs"><?= htmlspecialchars($follow_text,ENT_QUOTES) ?></span></button>
                 </div>
                 <div class="pull-right" id="btn_follow" style="padding-right: 10px">
                     <?php
@@ -641,7 +641,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
 
                             $count = 0;
                             foreach ($downloadersOrdered as $downO) {
-                                $down0 = $module->escape($downO);
+                                $downO = $module->escape($downO);
                                 $comma = ",&nbsp;";
                                 $count++;
                                 if(count($downloadersOrdered) == $count){

@@ -5,7 +5,7 @@ $option = htmlentities($_GET['option'],ENT_QUOTES);
 $record = htmlentities($_GET['record'],ENT_QUOTES);
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $record));
-$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,'')[0];
+$request = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,'')[0]);
 if($request !="") {
     $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
     $region_response_status = $module->getChoiceLabels('region_response_status', $pidsArray['RMANAGER']);
@@ -136,7 +136,7 @@ if($request !="") {
     <div class="panel panel-info">
         <div class="panel-heading" id="singleRequestHeader">
             <h2 class="panel-title" style="display: inline-block;padding: 8px 0px 10px;">
-                Request #<?=$request['request_id'];?> | <?=$request_type_label[$request['request_type']];?> | <?=$request['contact_name'];?>
+                Request #<?=$module->escape($request['request_id']);?> | <?=$module->escape($request_type_label[$request['request_type']]);?> | <?=$module->escape($request['contact_name']);?>
             </h2>
             <?php if($isAdmin){
                 $editRequestButton ='';
@@ -186,7 +186,7 @@ if($request !="") {
                                     <tbody>
                                     <?php
                                     $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                                    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                                    $regions = $module->escape(ProjectData::getProjectInfoArray($RecordSetRegions));
                                     ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                                     $region_row = '';
@@ -204,15 +204,15 @@ if($request !="") {
                                             $menu = '<li><span><em>No vote recorded</em></li></span><input type="hidden" value="" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_none" >';
                                             $selected = '<span><em>No vote recorded</em></span><input type="hidden" value="" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_none">';
                                             foreach ($region_vote_status as $index => $vote_text) {
-                                                $menu .= '<li><span class="fa ' . $region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index] . '" aria-hidden="true"></span><span class="' . $region_vote_icon_text[$index] . '"> ' . $vote_text . '</span>';
-                                                $menu .= '<input type="hidden" value="' . $index . '" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_' . $index . '"></li>';
+                                                $menu .= '<li><span class="fa ' . $module->escape($region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index]) . '" aria-hidden="true"></span><span class="' . $module->escape($region_vote_icon_text[$index]) . '"> ' . $module->escape($vote_text) . '</span>';
+                                                $menu .= '<input type="hidden" value="' . $module->escape($index) . '" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $module->escape($region_id . '_' . $index) . '"></li>';
                                                 if ($request['region_vote_status'][$region_id] == $index && $request['region_vote_status'][$region_id] != '') {
-                                                    $selected = '<span class="fa ' . $region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index] . '" aria-hidden="true"></span><span class="' . $region_vote_icon_text[$index] . '"> ' . $vote_text . '</span>';
-                                                    $selected .= '<input type="hidden" value="' . $index . '" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_' . $index . '"">';
+                                                    $selected = '<span class="fa ' . $module->escape($region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index]) . '" aria-hidden="true"></span><span class="' . $module->escape($region_vote_icon_text[$index]) . '"> ' . $module->escape($vote_text) . '</span>';
+                                                    $selected .= '<input type="hidden" value="' . $module->escape($index) . '" class="dropdown_votes" request="' . $module->escape($request['request_id']) . '" id="' . $module->escape($region_id . '_' . $index) . '"">';
                                                 }
                                             }
                                             $region_row .= '<tr>' .
-                                                '<td>' . $region['region_code'] . '/' . $region['region_name'] . '</td>' .
+                                                '<td>' . $module->escape($region['region_code'] . '/' . $region['region_name']) . '</td>' .
                                                 '<td>
                                                                 <div style="float:left;">
                                                                     <ul class="nav navbar-nav navbar-right">
@@ -224,7 +224,7 @@ if($request !="") {
                                                                         </li>
                                                                     </ul>
                                                                     </div></td>' .
-                                                '<td><span class="' . $class . '">' . $region_time . '</span></td>' .
+                                                '<td><span class="' . $module->escape($class) . '">' . $module->escape($region_time) . '</span></td>' .
                                                 '</tr>';
                                         }
                                     }

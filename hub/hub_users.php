@@ -58,7 +58,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                     <option value="">Select All</option>
                     <?php
                     $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
-                    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                    $regions = $module->escape(ProjectData::getProjectInfoArray($RecordSetRegions));
                     ArrayFunctions::array_sort_by_column($regions,'region_code');
                     if (!empty($regions)) {
                         foreach ($regions as $region){
@@ -75,7 +75,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                 <select class="form-control" name="selectActivity" id="selectActivity">
                     <option value="">Select All</option>
                     <?php
-                    $harmonist_regperm = $module->getChoiceLabels('harmonist_regperm', $pidsArray['PEOPLE']);
+                    $harmonist_regperm = $module->escape($module->getChoiceLabels('harmonist_regperm', $pidsArray['PEOPLE']));
                     if (!empty($harmonist_regperm)) {
                         foreach ($harmonist_regperm as $level){
                             echo "<option value='".$level."'>".$level."</option>";
@@ -93,7 +93,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
                 <?php
                 $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[active_y] = '1'");
-                $logins = ProjectData::getProjectInfoArray($RecordSetPeople);
+                $logins = $module->escape(ProjectData::getProjectInfoArray($RecordSetPeople));
                 if(!empty($logins)) {
                     echo '<thead>' . '
                             <tr>' . '
@@ -115,7 +115,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                         $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array',  array('record_id' => $login['record_id']));
                         $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
 
-                        $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "&arm=1&id=" . $login['record_id'];
+                        $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "&arm=1&id=" . $login['record_id']);
 
                         $harmonist_perm_text = "";
                         if($people['harmonistadmin_y'] == "1"){
@@ -133,10 +133,10 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                         }
 
                         echo '<tr><td><a href="mailto:' . $login['email'] . '">' . $login['firstname'] .' '.$login['lastname']. '</a></td>' .
-                            '<td style="text-align: center;">' . $region_code . '</td>' .
+                            '<td style="text-align: center;">' . $module->escape($region_code) . '</td>' .
                             '<td>' . $login['last_requested_token_d'] . '</td>' .
-                            '<td>' . $harmonist_regperm[$people['harmonist_regperm']] . '</td>' .
-                            '<td>' . $harmonist_perm_text . '</td>' .
+                            '<td>' . $module->escape($harmonist_regperm[$people['harmonist_regperm']]) . '</td>' .
+                            '<td>' . $module->escape($harmonist_perm_text) . '</td>' .
                             '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>'.
                             '<td style="text-align: center;"><div><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hra&record='.$login['record_id'].'" class="btn btn-primary btn-xs actionbutton"><i class="fa fa-user fa-fw" aria-hidden="true"></i> View Activity</a></div></td>';
 

@@ -229,6 +229,36 @@ $array_sections = array(0=>'concepts',1=>'conceptswg',2=>'requests');
 $array_sections_title = array(0=>'concepts by status', 1=>'concepts by wg',2=>'Hub Review Requests');
 $array_sections_all = array(0=>'concepts',1=>'conceptswg',2=>'requests');
 $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Working Group',2=>'Hub Review Requests');
+
+#Escape All Data
+$requests_values = $module->escape($requests_values);
+$requests_labels = $module->escape($requests_labels);
+$requests_colors = $module->escape($requests_colors);
+$array_sections = $module->escape($array_sections);
+$array_sections_title = $module->escape($array_sections_title);
+$array_sections_all = $module->escape($array_sections_all);
+$array_sections_title_all = $module->escape($array_sections_title_all);
+$concepts_values = $module->escape($concepts_values);
+$concepts_labels = $module->escape($concepts_labels);
+$concepts_colors = $module->escape($concepts_colors);
+$conceptswg_values = $module->escape($conceptswg_values);
+$conceptswg_labels = $module->escape($conceptswg_labels);
+$conceptswg_colors = $module->escape($conceptswg_colors);
+$conceptswg_short_label_index = $module->escape($conceptswg_short_label_index);
+$conceptswg_short_label = $module->escape($conceptswg_short_label);
+$conceptsleadregion_values = $module->escape($conceptsleadregion_values);
+$conceptsleadregion_labels = $module->escape($conceptsleadregion_labels);
+$regionalmrdata_manuscripts = $module->escape($regionalmrdata_manuscripts);
+$regionalmrpubs_color_abstracts = $module->escape($regionalmrpubs_color_abstracts);
+$years_label_concepts = $module->escape($years_label_concepts);
+$iedea_concepts = $module->escape($iedea_concepts);
+$iedea_manuscripts = $module->escape($iedea_manuscripts);
+$iedea_abstracts = $module->escape($iedea_abstracts);
+$iedea_mrdatarequests = $module->escape($iedea_mrdatarequests);
+$requestsreq_values = $module->escape($requestsreq_values);
+$requestsreq_labels = $module->escape($requestsreq_labels);
+$requestsreq_colors = $module->escape($requestsreq_colors);
+$concept_type = $module->escape($concept_type);
 ?>
 <script>
     $(document).ready(function() {

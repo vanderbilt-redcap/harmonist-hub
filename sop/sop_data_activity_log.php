@@ -150,7 +150,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
         if($_REQUEST['type'] == "upload") {
             ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'?>">< Back to Submit Data</a><?php
         }else if($datareq_id != "") {
-            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record='.$datareq_id.'&type=s'?>">< Back to Data Request</a><?php
+            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record='.$module->escape($datareq_id).'&type=s'?>">< Back to Data Request</a><?php
         }else{
             ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a><?php
         }
@@ -170,7 +170,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                     <option value="">Select All</option>
                     <?php
                     $recordsRegions = \REDCap::getData($pidsArray['REGIONS'], 'array');
-                    $regions = ProjectData::getProjectInfoArray($recordsRegions);
+                    $regions = $module->escape(ProjectData::getProjectInfoArray($recordsRegions));
                     ArrayFunctions::array_sort_by_column($regions, 'region_code');
                     if (!empty($regions)) {
                         foreach ($regions as $region){
@@ -266,13 +266,13 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 
                             $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
-                            echo '<tr><td width="150px">'.$comment_time.'</td>'.
+                            echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
                                 '<td width="105px"><i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i> download</td>'.
-                                '<td width="220px">'.$name.'</td>'.
-                                '<td width="20px">'.$region_code.'</td>'.
-                                '<td width="80px">'.$assoc_concept.'</td>'.
-                                '<td width="80px">'.$data_request.'</td>'.
-                                '<td width="220px"> '.$recent_activity['download_files'].'</td>'.
+                                '<td width="220px">'.$module->escape($name).'</td>'.
+                                '<td width="20px">'.$module->escape($region_code).'</td>'.
+                                '<td width="80px">'.$module->escape($assoc_concept).'</td>'.
+                                '<td width="80px">'.$module->escape($data_request).'</td>'.
+                                '<td width="220px"> '.$module->escape($recent_activity['download_files']).'</td>'.
                                 '<td>download</td>'.
                                 '<td width="50px"> </td>'.
                                 '<td width="50px"> </td>';
@@ -307,19 +307,19 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                     $buttons = "<a href='#' onclick='$(\"#deleted_record\").val(\"".$crypt."\");$(\"#modal-data-download-confirmation\").modal(\"show\");' class='fa fa-trash' style='color: #000;cursor:pointer;text-decoration: none;' title='delete'></a>";
                             }
 
-                            echo '<tr><td width="150px">'.$comment_time.'</td>'.
-                                '<td width="105px">'.$activity.'</td>'.
-                                '<td width="220px">'.$name.'</td>'.
-                                '<td width="20px">'.$region_code.'</td>'.
-                                '<td width="80px">'.$assoc_concept.'</td>'.
-                                '<td width="80px">'.$recent_activity['data_assoc_request'].'</td>'.
-                                '<td width="220px">'.$recent_activity['data_upload_zip'].'</td>'.
-                                '<td>'.$activity_hidden.'</td>'.
-                                '<td width="50px"> '.$file.'</td>'.
-                                '<td width="50px"> '.$buttons.'</td>';
+                            echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
+                                '<td width="105px">'.$module->escape($activity).'</td>'.
+                                '<td width="220px">'.$module->escape($name).'</td>'.
+                                '<td width="20px">'.$module->escape($region_code).'</td>'.
+                                '<td width="80px">'.$module->escape($assoc_concept).'</td>'.
+                                '<td width="80px">'.$module->escape($recent_activity['data_assoc_request']).'</td>'.
+                                '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
+                                '<td>'.$module->escape($activity_hidden).'</td>'.
+                                '<td width="50px"> '.$module->escape($file).'</td>'.
+                                '<td width="50px"> '.$module->escape($buttons).'</td>';
 
                             if($isAdmin){
-                                $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recent_activity['record_id'];
+                                $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recent_activity['record_id']);
                                 echo '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
                             }
                             echo '</tr>';
@@ -345,15 +345,15 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                     $comment_time = $dateComment->format("Y-m-d H:i:s");
                                 }
 
-                                echo '<tr><td width="150px">'.$comment_time.'</td>'.
-                                    '<td width="105px">'.$activity.'</td>'.
-                                    '<td width="220px">'.$name.'</td>'.
-                                    '<td width="20px">'.$region_code.'</td>'.
-                                    '<td width="80px">'.$assoc_concept.'</td>'.
-                                    '<td width="80px">'.$recent_activity['data_assoc_request'].'</td>'.
-                                    '<td width="220px">'.$recent_activity['data_upload_zip'].'</td>'.
-                                    '<td>'.$activity_hidden.'</td>'.
-                                    '<td width="50px"> '.$file.'</td>'.
+                                echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
+                                    '<td width="105px">'.$module->escape($activity).'</td>'.
+                                    '<td width="220px">'.$module->escape($name).'</td>'.
+                                    '<td width="20px">'.$module->escape($region_code).'</td>'.
+                                    '<td width="80px">'.$module->escape($assoc_concept).'</td>'.
+                                    '<td width="80px">'.$module->escape($recent_activity['data_assoc_request']).'</td>'.
+                                    '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
+                                    '<td>'.$module->escape($activity_hidden).'</td>'.
+                                    '<td width="50px"> '.$module->escape($file).'</td>'.
                                     '<td width="50px"></td>';
 
                                 if($isAdmin){

@@ -395,9 +395,9 @@ function createProject0CJSON($module, $pidsArray){
     $jsonArray = \Vanderbilt\HarmonistHubExternalModule\getTableVariableJsonName($pidsArray['DATAMODEL'], $dataTable['height_units'],'height_units',$jsonArray);
 
     #save files data
-    $jsonArray['project_logo_100_40'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $pidsArray['PROJECTS'], $dataTable['project_logo_100_40'],'pdf')));
-    $jsonArray['project_logo_50_20'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $pidsArray['PROJECTS'], $dataTable['project_logo_50_20'],'pdf')));
-    $jsonArray['sample_dataset'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($this, $pidsArray['PROJECTS'], $dataTable['sample_dataset'],'pdf')));
+    $jsonArray['project_logo_100_40'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $dataTable['project_logo_100_40'],'pdf')));
+    $jsonArray['project_logo_50_20'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $dataTable['project_logo_50_20'],'pdf')));
+    $jsonArray['sample_dataset'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $dataTable['sample_dataset'],'pdf')));
 
     #we save the new JSON
     if(!empty($jsonArray)){

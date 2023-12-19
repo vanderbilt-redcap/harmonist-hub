@@ -2,20 +2,20 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
-$request_id = $_REQUEST['request_id'];
-$region_id = $_REQUEST['region_id'];
-$project_id = $_REQUEST['pid'];
+$request_id = (int)$_REQUEST['request_id'];
+$region_id = (int)$_REQUEST['region_id'];
+$project_id = (int)$_REQUEST['pid'];
 
 $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
-$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regions = $module->escape(ProjectData::getProjectInfoArray($RecordSetRegions));
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
 $RecordSetRequest = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
-$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequest)[0];
+$request = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequest)[0]);
 
-$region_vote_icon_view = array("1" => "fa fa-check", "0" => "fa fa-times", "9" => "fa fa-ban");
-$region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" => "text-default");
-$vote_text = array("1" => "Approved", "0" => "Not Approved", "9" => "Abstained/Not applicable");
+$region_vote_icon_view = $module->escape(array("1" => "fa fa-check", "0" => "fa fa-times", "9" => "fa fa-ban"));
+$region_vote_icon_text = $module->escape(array("1" => "text-approved", "0" => "text-error", "9" => "text-default"));
+$vote_text = $module->escape(array("1" => "Approved", "0" => "Not Approved", "9" => "Abstained/Not applicable"));
 $region_vote_status = $module->getChoiceLabels('region_vote_status', $pidsArray['RMANAGER']);
 
 $votes_menu = '<ul class="nav nav-tabs">';
@@ -50,21 +50,21 @@ foreach ($regions as $region){
 
             $region_row .= '<tr>'.
                 '<td><span class="'.$region_vote_icon_view[$vote['pi_vote']].' '.$region_vote_icon_text[$vote['pi_vote']].'" aria-hidden="true"></span><span class="'.$region_vote_icon_text[$vote['pi_vote']].'"> '.$vote_text[$vote['pi_vote']].'</span></td>'.
-                '<td>'.$region_time.'</td>'.
-                '<td>'.$name.'</td>'.
+                '<td>'.$module->escape($region_time).'</td>'.
+                '<td>'.$module->escape($name).'</td>'.
                 '</tr>';
 
             $total_votes++;
         }
     }
 
-    $votes_menu .= ' <li class="'.$active.'"><a data-toggle="tab" href="#'.$region['region_code'].'">'.$region['region_code'].' <span class="badge '.$activeLabel.' '.$activetab.'">'.$total_votes.'</span></a></li>';
+    $votes_menu .= ' <li class="'.$module->escape($active).'"><a data-toggle="tab" href="#'.$region['region_code'].'">'.$region['region_code'].' <span class="badge '.$activeLabel.' '.$activetab.'">'.$total_votes.'</span></a></li>';
 
     if($region_row == ''){
         $region_row .= '<tr><td colspan="3">No votes recorded.</td></tr>';
     }
 
-    $votes_table .= '<div id="'.$region['region_code'].'" class="tab-pane fade '.$in.$active.'">'.$votes_text.'
+    $votes_table .= '<div id="'.$module->escape($region['region_code']).'" class="tab-pane fade '.$module->escape($in.$active).'">'.$module->escape($votes_text).'
                    <table class="table table-striped">
                     <thead>
                     <tr>

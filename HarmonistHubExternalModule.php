@@ -15,11 +15,6 @@ require_once(dirname(__FILE__)."/vendor/autoload.php");
 class HarmonistHubExternalModule extends AbstractExternalModule
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     #If it's not the main PID project hide the Harmonist Hub link
     public function redcap_module_link_check_display($project_id, $link) {
         $hub_projectname = $this->getProjectSetting('hub-projectname');

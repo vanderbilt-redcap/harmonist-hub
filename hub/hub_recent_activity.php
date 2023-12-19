@@ -138,7 +138,7 @@ if($person_record != ""){
                             $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
 
                             $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
-                            $requestComment = ProjectData::getProjectInfoArray($RecordSetRM)[0];
+                            $requestComment = $module->escape(ProjectData::getProjectInfoArray($RecordSetRM)[0]);
 
                             $comment_time ="";
                             if(!empty($comment['responsecomplete_ts'])){
@@ -147,7 +147,7 @@ if($person_record != ""){
                                 $comment_time = $dateComment->format("Y-m-d H:i:s");
                             }
 
-                            echo '<tr><td width="150px">'.$comment_time.'</td>';
+                            echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>';
 
                             $concept_id = "<em>None</em>";
                             if(!empty($requestComment['assoc_concept'])){

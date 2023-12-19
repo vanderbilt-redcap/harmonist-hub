@@ -3,15 +3,15 @@ use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 $RecordSetCurrentUser = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[access_token] = '".$token."'");
-$current_user = ProjectData::getProjectInfoArray($RecordSetCurrentUser)[0];
-$name = $current_user['firstname'].' '.$current_user['lastname'];
+$current_user = $module->escape(ProjectData::getProjectInfoArray($RecordSetCurrentUser)[0]);
+$name = $module->escape($current_user['firstname'].' '.$current_user['lastname']);
 
 $isAdmin = false;
 if($current_user['harmonistadmin_y'] == '1'){//$userRights->super_user == "1"
     $isAdmin = true;
 }
 $RecordSetPersonRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $current_user['person_region']));
-$person_region = ProjectData::getProjectInfoArray($RecordSetPersonRegion)[0];
+$person_region = $module->escape($module->escape(ProjectData::getProjectInfoArray($RecordSetPersonRegion)[0]));
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array',null);
 $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
@@ -19,14 +19,14 @@ ArrayFunctions::array_sort_by_column($requests, 'due_d');
 
 $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $request_response_person = $module->getChoiceLabels('response_person', $pidsArray['RMANAGER']);
-$numberOfOpenRequest = \Vanderbilt\HarmonistHubExternalModule\numberOfOpenRequest($requests,$current_user['person_region']);
+$numberOfOpenRequest = $module->escape(\Vanderbilt\HarmonistHubExternalModule\numberOfOpenRequest($requests,$current_user['person_region']));
 
 $request_admin = "";
 if($isAdmin) {
     $RecordSetRM_admin = \REDCap::getData($pidsArray['RMANAGER'], 'array', null);
     $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM_admin);
     ArrayFunctions::array_sort_by_column($request_admin, 'requestopen_ts');
-    $numberOfAdminRequest = \Vanderbilt\HarmonistHubExternalModule\numberOfAdminRequest($request_admin);
+    $numberOfAdminRequest = $module->escape(\Vanderbilt\HarmonistHubExternalModule\numberOfAdminRequest($request_admin));
 }
 ?>
 
