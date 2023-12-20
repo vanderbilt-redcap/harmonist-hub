@@ -259,6 +259,7 @@ $requestsreq_values = $module->escape($requestsreq_values);
 $requestsreq_labels = $module->escape($requestsreq_labels);
 $requestsreq_colors = $module->escape($requestsreq_colors);
 $concept_type = $module->escape($concept_type);
+
 ?>
 <script>
     $(document).ready(function() {
@@ -321,49 +322,72 @@ $concept_type = $module->escape($concept_type);
         var array_sections_title_all = <?=json_encode($array_sections_title_all)?>;
 
         //Consortium Productivity
-        var concepts_values = <?=json_encode($concepts_values)?>;
-        var concepts_labels = <?=json_encode($concepts_labels)?>;
-        var concepts_colors = <?=json_encode($concepts_colors)?>;
-        var conceptswg_values = <?=json_encode($conceptswg_values)?>;
-        var conceptswg_labels = <?=json_encode($conceptswg_labels)?>;
-        var conceptswg_short_label_index = <?=json_encode($conceptswg_short_label_index)?>;
-        var conceptswg_short_label = <?=json_encode($conceptswg_short_label)?>;
-        var conceptswg_colors = <?=json_encode($conceptswg_colors)?>;
         var conceptsleadregion_values = <?=json_encode($conceptsleadregion_values)?>;
         var conceptsleadregion_labels = <?=json_encode($conceptsleadregion_labels)?>;
         var conceptsleadregion_colors = <?=json_encode($conceptswg_colors)?>;
 
         //Multiregional and Regional Publications
         var concept_type = <?=json_encode($concept_type)?>;
-        var years_label_regional_pubs_manuscripts = <?=json_encode($regionalmrdata_manuscripts['years'])?>;
-        var regionalmrpubs_mr_manuscripts = <?=json_encode(array_values($regionalmrdata_manuscripts['mr']))?>;
         var regionalmrpubs_mrw_manuscripts = <?=json_encode($regionalmrdata_manuscripts['mrw'])?>;
         var regionalmrpubs_r_manuscripts = <?=json_encode($regionalmrdata_manuscripts['r'])?>;
-        var regionalmrpubs_outputs_manuscripts = <?=json_encode($regionalmrdata_manuscripts['outputsAll'])?>;
         var regionalmrpubs_color_manuscripts = <?=json_encode(array_values($regionalmrpubs_color_manuscripts))?>;
 
         //Multiregional and Regional Abstracts
-        var years_label_regional_pubs_abstracts = <?=json_encode($regionalmrdata_abstracts['years'])?>;
-        var regionalmrpubs_mr_abstracts = <?=json_encode(array_values($regionalmrdata_abstracts['mr']))?>;
         var regionalmrpubs_mrw_abstracts = <?=json_encode($regionalmrdata_abstracts['mrw'])?>;
         var regionalmrpubs_r_abstracts = <?=json_encode($regionalmrdata_abstracts['r'])?>;
-        var regionalmrpubs_outputs_abstracts = <?=json_encode($regionalmrdata_abstracts['outputsAll'])?>;
         var regionalmrpubs_color_abstracts = <?=json_encode(array_values($regionalmrpubs_color_abstracts))?>;
 
         //Multi-regional Activity by Year
+        const multiregionalActivityByYear = {
+            concepts:<?=json_encode($iedea_concepts)?>,
+            manuscripts:<?=json_encode($iedea_manuscripts)?>,
+            abstracts:<?=json_encode($iedea_abstracts)?>,
+            mrdatarequests:<?=json_encode($iedea_mrdatarequests)?>
+        }
         var years_label_concepts = <?=json_encode($years_label_concepts)?>;
-        var iedea_concepts = <?=json_encode($iedea_concepts)?>;
-        var iedea_manuscripts = <?=json_encode($iedea_manuscripts)?>;
-        var iedea_abstracts = <?=json_encode($iedea_abstracts)?>;
-        var iedea_mrdatarequests = <?=json_encode($iedea_mrdatarequests)?>;
 
         //Requests
-        var requests_values = <?=json_encode($requests_values)?>;
-        var requests_labels = <?=json_encode($requests_labels)?>;
-        var requests_colors = <?=json_encode($requests_colors)?>;
         var requestsreq_values = <?=json_encode($requestsreq_values)?>;
         var requestsreq_labels = <?=json_encode($requestsreq_labels)?>;
         var requestsreq_colors = <?=json_encode($requestsreq_colors)?>;
+
+        const sectionsAll = {
+            concepts:{
+                values: <?=json_encode($concepts_values)?>,
+                labels: <?=json_encode($concepts_labels)?>,
+                colors: <?=json_encode($concepts_colors)?>
+            },
+            conceptswg:{
+                values: <?=json_encode($conceptswg_values)?>,
+                labels: <?=json_encode($conceptswg_labels)?>,
+                colors: <?=json_encode($conceptswg_colors)?>,
+                short_label: <?=json_encode($conceptswg_short_label)?>,
+                short_label_index: <?=json_encode($conceptswg_short_label_index)?>
+            },
+            requests:{
+                values: <?=json_encode($requests_values)?>,
+                labels: <?=json_encode($requests_labels)?>,
+                colors: <?=json_encode($requests_colors)?>
+            },
+            manuscripts:{
+                years_label: <?=json_encode($regionalmrdata_abstracts['years'])?>,
+                single: <?=json_encode($settings['pub_data'])?>,
+                label1: <?=json_encode(($settings['pub_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>,
+                label2: <?=json_encode(($settings['pub_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>,
+                regionalmrpubs_mr: <?=json_encode(array_values($regionalmrdata_manuscripts['mr']))?>,
+                regionalmrpubs_outputs: <?=json_encode($regionalmrdata_manuscripts['outputsAll'])?>,
+                regionalmrpubs_color: <?=json_encode(array_values($regionalmrpubs_color_manuscripts))?>
+            },
+            abstracts:{
+                years_label: <?=json_encode($regionalmrdata_manuscripts['years'])?>,
+                single: <?=json_encode($settings['abs_data'])?>,
+                label1: <?=json_encode(($settings['abs_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>,
+                label2: <?=json_encode(($settings['abs_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>,
+                regionalmrpubs_mr: <?=json_encode(array_values($regionalmrdata_abstracts['mr']))?>,
+                regionalmrpubs_outputs: <?=json_encode($regionalmrdata_abstracts['outputsAll'])?>,
+                regionalmrpubs_color: <?=json_encode(array_values($regionalmrpubs_color_abstracts))?>
+            }
+        }
 
         //DONUTS
         if(show_donuts == "1") {
@@ -452,10 +476,10 @@ $concept_type = $module->escape($concept_type);
                         var config = {
                             type: 'doughnut',
                             data: {
-                                labels: eval(array_sections_all[section] + "_short_label"),
+                                labels: sectionsAll[array_sections_all[section]]["short_label"],
                                 datasets: [{
-                                    backgroundColor: eval(array_sections_all[section] + "_colors"),
-                                    data: eval(array_sections_all[section] + "_values")
+                                    backgroundColor: sectionsAll[array_sections_all[section]]["colors"],
+                                    data: sectionsAll[array_sections_all[section]]["values"]
                                 }]
                             },
                             options: {
@@ -507,10 +531,10 @@ $concept_type = $module->escape($concept_type);
                         var config = {
                             type: 'doughnut',
                             data: {
-                                labels: eval(array_sections_all[section] + "_labels"),
+                                labels: sectionsAll[array_sections_all[section]]["labels"],
                                 datasets: [{
-                                    backgroundColor: eval(array_sections_all[section] + "_colors"),
-                                    data: eval(array_sections_all[section] + "_values")
+                                    backgroundColor: sectionsAll[array_sections_all[section]]["colors"],
+                                    data: sectionsAll[array_sections_all[section]]["values"]
                                 }]
                             },
                             options: {
@@ -563,22 +587,22 @@ $concept_type = $module->escape($concept_type);
         Object.keys(concept_type).forEach(function (section) {
             if((show_publications == '1' && section == '1') || (show_abstracts == '1' && section == "2")) {
                 var dataset = [];
-                if(eval("show_" + concept_type[section] + "_single")['1'] == '1'){
+                if(sectionsAll[concept_type[section]]["single"]['1'] == '1'){
                     dataset.push(
                         {
-                            label: eval("show_" + concept_type[section] + "_single_label1"),
-                            data: eval("regionalmrpubs_mr_" + concept_type[section]),
-                            backgroundColor: eval("regionalmrpubs_color_" + concept_type[section])[0],
+                            label: sectionsAll[concept_type[section]]["label1"],
+                            data: sectionsAll[concept_type[section]]["regionalmrpubs_mr"],
+                            backgroundColor: sectionsAll[concept_type[section]]["regionalmrpubs_color"][0],
                             borderWidth: 0
                         }
                     );
                 }
-                if(eval("show_" + concept_type[section] + "_single")['2'] == '1'){
+                if(sectionsAll[concept_type[section]]["single"]['2'] == '1'){
                     dataset.push(
                         {
-                            label: eval("show_" + concept_type[section] + "_single_label2"),
-                            data: eval("regionalmrpubs_outputs_" + concept_type[section]),
-                            backgroundColor: eval("regionalmrpubs_color_" + concept_type[section])[1],
+                            label: sectionsAll[concept_type[section]]["label2"],
+                            data: sectionsAll[concept_type[section]]["regionalmrpubs_outputs"],
+                            backgroundColor: sectionsAll[concept_type[section]]["regionalmrpubs_color"][1],
                             borderWidth: 0
                         }
                     );
@@ -587,7 +611,7 @@ $concept_type = $module->escape($concept_type);
                 var configdataTimelineChart = {
                     type: 'bar',
                     data: {
-                        labels: eval("years_label_regional_pubs_" + concept_type[section]),
+                        labels: sectionsAll[concept_type[section]]["years_label"],
                         datasets: []
                     },
                     options: {
@@ -671,7 +695,7 @@ $concept_type = $module->escape($concept_type);
                     dataset.push(
                         {
                             label: activity_labels[index],
-                            data: eval("iedea_"+activity_data[index]),
+                            data: multiregionalActivityByYear[activity_data[index]],
                             backgroundColor: activity_color[index],
                             borderColor: activity_color[index],
                             fill: false
@@ -720,14 +744,14 @@ $concept_type = $module->escape($concept_type);
 </div>
 <div class="container">
     <h3><?=$settings['hub_name']?> Metrics</h3>
-    <p class="hub-title"><?=($settings['hub_statistics_text']=="")? $default_values_settings['hub_statistics_text']:$settings['hub_statistics_text']?></p>
+    <p class="hub-title"><?=filter_tags(($settings['hub_statistics_text']=="")? $default_values_settings['hub_statistics_text']:$settings['hub_statistics_text'])?></p>
 </div>
 
 <!-- DONUTS -->
 <?php if($settings['hub_stats_section1_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
     <h4><?=($settings['hub_stats_consortium_title']=="")? $default_values_settings['hub_stats_consortium_title']:$settings['hub_stats_consortium_title']?></h4>
-    <p class="hub-title"><?=($settings['hub_stats_consortium']=="")? $default_values_settings['hub_stats_consortium']:$settings['hub_stats_consortium']?></p>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_consortium']=="")? $default_values_settings['hub_stats_consortium']:$settings['hub_stats_consortium'])?></p>
 </div>
 <div class="container">
     <?php foreach ($array_sections_title_all as $index=>$section){
@@ -760,7 +784,7 @@ $concept_type = $module->escape($concept_type);
         <?=($settings['hub_stats_pubs_title']=="")?$default_values_settings['hub_stats_pubs_title']:$settings['hub_stats_pubs_title']?>
         <a href="#" download="mr_r_publications.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downmanuscripts" name="downmanuscripts"></a>
     </h4>
-    <p class="hub-title"><?=($settings['hub_stats_rmr_publications']=="")?$default_values_settings['hub_stats_rmr_publications']:$settings['hub_stats_rmr_publications']?></p>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_rmr_publications']=="")?$default_values_settings['hub_stats_rmr_publications']:$settings['hub_stats_rmr_publications'])?></p>
 </div>
 <div class="container">
     <canvas id="manuscriptsChart" class="canvas_statistics" width="1100px" height="310px"></canvas>
@@ -800,7 +824,7 @@ $concept_type = $module->escape($concept_type);
         <?=($settings['hub_stats_abs_title']=="")?$default_values_settings['hub_stats_abs_title']:$settings['hub_stats_abs_title']?>
         <a href="#" download="mr_r_abstracts.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downabstracts" name="downabstracts"></a>
     </h4>
-    <p class="hub-title"><?=($settings['hub_stats_rmr_abstratcs']=="")?$default_values_settings['hub_stats_rmr_abstratcs']:$settings['hub_stats_rmr_abstratcs']?></p>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_rmr_abstratcs']=="")?$default_values_settings['hub_stats_rmr_abstratcs']:$settings['hub_stats_rmr_abstratcs'])?></p>
 </div>
 <div class="container">
     <canvas id="abstractsChart" class="canvas_statistics" width="1100px" height="310px"></canvas>
@@ -840,7 +864,7 @@ $concept_type = $module->escape($concept_type);
         <?=$settings['hub_name']?> <?=($settings['hub_stats_activity_title']=="")?$default_values_settings['hub_stats_activity_title']:$settings['hub_stats_activity_title']?>
         <a href="#" download="multiregional_activity_year.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downmultiregionalyear" name="downmultiregionalyear"></a>
     </h4>
-    <p class="hub-title"><?=($settings['hub_stats_mr_activity_year']=="")?$default_values_settings['hub_stats_mr_activity_year']:$settings['hub_stats_mr_activity_year']?></p>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_mr_activity_year']=="")?$default_values_settings['hub_stats_mr_activity_year']:$settings['hub_stats_mr_activity_year'])?></p>
 </div>
 <div class="container">
     <canvas id="IedeaChart" class="canvas_statistics" width="350px" height="100px"></canvas>
@@ -850,8 +874,8 @@ $concept_type = $module->escape($concept_type);
 <!-- MAP -->
 <?php if($settings['hub_stats_section5_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
-    <h4><?=$settings['hub_name']?> <?=($settings['hub_stats_map_title']=="")?$default_values_settings['hub_stats_map_title']:$settings['hub_stats_map_title']?></h4>
-    <p class="hub-title"><?=($settings['hub_stats_map']=="")?$default_values_settings['hub_stats_map']:$settings['hub_stats_map']?></p>
+    <h4><?=$settings['hub_name']?> <?=filter_tags(($settings['hub_stats_map_title']=="")?$default_values_settings['hub_stats_map_title']:$settings['hub_stats_map_title'])?></h4>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_map']=="")?$default_values_settings['hub_stats_map']:$settings['hub_stats_map'])?></p>
 </div>
 <div class="container" style="padding-top: 20px">
     <?php include(dirname(dirname(__FILE__)).'/map/map_stats.php');?>
@@ -864,8 +888,8 @@ $concept_type = $module->escape($concept_type);
 <?php } ?>
 <?php if($settings['hub_stats_section5a_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
-    <h4><?=$settings['hub_name']?> <?=($settings['hub_stats_sitelist_title']=="")?$default_values_settings['hub_stats_sitelist_title']:$settings['hub_stats_sitelist_title']?></h4>
-    <p class="hub-title"><?=($settings['hub_stats_site_list']=="")?$default_values_settings['hub_stats_site_list']:$settings['hub_stats_site_list']?></p>
+    <h4><?=$settings['hub_name']?> <?=filter_tags(($settings['hub_stats_sitelist_title']=="")?$default_values_settings['hub_stats_sitelist_title']:$settings['hub_stats_sitelist_title'])?></h4>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_site_list']=="")?$default_values_settings['hub_stats_site_list']:$settings['hub_stats_site_list'])?></p>
 </div>
 
 <div class="container">
@@ -962,7 +986,7 @@ $concept_type = $module->escape($concept_type);
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <a data-toggle="collapse" href="#collapse_consortium"><?=$settings['hub_name']?> <?=($settings['hub_stats_sitelist_title']=="")?$default_values_settings['hub_stats_sitelist_title']:$settings['hub_stats_sitelist_title']?> <span class="badge badge-primary"><?=$tbl_adultped_array['sites']?></span></a>
+                <a data-toggle="collapse" href="#collapse_consortium"><?=$settings['hub_name']?> <?=filter_tags(($settings['hub_stats_sitelist_title']=="")?$default_values_settings['hub_stats_sitelist_title']:$settings['hub_stats_sitelist_title'])?> <span class="badge badge-primary"><?=$tbl_adultped_array['sites']?></span></a>
             </h3>
         </div>
         <div id="collapse_consortium" class="panel-collapse collapse" aria-expanded="true">

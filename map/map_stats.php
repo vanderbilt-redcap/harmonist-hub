@@ -28,8 +28,8 @@ foreach ($regionstbl as $region){
 }
 
 #Convert to ISO3 to ISO2
-$codes = json_decode(file_get_contents($module->getSafePath($module->getUrl('map/countryCodeConverter/iso2.json'))), true);
-$names = json_decode(file_get_contents($module->getSafePath($module->getUrl('map/countryCodeConverter/names.json'))), true);
+$codes = json_decode(file_get_contents($module->getSafePath('map/countryCodeConverter/iso2.json')), true);
+$names = json_decode(file_get_contents($module->getSafePath('map/countryCodeConverter/names.json')), true);
 $iso3_to_name = array();
 foreach($codes as $iso2 => $iso3) {
     $iso3_to_name[$iso3] = $names[$iso3];

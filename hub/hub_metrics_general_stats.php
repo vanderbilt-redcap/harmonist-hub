@@ -217,7 +217,8 @@ foreach ($request_dataCall as $dataCall){
     if($dataCall['sop_closed_y'][1] == '1'){
         $dataCall_closed += 1;
         $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
-        $dataCall_avg_count +=count(ProjectData::getProjectInfoArray($RecordSetDU)[0]);
+        if(!empty(ProjectData::getProjectInfoArray($RecordSetDU)[0]))
+            $dataCall_avg_count +=count(ProjectData::getProjectInfoArray($RecordSetDU)[0]);
     }
 
     if($dataCall['sop_downloaders'] != ""){

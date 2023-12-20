@@ -1,8 +1,4 @@
-
 <?php
-#this avoids asking to log in in RedCap
-define('NOAUTH',true);
-
 require_once dirname(dirname(__FILE__))."/base.php";
 
 #Color code & Region names
