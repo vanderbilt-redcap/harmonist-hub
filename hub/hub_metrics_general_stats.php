@@ -377,31 +377,9 @@ $downRegion_colors = $module->escape($downRegion_colors);
         var array_sections = <?=json_encode($array_sections)?>;
         var array_sections_title = <?=json_encode($array_sections_title)?>;
 
-        var requests_values = <?=json_encode($requests_values)?>;
-        var requests_labels = <?=json_encode($requests_labels)?>;
-        var requests_colors = <?=json_encode($requests_colors)?>;
-        var comments_values = <?=json_encode($comments_values)?>;
-        var comments_labels = <?=json_encode($comments_labels)?>;
-        var comments_colors = <?=json_encode($comments_colors)?>;
-        var users_values = <?=json_encode($users_values)?>;
-        var users_labels = <?=json_encode($users_labels)?>;
-        var users_colors = <?=json_encode($users_colors)?>;
-
         //Data Exchange
         var array_sections_data = <?=json_encode($array_sections_data)?>;
         var array_sections_title_data = <?=json_encode($array_sections_title_data)?>;
-
-        var fileActivity_values = <?=json_encode($fileActivity_values)?>;
-        var fileActivity_labels = <?=json_encode($fileActivity_labels)?>;
-        var fileActivity_colors = <?=json_encode($fileActivity_colors)?>;
-
-        var upRegion_values = <?=json_encode($upRegion_values)?>;
-        var upRegion_labels = <?=json_encode($upRegion_labels)?>;
-        var upRegion_colors = <?=json_encode($upRegion_colors)?>;
-
-        var downRegion_values = <?=json_encode($downRegion_values)?>;
-        var downRegion_labels = <?=json_encode($downRegion_labels)?>;
-        var downRegion_colors = <?=json_encode($downRegion_colors)?>;
 
         //Data Call Timeline
         var time_labels = <?=json_encode($time_labels)?>;
@@ -415,6 +393,38 @@ $downRegion_colors = $module->escape($downRegion_colors);
         var communications_viewonly = <?=json_encode(array_values($array_communications[1]))?>;
         var communications_submitccomments = <?=json_encode(array_values($array_communications[2]))?>;
         var communications_voteregion = <?=json_encode(array_values($array_communications[3]))?>;
+        const sectionsAll = {
+            requests: {
+                values: <?=json_encode($requests_values)?>,
+                labels: <?=json_encode($requests_labels)?>,
+                colors: <?=json_encode($requests_colors)?>
+            },
+            comments: {
+                values: <?=json_encode($comments_values)?>,
+                labels: <?=json_encode($comments_labels)?>,
+                colors: <?=json_encode($comments_colors)?>
+            },
+            users: {
+                values: <?=json_encode($users_values)?>,
+                labels: <?=json_encode($users_labels)?>,
+                colors: <?=json_encode($users_colors)?>
+            },
+            fileActivity: {
+                values: <?=json_encode($fileActivity_values)?>,
+                labels: <?=json_encode($fileActivity_labels)?>,
+                colors: <?=json_encode($fileActivity_colors)?>
+            },
+            upRegion: {
+                values: <?=json_encode($upRegion_values)?>,
+                labels: <?=json_encode($upRegion_labels)?>,
+                colors: <?=json_encode($upRegion_colors)?>
+            },
+            downRegion: {
+                values: <?=json_encode($downRegion_values)?>,
+                labels: <?=json_encode($downRegion_labels)?>,
+                colors: <?=json_encode($downRegion_colors)?>
+            }
+        }
 
         //DONUTS
         Object.keys(sections_donuts).forEach(function (section) {
@@ -422,10 +432,10 @@ $downRegion_colors = $module->escape($downRegion_colors);
             var config = {
                 type: 'doughnut',
                 data: {
-                    labels: eval(sections_donuts[section]+"_labels"),
+                    labels: sectionsAll[sections_donuts[section]]["labels"],
                     datasets: [{
-                        backgroundColor: eval(sections_donuts[section]+"_colors"),
-                        data: eval(sections_donuts[section]+"_values")
+                        backgroundColor: sectionsAll[sections_donuts[section]]["colors"],
+                        data: sectionsAll[sections_donuts[section]]["values"]
                     }]
                 },
                 options: {
@@ -682,13 +692,13 @@ $downRegion_colors = $module->escape($downRegion_colors);
 </div>
 <div class="container">
     <h3>General Hub Stats</h3>
-    <p class="hub-title"><?=$settings['hub_statistics_gen_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_statistics_gen_text'])?></p>
     <p class="hub-title"><i class="fa fa-refresh" aria-hidden="true"></i> Last update on <span style="font-weight: bold"><?=$metrics['date']?></span></p>
 </div>
 
 <div class="container" style="padding-top: 60px">
     <h4>General Hub Usage Stats</h4>
-    <p class="hub-title"><?=$settings['hub_stats_general_usage']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_general_usage'])?></p>
 </div>
 <div class="container">
     <?php foreach ($sections_donuts as $index=>$section) {
@@ -713,7 +723,7 @@ $downRegion_colors = $module->escape($downRegion_colors);
 
 <div class="container" style="padding-top: 60px">
     <h4>Statistics data</h4>
-    <p class="hub-title"><?=$settings['hub_stats_data']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_data'])?></p>
 </div>
 <div class="container" style="padding-bottom: 40px">
     <div class="col-sm-4">
@@ -879,7 +889,7 @@ $downRegion_colors = $module->escape($downRegion_colors);
 
 <div class="container" style="padding-top: 10px">
     <h4>Data Exchange</h4>
-    <p class="hub-title"><?=$settings['hub_stats_data_exchange']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_data_exchange'])?></p>
 </div>
 <div class="container">
     <?php foreach ($sections_donuts as $index=>$section) {
@@ -902,7 +912,7 @@ $downRegion_colors = $module->escape($downRegion_colors);
 </div>
 <div class="container" style="padding-top: 80px">
     <h4>Statistics data</h4>
-    <p class="hub-title"><?=$settings['hub_stats_data_requests']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_data_requests'])?></p>
 </div>
 <div class="container" style="padding-bottom: 40px">
     <div class="col-sm-4">
@@ -1001,7 +1011,7 @@ $downRegion_colors = $module->escape($downRegion_colors);
         Data Call Timeline
         <a href="#" download="statistics_data.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downdatacalltimeline" name="downdatacalltimeline"></a>
     </h4>
-    <p class="hub-title"><?=$settings['hub_stats_datacall_time']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_datacall_time'])?></p>
 </div>
 <div class="container">
     <canvas id="dataTimelineChart" class="canvas_statistics" width="1100px" height="310px"></canvas>
@@ -1012,7 +1022,7 @@ $downRegion_colors = $module->escape($downRegion_colors);
         <?=$settings['hub_name']?> Hub Communications
         <a href="#" download="communications.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downcommunications" name="downcommunications"></a>
     </h4>
-    <p class="hub-title"><?=$settings['hub_stats_comunications']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_comunications'])?></p>
 </div>
 <div class="container">
     <canvas id="iedeaChartCommunications" class="canvas_statistics" width="1100px" height="310px"></canvas>
