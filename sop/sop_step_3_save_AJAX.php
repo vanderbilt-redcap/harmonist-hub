@@ -16,9 +16,9 @@ if(!isset($_REQUEST['sop_downloaders_dummy'])){
 $Proj = new \Project($pidsArray['SOP']);
 $event_id = $Proj->firstEventId;
 
-$sop_inclusion = (htmlentities($_REQUEST['sop_inclusion'],ENT_QUOTES) == "") ? "<i>None</i>" : htmlentities($_REQUEST['sop_inclusion'],ENT_QUOTES);
-$sop_exclusion = (htmlentities($_REQUEST['sop_exclusion'],ENT_QUOTES) == "") ? "<i>None</i>" : htmlentities($_REQUEST['sop_exclusion'],ENT_QUOTES);
-$sop_notes = (htmlentities($_REQUEST['sop_notes'],ENT_QUOTES) == "") ? "<i>None</i>" : htmlentities($_REQUEST['sop_notes'],ENT_QUOTES);
+$sop_inclusion = $module->escape(($_REQUEST['sop_inclusion'] == "") ? "<i>None</i>" : $_REQUEST['sop_inclusion']);
+$sop_exclusion = $module->escape(($_REQUEST['sop_exclusion'] == "") ? "<i>None</i>" : $_REQUEST['sop_exclusion']);
+$sop_notes = $module->escape(($_REQUEST['sop_notes'] == "") ? "<i>None</i>" : $_REQUEST['sop_notes']);
 
 $arraySOP = array();
 $arraySOP[$record][$event_id]['sop_downloaders'] = htmlentities($_REQUEST['downloaders'],ENT_QUOTES);

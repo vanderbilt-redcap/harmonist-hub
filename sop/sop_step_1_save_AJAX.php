@@ -56,7 +56,6 @@ if($option == "1" && $save_option == ""){
         }
         $data_select .=  "</select>";
     }
-
 }else if($option == "2"){
     #LOAD TEMPLATE
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record));
@@ -90,7 +89,6 @@ if($option == "1" && $save_option == ""){
     $arraySOP[$record][$event_id]['sop_name'] = $sop_name;
     $arraySOP[$record][$event_id]['sop_created_dt'] = $sop_created_dt;
     $arraySOP[$record][$event_id]['sop_updated_dt'] = $sop_created_dt;
-
 }else{
     #LOAD DRAFT
     if($option == "1"){
@@ -115,7 +113,6 @@ if($option == "1" && $save_option == ""){
         $arraySOP[$record][$event_id]['sop_updated_dt'] = $sop_created_dt;
         $arraySOP[$record][$event_id]['sop_due_d'] = $sop['sop_due_d'];;
     }
-
 }
 $results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 \Records::addRecordToRecordListCache($pidsArray['SOP'], $record,1);
@@ -186,5 +183,6 @@ if($selectConcept == "" && $option == "1" && $save_option != "") {
     $data['sop_discuss'] = $data['record_id'];
     $data['selectConcept'] = $sop_concept_id;
 }
+error_log($data['sop_inclusion']);
 echo json_encode($module->escape($data));
 ?>

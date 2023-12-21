@@ -458,25 +458,16 @@ function loadAjax_steps(data,url,loadAjax,step){
                             $('[name = step_concept_id]').html(jsonAjax[key]+":");
                         }else if(key == "record_id") {
                             $('[name = step_sop]').html("Data Request #"+jsonAjax[key]);
-                        }else if(key == "sop_inclusion") {
-                            $('[name=sop_inclusion]').val(jsonAjax[key]);
-                            tinymce.get('sop_inclusion').setContent(jsonAjax[key]);
-                            $('[preview=' + key+"]").html(jsonAjax[key]);
-                        }else if(key == "sop_exclusion") {
-                            $('[name=sop_exclusion]').val(jsonAjax[key]);
-                            tinymce.get('sop_exclusion').setContent(jsonAjax[key]);
-                            $('[preview=' + key+"]").html(jsonAjax[key]);
-                        }else if(key == "sop_notes") {
-                            $('[name=sop_notes]').val(jsonAjax[key]);
-                            tinymce.get('sop_notes').setContent(jsonAjax[key]);
-                            $('[preview=' + key+"]").html(jsonAjax[key]);
-                            $('[preview=' + key+"_header]").html("General notes: &nbsp;");
-                        }else if(key == "dataformat_notes") {
-                            $('[name=dataformat_notes]').val(jsonAjax[key]);
-                            $('[preview=dataformat_notes]').val(jsonAjax[key]);
-                            tinymce.get('dataformat_notes').setContent(jsonAjax[key]);
-                            $('[preview=' + key+"]").html(jsonAjax[key]);
-                            $('[preview=' + key+"_header]").html("File format notes:");
+                        }else if(key == "sop_inclusion" || key == "sop_exclusion" || key == "sop_notes" || key == "dataformat_notes") {
+                            tinymce.get(key).setContent(jsonAjax[key]);
+                            tinymce.get(key).setContent(tinymce.get(key).getContent({ format: 'text' }));
+                            $('[name=' + key + ']').val(jsonAjax[key]);
+                            $('[preview=' + key+"]").html(tinymce.get(key).getContent());
+                            if(key == "sop_notes"){
+                                $('[preview=' + key + "_header]").html("General notes: &nbsp;");
+                            }else if(key == "dataformat_notes") {
+                                $('[preview=' + key+"_header]").html("File format notes:");
+                            }
                         }else if(key == 'sop_downloaders' && jsonAjax[key] != "") {
                             update_downloaders_list(jsonAjax[key]);
                         }else if(key == "sop_creator_email" || key == "sop_creator2_email" || key == "sop_datacontact_email"){

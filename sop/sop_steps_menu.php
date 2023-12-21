@@ -217,7 +217,7 @@ if($step == '3') {
                     <div class="tab-content">
                         <div class="tab-pane active" role="tabpanel" id="step1">
                             <h3><span style="color:#50a9c4;font-weight:bold">STEP 1:</span>&nbsp;&nbsp;Setup</h3>
-                            <p><?=$settings['hub_step1']?></p>
+                            <p><?=filter_tags($settings['hub_step1'])?></p>
                                 <?php include('sop_step_1.php');?>
                                 <ul class="list-inline pull-right">
                                     <li><button type="button" class="btn btn-primary next-step saveAndContinue" disabled id="save_continue_1" name="save_continue_1">Save and continue</button></li>
@@ -226,7 +226,7 @@ if($step == '3') {
                         <div class="tab-pane" role="tabpanel" id="step2">
                             <h3><span style="color:#50a9c4;font-weight:bold">STEP 2:</span>&nbsp;&nbsp;Choose Variables</h3>
                             <p><em><span class="fa fa-pencil"></span> <span name="step_concept_id" style="font-weight: bold"></span> <span name="step_sop"></span></em></p>
-                            <p><?=$settings['hub_step2']?></p>
+                            <p><?=filter_tags($settings['hub_step2'])?></p>
                             <?php include('sop_step_2.php');?>
                             <ul class="list-inline pull-right">
                                 <li><button type="button" class="btn btn-default prev-step" id="previous_2">Previous</button></li>
@@ -238,7 +238,7 @@ if($step == '3') {
 
                             <h3><span style="color:#50a9c4;font-weight:bold">STEP 3:</span>&nbsp;&nbsp;Add Details</h3>
                             <p><em><span class="fa fa-pencil"></span> <span name="step_concept_id" style="font-weight: bold"></span> <span name="step_sop"></span></em></p>
-                            <p><?=$settings['hub_step3']?></p>
+                            <p><?=filter_tags($settings['hub_step3'])?></p>
                             <?php include('sop_step_3.php')?>
                             <ul class="list-inline pull-right">
                                 <li><button type="button" class="btn btn-default prev-step" id="previous_3">Previous</button></li>
@@ -248,7 +248,7 @@ if($step == '3') {
                         </div>
                         <div class="tab-pane" role="tabpanel" id="step4">
                             <h3><span style="color:#50a9c4;font-weight:bold">STEP 4:</span>&nbsp;&nbsp;Preview Data Request</h3>
-                            <p><?=$settings['hub_step4']?></p>
+                            <p><?=filter_tags($settings['hub_step4'])?></p>
                             <?php include('sop_step_4.php');?>
                             <ul class="list-inline pull-right">
                                 <li><button type="button" class="btn btn-default prev-step" id="previous_4">Previous</button></li>

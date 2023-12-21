@@ -38,7 +38,7 @@ $record = htmlentities($_GET['record'],ENT_QUOTES);
 
 <div>
     <div style="padding-left: 15px;font-size: 20px;color: #404040;"><p>Access <?=$hub_projectname?> Hub</p></div>
-    <div style="padding-left: 15px;color: #404040;"><?=$settings['hub_login_text']?></div>
+    <div style="padding-left: 15px;color: #404040;"><?=filter_tags($settings['hub_login_text'])?></div>
 
     <div class="col-md-10">
         <div class="alert alert-info" id="blue-alert" style="display:none">
