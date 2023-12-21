@@ -660,7 +660,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                 </div>
                 <div class="row request">
                     <div class="col-md-12"><strong>Data Call Notes: </strong><br>
-                        <?= htmlspecialchars(empty($sop['sop_final_notes']) ? "<em>None</em>" : $sop['sop_final_notes'],ENT_QUOTES); ?>
+                        <?=filter_tags(empty($sop['sop_final_notes']) ? "<em>None</em>" : $sop['sop_final_notes'],ENT_QUOTES); ?>
                     </div>
                 </div>
                 <?php if (!empty($conference_info)) { ?>
@@ -767,7 +767,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     foreach ($uploads as $up) {
                         if($settings['dataupload_dur'] > $count) {
                             $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $up['data_upload_person']));
-                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                            $people = $module->escape(ProjectData::getProjectInfoArray($RecordSetPeople)[0]);
                             $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
                             $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $up['data_upload_region']));
@@ -780,10 +780,10 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
 
                             echo "<tr>";
                             echo "<td width='200px'>" . htmlspecialchars($up['responsecomplete_ts'],ENT_QUOTES) . "</td>" .
-                                "<td width='250px'>" .  htmlspecialchars($contact_person,ENT_QUOTES) . "</td>" .
+                                "<td width='250px'>" .  $contact_person . "</td>" .
                                 "<td width='500px'>" .  htmlspecialchars($up['upload_notes'],ENT_QUOTES) . "</td>" .
                                 "<td width='120px'>" .  htmlspecialchars($region_code,ENT_QUOTES) . "</td>" .
-                                "<td width='120px'>" .  htmlspecialchars($status,ENT_QUOTES) . "</td>" .
+                                "<td width='120px'>" .  $status . "</td>" .
                                 "</tr>";
                             $count++;
                         }else{
