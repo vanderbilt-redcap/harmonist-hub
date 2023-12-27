@@ -40,7 +40,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mra&type=a'?>">< Back to Requests Archive</a>
     </div>
     <h3>Rejected & Deactivated Requests Archive</h3>
-    <p class="hub-title"><?=$settings['hub_req_arc_rejected_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_req_arc_rejected_text'])?></p>
     <br>
     <div class="optionSelect conceptSheets_optionMenu">
         <div style="float:left" id="options_wrapper"></div>

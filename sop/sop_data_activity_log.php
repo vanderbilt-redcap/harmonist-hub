@@ -157,7 +157,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
         ?>
     </div>
     <h3>Data Activity Log <?=$datareq_title?></h3>
-    <p class="hub-title"><?=$settings['hub_data_activity_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_data_activity_text'])?></p>
     <br>
     <div class="optionSelect conceptSheets_optionMenu">
         <div id="options_wrapper"></div>
@@ -270,7 +270,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                 '<td width="105px"><i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i> download</td>'.
                                 '<td width="220px">'.$module->escape($name).'</td>'.
                                 '<td width="20px">'.$module->escape($region_code).'</td>'.
-                                '<td width="80px">'.$module->escape($assoc_concept).'</td>'.
+                                '<td width="80px">'.$assoc_concept.'</td>'.
                                 '<td width="80px">'.$module->escape($data_request).'</td>'.
                                 '<td width="220px"> '.$module->escape($recent_activity['download_files']).'</td>'.
                                 '<td>download</td>'.
@@ -308,15 +308,15 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                             }
 
                             echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
-                                '<td width="105px">'.$module->escape($activity).'</td>'.
+                                '<td width="105px">'.filter_tags($activity).'</td>'.
                                 '<td width="220px">'.$module->escape($name).'</td>'.
                                 '<td width="20px">'.$module->escape($region_code).'</td>'.
-                                '<td width="80px">'.$module->escape($assoc_concept).'</td>'.
+                                '<td width="80px">'.$assoc_concept.'</td>'.
                                 '<td width="80px">'.$module->escape($recent_activity['data_assoc_request']).'</td>'.
                                 '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
                                 '<td>'.$module->escape($activity_hidden).'</td>'.
                                 '<td width="50px"> '.$module->escape($file).'</td>'.
-                                '<td width="50px"> '.$module->escape($buttons).'</td>';
+                                '<td width="50px"> '.filter_tags($buttons).'</td>';
 
                             if($isAdmin){
                                 $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recent_activity['record_id']);
@@ -328,14 +328,14 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                 $activity_hidden = "delete";
                                 $activity = "<i class='fa fa-fw fa-close text-error'></i> delete";
                                 if ($recent_activity['deletion_type'][0] == '1') {
-                                    $name = "<em>Automatic</em>";
+                                    $name = filter_tags("<em>Automatic</em>");
                                 } else if ($recent_activity['deletion_type'][0] == '2') {
                                     $RecordSetPeopleDelete = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['deletion_hubuser']));
                                     $peopleDelete = ProjectData::getProjectInfoArray($RecordSetPeopleDelete)[0];
                                     $RecordSetRegionPeople = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $peopleDelete['person_region']));
                                     $region_code_person = ProjectData::getProjectInfoArray($RecordSetRegionPeople)[0]['region_code'];
 
-                                    $name = trim($peopleDelete['firstname'] . ' ' . $peopleDelete['lastname'])." (".$region_code_person.")";
+                                    $name = $module->escape(trim($peopleDelete['firstname'] . ' ' . $peopleDelete['lastname'])." (".$region_code_person.")");
                                 }
 
                                 $comment_time ="";
@@ -346,10 +346,10 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                 }
 
                                 echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
-                                    '<td width="105px">'.$module->escape($activity).'</td>'.
-                                    '<td width="220px">'.$module->escape($name).'</td>'.
+                                    '<td width="105px">'.filter_tags($activity).'</td>'.
+                                    '<td width="220px">'.filter_tags($name).'</td>'.
                                     '<td width="20px">'.$module->escape($region_code).'</td>'.
-                                    '<td width="80px">'.$module->escape($assoc_concept).'</td>'.
+                                    '<td width="80px">'.$assoc_concept.'</td>'.
                                     '<td width="80px">'.$module->escape($recent_activity['data_assoc_request']).'</td>'.
                                     '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
                                     '<td>'.$module->escape($activity_hidden).'</td>'.

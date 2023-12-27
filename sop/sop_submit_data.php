@@ -92,7 +92,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
 </div>
 <div class="optionSelect">
     <h3>Check and Submit Data</h3>
-    <?=$settings['hub_check_submit_text']?>
+    <?=filter_tags($settings['hub_check_submit_text'])?>
 
 </div>
 

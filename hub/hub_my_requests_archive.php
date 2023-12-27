@@ -64,7 +64,7 @@ if($_REQUEST['type'] != ""){
         <?=$back_button?>
     </div>
     <h3>Requests Archive</h3>
-    <p class="hub-title"><?=$settings['hub_req_archive_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_req_archive_text'])?></p>
     <br>
     <?php if($isAdmin){?>
     <div class="pull-right">

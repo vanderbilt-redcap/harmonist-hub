@@ -240,10 +240,11 @@ function getReqAssocConceptLink($module, $pidsArray, $assoc_concept, $option="")
     }
 }
 
-function getPeopleName($pidPeople, $people_id,$option=""){
-    if(!empty($people_id)){
+function getPeopleName($pidPeople, $people_id, $option=""){
+    if(!empty($people_id) && !empty($pidPeople)){
         $recordsPeople = \REDCap::getData($pidPeople, 'array', array('record_id' => $people_id));
         $people = ProjectData::getProjectInfoArray($recordsPeople)[0];
+
         $name = trim($people['firstname'].' '.$people['lastname']);
         if($option == "email"){
             $name = '<a href="mailto:'.$people['email'].'">'.trim($people['firstname'].' '.$people['lastname']).'</a>';
@@ -923,7 +924,7 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
         }
     }else {
         if ($req['reviewer_id'] != ''){
-            $reviewer = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], array('record_id' => $req['reviewer_id']),"");
+            $reviewer = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $req['reviewer_id'],"");
             if ($reviewer != '') {
                 $reviewer = ' by ' . $reviewer;
             }

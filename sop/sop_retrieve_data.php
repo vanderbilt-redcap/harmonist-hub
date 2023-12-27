@@ -39,7 +39,7 @@ foreach ($request_DU as $down){
     </div>
     <div class="optionSelect">
         <h3>Retrieve Data</h3>
-        <p class="hub-title"><?=$settings['hub_download_data_text']?></p>
+        <p class="hub-title"><?=filter_tags($settings['hub_download_data_text'])?></p>
     </div>
 </div>
 <div class="optionSelect">
@@ -76,19 +76,17 @@ foreach ($request_DU as $down){
                 $array_userid = explode(',', $sop['sop_downloaders']);
 
                 $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
-                $person_info = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                $person_info = $module->escape(ProjectData::getProjectInfoArray($RecordSetPeople)[0]);
                 if($person_info != ""){
                     $contact_concept_person = $person_info['firstname'] . " " . $person_info['lastname'] . " (<a href='mailto:" . $person_info['email'] . "'>" . $person_info['email'] . "</a>)";
                 }else{
                     $contact_concept_person = "<i>None</i>";
                 }
 
-
-
-                $concept_header = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $concept_id . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_sheet . '</a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . '</a>';
+//                $concept_header = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $concept_id . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_sheet . '</a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . '</a>';
                 $concept_header = $concept_sheet . ' | Data Request #' . $sop_id;
 
-                $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1');
+                $array_dates = $module->escape(\Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1'));
 
                 $downloads_active = 0;
                 $body = '';
@@ -147,12 +145,12 @@ foreach ($request_DU as $down){
 
                         $body .= "<tr><td>" . htmlspecialchars($data_up['responsecomplete_ts'],ENT_QUOTES) . "</td>" .
                             "<td>" . htmlspecialchars($region_code,ENT_QUOTES) . "</td>" .
-                            "<td>" . htmlspecialchars($contact_person,ENT_QUOTES) . "</td>" .
-                            "<td>" . htmlspecialchars($data_up['data_upload_zip'] . $deleted,ENT_QUOTES) . "</td>" .
+                            "<td>" . filter_tags($contact_person) . "</td>" .
+                            "<td>" . htmlspecialchars($data_up['data_upload_zip'],ENT_QUOTES).filter_tags($deleted) . "</td>" .
                             "<td style='text-align: center;'>" . htmlspecialchars($file_pdf,ENT_QUOTES) . "</td>" .
-                            "<td>" . htmlspecialchars($expiration_date,ENT_QUOTES) . "</td>" .
-                            "<td>" . htmlspecialchars($buttons,ENT_QUOTES) . "</td>" .
-                            "<td>" . htmlspecialchars($notes,ENT_QUOTES) . "</td></tr>" ;
+                            "<td>" . filter_tags($expiration_date) . "</td>" .
+                            "<td>" . filter_tags($buttons) . "</td>" .
+                            "<td>" . filter_tags($notes) . "</td></tr>" ;
                     }
                 }
 
@@ -161,7 +159,7 @@ foreach ($request_DU as $down){
                 <div class="panel-heading" style="height: 38px">
                     <h3 class="panel-title">
                         <a data-toggle="collapse" href="#collapse_concept_' . htmlspecialchars($concept_id . $sop_id,ENT_QUOTES) . '">' . htmlspecialchars($concept_header,ENT_QUOTES) . '</a>
-                        <span style="float:right;padding-right: 30px;font-size: 14px"> ' . htmlspecialchars($array_dates['button'],ENT_QUOTES) . ' <span class="label label-as-badge btn-info" style="font-weight: normal;"><i class="fa fa-arrow-down"></i> '. htmlspecialchars($downloads_active,ENT_QUOTES) . '</span></span>
+                        <span style="float:right;padding-right: 30px;font-size: 14px"> ' . filter_tags($array_dates['button'],ENT_QUOTES) . ' <span class="label label-as-badge btn-info" style="font-weight: normal;"><i class="fa fa-arrow-down"></i> '. htmlspecialchars($downloads_active,ENT_QUOTES) . '</span></span>
                     </h3>
     
                 </div>
@@ -172,10 +170,10 @@ foreach ($request_DU as $down){
                             <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Title: </strong><a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . htmlspecialchars($concept_id,ENT_QUOTES) . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . htmlspecialchars($concept_title,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . htmlspecialchars($sop_id,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a></div>
                         </div>
                         <div class="row request">
-                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Contact: </strong>' . htmlspecialchars($contact_concept_person,ENT_QUOTES) . '</div>
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Contact: </strong>' . filter_tags($contact_concept_person) . '</div>
                         </div>
                         <div class="row request">
-                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Due: ' . htmlspecialchars($array_dates['text'],ENT_QUOTES) . '</strong></div>
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Due: ' . filter_tags($array_dates['text']) . '</strong></div>
                         </div>
                         <div class="row request"></div>
                     </table>
