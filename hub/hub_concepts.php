@@ -367,7 +367,7 @@ $img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJE
 <div class="container">
     <div class="optionSelect">
         <h3>Concept Sheets</h3>
-            <p class="hub-title"><?=$settings['hub_concept_text']?></p>
+            <p class="hub-title"><?=filter_tags($settings['hub_concept_text'])?></p>
     </div>
 
     <div class="optionSelect">
