@@ -29,8 +29,7 @@ $number_of_deadlines = $settings['home_number_deadlines'];
 $number_of_quicklinks = $settings['home_number_quicklinks'];
 $number_of_recentactivity = $settings['home_number_recentactivity'];
 
-$RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null);
-$comments_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetComments);
+$comments_sevenDaysYoung = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null);
 ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
 $dealines = array();
@@ -236,8 +235,7 @@ if(!empty($homepage)) {
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                     <?php
                     if(!empty($requests)) {
-                        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
-                        $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                        $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                         ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                         $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $current_user['person_region'], $settings['vote_grid'], '1','home');
@@ -286,12 +284,10 @@ if(!empty($homepage)) {
                             if ($i < $number_of_recentactivity) {
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $comment['response_person']));
-                                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                                $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname'))[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                                $RecordSetRMComment = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
-                                $requestComment = ProjectData::getProjectInfoArray($RecordSetRMComment)[0];
+                                $requestComment = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']))[0];
 
                                 $time = \Vanderbilt\HarmonistHubExternalModule\getDateForHumans($comment['responsecomplete_ts']);
 

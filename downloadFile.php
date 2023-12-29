@@ -11,8 +11,7 @@ $filename = $exploded['file'];
 $sname = $exploded['sname'];
 $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $exploded['pid']));
-$current_user = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+$current_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $exploded['pid']))[0];
 
 if($current_user != "") {
     $record = $module->framework->addAutoNumberedRecord($pidsArray['FILELIBRARY']);

@@ -2,16 +2,14 @@
 use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
-$RecordSetCurrentUser = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[access_token] = '".$token."'");
-$current_user = $module->escape(ProjectData::getProjectInfoArray($RecordSetCurrentUser)[0]);
-$name = $module->escape($current_user['firstname'].' '.$current_user['lastname']);
+$current_user = $module->escape(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,null,null,null,false,false,false,"[access_token] = '".$token."'")[0]);
+$name = $current_user['firstname'].' '.$current_user['lastname'];
 
 $isAdmin = false;
 if($current_user['harmonistadmin_y'] == '1'){//$userRights->super_user == "1"
     $isAdmin = true;
 }
-$RecordSetPersonRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $current_user['person_region']));
-$person_region = $module->escape($module->escape(ProjectData::getProjectInfoArray($RecordSetPersonRegion)[0]));
+$person_region = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $current_user['person_region']))[0]);
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array',null);
 $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));

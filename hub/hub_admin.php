@@ -91,8 +91,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                     foreach ($request_admin as $req) {
                         if ($req['approval_y'] == '' || $req['approval_y'] == null) {
                             $any_request_found = true;
-                            $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $req['contact_region']));
-                            $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
+                            $person_region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $req['contact_region']),array('region_code'))[0]['region_code'];
                             $region = "";
                             if($person_region_code != ""){
                                 $region = " (".$person_region_code.")";
@@ -189,8 +188,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             }
                             $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($req['due_d'], '', 'float:right', '0');
 
-                            $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $req['contact_region']));
-                            $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                            $person_region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $req['contact_region']),array('region_code'))[0]['region_code'];
                             $region = "";
                             if ($person_region_code != "") {
                                 $region = " (" . $person_region_code . ")";
@@ -300,8 +298,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                 $req_type = $req['mr_temporary'];
                             }
 
-                            $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $req['contact_region']));
-                            $person_region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                            $person_region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $req['contact_region']),array('region_code'))[0]['region_code'];
                             $region = "";
                             if ($person_region_code != "") {
                                 $region = " (" . $person_region_code . ")";
@@ -522,11 +519,9 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             $harmonist_perms = $module->getChoiceLabels('harmonist_perms', $pidsArray['PEOPLE']);
                             foreach ($logins as $login){
                                 if($login['active_y'] != "0") {
-                                    $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $login['person_region']));
-                                    $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+                                    $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $login['person_region']),array('region_code'))[0]['region_code'];
 
-                                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $login['record']));
-                                    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $login['record']))[0];
 
                                     $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "&arm=1&id=" . $login['record']);
 
@@ -569,8 +564,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             <div id="collapse3" class="table-responsive panel-collapse collapse in" aria-expanded="true">
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                     <?php
-                    $RecordSetProjectsY = \REDCap::getData($pidsArray['PROJECTS'], 'array', null,null,null,null,false,false,false, "[project_show_y] = '1'");
-                    $projectsY = ProjectData::getProjectInfoArray($RecordSetProjectsY);
+                    $projectsY = \REDCap::getData($pidsArray['PROJECTS'], 'json-array', null,null,null,null,false,false,false, "[project_show_y] = '1'");
                     foreach ($projectsY as $project){
                         $iedea_constant = $pidsArray[$project['project_constant']];
                         $title = $module->framework->getProject($iedea_constant)->getTitle();

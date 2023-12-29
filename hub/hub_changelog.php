@@ -1,7 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-$RecordSetChangelog = \REDCap::getData($pidsArray['CHANGELOG'], 'array', null);
-$changelog = ProjectData::getProjectInfoArray($RecordSetChangelog);
+$changelog = \REDCap::getData($pidsArray['CHANGELOG'], 'json-array', null);
 ArrayFunctions::array_sort_by_column($changelog,'release_d',SORT_DESC);
 ?>
 

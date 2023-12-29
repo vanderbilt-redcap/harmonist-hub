@@ -432,12 +432,11 @@ $img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJE
                 <select class="form-control" name="selectWorkingGroup" id="selectWorkingGroup">
                     <option value="">Select All</option>
                     <?php
-                    $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', null);
-                    $wgroups = ProjectData::getProjectInfoArray($RecordSetGroups);
+                    $wgroups = \REDCap::getData($pidsArray['GROUP'], 'json-array', null);
                     ArrayFunctions::array_sort_by_column($wgroups,'group_abbr');
                     if (!empty($wgroups)) {
                         foreach ($wgroups as $wg) {
-                            if ($wg['record_id'] != "") {
+                            if ($wg['record_id'] != "" && ($wg['group_abbr'] != "" || $wg['group_name'] != "")) {
                                 $selected = '';
                                 if ($wg_type == $wg['record_id']) {
                                     $selected = 'selected';

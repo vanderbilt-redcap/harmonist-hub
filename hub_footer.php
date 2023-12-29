@@ -1,9 +1,7 @@
 <?php
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
-$RecordSetAbout = \REDCap::getData($pidsArray['ABOUT'], 'array', null);
-$about = ProjectData::getProjectInfoArray($RecordSetAbout)[0];
-
+$about = \REDCap::getData($pidsArray['ABOUT'], 'json-array', null)[0];
 $versionsByPrefix = $module->getEnabledModules($_GET['pid']);
 
 ?>

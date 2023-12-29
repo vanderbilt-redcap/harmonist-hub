@@ -20,14 +20,12 @@ if(!empty($concept)) {
     $id_people = $concept['contact_link'];
     $name_concept = "<em>Not specified</em>";
     if (!empty($id_people)) {
-        $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $id_people));
-        $person_info = ProjectData::getProjectInfoArray($RecordSetPeople,'')[0];
+        $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $id_people))[0];
         $email = "";
         if (!empty($person_info)) {
             $name_concept = '<a href="mailto:'.$person_info['email'].'">'.$person_info['firstname'] . ' ' . $person_info['lastname'];
             if(!empty($person_info['person_region'])){
-                $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $person_info['person_region']));
-                $person_region = ProjectData::getProjectInfoArray($RecordSetRegion,'')[0];
+                $person_region = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $person_info['person_region']))[0];
                 if(!empty($person_region)){
                     $name_concept .= " (".$person_region['region_code'].")";
                 }
@@ -38,8 +36,7 @@ if(!empty($concept)) {
     }
     $id_workingGroup = $concept['wg_link'];
     if (!empty($id_workingGroup)) {
-        $RecordSetGroup = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $id_workingGroup));
-        $wgroup = ProjectData::getProjectInfoArray($RecordSetGroup,'')[0];
+        $wgroup = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $id_workingGroup))[0];
         $group_name = "";
         if (!empty($wgroup)) {
             $group_name = $wgroup['group_abbr'] . ' - ' . $wgroup['group_name'];
@@ -47,8 +44,7 @@ if(!empty($concept)) {
     }
 
     if (!empty($concept['wg2_link'])) {
-        $RecordSetGroup2 = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' =>  $concept['wg2_link']));
-        $wgroup2 = ProjectData::getProjectInfoArray($RecordSetGroup2,'')[0];
+        $wgroup2 = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' =>  $concept['wg2_link']))[0];
     }
     $group_name_total = "<em>Not specified</em>";
     if(!empty($wgroup['group_name'])){
@@ -406,8 +402,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     <col>
                 </colgroup>
                 <?php
-                $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$record);
-                $uploads = ProjectData::getProjectInfoArray($RecordSetUpload);
+                $uploads = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$record);
                 if(!empty($uploads)){?>
 
                 <thead>
@@ -422,12 +417,10 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <tbody>
                 <?php
                 foreach ($uploads as $up){
-                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $up['data_upload_person']));
-                    $people = $module->escape(ProjectData::getProjectInfoArray($RecordSetPeople)[0]);
+                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $up['data_upload_person']))[0];
                     $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
-                    $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $up['data_upload_region']));
-                    $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+                    $region_code = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $up['data_upload_region']),array('region_code'))[0]['region_code'];
 
                     $status = '<span class="badge label-updated">Available</span>';
                     if($up['deleted_y'] == '1'){
