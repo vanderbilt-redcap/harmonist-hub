@@ -5,8 +5,8 @@ namespace Vanderbilt\HarmonistHubExternalModule;
  **/
 
 $wg_link = $module->getChoiceLabels('wg_link', $pidsArray['HARMONIST']);
-$Recordwg_link = \REDCap::getData($pidsArray['GROUP'], 'array', null);
-$wg_array = ProjectData::getProjectInfoArray($Recordwg_link,'');
+$wg_array = \REDCap::getData($pidsArray['GROUP'], 'json-array', null,array('record_id','group_name','group_abbr'));
+
 $wg_link = array();
 foreach ($wg_array as $wg){
     $wg_link[$wg['record_id']] = $wg['group_name'].' ('.$wg['group_abbr'].')';
@@ -48,8 +48,7 @@ foreach ($wg_link as $code => $text){
 $conceptswg_short_label_index[''] = 'No WG';
 array_push($conceptswg_short_label,'No WG');
 
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
-$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null);
 $conceptsleadregion_values = array();
 $conceptsleadregion_labels = array();
 $requests_array_region = array();
@@ -894,14 +893,12 @@ $concept_type = $module->escape($concept_type);
 
 <div class="container">
     <?php
-    $RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
-    $TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
+    $TBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'json-array', null);
     $country = $module->getChoiceLabels('country', $pidsArray['TBLCENTERREVISED']);
     $region_name = $module->getChoiceLabels('region', $pidsArray['TBLCENTERREVISED']);
 
     $tbl_array = array();
-    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-    $regions_ordered = ProjectData::getProjectInfoArray($RecordSetRegions);
+    $regions_ordered = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
     ArrayFunctions::array_sort_by_column($regions_ordered,'region_code');
     //To order the display
     foreach ($regions_ordered as $region){

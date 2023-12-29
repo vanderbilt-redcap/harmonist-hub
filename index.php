@@ -262,7 +262,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                             include('hub/hub_metrics_stats.php');
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'mth' && ($settings['deactivate_datametrics'][1] != "1" || $isAdmin))
                         {
-                            include('hub/hub_metrics_general_stats.php');
+                            include('sop/sop_metrics_stats.php');
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'faq')
                         {
                             include('faq/hub_faq.php');
