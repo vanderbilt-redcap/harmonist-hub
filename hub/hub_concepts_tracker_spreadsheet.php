@@ -14,8 +14,7 @@ if(!empty($concepts)){
     foreach ($concepts as $concept){
         $group_name = "";
         if($concept['wg_link'] != ""){
-            $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $concept['wg_link'] ));
-            $group_name = ProjectData::getProjectInfoArray($RecordSetGroups)[0]['group_name'];
+            $group_name = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $concept['wg_link'] ),array('group_name'))[0]['group_name'];
         }
         $ec_approval = "";
         if($concept['ec_approval_d'] != ""){
@@ -27,8 +26,7 @@ if(!empty($concepts)){
         if(array_key_exists('person_link',$concept)){
             foreach ($concept['person_link'] as $index =>$person){
                 if($concept['person_role'][$index] == "1" || $concept['person_role'][$index] == "2"){
-                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $person));
-                    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $person),array('firstname','lastname'))[0];
                     if($concept['person_role'][$index] == "1"){
                         $lead_author .= $people['lastname'].", ".$people['firstname']. " & ";
                     }else if($concept['person_role'][$index] == "2"){
