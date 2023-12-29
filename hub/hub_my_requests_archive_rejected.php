@@ -66,8 +66,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array',null,null,null,null,false,false,false,"[approval_y] != 1");
             $request_reject = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
             if(!empty($request_reject)) {
-                $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                 $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $current_user['person_region'], $settings['vote_grid'], '2','archive');

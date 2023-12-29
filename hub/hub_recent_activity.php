@@ -1,8 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null);
-$comments = ProjectData::getProjectInfoArray($RecordSetComments);
+$comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null);
 ArrayFunctions::array_sort_by_column($comments, 'responsecomplete_ts',SORT_DESC);
 
 $region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" => "text-default");
@@ -60,7 +59,7 @@ if($person_record != ""){
         <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS']?>">< Back to Home</a>
     </div>
     <h3>Recent Activity</h3>
-    <p class="hub-title"><?=$settings['hub_recent_act_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_recent_act_text'])?></p>
     </br>
 </div>
 <div class="container">
@@ -73,8 +72,7 @@ if($person_record != ""){
                 <select class="form-control" name="selectRegion" id="selectRegion">
                     <option value="">Select All</option>
                     <?php
-                    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
-                    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                    $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null, array('record_id','region_code'));
                     ArrayFunctions::array_sort_by_column($regions,'region_code');
                     if (!empty($regions)) {
                         $regions = $module->escape($regions);
@@ -130,15 +128,12 @@ if($person_record != ""){
                     <?php
                     foreach ($comments as $comment) {
                         if($comment['author_revision_y'] == '1' || $comment['pi_vote'] != '' || $comment['comments'] != '') {
-                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $comment['response_person']));
-                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname','person_region'))[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                            $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']),null,null,null,false,false,false,"[showregion_y] = 1");
-                            $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
+                            $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),null,array('region_code'),null,false,false,false,"[showregion_y] = 1")[0]['region_code'];
 
-                            $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
-                            $requestComment = $module->escape(ProjectData::getProjectInfoArray($RecordSetRM)[0]);
+                            $requestComment = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']))[0];
 
                             $comment_time ="";
                             if(!empty($comment['responsecomplete_ts'])){
@@ -151,13 +146,12 @@ if($person_record != ""){
 
                             $concept_id = "<em>None</em>";
                             if(!empty($requestComment['assoc_concept'])){
-                                $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $requestComment['assoc_concept']));
-                                $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+                                $concept = $module->escape(\REDCap::getData($pidsArray['HARMONIST'], 'json-array', array('record_id' => $requestComment['assoc_concept']),array('record_id','concept_id'))[0]);
                                 $concept_id = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$concept['record_id'].'">'.$concept['concept_id'].'</a>';
                             }else if($requestComment['mr_temporary'] != ""){
                                 $concept_id = $requestComment['mr_temporary'];
                             }
-                            echo '<td width="50px">'.htmlspecialchars($concept_id,ENT_QUOTES).'</td>'.
+                            echo '<td width="50px">'.filter_tags($concept_id).'</td>'.
                                 '<td width="160px">'.htmlspecialchars($name,ENT_QUOTES).'</td>';
 
                             echo '<td width="160px">';
@@ -185,12 +179,10 @@ if($person_record != ""){
 
                                 echo $text.'</td>';
                             }
-                            echo '<td width="65px">'.htmlspecialchars($region['region_code'],ENT_QUOTES).'</td>'.
+                            echo '<td width="65px">'.htmlspecialchars($region_code,ENT_QUOTES).'</td>'.
                                  '<td width="450px">';
 
-                            $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
-                            $request = ProjectData::getProjectInfoArray($RecordSetRM)[0];
-
+                            $request = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']),array('region_response_status'))[0];
                             $instance = $current_user['person_region'];
 
                             $comment_vote = "";
@@ -222,7 +214,7 @@ if($person_record != ""){
 
                             echo    $comment_vote.'<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id'] . '" target="_blank">' . $requestComment['request_title'] . '</a></td>';
                             if($comment['revised_file'] != ''){
-                                echo '<td>'.$module->escape(\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"")).'</td>';
+                                echo '<td>'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
                             }else{
                                 echo '<td></td>';
                             }

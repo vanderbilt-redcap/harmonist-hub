@@ -5,8 +5,7 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 $request_id = htmlentities($_REQUEST['request_id'],ENT_QUOTES);
 $project_id = (int)$_REQUEST['pid'];
 
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
-$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] =1");
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 $regions = $module->escape($regions);
 

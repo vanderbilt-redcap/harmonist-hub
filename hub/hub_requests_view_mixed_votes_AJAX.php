@@ -6,8 +6,7 @@ $request_id = (int)$_REQUEST['request_id'];
 $region_id = (int)$_REQUEST['region_id'];
 $project_id = (int)$_REQUEST['pid'];
 
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
-$regions = $module->escape(ProjectData::getProjectInfoArray($RecordSetRegions));
+$regions = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] =1"));
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
 $RecordSetRequest = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
@@ -23,8 +22,7 @@ $votes_table = "";
 foreach ($regions as $region){
     $votes_text = '<div style="padding-top: 20px"><h4>Votes for <strong>'.$region['region_name'].' ('.$region['region_code'].')</strong></h4></div><div><p>Here you will find all votes submitted for this request.</p></div>';
 
-    $RecordSetVoters = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[harmonist_regperm] = 3 and [person_region] =".$region['record_id']);
-    $total_voters = ProjectData::getProjectInfoArray($RecordSetVoters);
+    $total_voters = count(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('recor_id'),null,null,false,false,false,"[harmonist_regperm] = 3 and [person_region] =".$region['record_id']));
 
     $votes_text .='<div style="padding-bottom: 20px">There are currently <strong>'.$total_voters.' voters</strong> for this region.</div>';
     $active = "";
@@ -38,8 +36,7 @@ foreach ($regions as $region){
         $activeLabel = "label-default label-white";
     }
 
-    $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', array("request_id" => $request_id),null,null,null,false,false,false,"[response_region] =".$region['record_id']);
-    $votes = ProjectData::getProjectInfoArray($RecordSetComments);
+    $votes = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', array("request_id" => $request_id),null,null,null,false,false,false,"[response_region] =".$region['record_id']);
     $response_person = $module->getChoiceLabels('response_person', $pidsArray['COMMENTSVOTES']);
     $region_row = '';
     $total_votes = 0;
