@@ -7,8 +7,7 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 $RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 
-$RecordSetExtraOutputs = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'array', null);
-$extra_outputs = ProjectData::getProjectInfoArray($RecordSetConcetps);
+$extra_outputs = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'array', null);
 if(!empty($extra_outputs)) {
     ArrayFunctions::array_sort_by_column($extra_outputs, 'output_year', SORT_DESC);
 }
@@ -57,8 +56,7 @@ if(!empty($extra_outputs)) {
         if ($output['producedby_region'] == 2) {
             $excel_data_aux[8] = "MR";
         } else if ($output['producedby_region'] == 1) {
-            $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $output['lead_region']));
-            $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
+            $my_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $output['lead_region']),array('region_code'))[0]['region_code'];
             $region = "";
             if ($my_region != "") {
                 $region = " (" . $my_region . ")";

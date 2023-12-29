@@ -26,7 +26,7 @@ if(!empty($concepts)){
         if(array_key_exists('person_link',$concept)){
             foreach ($concept['person_link'] as $index =>$person){
                 if($concept['person_role'][$index] == "1" || $concept['person_role'][$index] == "2"){
-                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $person),array('firstname','lastname'))[0];
+                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $person),array('firstname','lastname'))[0];
                     if($concept['person_role'][$index] == "1"){
                         $lead_author .= $people['lastname'].", ".$people['firstname']. " & ";
                     }else if($concept['person_role'][$index] == "2"){

@@ -132,8 +132,7 @@ if($person_record != ""){
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),null,array('region_code'),null,false,false,false,"[showregion_y] = 1")[0]['region_code'];
-
-                            $requestComment = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']))[0];
+                            $requestComment = $module->escape(\REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']))[0]);
 
                             $comment_time ="";
                             if(!empty($comment['responsecomplete_ts'])){

@@ -1,9 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetFaq = \REDCap::getData($pidsArray['FAQ'], 'array', null,null,null,null,false,false,false,"[help_show_y] = '1'");
-$faqs = ProjectData::getProjectInfoArray($RecordSetFaq);
-ArrayFunctions::array_sort_by_column($regions, 'help_category');
+$faqs = \REDCap::getData($pidsArray['FAQ'], 'json-array', null,null,null,null,false,false,false,"[help_show_y] = '1'");
 $help_category = $module->getChoiceLabels('help_category', $pidsArray['FAQ']);
 
 ?>
@@ -69,7 +67,7 @@ $help_category = $module->getChoiceLabels('help_category', $pidsArray['FAQ']);
 </script>
 <div class="container">
     <h3>FAQ</h3>
-    <p class="hub-title">This page lists frequently asked questions about the <?=$settings['hub_name']?> Hub. To submit a new question for the list, contact <a href="mailto:<?=$settings['hub_contact_email']?>"><?=$settings['hub_contact_email']?></a></p>
+    <p class="hub-title">This page lists frequently asked questions about the <?=$module->escape($settings['hub_name'])?> Hub. To submit a new question for the list, contact <a href="mailto:<?=$settings['hub_contact_email']?>"><?=$settings['hub_contact_email']?></a></p>
 </div>
 
 <!-- Filter Form -->
