@@ -42,7 +42,7 @@ $record = htmlentities($_GET['record'],ENT_QUOTES);
 
     <div class="col-md-10">
         <div class="alert alert-info" id="blue-alert" style="display:none">
-            <?=$settings['hub_login_blue_text']?>
+            <?=filter_tags($settings['hub_login_blue_text'])?>
         </div>
         <div class="alert alert-danger" id="hub_error_message" style="display: none;"></div>
         <p></p>

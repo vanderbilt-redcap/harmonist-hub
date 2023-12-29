@@ -6,16 +6,13 @@ $homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome)
 $homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', $pidsArray['HOME']);
 $expire_date = date('Y-m-d', strtotime(date('Y-m-d') ."-".$settings['recentdataactivity_dur']." days"));
 
-$RecordSetComments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
-$comments_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetComments);
+$comments_sevenDaysYoung = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'json-array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
 ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
-$RecordSetDataUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
-$dataUpload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataUpload);
+$dataUpload_sevenDaysYoung = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
 ArrayFunctions::array_sort_by_column($dataUpload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
-$RecordSetDataDownload = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
-$dataDownload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataDownload);
+$dataDownload_sevenDaysYoung = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null,null,null,null,false,false,false,"datediff ([responsecomplete_ts], '".$expire_date."', \"d\", true) <= 0");
 ArrayFunctions::array_sort_by_column($dataDownload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
 $all_data_recent_activity = array_merge($comments_sevenDaysYoung, $dataUpload_sevenDaysYoung);
@@ -24,14 +21,10 @@ $all_data_recent_activity = array_merge($all_data_recent_activity, $dataDownload
 ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
 $number_of_recentactivity = $settings['number_recentdataactivity'];
 
-$RecordSetDataDownload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$number_uploads = count(ProjectData::getProjectInfoArray($RecordSetDataDownload));
+$number_uploads = count(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null, array('record_id')));
+$number_downloads = count(\REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null, array('record_id')));
 
-$RecordSetDataDownload = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null);
-$number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDataDownload));
-
-$RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
-$TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
+$TBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'json-array', null);
 
 $region_tbl_percent = \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentRegions($TBLCenter, $person_region['region_code'], $settings['pastlastreview_dur']);
 
@@ -49,15 +42,14 @@ if(!empty($request_dataCall)) {
 }
 
 $news_type = $module->getChoiceLabels('news_type', $pidsArray['NEWITEMS']);
-$RecordSetNewItems = \REDCap::getData($pidsArray['NEWITEMS'], 'array', null,null,null,null,false,false,false,"[news_category] = '1'");
-$newItems = ProjectData::getProjectInfoArray($RecordSetNewItems);
+$newItems = \REDCap::getData($pidsArray['NEWITEMS'], 'json-array', null,null,null,null,false,false,false,"[news_category] = '1'");
 ArrayFunctions::array_sort_by_column($newItems, 'news_d',SORT_DESC);
 $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-calendar-o'=>'#ff8080','fa-bell-o'=>'#dff028',
     'fa-list-ol'=>'#b3d9ff','fa-file-o'=>'#a3a3c2','fa-trophy'=>'#9999ff','fa-exclamation-triangle'=>'#a3c2c2');
 ?>
 <div class="optionSelectData">
     <h3>Data Hub</h3>
-    <p class="hub-title"><?=$settings['hub_data_hub_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_data_hub_text'])?></p>
 </div>
 
 <div class="row">
@@ -272,8 +264,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                             if($recent_activity['comments'] != '') {
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['response_person']));
-                                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                                $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['response_person']),array('firstname','lastname'))[0];
                                 $name = htmlspecialchars(trim($people['firstname'] . ' ' . $people['lastname']),ENT_QUOTES);
 
                                 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $recent_activity['sop_id']));
@@ -313,14 +304,11 @@ if($settings['deactivate_datadown'][1] != "1"){
                             }else if($recent_activity['download_id'] != ""){
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['downloader_id']));
-                                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                                $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['downloader_id']),array('firstname','lastname'))[0];
                                 $name = htmlspecialchars(trim($people['firstname'] . ' ' . $people['lastname']));
 
-                                $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', array('record_id' => $recent_activity['downloader_id']));
-                                $data_upload_region = ProjectData::getProjectInfoArray($RecordSetUpload)[0]['data_upload_region'];
-                                $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $data_upload_region));
-                                $region_code = $module->escape(ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code']);
+                                $data_upload_region = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $recent_activity['downloader_id']),array('data_upload_region'))[0]['data_upload_region'];
+                                $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $data_upload_region),array('region_code'))[0]['region_code'];
 
                                 $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept'], "");
 
@@ -332,12 +320,10 @@ if($settings['deactivate_datadown'][1] != "1"){
                             }else if($recent_activity['data_assoc_request'] != "") {
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['data_upload_person']));
-                                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                                $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['data_upload_person']),array('firstname','lastname'))[0];
                                 $name = htmlspecialchars(trim($people['firstname'] . ' ' . $people['lastname']),ENT_QUOTES);
 
-                                $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $recent_activity['data_upload_region']));
-                                $region_code = $module->escape(ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code']);
+                                $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $recent_activity['data_upload_region']),array('region_code'))[0]['region_code'];
 
                                 $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept'], "");
 
@@ -450,17 +436,10 @@ if($settings['deactivate_datadown'][1] != "1"){
 <?php
 
 #FILE ACTIVITY
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$number_uploads = count(ProjectData::getProjectInfoArray($RecordSetDU));
-
-$RecordSetDN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null);
-$number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDN));
-
-$RecordSetDU = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '2'");
-$number_deletes = count(ProjectData::getProjectInfoArray($RecordSetDU));
-
-$RecordSetDUAuto = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '1'");
-$number_deletes_auto = count(ProjectData::getProjectInfoArray($RecordSetDUAuto));
+$number_uploads = count(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null, array('record_id')));
+$number_downloads = count(\REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null, array('record_id')));
+$number_deletes = count(\REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null, array('record_id'),null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '2'"));
+$number_deletes_auto = count(\REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', array('record_id'),null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '1'"));
 
 //GRAPH
 $fileActivity_values = array(0 => $number_uploads,1 => $number_downloads,2 => $number_deletes);
