@@ -19,15 +19,12 @@ if($request !="") {
 
     $wg_name = "<em>Not specified</em>";
     if (!empty($request['wg_name'])) {
-        $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg_name']));
-        $wg_name = ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
+        $wg_name = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg_name']),array('group_name'))[0]['group_name'];
         if (!empty($request['wg2_name'])) {
-            $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
-            $wg_name .= "; " . ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
+            $wg_name .= "; " . \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg2_name']),array('group_name'))[0]['group_name'];
         }
     } else if (!empty($request['wg2_name'])) {
-        $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
-        $wg_name = ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
+        $wg_name = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg2_name']),array('group_name'))[0]['group_name'];
     }
 
     $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($request['due_d'], $request['region_response_status'][$current_user['person_region']], '', '1');
@@ -185,8 +182,7 @@ if($request !="") {
                                     </thead>
                                     <tbody>
                                     <?php
-                                    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                                    $regions = $module->escape(ProjectData::getProjectInfoArray($RecordSetRegions));
+                                    $regions = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1"));
                                     ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                                     $region_row = '';
@@ -416,8 +412,7 @@ if($request !="") {
                         $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, $parameter, false);
                         krsort($comments);
 
-                        $RecordSetCommentsRecent = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''");
-                        $most_recent_file = ProjectData::getProjectInfoArray($RecordSetCommentsRecent)[0];
+                        $most_recent_file = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''")[0];
                         foreach($most_recent_file as $k=>$v)
                         {
                             if($v['responsecomplete_ts']>$max)
@@ -448,8 +443,7 @@ if($request !="") {
                                         $revised_class = 'last_file';
                                     }
 
-                                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $comment['response_person']));
-                                    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname','email'))[0];
                                     $name = trim($people['firstname'].' '.$people['lastname']);
 
                                     $comment_time ="";
@@ -499,8 +493,7 @@ if($request !="") {
 
                                     $region_code = $comment['response_regioncode'];
                                     if($region_code == ""){
-                                        $RecordSetRegionC = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $comment['response_region']));
-                                        $region_code = ProjectData::getProjectInfoArray($RecordSetRegionC)[0]['region_code'];
+                                        $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $comment['response_region']),array('region_code'))[0]['region_code'];
                                     }
 
                                     $writing_group = "";
@@ -586,7 +579,7 @@ if($request !="") {
         ?>
         <div id="collapse_review" class="panel-collapse collapse in" aria-expanded="true">
             <div class="panel-body">
-                <iframe class="commentsform" id="redcap-frame" src="<?=$survey_path?>" stayrequest_y="<?=($current_user['stayrequest_y'][1]=="")?"0":"1"?>" message="A" style="border: none;height: 810px;width: 100%;"></iframe>
+                <iframe class="commentsform" id="redcap-frame" src="<?=$survey_path?>" stayrequest_y="<?=($current_user['stayrequest_y___1']=="")?"0":"1"?>" message="A" style="border: none;height: 810px;width: 100%;"></iframe>
             </div>
         </div>
     </div>

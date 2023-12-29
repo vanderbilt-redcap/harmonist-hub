@@ -34,7 +34,10 @@ $secret_key="";
 $secret_iv="";
 
 $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
-$settings = $module->escape(ProjectData::getProjectInfoArray($RecordSetSettings)[0]);
+$settings = null;
+if(!empty($RecordSetSettings)) {
+    $settings = $module->escape(ProjectData::getProjectInfoArray($RecordSetSettings)[0]);
+}
 #Escape name just in case they add quotes
 $settings["hub_name"] = addslashes($settings["hub_name"]);
 #Sanitize text title and descrition for pages

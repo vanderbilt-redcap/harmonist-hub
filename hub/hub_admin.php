@@ -525,14 +525,6 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
                                     $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "&arm=1&id=" . $login['record']);
 
-                                    $harmonist_perm_text = "";
-                                    foreach ($people['harmonist_perms'] as $h_perm){
-
-                                        $harmonist_perm_text .= $harmonist_perms[$h_perm].", ";
-
-                                    }
-                                    $harmonist_perm_text = substr($harmonist_perm_text, 0, -3);
-
                                     echo '<tr><td><a href="mailto:' . htmlspecialchars($login['email'],ENT_QUOTES) . '">' . htmlspecialchars($login['name'],ENT_QUOTES) . '</a></td>' .
                                         '<td style="text-align: center;">' . htmlspecialchars($region_code,ENT_QUOTES) . '</td>' .
                                         '<td>' . htmlspecialchars($login['last_requested_token_d'],ENT_QUOTES) . '</td>' .

@@ -417,7 +417,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <tbody>
                 <?php
                 foreach ($uploads as $up){
-                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $up['data_upload_person']))[0];
+                    $people = $module->escape(REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $up['data_upload_person']))[0]);
                     $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
                     $region_code = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $up['data_upload_region']),array('region_code'))[0]['region_code'];

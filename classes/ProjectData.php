@@ -135,10 +135,15 @@ class ProjectData
     }
 
     public static function sanitizeALLVariablesFromInstrument($module,$project_id, $instruments, $data){
-        foreach ($instruments as $iid => $instrument_name) {
-            $fields = array_keys(\REDCap::getDataDictionary($project_id, 'array', false, null, $instrument_name));
-            foreach ($fields as $id => $name) {
-                $data[$name] = $module->escape($data[$name]);
+        if(!empty($project_id)) {
+            foreach ($instruments as $iid => $instrument_name) {
+                $data_dictionary = \REDCap::getDataDictionary($project_id, 'array', false, null, $instrument_name);
+                if (!empty($data_dictionary)) {
+                    $fields = array_keys($data_dictionary);
+                    foreach ($fields as $id => $name) {
+                        $data[$name] = $module->escape($data[$name]);
+                    }
+                }
             }
         }
         return $data;
