@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-$harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
+$harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
 ?>
 <div class="container">
     <div class="col-md-12 col lg-12" style="padding: 30px 0px 20px">

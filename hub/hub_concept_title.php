@@ -79,7 +79,7 @@ if(!empty($concept)) {
     $start_date = (empty($concept['ec_approval_d']))? "<em>Not specified</em>" : $concept['ec_approval_d'];
 }
 
-$harmonist_perm_edit_concept = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 3);
+$harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? true : false;
 
 $revised = "";
 if($concept['revised_y'][0] == '1'){

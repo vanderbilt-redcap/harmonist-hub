@@ -527,16 +527,6 @@ function numberOfAdminRequest($request){
     return $number;
 }
 
-function hasUserPermissions($permissionlist, $value){
-    $harmonist_perm = false;
-    foreach ($permissionlist as $h_perm){
-        if($h_perm == $value){
-            $harmonist_perm = true;
-        }
-    }
-    return $harmonist_perm;
-}
-
 /**
  * Function that returns the HTML header for the requests
  * @param $regions
@@ -1317,7 +1307,7 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
             }
         } else {
             $buttons = '<div><a href="#" onclick="confirmDataUpload(\'' . $sop['sop_concept_id'] . '\',\'' . $current_user['record_id'] . '\',\'' . $concept_id . '\',\'' . $sop['record_id'] . '\');" class="btn btn-primary btn-xs">Upload Data</a></div>';
-            if ($current_user['allowgetdata_y'][0] == "1" || $current_user['harmonistadmin_y'] == '1') {
+            if ($current_user['allowgetdata_y___1'] == "1" || $current_user['harmonistadmin_y'] == '1') {
                 $buttons .= '<div style="padding-top: 8px"><a href="#" onclick="changeStatus(\'' . $current_region_status . '\',\'' . $sop['record_id'] . '\',\'' . $current_user['person_region'] . '\',\'' . htmlspecialchars($sop['data_response_notes'][$current_user['person_region']]) . '\',\'' . $sop['region_update_ts'][$current_user['person_region']] . '\',\'modal-data-change-status\')" class="btn btn-default btn-xs">Change Status</a></div>';
             }
         }

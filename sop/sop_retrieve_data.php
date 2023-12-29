@@ -53,7 +53,7 @@ foreach ($request_DU as $down){
         </tbody>
         </table>
     <?php
-    }else if($current_user['allowgetdata_y'][1] != "1"){?>
+    }else if($current_user['allowgetdata_y___1'] != "1"){?>
         <table>
         <tbody>
         <tr>

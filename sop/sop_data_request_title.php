@@ -71,7 +71,7 @@ if($sop !="") {
     }
 }
 
-$harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
+$harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
 ?>
 <script>
     $(document).ready(function() {

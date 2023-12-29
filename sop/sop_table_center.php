@@ -10,7 +10,7 @@ ArrayFunctions::array_sort_by_column($regionstbl, 'region_code');
 
 $region_array = \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentRegions($TBLCenter, $regionstbl, $settings['pastlastreview_dur']);
 
-$harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 8);
+$harmonist_perm = ($current_user['harmonist_perms___8'] == 1) ? true : false;
 
 $RecordSetRegionsAll = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
 $regions_all = ProjectData::getProjectInfoArray($RecordSetRegionsAll);

@@ -74,7 +74,7 @@ if (!empty($concepts)) {
 $date = new \DateTime();
 $export_name = "concepts_".$date->format('Y-m-d H:i:s');
 
-$harmonist_perm_new_concept = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 2);
+$harmonist_perm_new_concept = ($current_user['harmonist_perms___2'] == 1) ? true : false;
 ?>
 
 <?php

@@ -90,7 +90,7 @@ $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-
             <div class="well centerwell data_boxes">
                 <i class="fa fa-2x fa-fw fa-arrow-down" aria-hidden="true"></i>
                 <div class="welltitle"><strong>Retrieve</strong> data uploaded for your project</div>
-                <?php if ($current_user['allowgetdata_y'][1] != "1") { ?>
+                <?php if ($current_user['allowgetdata_y___1'] != "1") { ?>
                     <a href="#" onclick="$('#modal-data-download-no-permissions').modal('show');" class="btn btn-info">Download
                         Data</a>
                 <?php } else if ($current_user['redcap_name'] == '') { ?>

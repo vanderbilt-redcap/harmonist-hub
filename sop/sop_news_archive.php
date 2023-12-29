@@ -13,7 +13,7 @@ ArrayFunctions::array_sort_by_column($newItems, 'news_d',SORT_DESC);
 $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-calendar-o'=>'#ff8080','fa-bell-o'=>'#dff028',
     'fa-list-ol'=>'#b3d9ff','fa-file-o'=>'#a3a3c2','fa-trophy'=>'#9999ff','fa-exclamation-triangle'=>'#a3c2c2');
 
-$harmonist_perm_news= \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 9);
+$harmonist_perm_news= ($current_user['harmonist_perms___9'] == 1) ? true : false;
 
 if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
     ?>

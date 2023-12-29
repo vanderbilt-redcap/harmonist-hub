@@ -71,7 +71,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             <th class="sorting_disabled" data-sortable="false">Actions</th></tr>
                         </thead>
                         <?php
-                        $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
+                        $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
 
                         $data = "";
                         foreach ($sop_drafts as $draft){

@@ -172,7 +172,7 @@ if(!empty($homepage)) {
                         <h3 class="panel-title">
                             Deadlines and Events
                             <?php
-                            if($isAdmin || \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 7)){ ?>
+                            if($isAdmin || ($current_user['harmonist_perms___7'] == 1) ? true : false){ ?>
                             <a href="#" onclick="javascript:$('#deadlines_survey').modal('show');" style="cursor: pointer"><span class="fa fa-cog" style="float: right;padding-right: 10px;"></span></a>
                             <?php } ?>
                         </h3>

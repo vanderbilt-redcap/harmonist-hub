@@ -5,7 +5,7 @@ $abstracts_publications_badge_text = array("1" => "badge-manuscript-text", "2" =
 
 $date = new \DateTime();
 $export_name = "publications_".$date->format('Y-m-d H:i:s');
-$harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 10);
+$harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
 
 $canEdit = false;
 if($harmonist_perm || $isAdmin) {
