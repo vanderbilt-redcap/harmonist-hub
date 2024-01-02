@@ -33,11 +33,11 @@ $projects = \REDCap::getData(array('project_id'=>$pidsArray['PROJECTS']),'array'
 $secret_key="";
 $secret_iv="";
 
-$RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
-$settings = null;
-if(!empty($RecordSetSettings)) {
-    $settings = $module->escape(ProjectData::getProjectInfoArray($RecordSetSettings)[0]);
+$settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
+if(!empty($settings)){
+    $settings = $module->escape($settings);
 }
+
 #Escape name just in case they add quotes
 $settings["hub_name"] = addslashes($settings["hub_name"]);
 #Sanitize text title and descrition for pages

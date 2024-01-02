@@ -8,8 +8,7 @@ use ExternalModules\ExternalModules;
 $hub_mapper = $this->getProjectSetting('hub-mapper');
 $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
 
-$records = \REDCap::getData($project_id, 'array', array('request_id' => $record));
-$request = ProjectData::getProjectInfoArray($records)[0];
+$request = \REDCap::getData($project_id, 'json-array', array('request_id' => $record));
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
 if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'request'){
@@ -23,8 +22,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
     $arrayRM = array(array('request_id' => $record,'requestopen_ts' => $completion_time));
 
-    $recordsPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[email] = '".$request['contact_email']."'");
-    $people = ProjectData::getProjectInfoArray($recordsPeople)[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,null,null,null,false,false,false,"[email] = '".$request['contact_email']."'")[0];
     if(!empty($people)){
         $arrayRM[0]['contactperson_id'] = $people['record_id'];
         $arrayRM[0]['request_contact_display'] = $people['firstname']." ".$people['lastname'];
@@ -42,8 +40,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         }
     }
 
-    $recordsRegions = \REDCap::getData($pidsArray['REGIONS'], 'array');
-    $regions = ProjectData::getProjectInfoArray($recordsRegions);
+    $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array');
     foreach ($regions as $region){
         $instance = $region['record_id'];
         //only if it's the first time we save the info
@@ -63,8 +60,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $jsonRM = json_encode($arrayRM);
     $results = \Records::saveData($project_id, 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 }else if($instrument == 'tracking_number_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
-    $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', array('record_id' => '1'));
-    $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+    $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', array('record_id' => '1'))[0];
 
     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[concept_id] = '".$request['mr_assigned']."'");
     $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
@@ -127,16 +123,14 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
         $wgroup_name = "<i>None</i>";
         if ($request['wg_name'] != "") {
-            $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg_name']));
-            $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
+            $wgroup = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg_name']),array('group_name','group_abbr'))[0];
             $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
 
         $wgroup2_name = "<i>None</i>";
         if ($request['wg2_name'] != "") {
-            $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
-            $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
-            $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
+            $wgroup = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg2_name']),array('group_name','group_abbr'))[0];
+            $wgroup2_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
 
         $message = "<div>Dear Administrator,</div>" .
@@ -161,16 +155,14 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
         $wgroup_name = "<i>None</i>";
         if ($request['wg_name'] != "") {
-            $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg_name']));
-            $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
+            $wgroup = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg_name']),array('group_name','group_abbr'))[0];
             $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
 
         $wgroup2_name = "<i>None</i>";
         if ($request['wg2_name'] != "") {
-            $RecordSetGroups = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
-            $wgroup = ProjectData::getProjectInfoArray($RecordSetGroups)[0];
-            $wgroup_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
+            $wgroup = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg2_name']),array('group_name','group_abbr'))[0];
+            $wgroup2_name = $wgroup['group_name'] . "(" . $wgroup['group_abbr'] . ")";
         }
 
         #Documents

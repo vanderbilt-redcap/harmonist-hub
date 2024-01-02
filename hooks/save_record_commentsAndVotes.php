@@ -8,8 +8,7 @@ use ExternalModules\ExternalModules;
 $hub_mapper = $this->getProjectSetting('hub-mapper');
 $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
 
-$RecordSetComment = \REDCap::getData($project_id, 'array', array('record_id' => $record));
-$comment = ProjectData::getProjectInfoArray($RecordSetComment)[0];
+$comment = \REDCap::getData($project_id, 'json-array', array('record_id' => $record))[0];
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
 if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'comments_and_votes'){
     $data = \REDCap::getData($project_id, 'array',$record,$instrument.'_complete', null,null,false,false,true);
@@ -22,8 +21,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
     $arrayCV = array();
     $arrayCV[$record][$event_id]['responsecomplete_ts'] = $completion_time;
-    $recordsRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $comment['response_region']));
-    $regions = ProjectData::getProjectInfoArray($recordsRegions)[0];
+    $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $comment['response_region']))[0];
     if(!empty($regions)){
         $arrayCV[$record][$event_id]['response_regioncode'] = $regions['region_code'];
     }
@@ -58,8 +56,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 break;
             }
 
-            $RecordSetVotingRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $resp_region));
-            $voting_region = ProjectData::getProjectInfoArray($RecordSetVotingRegion)[0];
+            $voting_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $resp_region),array('voteregion_y'))[0];
             if($voting_region['voteregion_y'] == "1" && $request['region_vote_status'][$instanceId] == ""){
                 $all_votes_completed = false;
             }
@@ -102,15 +99,13 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $results = \Records::saveData($project_id, 'array', $arrayCV,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache($pidsArray['COMMENTSVOTES'], $record,1);
         if($request['follow_activity'] != ''){
-            $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array');
-            $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+            $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array')[0];
 
             $request_type_label = $this->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
             $array_userid = explode(',',$request['follow_activity']);
             foreach ($array_userid as $user_id){
-                $RecordSetEmail = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' =>$user_id));
-                $people = ProjectData::getProjectInfoArray($RecordSetEmail)[0];
+                $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' =>$user_id))[0];
 
                 $environment = "";
                 if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST') {
