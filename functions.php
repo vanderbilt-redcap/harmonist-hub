@@ -208,8 +208,7 @@ function convertDigit($number, $base) {
  * @return bool
  */
 function isTokenCorrect($token,$pidPeople){
-    $projectPeople = \REDCap::getData($pidPeople, 'array', null,null,null,null,false,false,false,"[access_token] = '".$token."'");
-    $people = ProjectData::getProjectInfoArray($projectPeople)[0];
+    $people = \REDCap::getData($pidPeople, 'json-array', null,array('token_expiration_d'),null,null,false,false,false,"[access_token] = '".$token."'")[0];
     if(!empty($people)){
         if(strtotime($people['token_expiration_d']) > strtotime(date('Y-m-d'))){
             return true;
@@ -219,8 +218,7 @@ function isTokenCorrect($token,$pidPeople){
 }
 
 function getToken($userid,$pidPeople){
-    $projectPeople = \REDCap::getData($pidPeople, 'array', null,null,null,null,false,false,false,"[redcap_name] = '".$userid."'");
-    $people = ProjectData::getProjectInfoArray($projectPeople)[0];
+    $people = \REDCap::getData($pidPeople, 'json-array', null,array('access_token'),null,null,false,false,false,"[redcap_name] = '".$userid."'")[0];
     if(!empty($people)){
         return $people['access_token'];
     }
@@ -242,9 +240,7 @@ function getReqAssocConceptLink($module, $pidsArray, $assoc_concept, $option="")
 
 function getPeopleName($pidPeople, $people_id, $option=""){
     if(!empty($people_id) && !empty($pidPeople)){
-        $recordsPeople = \REDCap::getData($pidPeople, 'array', array('record_id' => $people_id));
-        $people = ProjectData::getProjectInfoArray($recordsPeople)[0];
-
+        $people = \REDCap::getData($pidPeople, 'json-array', array('record_id' => $people_id),array('firstname','lastname','email'))[0];
         $name = trim($people['firstname'].' '.$people['lastname']);
         if($option == "email"){
             $name = '<a href="mailto:'.$people['email'].'">'.trim($people['firstname'].' '.$people['lastname']).'</a>';
@@ -315,8 +311,7 @@ function createProject0AJSON($module, $pidsArray){
  * @return string, the JSON
  */
 function createProject0BJSON($module, $pidsArray){
-    $dataTablerecords = \REDCap::getData($pidsArray['CODELIST'], 'array');
-    $dataTable = ProjectData::getProjectInfoArray($dataTablerecords);
+    $dataTable = \REDCap::getData($pidsArray['CODELIST'], 'json-array');
     foreach ($dataTable as $data) {
         $jsonArray[$data['record_id']] = array();
         if ($data['code_format'] == '1') {
@@ -354,8 +349,7 @@ function createProject0BJSON($module, $pidsArray){
  * @return string, the JSON
  */
 function createProject0CJSON($module, $pidsArray){
-    $dataTablerecords = \REDCap::getData($pidsArray['DATAMODELMETADATA'], 'array');
-    $dataTable = ProjectData::getProjectInfoArray($dataTablerecords)[0];
+    $dataTable = \REDCap::getData($pidsArray['DATAMODELMETADATA'], 'json-array')[0];
     $jsonArray = array();
     $jsonArray['project_name'] = $dataTable['project_name'];
     $jsonArray['datamodel_name'] = $dataTable['datamodel_name'];
@@ -422,8 +416,7 @@ function getTableVariableJsonName($project_id,$data,$varName,$jsonArray){
 
 function getTableJsonName($project_id,$data,$varName,$jsonArray){
     if($data != ""){
-        $dataTableDataModelRecords = \REDCap::getData($project_id, 'array',array('record_id' => $data));
-        $tableData = ProjectData::getProjectInfoArray($dataTableDataModelRecords)[0];
+        $tableData = \REDCap::getData($project_id, 'json-array',array('record_id' => $data),array('table_name'))[0];
         $jsonArray[$varName] = $tableData['table_name'];
     }
     return $jsonArray;
@@ -468,8 +461,7 @@ function saveJSONCopy($type, $jsonArray, $module, $jsoncopyPID){
  * @return int|string, the version
  */
 function returnJSONCopyVersion($type, $jsoncopyID){
-    $RecordSetJsonCopy = \REDCap::getData($jsoncopyID, 'array', null,null,null,null,false,false,false,"[type]='".$type."'");
-    $datatype = ProjectData::getProjectInfoArray($RecordSetJsonCopy)[0];
+    $datatype = \REDCap::getData($jsoncopyID, 'json-array', null,array('record_id','version'),null,null,false,false,false,"[type]='".$type."'")[0];
     $lastversion = 0;
     $record_id = 0;
     $data = array();
@@ -559,8 +551,7 @@ function getRequestHeader($pidRegions, $regions, $person_region, $vote_grid, $op
     if($option != '2' && $type != 'home'){
         $small_screen_class = 'hidden-sm hidden-xs';
         if ($vote_grid == '2') {
-            $RecordSetRegions = \REDCap::getData($pidRegions, 'array', array('record_id' => $person_region));
-            $my_region = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
+            $my_region = \REDCap::getData($pidRegions, 'json-array', array('record_id' => $person_region),array('region_code'))[0]['region_code'];
             $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" style="width:150px" data-sortable="false">' . $my_region . '</th>';
         } else {
             foreach ($regions as $region) {
@@ -688,8 +679,7 @@ function showClosedRequest($settings,$req,$instance){
  * @return bool
  */
 function showPendingRequest($pidCommentsVotes, $request_id, $req, $current_region){
-    $RecordSetComment = \REDCap::getData($pidCommentsVotes, 'array', array('request_id' => $request_id));
-    $comments = ProjectData::getProjectInfoArray($RecordSetComment);
+    $comments = \REDCap::getData($pidCommentsVotes, 'json-array', array('request_id' => $request_id),array('vote_now','response_region','finalize_y'));
     foreach ($comments as $comment){
         if($comment['vote_now'] == "0" && $comment['response_region'] == $current_region && (!array_key_exists('finalize_y', $req) || $req['finalize_y'] == "")){
             return true;
@@ -736,8 +726,7 @@ function getPrivateVotesHTML($region_response_status,$small_screen_class){
 }
 
 function getMixVotesHTML($pidCommentsVotes, $region_vote_status,$region_response_status,$region_id,$req,$small_screen_class){
-    $RecordSetComments = \REDCap::getData($pidCommentsVotes, 'array', array("request_id" => $req['request_id']),null,null,null,false,false,false,"[response_region] ='".$region_id."'");
-    $votes = ProjectData::getProjectInfoArray($RecordSetComments);
+    $votes = \REDCap::getData($pidCommentsVotes, 'json-array', array("request_id" => $req['request_id']),null,array('pi_vote'),null,false,false,false,"[response_region] ='".$region_id."'");
     $mix = false;
     foreach ($votes as $vote){
         if($region_vote_status != $vote['pi_vote'] && array_key_exists('pi_vote',$vote) && array_key_exists('region_vote_status',$req) && $region_vote_status != ""){
@@ -845,8 +834,7 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
 
     $text = "";
     if ($req['revision_counter_total'] != '') {
-        $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', array('request_id' => $req['request_id']),null,null,null,false,false,false,"[revision_counter] =".$req['revision_counter_total']);
-        $comment = ProjectData::getProjectInfoArray($RecordSetComments)[0];
+        $comment = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', array('request_id' => $req['request_id']),null,null,null,false,false,false,"[revision_counter] =".$req['revision_counter_total'])[0];
 
         $comment_time ="";
         if(!empty($comment['responsecomplete_ts'])){
@@ -867,10 +855,8 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
     if($option != '2') {
         if($req_type != 'home') {
             if ($vote_grid == '2') {
-                $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $current_user['person_region']));
-                $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0];
+                $my_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $current_user['person_region']),array('record_id'))[0];
                 $current_req_region = \Vanderbilt\HarmonistHubExternalModule\getRequestVoteIcon($pidsArray['COMMENTSVOTES'], $current_req_region, $vote_grid, $current_user['person_region'], $my_region['record_id'], $vote_visibility, $req, $current_user);
-
             } else {
                 foreach ($regions as $region) {
                     $current_req_region = \Vanderbilt\HarmonistHubExternalModule\getRequestVoteIcon($pidsArray['COMMENTSVOTES'], $current_req_region, $vote_grid, $current_user['person_region'], $region['record_id'], $vote_visibility, $req, $current_user);
@@ -971,8 +957,7 @@ function getArchiveHTML($module,$pidsArray,$req,$request_type_label,$person_regi
 
     $current_req .= \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray,$req['assoc_concept'],"");
 
-    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $req['contact_region']),null,null,null,false,false,false,"[showregion_y] = 1");
-    $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
+    $region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $req['contact_region']),null,array('region_code'),null,false,false,false,"[showregion_y] = 1")[0];
 
     $current_req .= '</td>
                     <td>'.$req['contact_name'].'</td>
@@ -1182,15 +1167,13 @@ function getDateForHumans($date){
 }
 
 function getDataCallHeader($pidRegions, $person_region, $vote_grid, $option=""){
-    $RecordSetRegions = \REDCap::getData($pidRegions, 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+    $regions = \REDCap::getData($pidRegions, 'json-array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
     ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
     $header_colgroup = "<colgroup><col><col><col>";
     $header_region = "";
     if($vote_grid == '2' || $vote_grid == '0') {
-        $RecordSetMyRegion = \REDCap::getData($pidRegions, 'array', array('record_id' => $person_region));
-        $my_region = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
+        $my_region = \REDCap::getData($pidRegions, 'json-array', array('record_id' => $person_region),array('region_code'))[0]['region_code'];
         $header_region .= '<th class="request_grid_icon hidden-sm hidden-xs" style="width:40px" data-sortable="false">' . $my_region . '</th>';
     }else {
         foreach ($regions as $region) {
@@ -1239,23 +1222,19 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
     $data =  "<tr>";
     $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '0');
 
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
-    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-    $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']));
-    $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('person_region','email','firstname','lastname'))[0];
+    $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
 
     $contact_person = "";
     if($people != ""){
         $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a> (" . $region_code . ")";
     }
 
-    $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $sop['sop_concept_id']));
-    $concept = ProjectData::getProjectInfoArray($RecordSetConceptSheets)[0];
+    $concept = \REDCap::getData($pidsArray['HARMONIST'], 'json-array', array('record_id' => $sop['sop_concept_id']),array('concept_id','concept_title'))[0];
     $concept_id = $concept['concept_id'];
     $concept_title = $concept['concept_title'];
 
-    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+    $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
     ArrayFunctions::array_sort_by_column($regions, 'region_code');
     $status_row = "";
     $current_region_status = "";
@@ -1362,16 +1341,14 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
     return $data;
 }
 function getDataCallConceptsHeader($pidRegions, $person_region,$vote_grid){
-    $RecordSetRegions = \REDCap::getData($pidRegions, 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+    $regions = \REDCap::getData($pidRegions, 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
     ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
     $header_colgroup = "<colgroup><col><col><col><col>";
     $header_region = "";
 
     if($vote_grid == '2' || $vote_grid == '0') {
-        $RecordSetMyRegion = \REDCap::getData($pidRegions, 'array', array('record_id' => $person_region));
-        $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
+        $my_region = \REDCap::getData($pidRegions, 'json-array', array('record_id' => $person_region),array('region_code'))[0]['region_code'];
         $header_region .= '<th class="request_grid_icon hidden-sm hidden-xs" style="width:150px" data-sortable="false">' . $my_region . '</th>';
     }else{
         foreach ($regions as $region) {
@@ -1412,26 +1389,21 @@ function getDataCallConceptsRow($module, $pidsArray, $sop, $isAdmin, $current_us
     $data =  "<tr>";
     $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '3');
 
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
-    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-    $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']));
-    $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('email','firstname','lastname'))[0];
+    $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
 
     $contact_person = "<em>Unknown</em>";
     if($people != ""){
         $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a> (" . $region_code . ")";
     }
 
-    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+    $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
     ArrayFunctions::array_sort_by_column($regions, 'region_code');
-
 
     $status_row = "";
     $view_all_votes = "";
     if($vote_grid == '2' || $vote_grid == '0') {
-        $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $current_user['person_region']));
-        $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['record_id'];
+        $my_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $current_user['person_region']),array('record_id'))[0]['record_id'];
 
         $status = $sop['data_response_status'][$my_region];
         $status_row .= "<td style='text-align: center'>";
@@ -1754,8 +1726,7 @@ function generateTablesHTML_steps($pidCodeList,$dataTable){
                         }
                     } else if ($data['has_codes'][$id] == '1') {
                         if (!empty($data['code_list_ref'][$id])) {
-                            $dataTablerecords = \REDCap::getData($pidCodeList, 'array',array('record_id' => $data['code_list_ref'][$id]));
-                            $codeformat = ProjectData::getProjectInfoArray($dataTablerecords);
+                            $codeformat = \REDCap::getData($pidCodeList, 'json-array',array('record_id' => $data['code_list_ref'][$id]),array('code_format','code_list'));
 
                             if ($codeformat['code_format'] == '1') {
                                 $codeOptions = empty($codeformat['code_list']) ? $data['code_text'][$id] : explode(" | ", $codeformat['code_list']);
@@ -1882,8 +1853,7 @@ function generateTablesHTML_pdf($module, $pidCodeList, $dataTable,$fieldsSelecte
                         }
                     } else if ($data['has_codes'][$id] == '1') {
                         if(!empty($data['code_list_ref'][$id])){
-                            $dataTablerecords = \REDCap::getData($pidCodeList, 'array',array('record_id' => $data['code_list_ref'][$id]));
-                            $codeformat = ProjectData::getProjectInfoArray($dataTablerecords);
+                            $codeformat = \REDCap::getData($pidCodeList, 'json-array',array('record_id' => $data['code_list_ref'][$id]),array('code_format','code_list','code_file'));
 
                             if ($codeformat['code_format'] == '1') {
                                 $codeOptions = empty($codeformat['code_list']) ? $data['code_text'][$id] : explode(" | ", $codeformat['code_list']);

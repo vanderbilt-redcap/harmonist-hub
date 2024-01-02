@@ -13,8 +13,7 @@ $record_id = $exploded['id'];
 $user = $exploded['idu'];
 $deletion_rs = $_REQUEST['deletion_rs'];
 
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', array('record_id' => $record_id));
-$request_DU = ProjectData::getProjectInfoArray($RecordSetDU)[0];
+$request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
 
 $credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
 $s3 = new S3Client([
@@ -52,11 +51,9 @@ try {
         $concept_id = $concepts['concept_id'];
         $concept_title = $concepts['concept_title'];
 
-        $RecordSetPeopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $request_DU['data_upload_person']));
-        $peopleUp = ProjectData::getProjectInfoArray($RecordSetPeopleUp)[0];
+        $peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $request_DU['data_upload_person']))[0];
 
-        $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleUp['person_region']));
-        $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+        $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array('region_code'))[0]['region_code'];
 
         $date = new \DateTime($request_DU['responsecomplete_ts']);
         $date->modify("+1 hours");
@@ -65,8 +62,7 @@ try {
         $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $request_DU['data_assoc_request']));
         $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-        $RecordSetPeopleDelete = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $user));
-        $delete_user = ProjectData::getProjectInfoArray($RecordSetPeopleDelete)[0];
+        $delete_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $user))[0];
         $delete_user_fullname = $delete_user['firstname'] . " " . $delete_user['lastname'];
         $delete_user_name = $delete_user['firstname'];
 
@@ -105,10 +101,8 @@ try {
             $downloaders_list = "<ol>";
             $downloadersOrdered = array();
             foreach ($downloaders as $down) {
-                $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
-                $peopleDown = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
-                $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
-                $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
+                $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
 
                 $downloadersOrdered[$down]['name'] = $peopleDown['firstname'] . " " . $peopleDown['lastname'];
                 $downloadersOrdered[$down]['email'] = $peopleDown['email'];
@@ -124,12 +118,10 @@ try {
             $extra_days = ' + ' . $settings['retrievedata_expiration'] . " days";
             $expire_date = date('Y-m-d', strtotime($date_time . $extra_days));
 
-            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $request_DU['data_upload_person']));
-            $person = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
+            $person = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $request_DU['data_upload_person']))[0];
             $firstname = $person['firstname'];
             $name_uploader = $person['firstname'] . " " . $person['lastname'];
-            $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $person['person_region']));
-            $region_code_uploader = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+            $region_code_uploader = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $person['person_region']),array('region_code'))[0]['region_code'];
 
             $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $request_DU['data_assoc_concept']));
             $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];

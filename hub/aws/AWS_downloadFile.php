@@ -10,8 +10,7 @@ $exploded = array();
 parse_str($code, $exploded);
 
 $record_id = $exploded['id'];
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', array('record_id' => $record_id));
-$request_DU = ProjectData::getProjectInfoArray($RecordSetDU)[0];
+$request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
 
 $credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
 $s3 = new S3Client([
@@ -35,13 +34,11 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
                 'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip']
             ));
 
-            $RecordSetPerson = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[redcap_name] = '" . USERID . "'");
-            $persondown = ProjectData::getProjectInfoArray($RecordSetPerson)[0];
+            $persondown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null, null, null, null, false, false, false, "[redcap_name] = '" . USERID . "'")[0];
             $downloader = $persondown['record_id'];
             $downloader_region = $persondown['person_region'];
 
-            $RecordSetRegionsDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $downloader_region));
-            $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsDown)[0]['region_code'];
+            $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $downloader_region),array('region_code'))[0]['region_code'];
             $downloader_all = "<a href='" . $persondown['email'] . "'>" . $persondown['firstname'] . " " . $persondown['lastname'] . "</a> (" . $region_codeDown . ")";
             $download_time = date("Y-m-d H:i:s");
 
@@ -68,11 +65,9 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
             $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
             $concept_id = $concepts['concept_id'];
 
-            $RecordSetPeopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $request_DU['data_upload_person']));
-            $peopleUp = ProjectData::getProjectInfoArray($RecordSetPeopleUp)[0];
+            $peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $request_DU['data_upload_person']))[0];
 
-            $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleUp['person_region']));
-            $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];;
+            $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array(region_code))[0]['region_code'];
 
             $date = new \DateTime($request_DU['responsecomplete_ts']);
             $date->modify("+1 hours");
@@ -92,8 +87,7 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
             \Vanderbilt\HarmonistHubExternalModule\sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'], "Dataset downloaded", $pidsArray['DATADOWNLOAD']);
 
             if ($request_DU['data_upload_person'] != $downloader) {
-                $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $downloader));
-                $peopleDown = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
+                $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $downloader))[0];
 
                 #to downloader
                 $subject = "Confirmation of " . $settings['hub_name'] . " " . $concept_id . " dataset download";

@@ -2,8 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-$regionstbl = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regionstbl = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
 ArrayFunctions::array_sort_by_column($regionstbl, 'region_code');
 
 #Color code & Region names
@@ -36,12 +35,10 @@ foreach($codes as $iso2 => $iso3) {
 }
 
 #Get the data and tranform it to a json
-$RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
-$RecordSetTableTBLC = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
+$RecordSetTableTBLC = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'json-array', null);
 $totalLocations = array();
 
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
 foreach ($regions as $region){
     $totalAreasByRegion[$region['region_code']] = array();
 }

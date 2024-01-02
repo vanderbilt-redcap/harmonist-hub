@@ -117,11 +117,9 @@ class UnitTestFunctions
 
         echo $this->getTestOutputMessage('Data Upload Expiration Reminder CRON',2, $messageArray[0][$settings['downloadreminder_dur']]);
 
-        $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-        $request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
+        $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 
-        $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
-        $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+        $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 
         $days_expiration = intval($settings['downloadreminder_dur']);
         $expire_number = $settings['retrievedata_expiration'] - $days_expiration;
@@ -216,8 +214,7 @@ class UnitTestFunctions
 
         echo $this->getTestOutputMessage('Data Upload Notification CRON',2, $messageArray[0]['numDownloaders']);
 
-        $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[emails_sent_y(1)] = 1 AND datediff ([responsecomplete_ts], '".date('Y-m-d')."', \"d\", true) = 0");
-        $total_notifications_sent_today = count(ProjectData::getProjectInfoArray($RecordSetDU));
+        $total_notifications_sent_today = count(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[emails_sent_y(1)] = 1 AND datediff ([responsecomplete_ts], '".date('Y-m-d')."', \"d\", true) = 0"));
         if($total_notifications_sent_today > 0) {
             echo '<div class="alert alert-secondary fade in col-md-12">' .
                 '<span class="fa fa-envelope"></span> <strong>' . htmlspecialchars($total_notifications_sent_today,ENT_QUOTES) . ' notifications</strong> were sent today.<br>' .
@@ -301,8 +298,7 @@ class UnitTestFunctions
         }
         echo $this->getTestOutputMessage('Delete AWS CRON',1, $messageArray[0]['code_test'][0]);
 
-        $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[deleted_y] = 1 AND datediff ([deletion_ts], '".date('Y-m-d')."', \"d\", true) = 0");
-        $total_notifications_deleted_today = count(ProjectData::getProjectInfoArray($RecordSetDU));
+        $total_notifications_deleted_today = count(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[deleted_y] = 1 AND datediff ([deletion_ts], '".date('Y-m-d')."', \"d\", true) = 0"));
         if($total_notifications_deleted_today > 0) {
             echo '<div class="alert alert-secondary fade in col-md-12">' .
                 '<span class="fa fa-trash"></span> <strong>' . htmlspecialchars($total_notifications_deleted_today,ENT_QUOTES) . ' Data Uploads</strong> were automatically deleted today.<br>' .
