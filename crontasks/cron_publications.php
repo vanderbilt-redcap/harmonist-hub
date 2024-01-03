@@ -15,8 +15,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array');
     $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,"[output_year] <> ''");
 
-    $RecordSetExtraOut = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'array', null);
-    $extra_outputs = ProjectData::getProjectInfoArray($RecordSetExtraOut);
+    $extra_outputs = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'json-array', null);
     ArrayFunctions::array_sort_by_column($extra_outputs, 'output_year', SORT_DESC);
 
     $abstracts_publications_type = $moduleAux->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
@@ -76,8 +75,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             if ($output['producedby_region'] == 2) {
                 $type = "<span class='badge badge-pill badge-draft'>MR</span>";
             } else if ($output['producedby_region'] == 1) {
-                $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $output['lead_region']));
-                $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
+                $my_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $output['lead_region']),array('region_code'))[0]['region_code'];
                 $type = "<span class='badge badge-pill badge-draft'>R</span><div><i>" . $my_region . "</i></div>";
             }
 

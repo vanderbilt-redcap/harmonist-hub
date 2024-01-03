@@ -13,11 +13,8 @@ $s3 = new S3Client([
     'credentials' => $credentials
 ]);
 
-$RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
-$settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
-
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
+$settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
+$request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 
 $today = date('Y-m-d');
 $days_expiration = intval($settings['retrievedata_expiration']);
@@ -40,8 +37,7 @@ foreach (self::getRequestDU() as $upload) {
 }
 
 #Delete tokens expired on H18 Data Toolkit
-$RecordSetSecurity = \REDCap::getData($pidsArray['DATATOOLUPLOADSECURITY'], 'array', null);
-$securityTokens = ProjectData::getProjectInfoArray($RecordSetSecurity);
+$securityTokens = \REDCap::getData($pidsArray['DATATOOLUPLOADSECURITY'], 'json-array', null,array('tokenexpiration_ts','record_id'));
 $today = strtotime(date("Y-m-d"));
 foreach ($securityTokens as $token){
     if(strtotime($token['tokenexpiration_ts']) <= $today){

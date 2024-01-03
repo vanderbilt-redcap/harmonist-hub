@@ -47,9 +47,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $arrayMetrics[0]['requests_d'] = $number_requests_deactivated;
 
 
-    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null, null, null, null, false, false, false, "[showregion_y] = 1");
-    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
-
+    $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null, null, null, null, false, false, false, "[showregion_y] = 1");
 
     #PUBLICATIONS AND ABSTRACTS;
     $publications = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts);
@@ -79,8 +77,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $arrayMetrics[0]['abstracts_current'] = $number_abstracts_year;
 
     #COMMENTS AND VOTES
-    $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null);
-    $comments = ProjectData::getProjectInfoArray($RecordSetComments);
+    $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null);
     $req_id = array();
     foreach ($comments as $comments) {
         if ($comments['request_id'] != '') {
@@ -158,13 +155,11 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     }
     $arrayMetrics[0]['vote_later'] = $number_votes_later;
 
-    $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, "[author_revision_y] = 1");
-    $comments_revision = ProjectData::getProjectInfoArray($RecordSetComments);
+    $comments_revision = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null, null, null, null, false, false, false, "[author_revision_y] = 1");
     #get unique values from matrix column request_id (unique request ids)
     $revisions = 0;
     foreach ($comments_revision as $comment) {
-        $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
-        $approval_y = ProjectData::getProjectInfoArray($RecordSetRM)[0]['approval_y'];
+        $approval_y = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']),array('approval_y'))[0]['approval_y'];
         if ($approval_y == '1') {
             $revisions++;
         }
@@ -242,8 +237,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $q = $query->execute();
     $arrayMetrics[0]['users'] = $q->fetch_assoc()['total_registered_users'];
 
-    $RecordSetUsersPi = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[harmonist_regperm] = 3");
-    $number_users_pi = count(ProjectData::getProjectInfoArray($RecordSetUsersPi));
+    $number_users_pi = count(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null, null, null, null, false, false, false, "[harmonist_regperm] = 3"));
     $arrayMetrics[0]['users_pi'] = $number_users_pi;
 
     $query = $this->framework->createQuery();
@@ -251,8 +245,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $q = $query->execute();
     $arrayMetrics[0]['users_access'] = $q->fetch_assoc()['number_users_accesslink'];
 
-    $RecordSetUsersAdmin = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[harmonistadmin_y] = 1");
-    $number_requests_admin = count(ProjectData::getProjectInfoArray($RecordSetUsersAdmin));
+    $number_requests_admin = count(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null, null, null, null, false, false, false, "[harmonistadmin_y] = 1"));
     $arrayMetrics[0]['admins'] = $number_requests_admin;
 
     $json = json_encode($arrayMetrics,JSON_FORCE_OBJECT);
