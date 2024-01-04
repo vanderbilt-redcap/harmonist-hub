@@ -39,12 +39,10 @@ foreach ($region_vote_values as $votes_info){
         $recordSOPComments[$record_sopcomments][$event_id_sopcomments]['response_region'] = $region;
         $recordSOPComments[$record_sopcomments][$event_id_sopcomments]['responsecomplete_ts'] = $timestamp;
 
-        $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $_REQUEST['region']));
-        $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+        $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $_REQUEST['region']),array('region_code'))[0]['region_code'];
         $recordSOPComments[$record_sopcomments][$event_id_sopcomments]['response_regioncode'] = $region_code;
 
-        $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $region));
-        $region_comment = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+        $region_comment = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $region),array('region_code'))[0]['region_code'];
         $comment = "Status submitted for region (".$region_comment.") by Admin";
         $recordSOPComments[$record_sopcomments][$event_id_sopcomments]['comments'] = $comment;
         $recordSOPComments[$record_sopcomments][$event_id_sopcomments]['sop_comments_complete'] = "2";

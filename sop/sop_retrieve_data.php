@@ -1,8 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
+$request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 krsort($request_DU);
 ArrayFunctions::array_sort_by_column($request_DU,'responsecomplete_ts',SORT_DESC);
 
@@ -75,8 +74,7 @@ foreach ($request_DU as $down){
                 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
                 $array_userid = explode(',', $sop['sop_downloaders']);
 
-                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
-                $person_info = $module->escape(ProjectData::getProjectInfoArray($RecordSetPeople)[0]);
+                $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('firstname','lastname','email'))[0];
                 if($person_info != ""){
                     $contact_concept_person = $person_info['firstname'] . " " . $person_info['lastname'] . " (<a href='mailto:" . $person_info['email'] . "'>" . $person_info['email'] . "</a>)";
                 }else{
@@ -97,11 +95,9 @@ foreach ($request_DU as $down){
                         $data_printed = true;
                         $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $data_up['data_assoc_concept']);
 
-                        $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $data_up['data_assoc_request']));
-                        $assoc_request = ProjectData::getProjectInfoArray($RecordSetRM)[0]['request_title'];
+                        $assoc_request = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $data_up['data_assoc_request']),array('request_title'))[0]['request_title'];
 
-                        $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $data_up['data_upload_person']));
-                        $person_info = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                        $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $data_up['data_upload_person']),array('firstname','lastname','email'))[0];
                         $contact_person = "<a href='mailto:" . $person_info['email'] . "'>" . $person_info['firstname'] . " " . $person_info['lastname'] . "</a>";
 
                         $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $data_up['data_upload_region']));
@@ -122,8 +118,7 @@ foreach ($request_DU as $down){
                             $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&code=' . \Vanderbilt\HarmonistHubExternalModule\getCrypt("id=". $data_up['record_id']."&pid=".$user,'e',$secret_key,$secret_iv). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
                         } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != ""){
                             if($data_up['deletion_type'] == '2'){
-                                $RecordSetPeopleDelete = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $data_up['deletion_hubuser']));
-                                $person_info_delete = ProjectData::getProjectInfoArray($RecordSetPeopleDelete)[0];
+                                $person_info_delete = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $data_up['deletion_hubuser']),array('firstname','lastname','email'))[0];
                                 $contact_person_delete = "<a href='mailto:" . $person_info['email'] . "'>" . $person_info_delete['firstname'] . " " . $person_info_delete['lastname'] . "</a>";
 
                                 $deleted = '<div><i>File deleted by ' . $contact_person_delete . ' on '.htmlspecialchars($data_up['deletion_ts'],ENT_QUOTES).'</i></div>';

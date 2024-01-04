@@ -60,22 +60,19 @@ $data['sop_concept_id'] = $concept['concept_id'];
 $data['sop_concept_title'] = $concept['concept_title'];
 
 if($_REQUEST['sop_creator'] != ""){
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => htmlentities($_REQUEST['sop_creator'],ENT_QUOTES)));
-    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => htmlentities($_REQUEST['sop_creator'],ENT_QUOTES)),array('record_id','firstname','lastname'))[0];
     $data['sop_creator_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_creator_email'] = $people['email'];
 }
 
 if($_REQUEST['sop_creator2'] != ""){
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => htmlentities($_REQUEST['sop_creator2'],ENT_QUOTES)));
-    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => htmlentities($_REQUEST['sop_creator2'],ENT_QUOTES)),array('record_id','firstname','lastname'))[0];
     $data['sop_creator2_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_creator2_email'] = $people['email'];
 }
 
 if($_REQUEST['sop_datacontact'] != "") {
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => htmlentities($_REQUEST['sop_datacontact'],ENT_QUOTES)));
-    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => htmlentities($_REQUEST['sop_datacontact'],ENT_QUOTES)),array('record_id','firstname','lastname'))[0];
     $data['sop_datacontact_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_datacontact_email'] = $people['email'];
 }

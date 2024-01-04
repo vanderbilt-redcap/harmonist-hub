@@ -95,8 +95,7 @@ if($indexSubSet>0) {
                                 $variable_required = "Y";
                             }
 
-                            $RecordSetDA = \REDCap::getData($pidsArray['DATAAVAILABILITY'], 'array', null,null,null,null,false,false,false,"[available_table] = '".$data['record_id']."'");
-                            $data_availability = ProjectData::getProjectInfoArray($RecordSetDA);
+                            $data_availability = \REDCap::getData($pidsArray['DATAAVAILABILITY'], 'json-array', null,null,null,null,false,false,false,"[available_table] = '".$data['record_id']."'");
                             $type_text = htmlspecialchars($type_status[99],ENT_QUOTES);
                             $type_color = htmlspecialchars($type_label[99],ENT_QUOTES);
                             if($data_availability != ""){
@@ -132,8 +131,7 @@ if($indexSubSet>0) {
                                     }
                                 } else if ($data['has_codes'][$id] == '1') {
                                     if(!empty($data['code_list_ref'][$id])){
-                                        $RecordSetCode = \REDCap::getData($pidsArray['CODELIST'], 'array', array('record_id' => $data['code_list_ref'][$id]));
-                                        $codeformat = ProjectData::getProjectInfoArray($RecordSetCode);
+                                        $codeformat = \REDCap::getData($pidsArray['CODELIST'], 'json-array', array('record_id' => $data['code_list_ref'][$id]));
                                         if ($codeformat['code_format'] == '1') {
                                             $codeOptions = empty($codeformat['code_list']) ? $data['code_text'][$id] : explode(" | ", $codeformat['code_list']);
                                             if (!empty($codeOptions[0])) {

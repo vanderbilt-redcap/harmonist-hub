@@ -13,19 +13,16 @@ if($sop !="") {
     $sop_visibility = $module->getChoiceLabels('sop_visibility', $pidsArray['SOP']);
     $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
 
-    $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $sop['sop_concept_id']));
-    $concept_id = ProjectData::getProjectInfoArray($RecordSetConceptSheets)[0]['concept_id'];
+    $concept_id = \REDCap::getData($pidsArray['HARMONIST'], 'json-array', array('record_id' => $sop['sop_concept_id']),array('concept_id'))[0]['concept_id'];
     $concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $sop['sop_concept_id'], 1);
 
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator']));
-    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_creator']),array('firstname','lastname','email'))[0];
     $research_contact = "<em>None</em>";
     if($people['firstname'] != ''){
         $research_contact = $people['firstname'] . ' ' . $people['lastname']." (<a href='mailto:".$people['email']."'>".$people['email']."</a>)";
     }
 
-    $RecordSetPeopleDC = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
-    $peopleDC = ProjectData::getProjectInfoArray($RecordSetPeopleDC)[0];
+    $RecordSetPeopleDC = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('firstname','lastname','email'))[0];
     $data_contact = "<em>None</em>";
     if($peopleDC != ''){
         $data_contact = $peopleDC['firstname'] . ' ' . $peopleDC['lastname']." (<a href='mailto:".$peopleDC['email']."'>".$peopleDC['email']."</a>)";
@@ -56,7 +53,7 @@ if($sop !="") {
         $event_id = $Proj->firstEventId;
         $recordSaveDU = array();
 
-        $RecordSetFollowAct = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record_id));
+        $RecordSetFollowAct = \REDCap::getData($pidsArray['SOP'], 'json-array', array('record_id' => $record_id));
         $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetFollowAct)[0]['follow_activity'];
         $array_userid = explode(',', $follow_activity);
 
@@ -282,8 +279,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                                         </thead>
                                         <tbody>
                                         <?php
-                                        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-                                        $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                                        $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
                                         ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                                         $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
@@ -628,10 +624,8 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                             $downloaders_list = "";
                             $downloadersOrdered = array();
                             foreach ($downloaders as $down) {
-                                $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
-                                $peopleDown = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
-                                $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
-                                $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                                $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down),array('firstname','lastname','email'))[0];
+                                $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
 
                                 $downloadersOrdered[$down]['name'] = $peopleDown['firstname'] . " " . $peopleDown['lastname'];
                                 $downloadersOrdered[$down]['email'] = $peopleDown['email'];
@@ -746,8 +740,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                         <col>
                     </colgroup>
                     <?php
-                    $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$record."'");
-                    $uploads = ProjectData::getProjectInfoArray($RecordSetUpload);
+                    $uploads = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$record."'");
                     ArrayFunctions::array_sort_by_column($uploads, 'responsecomplete_ts',SORT_DESC);
                     if (!empty($uploads)){
                     ?>
@@ -766,12 +759,10 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                     $count=0;
                     foreach ($uploads as $up) {
                         if($settings['dataupload_dur'] > $count) {
-                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $up['data_upload_person']));
-                            $people = $module->escape(ProjectData::getProjectInfoArray($RecordSetPeople)[0]);
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $up['data_upload_person']),array('firstname','lastname','email'))[0];
                             $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
-                            $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $up['data_upload_region']));
-                            $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+                            $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $up['data_upload_region']),array('region_code'))[0]['region_code'];
 
                             $status = '<span class="badge label-updated">Available</span>';
                             if ($up['deleted_y'] == '1') {
@@ -817,8 +808,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                     </thead>
                     <tbody>
                     <?php
-                    $RecordSetComments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'array', null,null,null,null,false,false,false,"[sop_id] = '".$record."'");
-                    $comments = ProjectData::getProjectInfoArray($RecordSetComments);
+                    $comments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'json-array', null,null,null,null,false,false,false,"[sop_id] = '".$record."'");
                     krsort($comments);
                     if (!empty($comments)) {
                         foreach ($comments as $comment) {
@@ -830,8 +820,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                                 $comment_time = $dateComment->format("Y-m-d H:i:s");
                             }
 
-                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $comment['response_person']));
-                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname','email'))[0];
                             $name = $module->escape(trim($people['firstname'] . ' ' . $people['lastname']));
 
                             $gd_files = "";

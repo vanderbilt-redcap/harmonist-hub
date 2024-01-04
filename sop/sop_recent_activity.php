@@ -1,16 +1,13 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetComments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'array');
-$comments = ProjectData::getProjectInfoArray($RecordSetComments);
+$comments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'json-array');
 ArrayFunctions::array_sort_by_column($comments, 'responsecomplete_ts',SORT_DESC);
 
-$RecordSetDataUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$dataUpload = ProjectData::getProjectInfoArray($RecordSetDataUpload);
+$dataUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 ArrayFunctions::array_sort_by_column($dataUpload, 'responsecomplete_ts',SORT_DESC);
 
-$RecordSetDataDownload = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null);
-$dataDownload = ProjectData::getProjectInfoArray($RecordSetDataUpload);
+$dataDownload = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null);
 ArrayFunctions::array_sort_by_column($dataDownload, 'responsecomplete_ts',SORT_DESC);
 
 $all_data_recent_activity = array_merge($comments, $dataUpload);
@@ -77,8 +74,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                 <select class="form-control" name="selectRegion" id="selectRegion">
                     <option value="">Select All</option>
                     <?php
-                    $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
-                    $regions = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown);
+                    $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,array('record_id','region_code'));
                     if (!empty($regions)) {
                         $regions = $module->escape($regions);
                         foreach ($regions as $region){
@@ -141,8 +137,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
 
                         if($recent_activity['comments'] != '') {
                             #COMMENTS
-                            $projectPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['response_person']));
-                            $people = ProjectData::getProjectInfoArray($projectPeople)[0];
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['response_person']),array('firstname','lastname','person_region'))[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $recent_activity['sop_id']));
@@ -151,8 +146,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             $sop_name = $sop['sop_name'];
                             $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $sop_concept_id);
 
-                            $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']),null,null,null,false,false,false,"[showregion_y] = 1");
-                            $region = ProjectData::getProjectInfoArray($RecordSetRegions)[0];
+                            $region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),null,null,null,false,false,false,"[showregion_y] = 1")[0];
 
                             echo '<tr><td width="170px">'.htmlspecialchars($comment_time,ENT_QUOTES).'</td>'.
                                 '<td width="80px">'.htmlspecialchars($assoc_concept,ENT_QUOTES).'</td>'.
@@ -180,14 +174,11 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             '</tr>';
                         }else if($recent_activity['download_id'] != ""){
                             #DOWNLOADS
-                            $projectPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['response_person']));
-                            $people = ProjectData::getProjectInfoArray($projectPeople)[0];
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['response_person']),array('firstname','lastname','person_region'))[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                            $RecordSetDataUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', array('record_id' => $recent_activity['download_id']));
-                            $data_upload_region = ProjectData::getProjectInfoArray($RecordSetDataUpload)[0]['data_upload_region'];
-                            $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $data_upload_region));
-                            $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
+                            $data_upload_region = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $recent_activity['download_id']),array('data_upload_region'))[0]['data_upload_region'];
+                            $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $data_upload_region),array('region_code'))[0]['region_code'];
 
                             $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept']);
 
@@ -202,12 +193,10 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                                 '<td width="40px"></td>';
                         }else if($recent_activity['data_assoc_request'] != ""){
                             #UPLOADS
-                            $projectPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['data_upload_person']));
-                            $people = ProjectData::getProjectInfoArray($projectPeople)[0];
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['data_upload_person']),array('firstname','lastname','person_region'))[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                            $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $recent_activity['data_upload_region']));
-                            $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
+                            $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $recent_activity['data_upload_region']),array('region_code'))[0]['region_code'];
 
                             $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
 

@@ -1,8 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetFileLibrary = \REDCap::getData($pidsArray['FILELIBRARY'], 'array');
-$fileLibrary = ProjectData::getProjectInfoArray($RecordSetFileLibrary);
+$fileLibrary = \REDCap::getData($pidsArray['FILELIBRARY'], 'array');
 
 $file_tags = $module->escape($module->getChoiceLabels('file_tags', $pidsArray['FILELIBRARY']));
 $upload_type = $module->escape($module->getChoiceLabels('upload_type', $pidsArray['FILELIBRARY']));
@@ -156,8 +155,7 @@ $upload_type = $module->escape($module->getChoiceLabels('upload_type', $pidsArra
                                 }
                             }
 
-                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $filel['file_uploader']));
-                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $filel['file_uploader']),array('firstname','lastname','email'))[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $file_pdf = (!is_numeric($filel['file'])) ? $filel['file_title'] : \Vanderbilt\HarmonistHubExternalModule\getOtherFilesLink($module, $filel['file'], $filel['record_id'], $current_user['record_id'], $secret_key, $secret_iv, $filel['file_title']);

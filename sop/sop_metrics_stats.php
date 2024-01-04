@@ -3,8 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 $q = $module->query("SELECT MAX(record) as record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['METRICS'])." WHERE project_id = ?",[$pidsArray['METRICS']]);
 $row = $q->fetch_assoc();
-$RecordSetMetrics = \REDCap::getData($pidsArray['METRICS'], 'array', array('record_id' => $row['record']));
-$metrics = $module->escape(ProjectData::getProjectInfoArray($RecordSetMetrics)[0]);
+$metrics = $module->escape(\REDCap::getData($pidsArray['METRICS'], 'json-array', array('record_id' => $row['record']))[0]);
 
 $array_sections = array(0=>'requests',1=>'comments',2=>'users');
 $array_sections_title = array(0=>'requests', 1=>'comments',2=>'users by region');
@@ -52,8 +51,7 @@ foreach ($request as $req){
 }
 
 #USERS
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array',  null);
-$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array',  null,array('record_id','region_code'));
 $array_region = array();
 $array_region_code = array();
 foreach ($regions as $region){
@@ -65,8 +63,7 @@ foreach ($regions as $region){
     }
 }
 
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array',  null,null,null,null,false,false,false,"[last_requested_token_d] <> ''");
-$people = ProjectData::getProjectInfoArray($RecordSetPeople);
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array',  null,array('person_region'),null,null,false,false,false,"[last_requested_token_d] <> ''");
 foreach ($people as $person){
     foreach ($array_region as $region=>$value){
         if($region == $person['person_region']){
@@ -103,17 +100,10 @@ foreach ($array_region_code as $rcode){
 #Data Exchange
  **/
 #FILE ACTIVITY
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$number_uploads = count(ProjectData::getProjectInfoArray($RecordSetDU));
-
-$RecordSetDN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null);
-$number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDN));
-
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '2'");
-$number_deletes = count(ProjectData::getProjectInfoArray($RecordSetDU));
-
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '1'");
-$number_deletes_auto = count(ProjectData::getProjectInfoArray($RecordSetDU));
+$number_uploads = count(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null));
+$number_downloads = count(\REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null));
+$number_deletes = count(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '2'"));
+$number_deletes_auto = count(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '1'"));
 
 $fileActivity_values = array(0 => $number_uploads,1 => $number_downloads,2 => $number_deletes);
 $fileActivity_total = $number_uploads + $number_downloads;
@@ -128,16 +118,15 @@ $downRegion_values = array();
 $downRegion_colors = array();
 $wg_percent_down = 75;
 $wg_percent_up = 75;
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
 foreach ($regions as $region){
     array_push($upRegion_labels,$region['region_code']);
     array_push($downRegion_labels,$region['region_code']);
 
-    $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_upload_region] = '".$region['record_id']."'");
-    array_push($upRegion_values,count(ProjectData::getProjectInfoArray($RecordSetDU)));
-    $RecordSetDN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null,null,null,null,false,false,false,"[downloader_region] = '".$region['record_id']."'");
-    array_push($downRegion_values,count(ProjectData::getProjectInfoArray($RecordSetDN)));
+    $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_upload_region] = '".$region['record_id']."'");
+    array_push($upRegion_values,count($RecordSetDU));
+    $RecordSetDN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null,null,null,null,false,false,false,"[downloader_region] = '".$region['record_id']."'");
+    array_push($downRegion_values,count($RecordSetDN));
 
     $color_up = "hsl(120,39%,".$wg_percent_up."%)";
     $color_down = "hsl(210,50%,".$wg_percent_down."%)";
@@ -216,9 +205,9 @@ foreach ($request_dataCall as $dataCall){
     }
     if($dataCall['sop_closed_y'][1] == '1'){
         $dataCall_closed += 1;
-        $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
-        if(!empty(ProjectData::getProjectInfoArray($RecordSetDU)[0]))
-            $dataCall_avg_count +=count(ProjectData::getProjectInfoArray($RecordSetDU)[0]);
+        $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
+        if(!empty($RecordSetDU[0]))
+            $dataCall_avg_count +=count($RecordSetDU[0]);
     }
 
     if($dataCall['sop_downloaders'] != ""){
@@ -230,8 +219,8 @@ foreach ($request_dataCall as $dataCall){
         }
     }
 
-    $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
-    if(strtotime($dataCall['sop_due_d']) >= strtotime(ProjectData::getProjectInfoArray($RecordSetDU)[0]['responsecomplete_ts'])){
+    $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
+    if(strtotime($dataCall['sop_due_d']) >= strtotime($RecordSetDU[0]['responsecomplete_ts'])){
         $datasets_up_due++;
     }else{
         $datasets_up_afterdue++;
@@ -277,8 +266,7 @@ $dataCall_avg = round($dataCall_avg_count/$dataCall_closed,2);
 #Hub Communications
  **/
 $harmonist_regperm_labels = $module->getChoiceLabels('harmonist_regperm', $pidsArray['PEOPLE']);
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null);
-$people = ProjectData::getProjectInfoArray($RecordSetPeople);
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('first_ever_login_d','active_y','inactive_d','harmonist_regperm'));
 $array_communications = array();
 $communications_years = array();
 for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++){

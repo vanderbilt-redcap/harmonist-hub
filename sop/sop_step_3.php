@@ -93,8 +93,7 @@ if($record != ''){?>
         });
     </script>
 <?php }
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null);
-$people = ProjectData::getProjectInfoArray($RecordSetPeople);
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','firstname','lastname','email'));
 ArrayFunctions::array_sort_by_column($people,'firstname');
 if (!empty($people)) {
     $select_people = "<option value=''>Select Name</option>";
@@ -174,8 +173,7 @@ if (!empty($people)) {
                 <label class="steps_sub_label">Name / Email:</label>
                 <select class="form-control data-form-control" name="sop_hubuser" id="sop_hubuser" disabled>
                     <?php
-                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null);
-                    $people = $module->escape(ProjectData::getProjectInfoArray($RecordSetPeople));
+                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','firstname','lastname','email'));
                     if (!empty($people)) {
                         foreach ($people as $person){
                             if($current_user['record_id'] == $person['record_id']){
@@ -192,8 +190,7 @@ if (!empty($people)) {
                 <label class="steps_sub_label">Region</label>
                 <select class="form-control data-form-control" name="sopCreator_region" id="sopCreator_region" onchange="checkStep(3);" disabled>
                     <?php
-                    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
-                    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                    $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null);
                     $regions = $module->escape($regions);
                     if (!empty($regions)) {
                         foreach ($regions as $region){
@@ -238,8 +235,7 @@ if (!empty($people)) {
             <select class="form-control data-form-control" style="width:150px" name="dropDown_region" id="dropDown_region" onchange="check_people_region_dragAndDrop();checkStep(3);">
                 <option value="" region="all" selected>All Regions</option>
                 <?php
-                $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
-                $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,array('record_id','region_name'));
                 if (!empty($regions)) {
                     $regions = $module->escape($regions);
                     foreach ($regions as $region){
@@ -252,8 +248,7 @@ if (!empty($people)) {
         <div class="col-md-12">
             <ul id="sortable1" class="connectedSortable" style="width: 35%;" role="list">
             <?php
-            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"[active_y] = '1' AND [redcap_name] <> '' AND [allowgetdata_y(1)] = 1");
-            $people_sop = ProjectData::getProjectInfoArray($RecordSetPeople);
+            $people_sop = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','firstname','lastname','person_region'),null,null,false,false,false,"[active_y] = '1' AND [redcap_name] <> '' AND [allowgetdata_y(1)] = 1");
             ArrayFunctions::array_sort_by_column($people_sop,'firstname');
             $people_sop = $module->escape($people_sop);
             foreach ($people_sop as $person){

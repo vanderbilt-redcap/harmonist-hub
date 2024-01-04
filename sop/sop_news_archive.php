@@ -7,8 +7,7 @@ $type = htmlentities($_REQUEST['type'],ENT_QUOTES);
 
 $news_type = $module->getChoiceLabels('news_type', $pidsArray['NEWITEMS']);
 $news_category = $module->getChoiceLabels('news_category', $pidsArray['NEWITEMS']);
-$RecordSetNewItems = \REDCap::getData($pidsArray['NEWITEMS'], 'array');
-$newItems = ProjectData::getProjectInfoArray($RecordSetNewItems);
+$newItems = \REDCap::getData($pidsArray['NEWITEMS'], 'json-array');
 ArrayFunctions::array_sort_by_column($newItems, 'news_d',SORT_DESC);
 $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-calendar-o'=>'#ff8080','fa-bell-o'=>'#dff028',
     'fa-list-ol'=>'#b3d9ff','fa-file-o'=>'#a3a3c2','fa-trophy'=>'#9999ff','fa-exclamation-triangle'=>'#a3c2c2');
@@ -260,8 +259,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
                     <tbody>
                     <?php
                     foreach ($newItems as $news) {
-                        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $news['news_person']));
-                        $region_code = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
+                        $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $news['news_person']),array('region_code'))[0]['region_code'];
 
                         echo '<tr>'.
                             '<td width="8%">'.htmlspecialchars($news['news_d'],ENT_QUOTES).'</td>'.
