@@ -9,8 +9,7 @@ $event_id = $Proj->firstEventId;
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-$RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
-$regions = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown);
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null);
 foreach ($regions as $region){
     $instance = $region['record_id'];
     if($sop["data_response_status"][$instance] == 1) {
@@ -66,18 +65,15 @@ $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcep
 $concept_id = $concept['concept_id'];
 $concept_title = $concept['concept_title'];
 
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_creator']));
-$people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $sop['sop_creator']),array('firstname','lastname','email'))[0];
 $sop_creator_name = $people['firstname'].' '.$people['lastname'];
 $sop_creator_email = $people['email'];
 
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_creator2']));
-$people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $sop['sop_creator2']),array('firstname','lastname','email'))[0];
 $sop_creator2_name  = $people['firstname'].' '.$people['lastname'];
 $sop_creator2_email = $people['email'];
 
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_datacontact']));
-$people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $sop['sop_datacontact']),array('firstname','lastname','email'))[0];
 $sop_datacontact_name  = $people['firstname'].' '.$people['lastname'];
 $sop_datacontact_email = $people['email'];
 

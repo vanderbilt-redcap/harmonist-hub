@@ -1,19 +1,16 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
-$TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
+$TBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'json-array', null);
 
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-$regionstbl = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regionstbl = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
 ArrayFunctions::array_sort_by_column($regionstbl, 'region_code');
 
 $region_array = \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentRegions($TBLCenter, $regionstbl, $settings['pastlastreview_dur']);
 
 $harmonist_perm = ($current_user['harmonist_perms___8'] == 1) ? true : false;
 
-$RecordSetRegionsAll = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
-$regions_all = ProjectData::getProjectInfoArray($RecordSetRegionsAll);
+$regions_all = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,array('record_id','region_tbl_option'));
 $map_region = $person_region['region_code'];
 foreach($regions_all as $region){
     if($region['record_id'] == $current_user['person_region'] && ($region['region_tbl_option'] != "0" || !array_key_exists('region_tbl_option', $region))){

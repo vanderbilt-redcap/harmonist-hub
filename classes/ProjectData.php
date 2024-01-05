@@ -6,24 +6,6 @@ class ProjectData
 {
     public $default_value;
 
-    /**
-     * Function that returns the info array from a specific project
-     * @param $project, the project id
-     * @param $info_array, array that contains the conditionals
-     * @param string $type, if its single or a multidimensional array
-     * @return array, the info array
-     */
-    public static function getProjectInfoArray($records){
-        $array = array();
-        foreach ($records as $event) {
-            foreach ($event as $data) {
-                array_push($array,$data);
-            }
-        }
-
-        return $array;
-    }
-
     public static function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
         $array = array();
         $found = array();
