@@ -173,7 +173,7 @@ if (!empty($people)) {
                 <label class="steps_sub_label">Name / Email:</label>
                 <select class="form-control data-form-control" name="sop_hubuser" id="sop_hubuser" disabled>
                     <?php
-                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','firstname','lastname','email'));
+                    $people = $module->escape(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','firstname','lastname','email')));
                     if (!empty($people)) {
                         foreach ($people as $person){
                             if($current_user['record_id'] == $person['record_id']){

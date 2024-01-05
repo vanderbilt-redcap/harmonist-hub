@@ -36,6 +36,8 @@ $secret_iv="";
 $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 if(!empty($settings)){
     $settings = $module->escape($settings);
+}else{
+    $settings = htmlspecialchars($settings,ENT_QUOTES);
 }
 
 #Escape name just in case they add quotes

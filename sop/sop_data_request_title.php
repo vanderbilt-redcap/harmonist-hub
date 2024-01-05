@@ -759,7 +759,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                     $count=0;
                     foreach ($uploads as $up) {
                         if($settings['dataupload_dur'] > $count) {
-                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $up['data_upload_person']),array('firstname','lastname','email'))[0];
+                            $people = $module->escape(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $up['data_upload_person']),array('firstname','lastname','email'))[0]);
                             $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
                             $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $up['data_upload_region']),array('region_code'))[0]['region_code'];
