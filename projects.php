@@ -27,11 +27,13 @@ define('APP_PATH_PLUGIN',APP_PATH_WEBROOT_FULL."external_modules/".substr(__DIR_
 define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
 define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
-
-$projects = \REDCap::getData(array('project_id'=>$pidsArray['PROJECTS']),'array');
+//$projects = \REDCap::getData(array('project_id'=>$pidsArray['PROJECTS']),'array');
 
 $secret_key="";
 $secret_iv="";
+
+if($module == null)
+    $module = $this;
 
 $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 if(!empty($settings)){

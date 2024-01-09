@@ -1,6 +1,5 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ ."/../projects.php");
 
 class AllCrons
 {
