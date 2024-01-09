@@ -259,6 +259,11 @@ $requestsreq_labels = $module->escape($requestsreq_labels);
 $requestsreq_colors = $module->escape($requestsreq_colors);
 $concept_type = $module->escape($concept_type);
 
+$show_donuts_single = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'hub_stats_consortium_select', $settings);
+$pub_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'pub_data', $settings);
+$abs_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'abs_data', $settings);
+$activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'activity_data', $settings);
+
 ?>
 <script>
     $(document).ready(function() {
@@ -301,17 +306,17 @@ $concept_type = $module->escape($concept_type);
     }
     $(function () {
         var show_donuts = <?=json_encode($settings['hub_stats_section1_y'])?>;
-        var show_donuts_single = <?=json_encode($settings['hub_stats_consortium_select'])?>;
+        var show_donuts_single = <?=json_encode($show_donuts_single)?>;
         var show_publications = <?=json_encode($settings['hub_stats_section2_y'])?>;
-        var show_manuscripts_single = <?=json_encode($settings['pub_data'])?>;
+        var show_manuscripts_single = <?=json_encode($pub_data)?>;
         var show_manuscripts_single_label1 = <?=json_encode(($settings['pub_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>;
         var show_manuscripts_single_label2 = <?=json_encode(($settings['pub_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>;
         var show_abstracts = <?=json_encode($settings['hub_stats_section3_y'])?>;
-        var show_abstracts_single = <?=json_encode($settings['abs_data'])?>;
+        var show_abstracts_single = <?=json_encode($abs_data)?>;
         var show_abstracts_single_label1 = <?=json_encode(($settings['abs_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>;
         var show_abstracts_single_label2 = <?=json_encode(($settings['abs_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>;
         var show_activity = <?=json_encode($settings['hub_stats_section4_y'])?>;
-        var show_activity_single = <?=json_encode($settings['activity_data'])?>;
+        var show_activity_single = <?=json_encode($activity_data)?>;
 
         var url = <?=json_encode($module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=cpt')?>;
 
@@ -370,7 +375,7 @@ $concept_type = $module->escape($concept_type);
             },
             manuscripts:{
                 years_label: <?=json_encode($regionalmrdata_abstracts['years'])?>,
-                single: <?=json_encode($settings['pub_data'])?>,
+                single: <?=json_encode($pub_data)?>,
                 label1: <?=json_encode(($settings['pub_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>,
                 label2: <?=json_encode(($settings['pub_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>,
                 regionalmrpubs_mr: <?=json_encode(array_values($regionalmrdata_manuscripts['mr']))?>,
@@ -379,7 +384,7 @@ $concept_type = $module->escape($concept_type);
             },
             abstracts:{
                 years_label: <?=json_encode($regionalmrdata_manuscripts['years'])?>,
-                single: <?=json_encode($settings['abs_data'])?>,
+                single: <?=json_encode($abs_data)?>,
                 label1: <?=json_encode(($settings['abs_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>,
                 label2: <?=json_encode(($settings['abs_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>,
                 regionalmrpubs_mr: <?=json_encode(array_values($regionalmrdata_abstracts['mr']))?>,
@@ -387,11 +392,10 @@ $concept_type = $module->escape($concept_type);
                 regionalmrpubs_color: <?=json_encode(array_values($regionalmrpubs_color_abstracts))?>
             }
         }
-
         //DONUTS
         if(show_donuts == "1") {
             Object.keys(array_sections_all).forEach(function (section) {
-                if(show_donuts_single[(parseInt(section)+1)] == '1') {
+                if(show_donuts_single[(parseInt(section))] == '1') {
                     var ctx = $("#" + array_sections_all[section] + "Chart");
                     if (array_sections_all[section] == 'conceptswg') {
                         var customTooltips = function (tooltip) {
@@ -430,12 +434,12 @@ $concept_type = $module->escape($concept_type);
                                 var label = bodyLines[0][0].substr(0, bodyLines[0][0].indexOf(':'));
                                 var labelIndex = "";
                                 var labelLong = "";
-                                Object.keys(conceptswg_short_label_index).forEach(function (index) {
-                                    if (conceptswg_short_label_index[index] == label) {
+                                Object.keys(sectionsAll[array_sections_all[section]]['short_label_index']).forEach(function (index) {
+                                    if (sectionsAll[array_sections_all[section]]['short_label_index'][index] == label) {
                                         if (index == "") {
                                             labelLong = "No WG";
                                         } else {
-                                            labelLong = conceptswg_labels[index];
+                                            labelLong = sectionsAll[array_sections_all[section]]['labels'][index];
                                         }
                                         labelIndex = index;
                                     }
@@ -525,7 +529,6 @@ $concept_type = $module->escape($concept_type);
                         }
 
                         var donuts_chart = new Chart(ctx, config);
-
                     } else {
                         var config = {
                             type: 'doughnut',
@@ -754,7 +757,7 @@ $concept_type = $module->escape($concept_type);
 </div>
 <div class="container">
     <?php foreach ($array_sections_title_all as $index=>$section){
-        if($index <= 2 && $settings['hub_stats_consortium_select'][$index+1] == '1'){?>
+        if($index <= 2 && $settings['hub_stats_consortium_select___'.($index+1)] == '1'){?>
         <div class="canvas_title"><?=$section?>
             <a href="#" download="<?=$array_sections_all[$index].".png"?>" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="<?="down".$array_sections_all[$index]?>" name="<?="down".$array_sections_all[$index]?>"></a>
         </div>
@@ -764,7 +767,7 @@ $concept_type = $module->escape($concept_type);
 <div class="container">
     <?php foreach ($array_sections as $index => $section){
         $id = $section."Chart";
-        if($settings['hub_stats_consortium_select'][$index+1] == '1'){
+        if($settings['hub_stats_consortium_select___'.($index+1)] == '1'){
             if($section == 'conceptswg'){
                 $idtool = $section."tooltip";
                 ?><div id="<?=$idtool?>"></div><?php

@@ -69,7 +69,7 @@ if(array_key_exists('message', $_REQUEST)){
 </div>
 <div class="container">
     <h3>tblCENTER</h3>
-    <p class="hub-title"><?=$settings['hub_tbl_center_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_tbl_center_text'])?></p>
 </div>
 <br>
 <?php include(dirname(dirname(__FILE__)).'/map/map_mini.php');?>
@@ -106,7 +106,7 @@ if(array_key_exists('message', $_REQUEST)){
         <div style="float:left">
             <?php
             if($person_region['showregion_y'] == '1') {
-                echo '<ul class="list-inline" style="padding-left: 10px;padding-top: 7px;">Your region: <li><span style="padding-right:5px">' . htmlspecialchars($map_region,ENT_QUOTES) . '</span>' . htmlspecialchars(\Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentLabel($region_array[$map_region]) ,ENT_QUOTES). '</li></ul>';
+                echo '<ul class="list-inline" style="padding-left: 10px;padding-top: 7px;">Your region: <li><span style="padding-right:5px">' . htmlspecialchars($map_region,ENT_QUOTES) . '</span>' . filter_tags(\Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentLabel($region_array[$map_region])). '</li></ul>';
             }
             ?>
         </div>
@@ -203,7 +203,7 @@ if(array_key_exists('message', $_REQUEST)){
                                     '<td width="100px">' . $center['country'] . '</td>' .
                                     '<td width="90px">' . $center['region'] . '</td>' .
                                     '<td width="130px">' . $center['close_d'] . '</td>' .
-                                    '<td width="130px">' . htmlspecialchars($last_update,ENT_QUOTES) . '</td>' .
+                                    '<td width="130px">' . filter_tags($last_update) . '</td>' .
                                     '<td width="130px">' . htmlspecialchars($missing_fields,ENT_QUOTES) . '</td>' ;
 
                                if ($harmonist_perm || $isAdmin) {
