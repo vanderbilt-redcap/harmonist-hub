@@ -125,7 +125,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     fwrite($file, json_encode($table_array, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_PRETTY_PRINT));
     fclose($file);
 
-    $output = file_get_contents($module->getSafePath(EDOC_PATH . $storedName));
+    $output = file_get_contents($module->getSafePath($storedName,EDOC_PATH));
     $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
     //Save document on DB
         $moduleAux->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$filename,$filesize,'txt','application/octet-stream','0',$pidsArray['SETTINGS'], date('Y-m-d h:i:s')]);
