@@ -368,7 +368,7 @@ if($request !="") {
                             </div>
                             <div class="modal-body">
                                 <?php
-                                $survey_path = $module->escape(APP_PATH_WEBROOT_FULL."/surveys/?s=".$pidsArray['SURVEYLINK']."&author_revision_y=1"."&request_id=".$record."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal");
+                                $survey_path = APP_PATH_WEBROOT_FULL."/surveys/?s=".$module->escape($pidsArray['SURVEYLINK'])."&author_revision_y=1"."&request_id=".$module->escape($record)."&response_person=".$module->escape($current_user['record_id'])."&response_region=".$module->escape($current_user['person_region'])."&response_pi_level=".$module->escape($response_pi_level)."&modal=modal";
                                 ?>
                                 <iframe class="commentsform" id="redcap-author-revision" name="redcap-author-revision" message="R" src="<?=$survey_path?>" style="border: none;height: 810px;width: 100%;"></iframe>
                             </div>
@@ -575,7 +575,7 @@ if($request !="") {
             if($current_user['harmonist_regperm'] == '3'){
                 $response_pi_level = 1;
             }
-            $survey_path = $module->escape(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYLINK']."&request_id=".$record."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal");
+            $survey_path = APP_PATH_WEBROOT_FULL."surveys/?s=".$module->escape($pidsArray['SURVEYLINK'])."&request_id=".$module->escape($record)."&response_person=".$module->escape($current_user['record_id'])."&response_region=".$module->escape($current_user['person_region'])."&response_pi_level=".$module->escape($response_pi_level)."&modal=modal";
         ?>
         <div id="collapse_review" class="panel-collapse collapse in" aria-expanded="true">
             <div class="panel-body">

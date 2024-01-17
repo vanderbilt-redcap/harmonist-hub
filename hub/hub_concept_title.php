@@ -25,7 +25,7 @@ if(!empty($concept)) {
         if (!empty($person_info)) {
             $name_concept = '<a href="mailto:'.$person_info['email'].'">'.$person_info['firstname'] . ' ' . $person_info['lastname'];
             if(!empty($person_info['person_region'])){
-                $person_region = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $person_info['person_region']))[0];
+                $person_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $person_info['person_region']))[0];
                 if(!empty($person_region)){
                     $name_concept .= " (".$person_region['region_code'].")";
                 }
@@ -36,7 +36,7 @@ if(!empty($concept)) {
     }
     $id_workingGroup = $concept['wg_link'];
     if (!empty($id_workingGroup)) {
-        $wgroup = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $id_workingGroup))[0];
+        $wgroup = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $id_workingGroup))[0];
         $group_name = "";
         if (!empty($wgroup)) {
             $group_name = $wgroup['group_abbr'] . ' - ' . $wgroup['group_name'];
@@ -44,7 +44,7 @@ if(!empty($concept)) {
     }
 
     if (!empty($concept['wg2_link'])) {
-        $wgroup2 = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' =>  $concept['wg2_link']))[0];
+        $wgroup2 = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' =>  $concept['wg2_link']))[0];
     }
     $group_name_total = "<em>Not specified</em>";
     if(!empty($wgroup['group_name'])){
@@ -118,7 +118,7 @@ if($concept['revised_y'][0] == '1'){
 
         <?php if($isAdmin || $harmonist_perm_edit_concept){
             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $record, "concept_sheet", "");
-            $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal");
+            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash'])."&modal=modal";
 
             $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$record,ENT_QUOTES);
 
@@ -402,7 +402,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     <col>
                 </colgroup>
                 <?php
-                $uploads = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$record);
+                $uploads = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$record);
                 if(!empty($uploads)){?>
 
                 <thead>
@@ -417,10 +417,10 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <tbody>
                 <?php
                 foreach ($uploads as $up){
-                    $people = $module->escape(REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $up['data_upload_person']))[0]);
+                    $people = $module->escape(REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $up['data_upload_person']))[0]);
                     $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
-                    $region_code = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $up['data_upload_region']),array('region_code'))[0]['region_code'];
+                    $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $up['data_upload_region']),array('region_code'))[0]['region_code'];
 
                     $status = '<span class="badge label-updated">Available</span>';
                     if($up['deleted_y'] == '1'){

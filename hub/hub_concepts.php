@@ -404,7 +404,7 @@ $img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJE
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" value="0" id="comment_loaded">
-                                <iframe class="commentsform" id="redcap-new-frame" name="redcap-new-frame" message="N" src="<?=$module->escape(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['CONCEPTLINK']."&modal=modal")?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                                <iframe class="commentsform" id="redcap-new-frame" name="redcap-new-frame" message="N" src="<?=APP_PATH_WEBROOT_FULL."surveys/?s=".$module->escape($pidsArray['CONCEPTLINK'])."&modal=modal"?>" style="border: none;height: 810px;width: 100%;"></iframe>
                             </div>
 
                             <div class="modal-footer">

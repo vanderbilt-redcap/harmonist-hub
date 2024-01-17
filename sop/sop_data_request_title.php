@@ -888,7 +888,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                 </h4>
             </div>
             <?php
-            $survey_path = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $pidsArray['SURVEYLINKSOP'] . "&sop_id=" . $record . "&response_person=" . $current_user['record_id'] . "&response_region=" . $current_user['person_region'] . "&comment_ver=" . $sop['sop_status']);
+            $survey_path = APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $module->escape($pidsArray['SURVEYLINKSOP']) . "&sop_id=" . $module->escape($record) . "&response_person=" . $module->escape($current_user['record_id']) . "&response_region=" . $module->escape($current_user['person_region']) . "&comment_ver=" . $module->escape($sop['sop_status']);
             ?>
             <div id="collapse_ask" class="panel-collapse collapse in" aria-expanded="true">
                 <div class="panel-body">
