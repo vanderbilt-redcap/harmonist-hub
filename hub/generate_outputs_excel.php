@@ -7,7 +7,7 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 $RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
 
-$extra_outputs = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'array', null);
+$extra_outputs = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'json-array', null);
 if(!empty($extra_outputs)) {
     ArrayFunctions::array_sort_by_column($extra_outputs, 'output_year', SORT_DESC);
 }
