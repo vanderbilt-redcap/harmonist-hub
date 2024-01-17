@@ -105,13 +105,13 @@ function getFileLink($module, $project_id, $edoc, $option, $outer="",$secret_key
             $name = urlencode($row['doc_name']);
 
             $download = \Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv);
-            $file_url = $module->getUrl("downloadFile.php")."&NOAUTH&pid=".$project_id."&code=".$download;
+            $file_url = $module->getUrl("downloadFile.php")."&NOAUTH&pid=".$module->escape($project_id)."&code=".$module->escape($download);
 
             if($option == ''){
                 $icon = \Vanderbilt\HarmonistHubExternalModule\getFaIconFile($row['file_extension']);
-                $file_row = $icon."<a href='".$file_url."' target='_blank'>".$row['doc_name']."</a>";
+                $file_row = $icon."<a href='".$file_url."' target='_blank'>".$module->escape($row['doc_name'])."</a>";
             }else{
-                $file_row = "<a href='".$file_url."' target='_blank' title='".$row['doc_name']."'>".\Vanderbilt\HarmonistHubExternalModule\getFaIconFile($row['file_extension'])."</a>";
+                $file_row = "<a href='".$file_url."' target='_blank' title='".$module->escape($row['doc_name'])."'>".\Vanderbilt\HarmonistHubExternalModule\getFaIconFile($row['file_extension'])."</a>";
             }
         }
     }

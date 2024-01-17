@@ -167,7 +167,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                                 '<td width="360px"><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.htmlspecialchars($sop_name,ENT_QUOTES).'</a></td>';
 
                             if($recent_activity['revised_file'] != ''){
-                                echo '<td width="40px">'.$module->escape(\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"")).'</td>';
+                                echo '<td width="40px">'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
                             }else{
                                 echo '<td width="40px"></td>';
                             }
