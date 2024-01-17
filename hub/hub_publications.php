@@ -95,7 +95,7 @@ if($harmonist_perm || $isAdmin) {
                         $table = "";
                         $q = $module->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id = ?",[$settings["publications_json"]]);
                         while ($row = $q->fetch_assoc()) {
-                            $path = $module->escape(EDOC_PATH.$row['stored_name']);
+                            $path = $module->getSafePath($row['stored_name'],EDOC_PATH);
                             $strJsonFileContents = file_get_contents($path);
                             $json_array = json_decode($strJsonFileContents, true);
                             foreach ($json_array['data'] as $variables){

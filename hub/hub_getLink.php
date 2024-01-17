@@ -4,7 +4,7 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 
 $module->log("HUB: " . $pidsArray['PROJECTS'] . " - GET LINK");
 
-$settings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null, array('hub_name','accesslink_dur','accesslink_sender_email','accesslink_sender_name','hub_contact_email'))[0];
+$settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null, array('hub_name','accesslink_dur','accesslink_sender_email','accesslink_sender_name','hub_contact_email'))[0];
 
 $result = "";
 $current_record = $_POST['record'];
