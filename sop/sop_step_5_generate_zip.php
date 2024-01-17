@@ -115,14 +115,14 @@ while ($row = $q->fetch_assoc()) {
 #CREATE ZIP FILE
 $filename = $concept_id."_DataRequest_".date("Y-m-d_hi",time());
 $zipname = $filename.'.zip';
-$zipPath = $module->getSafePath(EDOC_PATH.$zipname);
+$zipPath = $module->getSafePath($zipname,EDOC_PATH);
 
 $zip = new \ZipArchive();
 if ( $zip->open($zipPath, \ZipArchive::CREATE) !== TRUE) {
     exit("Error creating ZIP file");
 }
 #Add a file to zip and rename it
-$zip->addFile($module->getSafePath(EDOC_PATH.$pdf_file), $filename.'.pdf');
+$zip->addFile($module->getSafePath($pdf_file,EDOC_PATH), $filename.'.pdf');
 
 # Add a file new file to zip using the text specified
 $download_file = file_get_contents( $module->getSafePath($filename.'.html' ));

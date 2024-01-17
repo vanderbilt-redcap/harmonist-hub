@@ -20,7 +20,7 @@ if(empty($completion_time)){
 $comments_DCStarted = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'json-array', array('sop_id' => $record),null,null,null,false,false,false,"[other_action] = 3")[0];
 $comments_DCCompleted = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'json-array', array('sop_id' => $record),null,null,null,false,false,false,"[other_action] = 4")[0];
 
-if(($person_region == 'finalization_of_data_request' && $comments_DCStarted == "" && $sop['sop_finalize_y'][1] == '1') || ($instrument == 'dhwg_review_request') || ($instrument == 'data_call_closure' && $comments_DCCompleted == "" && $sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'] == "1")){
+if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" && $sop['sop_finalize_y'][1] == '1') || ($instrument == 'dhwg_review_request') || ($instrument == 'data_call_closure' && $comments_DCCompleted == "" && $sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'] == "1")){
     $recordsPeople = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_hubuser']),null,array('person_region'),null,false,false,false,null)[0]['person_region'];
 
     $arrayComments = array(array('record_id' => $this->framework->addAutoNumberedRecord($pidsArray['SOPCOMMENTS']),'responsecomplete_ts' => $completion_time, 'sop_id' => $sop['record_id'], 'response_region' => $person_region, 'response_person' => $sop['sop_hubuser']));
@@ -43,8 +43,8 @@ if(($person_region == 'finalization_of_data_request' && $comments_DCStarted == "
         $docId = "";
         while ($row = $q->fetch_assoc()) {
             $storedName = date("YmdsH")."_pid".$pidsArray['HARMONIST']."_".\Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
-            $output = file_get_contents($module->getSafePath(EDOC_PATH.$row['stored_name']));
-            $filesize = file_put_contents($module->getSafePath(EDOC_PATH.$storedName), $output);
+            $output = file_get_contents($module->getSafePath($row['stored_name'],EDOC_PATH));
+            $filesize = file_put_contents($module->getSafePath($storedName,EDOC_PATH), $output);
             $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
             $docId = db_insert_id();
 

@@ -97,7 +97,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
                 $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
-                $output = file_get_contents($module->getSafePath(EDOC_PATH . $row['stored_name']));
+                $output = file_get_contents($module->getSafePath($row['stored_name'],EDOC_PATH));
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
                 $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
                 $docId = db_insert_id();
@@ -112,7 +112,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
                 $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
-                $output = file_get_contents($module->getSafePath(EDOC_PATH . $row['stored_name']));
+                $output = file_get_contents($module->getSafePath($row['stored_name'],EDOC_PATH));
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
                 $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
                 $docId = db_insert_id();
