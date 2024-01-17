@@ -722,7 +722,7 @@ class AllCrons
                     ));
 
                     $s3->registerStreamWrapper();
-                    $data = file_get_contents($module->getSafePath('s3://' . $bucket . '/' . $object['Key']));
+                    $data = file_get_contents($module->getSafePath($object['Key'],'s3://' . $bucket . '/'));
                     // Open a stream in read-only mode
                     if ($stream = fopen('s3://' . $bucket . '/' . $object['Key'], 'r')) {
                         // While the stream is still open
@@ -912,7 +912,7 @@ class AllCrons
             $storedName = md5($reportHash);
             $filePath = EDOC_PATH . $storedName;
             $s3->registerStreamWrapper();
-            $output = file_get_contents($module->getSafePath('s3://' . $bucket . '/pending/' . $reportHash . ".pdf"));
+            $output = file_get_contents($module->getSafePath($reportHash . ".pdf",'s3://' . $bucket . '/pending/' ));
             $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
 
             //Save document on DB
