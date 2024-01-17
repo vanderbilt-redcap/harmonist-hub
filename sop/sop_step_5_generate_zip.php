@@ -125,7 +125,7 @@ if ( $zip->open($zipPath, \ZipArchive::CREATE) !== TRUE) {
 $zip->addFile($module->getSafePath($pdf_file,EDOC_PATH), $filename.'.pdf');
 
 # Add a file new file to zip using the text specified
-$download_file = file_get_contents( $module->getSafePath($filename.'.html' ));
+$download_file = file_get_contents( $module->getSafePath($filename.'.html',EDOC_PATH ));
 $zip->addFromString(basename($filename.'.html'),$html_print);
 
 $zip->close();
