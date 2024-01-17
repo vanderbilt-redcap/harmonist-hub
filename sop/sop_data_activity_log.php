@@ -309,7 +309,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                 '<td width="50px"> '.filter_tags($buttons).'</td>';
 
                             if($isAdmin){
-                                $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recent_activity['record_id']);
+                                $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $module->escape($pidsArray['DATAUPLOAD']) . "&arm=1&id=" . $module->escape($recent_activity['record_id']);
                                 echo '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
                             }
                             echo '</tr>';

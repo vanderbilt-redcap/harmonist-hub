@@ -110,7 +110,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                         $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $login['person_region']),array('region_code'))[0]['region_code'];
                         $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array',  array('record_id' => $login['record_id']))[0];
 
-                        $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "&arm=1&id=" . $login['record_id']);
+                        $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $module->escape($pidsArray['PEOPLE']) . "&arm=1&id=" . $module->escape($login['record_id']);
 
                         $harmonist_perm_text = "";
                         if($people['harmonistadmin_y'] == "1"){

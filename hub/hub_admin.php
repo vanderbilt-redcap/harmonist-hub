@@ -522,7 +522,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
                                     $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $login['record']))[0];
 
-                                    $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "&arm=1&id=" . $login['record']);
+                                    $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $module->escape($pidsArray['PEOPLE']) . "&arm=1&id=" . $module->escape($login['record']);
 
                                     echo '<tr><td><a href="mailto:' . htmlspecialchars($login['email'],ENT_QUOTES) . '">' . htmlspecialchars($login['name'],ENT_QUOTES) . '</a></td>' .
                                         '<td style="text-align: center;">' . htmlspecialchars($region_code,ENT_QUOTES) . '</td>' .

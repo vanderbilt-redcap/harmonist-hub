@@ -140,7 +140,7 @@ if($request !="") {
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "request", "");
                 $editRequest = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
 
-                $gotoredcap = $module->escape(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['RMANAGER']."&arm=1&id=".$request['request_id']);
+                $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$module->escape($pidsArray['RMANAGER'])."&arm=1&id=".$module->escape($request['request_id']);
 
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "admin_review", "");
                 $changeApproval = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
