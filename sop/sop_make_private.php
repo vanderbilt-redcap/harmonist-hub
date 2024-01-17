@@ -30,10 +30,10 @@ $arraySOPComments[$record_sopcomments][$event_id_sopcomments]['response_person']
 $arraySOPComments[$record_sopcomments][$event_id_sopcomments]['comments'] = "Data Call made PRIVATE";
 $arraySOPComments[$record_sopcomments][$event_id_sopcomments]['comment_ver'] = "0";
 
-$person_region = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_hubuser']),array('person_region'))[0]['person_region'];
+$person_region = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $sop['sop_hubuser']),array('person_region'))[0]['person_region'];
 $arraySOP[$record_sopcomments][$event_id_sopcomments]['response_region'] = $person_region;
 
-$regioncode = \REDCap::getData($pidsArray['REGIONS'], 'array', array("record_id" => $person_region),array('region_code'))[0]['region_code'];
+$regioncode = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array("record_id" => $person_region),array('region_code'))[0]['region_code'];
 if(!empty($regioncode)){
     $arraySOP[$record_sopcomments][$event_id_sopcomments]['response_regioncode'] = $regioncode;
 }
