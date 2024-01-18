@@ -11,5 +11,5 @@ header('Content-type: application/pdf');
 header('Content-Disposition: inline; filename="'.$row_concept_file['doc_name'].'"');
 header('Content-Transfer-Encoding: binary');
 header('Accept-Ranges: bytes');
-@readfile($module->framework->getSafePath($row_concept_file['stored_name'], EDOC_PATH));
+@readfile($module->framework->getSafePath(EDOC_PATH.$row_concept_file['stored_name'], EDOC_PATH));
 ?>

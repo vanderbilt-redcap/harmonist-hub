@@ -31,5 +31,5 @@ header('Content-type: application/'.$extension);
 header('Content-Disposition: attachment; filename="'.$filename.'"');
 header('Content-Transfer-Encoding: binary');
 header('Accept-Ranges: bytes');
-@readfile($module->framework->getSafePath($sname, EDOC_PATH));
+@readfile($module->framework->getSafePath(EDOC_PATH.$sname, EDOC_PATH));
 ?>

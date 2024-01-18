@@ -722,7 +722,7 @@ class AllCrons
                     ));
 
                     $s3->registerStreamWrapper();
-                    $data = file_get_contents($module->getSafePath($object['Key'],'s3://' . $bucket . '/'));
+                    $data = file_get_contents($module->getSafePath('s3://' . $bucket . '/'.$object['Key'],'s3://' . $bucket . '/'));
                     // Open a stream in read-only mode
                     if ($stream = fopen('s3://' . $bucket . '/' . $object['Key'], 'r')) {
                         // While the stream is still open
@@ -912,7 +912,7 @@ class AllCrons
             $storedName = md5($reportHash);
             $filePath = EDOC_PATH . $storedName;
             $s3->registerStreamWrapper();
-            $output = file_get_contents($module->getSafePath($reportHash . ".pdf",'s3://' . $bucket . '/pending/' ));
+            $output = file_get_contents($module->getSafePath('s3://' . $bucket . '/pending/'.$reportHash . ".pdf",'s3://' . $bucket . '/pending/' ));
             $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
 
             //Save document on DB
@@ -1023,7 +1023,7 @@ class AllCrons
         fwrite($file,json_encode($jsonArray,JSON_FORCE_OBJECT));
         fclose($file);
 
-        $output = file_get_contents($module->getSafePath($storedName,EDOC_PATH));
+        $output = file_get_contents($module->getSafePath(EDOC_PATH.$storedName,EDOC_PATH));
         $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
 
         //Save document on DB
@@ -1044,7 +1044,7 @@ class AllCrons
         if($jsoncocpy["jsoncopy_file"] != ""){
             $q = $module->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$jsoncocpy["jsoncopy_file"]]);
             while ($row = $q->fetch_assoc()) {
-                $strJsonFileContents = file_get_contents($module->getSafePath($row['stored_name'],EDOC_PATH));
+                $strJsonFileContents = file_get_contents($module->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
                 $last_array = json_decode($strJsonFileContents, true);
                 $array_data = call_user_func_array("\Vanderbilt\HarmonistHubExternalModule\createProject".strtoupper($type)."JSON",array($module, $pidsArray));
                 $new_array = json_decode($array_data['jsonArray'],true);
