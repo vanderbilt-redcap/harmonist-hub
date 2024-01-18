@@ -227,8 +227,8 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                                     <input type="hidden" id="user" name="user">
                                     <div class="modal-footer">
                                         <?php
-                                        $url = $module->escape($module->getUrl('sop/sop_copy_data_request_AJAX.php?id='.$sop['record_id'])."&NOAUTH");
-                                        $urlgoto = $module->escape($module->getUrl("index.php?&option=ss1&step=3")."&NOAUTH");
+                                        $url = $module->getUrl('sop/sop_copy_data_request_AJAX.php?id='.$module->escape($sop['record_id']))."&NOAUTH";
+                                        $urlgoto = $module->getUrl("index.php?&option=ss1&step=3")."&NOAUTH";
                                         ?>
                                         <a type="submit" onclick='copy_data_request("<?=$url?>","<?=$urlgoto?>")' class="btn btn-default btn-success" id='btnModalRescheduleForm'>Continue</a>
                                         <a href="#" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</a>
