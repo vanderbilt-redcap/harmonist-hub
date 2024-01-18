@@ -15,11 +15,6 @@ require_once(dirname(__FILE__)."/vendor/autoload.php");
 class HarmonistHubExternalModule extends AbstractExternalModule
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     #If it's not the main PID project hide the Harmonist Hub link
     public function redcap_module_link_check_display($project_id, $link) {
         $hub_projectname = $this->getProjectSetting('hub-projectname');
@@ -215,8 +210,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 
         foreach ($this->getProjectsWithModuleEnabled() as $project_id){
-            $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SETTINGS'");
-            $settingsPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+            $settingsPID = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='SETTINGS'")[0]['project_id'];
 
             if($settingsPID != "") {
                 $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];

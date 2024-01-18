@@ -54,7 +54,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'?>">< Back to Submit Data</a>
     </div>
     <h3>Data Call Archive</h3>
-    <p class="hub-title"><?=$settings['hub_datacall_archive']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_datacall_archive'])?></p>
     <br>
     <div class="table-responsive">
         <table class="table table_requests sortable-theme-bootstrap" data-sortable id="sortable_table">

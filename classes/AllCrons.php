@@ -1,6 +1,5 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ ."/../projects.php");
 
 class AllCrons
 {
@@ -17,10 +16,8 @@ class AllCrons
                 $downloadersOrdered = array();
                 foreach ($downloaders as $down) {
                     if($peopleDown == null) {
-                        $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
-                        $peopleDownData = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
-                        $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
-                        $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                        $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
+                        $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
                     }else{
                         $region_codeDown = "TT";
                         $peopleDownData = $peopleDown[$down];
@@ -33,22 +30,18 @@ class AllCrons
                 $date->modify("+1 hours");
                 $date_time = $date->format("Y-m-d H:i");
 
-                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $upload['data_upload_person']));
-                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
                 $name_uploader = $people['firstname'] . " " . $people['lastname'];
-                $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']));
-                $region_code_uploader = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+                $region_code_uploader = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
 
-                $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-                $concepts = ProjectData::getProjectInfoArray($RecordSetConcepts)[0];
+                $concepts = \REDCap::getData($pidsArray['HARMONIST'], 'json-array', array('record_id' => $upload['data_assoc_concept']),array('concept_id','concept_title'))[0];
                 $concept_id = $concepts['concept_id'];
                 $concept_title = $concepts['concept_title'];
 
                 $messageArray['concept_title'] = $concept_title;
                 $messageArray['sop_id'] = $sop['record_id'];
 
-                $RecordSetDOWN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null, null, null, null, false, false, false, "[download_id] = " . $upload['record_id']);
-                $downloads = ProjectData::getProjectInfoArray($RecordSetDOWN);
+                $downloads = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null, null, null, null, false, false, false, "[download_id] = " . $upload['record_id']);
                 if (empty($downloads)) {
                     foreach ($downloadersOrdered as $down) {
                         $messageArray = self::sendExpReminder($module, $pidsArray, $sop, $down, $upload, $expired_date['reminder'], $expired_date['reminder2'], $expired_date['delete'], $name_uploader, $region_code_uploader, $concept_id, $concept_title, $date_time, $settings, $email, $messageArray);
@@ -101,10 +94,8 @@ class AllCrons
                     $downloadersOrdered = array();
                     foreach ($downloaders as $down) {
                         if ($peopleDown == null) {
-                            $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
-                            $peopleDownData = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
-                            $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
-                            $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                            $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
+                            $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
                         } else {
                             $region_codeDown = "TT";
                             $peopleDownData = $peopleDown[$down];
@@ -120,13 +111,11 @@ class AllCrons
                 }
 
                 #Uploader email
-                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $upload['data_upload_person']));
-                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
                 $to = $people['email'];
                 $firstname = $people['firstname'];
                 $name_uploader = $people['firstname'] . " " . $people['lastname'];
-                $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $people['person_region']));
-                $region_code_uploader = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+                $region_code_uploader = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
 
                 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
                 $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
@@ -232,8 +221,7 @@ class AllCrons
                         if($region == ""){
                             $region = "1";
                         }
-                        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array',  array('record_id' => $region));
-                        $region_code = ProjectData::getProjectInfoArray($RecordSetRegions)[0]['region_code'];
+                        $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array',  array('record_id' => $region),array('region_code'))[0]['region_code'];
                         array_push($votes,$region_code);
                     }
                 }
@@ -316,12 +304,9 @@ class AllCrons
                 }
 
                 $email_req .= "<div style='padding: 3px;'><a href='" . $module->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['DATAMODEL'] . "&option=hub&record=" . $sop['request_id'] . "' target='_blank' alt='concept_link'>" . $sop['request_title'] . "</a></div>";
-                $RecordSetCreator = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator']));
-                $creator = ProjectData::getProjectInfoArray($RecordSetCreator)[0];
-                $RecordSetCreator2 = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator2']));
-                $creator2 = ProjectData::getProjectInfoArray($RecordSetCreator2)[0];
-                $RecordSetDataContact = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator2']));
-                $datacontact = ProjectData::getProjectInfoArray($RecordSetDataContact)[0];
+                $creator = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_creator']),array('firstname','lastname'))[0];
+                $creator2 = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_creator2']),array('firstname','lastname'))[0];
+                $datacontact = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_creator2']),array('firstname','lastname'))[0];
                 $data_contact = $datacontact['firstname'] . " " . $datacontact['lastname'];
                 $sop_creator = $creator['firstname'] . " " . $creator['lastname'];
                 $sop_creator2 = $creator2['firstname'] . " " . $creator2['lastname'];
@@ -402,11 +387,8 @@ class AllCrons
                     $concept_id = $concepts['concept_id'];
                     $concept_title = $concepts['concept_title'];
 
-                    $RecordSetPeopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $upload['data_upload_person']));
-                    $peopleUp = ProjectData::getProjectInfoArray($RecordSetPeopleUp)[0];
-
-                    $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleUp['person_region']));
-                    $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+                    $peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
+                    $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array('region_code'))[0]['region_code'];
 
                     $date = new \DateTime($upload['responsecomplete_ts']);
                     $date->modify("+1 hours");
@@ -431,10 +413,8 @@ class AllCrons
                     $downloadersOrdered = array();
                     foreach ($downloaders as $down) {
                         if ($peopleDown == null) {
-                            $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
-                            $peopleDownData = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
-                            $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
-                            $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                            $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
+                            $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
                         } else {
                             $region_codeDown = "TT";
                             $peopleDownData = $peopleDown[$down];
@@ -516,10 +496,7 @@ class AllCrons
         $number_requests_deactivated = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsDeactivated));
         $arrayMetrics[0]['requests_d'] = $number_requests_deactivated;
 
-
-        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null, null, null, null, false, false, false, "[showregion_y] = 1");
-        $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
-
+        $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null, null, null, null, false, false, false, "[showregion_y] = 1");
 
         #PUBLICATIONS AND ABSTRACTS;
         $publications = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts);
@@ -549,8 +526,7 @@ class AllCrons
         $arrayMetrics[0]['abstracts_current'] = $number_abstracts_year;
 
         #COMMENTS AND VOTES
-        $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null);
-        $comments = ProjectData::getProjectInfoArray($RecordSetComments);
+        $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null,array('request_id'));
         $req_id = array();
         foreach ($comments as $comments) {
             if ($comments['request_id'] != '') {
@@ -628,13 +604,11 @@ class AllCrons
         }
         $arrayMetrics[0]['vote_later'] = $number_votes_later;
 
-        $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, "[author_revision_y] = 1");
-        $comments_revision = ProjectData::getProjectInfoArray($RecordSetComments);
+        $comments_revision = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null, array('request_id'), null, null, false, false, false, "[author_revision_y] = 1");
         #get unique values from matrix column request_id (unique request ids)
         $revisions = 0;
         foreach ($comments_revision as $comment) {
-            $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
-            $approval_y = ProjectData::getProjectInfoArray($RecordSetRM)[0]['approval_y'];
+            $approval_y = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']),array('approval_y'))[0]['approval_y'];
             if ($approval_y == '1') {
                 $revisions++;
             }
@@ -703,8 +677,7 @@ class AllCrons
         $q = $query->execute();
         $arrayMetrics[0]['users'] = $q->fetch_assoc()['total_registered_users'];
 
-        $RecordSetUsersPi = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[harmonist_regperm] = 3");
-        $number_users_pi = count(ProjectData::getProjectInfoArray($RecordSetUsersPi));
+        $number_users_pi = count(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null, null, null, null, false, false, false, "[harmonist_regperm] = 3"));
         $arrayMetrics[0]['users_pi'] = $number_users_pi;
 
         $query = $module->framework->createQuery();
@@ -712,8 +685,7 @@ class AllCrons
         $q = $query->execute();
         $arrayMetrics[0]['users_access'] = $q->fetch_assoc()['number_users_accesslink'];
 
-        $RecordSetUsersAdmin = \REDCap::getData($pidsArray['PEOPLE'], 'array', null, null, null, null, false, false, false, "[harmonistadmin_y] = 1");
-        $number_requests_admin = count(ProjectData::getProjectInfoArray($RecordSetUsersAdmin));
+        $number_requests_admin = count(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null, null, null, null, false, false, false, "[harmonistadmin_y] = 1"));
         $arrayMetrics[0]['admins'] = $number_requests_admin;
 
         $json = json_encode($arrayMetrics);
@@ -750,7 +722,7 @@ class AllCrons
                     ));
 
                     $s3->registerStreamWrapper();
-                    $data = file_get_contents('s3://' . $bucket . '/' . $object['Key']);
+                    $data = file_get_contents($module->getSafePath('s3://' . $bucket . '/'.$object['Key'],'s3://' . $bucket . '/'));
                     // Open a stream in read-only mode
                     if ($stream = fopen('s3://' . $bucket . '/' . $object['Key'], 'r')) {
                         // While the stream is still open
@@ -768,10 +740,9 @@ class AllCrons
                             $message['data_assoc_concept'] = $uploadData[0]['data_assoc_concept'];
                             $message['responsecomplete_ts'] = $uploadData[0]['responsecomplete_ts'];
                         }else {
-                            $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null, null, null, null, false, false, false,
+                            $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null, null, null, null, false, false, false,
                                 "[data_assoc_concept] = " . $uploadData[0]['data_assoc_concept'] . " AND [data_assoc_request] = " . $uploadData[0]['data_assoc_request'] .
-                                " AND [data_upload_person] = " . $uploadData[0]['data_upload_person'] . " AND [data_upload_region] = " . $uploadData[0]['data_upload_region']);
-                            $request_DU = ProjectData::getProjectInfoArray($RecordSetUpload)[0];
+                                " AND [data_upload_person] = " . $uploadData[0]['data_upload_person'] . " AND [data_upload_region] = " . $uploadData[0]['data_upload_region'])[0];
 
                             if ($request_DU != "") {
                                 $found = false;
@@ -891,8 +862,7 @@ class AllCrons
 
         $uploader_name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $uploadData[0]['data_upload_person'], "");
 
-        $RecordSetRegionsUp = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $uploadData[0]['data_upload_region']));
-        $region_codeUp = ProjectData::getProjectInfoArray($RecordSetRegionsUp)[0]['region_code'];
+        $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $uploadData[0]['data_upload_region']),array('region_code'))[0]['region_code'];
 
         $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_status_dashboard.php?pid=" . $pidsArray['DATAUPLOAD'];
 
@@ -942,7 +912,7 @@ class AllCrons
             $storedName = md5($reportHash);
             $filePath = EDOC_PATH . $storedName;
             $s3->registerStreamWrapper();
-            $output = file_get_contents('s3://' . $bucket . '/pending/' . $reportHash . ".pdf");
+            $output = file_get_contents($module->getSafePath('s3://' . $bucket . '/pending/'.$reportHash . ".pdf",'s3://' . $bucket . '/pending/' ));
             $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
 
             //Save document on DB
@@ -979,8 +949,7 @@ class AllCrons
         }
         if($project_pid != "") {
             #Check if the project has information
-            $RecordSetProjectData = \REDCap::getData($project_pid, 'array');
-            $projectData = ProjectData::getProjectInfoArray($RecordSetProjectData)[0];
+            $projectData = \REDCap::getData($project_pid, 'json-array',null, array('record_id'))[0];
             if (!empty($projectData)) {
                 $jsoncopyPID = $pidsArray['JSONCOPY'];
                 $q = $module->query("SELECT record as record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray[$jsoncopyPID])." WHERE project_id=? AND field_name=? and value=? order by record",[$jsoncopyPID,'type',$type]);
@@ -989,8 +958,7 @@ class AllCrons
                     $maxRecord = max(array_column($row, 'record'));
                 }
 
-                $RecordSetJsonCopy = \REDCap::getData($jsoncopyPID, 'array', array('record_id' => $maxRecord));
-                $jsoncopy = ProjectData::getProjectInfoArray($RecordSetJsonCopy)[0];
+                $jsoncopy = \REDCap::getData($jsoncopyPID, 'json-array', array('record_id' => $maxRecord))[0];
                 $today = date("Y-m-d");
                 if ($jsoncopy["jsoncopy_file"] != "" && strtotime(date("Y-m-d", strtotime($jsoncopy['json_copy_update_d']))) == strtotime($today)) {
                     return true;
@@ -1005,8 +973,7 @@ class AllCrons
 
     public static function createAndSaveJSONCron($module, $project_id){
         error_log("createpdf - createAndSaveJSONCron");
-        $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='DATAMODEL'");
-        $dataModelPID = getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+        $dataModelPID = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='DATAMODEL'")[0]['project_id'];
 
         $RecordSetDataModel = \REDCap::getData($dataModelPID, 'array');
         $dataTable = getProjectInfoArrayRepeatingInstruments($RecordSetDataModel);
@@ -1046,8 +1013,7 @@ class AllCrons
 
     public static function saveJSONCopyVarSearch($module, $jsonArray, $project_id){
         error_log("createpdf - saveJSONCopyVarSearch");
-        $RecordSetConstants = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='DATAMODEL'");
-        $settingsPID = ProjectData::getProjectInfoArray($RecordSetConstants)[0]['project_id'];
+        $settingsPID = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='DATAMODEL'")[0]['project_id'];
 
         #create and save file with json
         $filename = "jsoncopy_file_variable_search_".date("YmdsH").".txt";
@@ -1057,7 +1023,7 @@ class AllCrons
         fwrite($file,json_encode($jsonArray,JSON_FORCE_OBJECT));
         fclose($file);
 
-        $output = file_get_contents(EDOC_PATH.$storedName);
+        $output = file_get_contents($module->getSafePath(EDOC_PATH.$storedName,EDOC_PATH));
         $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
 
         //Save document on DB
@@ -1078,8 +1044,7 @@ class AllCrons
         if($jsoncocpy["jsoncopy_file"] != ""){
             $q = $module->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$jsoncocpy["jsoncopy_file"]]);
             while ($row = $q->fetch_assoc()) {
-                $path = EDOC_PATH.$row['stored_name'];
-                $strJsonFileContents = file_get_contents($path);
+                $strJsonFileContents = file_get_contents($module->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
                 $last_array = json_decode($strJsonFileContents, true);
                 $array_data = call_user_func_array("\Vanderbilt\HarmonistHubExternalModule\createProject".strtoupper($type)."JSON",array($module, $pidsArray));
                 $new_array = json_decode($array_data['jsonArray'],true);
@@ -1150,8 +1115,7 @@ class AllCrons
         <div>Your " . $settings['hub_name'] . " request has been approved, \"" . $request['request_title'] . "\", as of ".$request['final_d'].". Below is a summary of the votes and comments that were recorded for your request. Please check the final approval e-mail for next steps for your request; this is just a digest of recorded votes and comments.</div>
         <div>".$settings['author_summary_footer']."</div></br></br>";
 
-        $RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, "[request_id] = ".$request['request_id']);
-        $comments = ProjectData::getProjectInfoArray($RecordSetComments);
+        $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null, null, null, null, false, false, false, "[request_id] = ".$request['request_id']);
         if (!empty($comments)) {
             $body .= "<table style='border: 1px solid #ddd;max-width: 900px;font-size: 14px;border-collapse: collapse;'>
         <thead>
@@ -1162,8 +1126,7 @@ class AllCrons
         </thead>
         <tbody>";
             foreach ($comments as $comment) {
-                $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array("record_id"=>$comment['response_region']));
-                $regions = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0];
+                $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array("record_id"=>$comment['response_region']))[0];
                 $name =  \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'],$comment['response_person'],"email");
 
                 $comment_time ="";

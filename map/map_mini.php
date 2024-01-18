@@ -24,20 +24,17 @@ foreach ($regionstbl as $region){
 }
 
 #Convert to ISO3 to ISO2
-$codes = json_decode(file_get_contents($module->getUrl('map/countryCodeConverter/iso2.json')), true);
-$names = json_decode(file_get_contents($module->getUrl('map/countryCodeConverter/names.json')), true);
+$codes = json_decode(file_get_contents($module->getSafePath('map/countryCodeConverter/iso2.json')), true);
+$names = json_decode(file_get_contents($module->getSafePath('map/countryCodeConverter/names.json')), true);
 $iso3_to_name = array();
 foreach($codes as $iso2 => $iso3) {
     $iso3_to_name[$iso3] = $names[$iso3];
 }
 
 #Get the data and tranform it to a json
-$RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
-$RecordSetTableTBLC = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
+$RecordSetTableTBLC = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'json-array', null);
 $totalLocations = array();
-
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
 foreach ($regions as $region){
     $totalAreasByRegion[$region['region_code']] = array();
 }
@@ -48,7 +45,7 @@ $areas = array();
 //$icon = "M9,0C4.029,0,0,4.029,0,9s4.029,9,9,9s9-4.029,9-9S13.971,0,9,0z M9,15.93 c-3.83,0-6.93-3.1-6.93-6.93S5.17,2.07,9,2.07s6.93,3.1,6.93,6.93S12.83,15.93,9,15.93 M12.5,9c0,1.933-1.567,3.5-3.5,3.5S5.5,10.933,5.5,9S7.067,5.5,9,5.5 S12.5,7.067,12.5,9z";
 $icon = "M 200 175 A 25 25 0 0 0 182.322 217.678 M 200 175 A 25 25 0 1 0 217.678 217.678 M 200 175 A 25 25 0 0 1 217.678 217.678";
 foreach( $RecordSetTableTBLC as $data ){
-    if($data['geocode_lat'] != NULL && $data['geocode_lon'] != NULL && $data['geocode_lat'] != '' && $data['geocode_lon'] != '' && ($data['drop_center'] == '' || !in_array($data['drop_center'],$data))) {
+    if($totalAreasByRegion[$data['region']] != NULL && $data['geocode_lat'] != NULL && $data['geocode_lon'] != NULL && $data['geocode_lat'] != '' && $data['geocode_lon'] != '' && ($data['drop_center'] == '' || !in_array($data['drop_center'],$data))) {
         #MAP LOCATIONS
         $locations["latitude"] = $data['geocode_lat'];
         $locations["longitude"] = $data['geocode_lon'];
@@ -87,11 +84,11 @@ $jsonLegendData = json_encode($totalLegend);
 <html>
 <head>
     <script>
-        var jsonLocationData = <?=$jsonLocationData?>;
-        var jsonAreaDataAll = <?=$jsonAreaData?>;
-        var jsonAreaData = <?=$jsonTotalAreasByRegionData?>;
-        var jsonLegendData = <?=$jsonLegendData?>;
-        var totalAreasByRegionZoom = <?=$totalAreasByRegionZoom?>;
+        var jsonLocationData = <?=$module->escape($jsonLocationData)?>;
+        var jsonAreaDataAll = <?=$module->escape($jsonAreaData)?>;
+        var jsonAreaData = <?=$module->escape($jsonTotalAreasByRegionData)?>;
+        var jsonLegendData = <?=$module->escape($jsonLegendData)?>;
+        var totalAreasByRegionZoom = <?=$module->escape($totalAreasByRegionZoom)?>;
         function setDataset(index) {
             map.dataProvider.getAreasFromMap = true;
             if(index == ""){

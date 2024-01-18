@@ -5,7 +5,7 @@ $option = htmlentities($_GET['option'],ENT_QUOTES);
 $record = htmlentities($_GET['record'],ENT_QUOTES);
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $record));
-$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,'')[0];
+$request = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,'')[0]);
 if($request !="") {
     $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
     $region_response_status = $module->getChoiceLabels('region_response_status', $pidsArray['RMANAGER']);
@@ -19,15 +19,12 @@ if($request !="") {
 
     $wg_name = "<em>Not specified</em>";
     if (!empty($request['wg_name'])) {
-        $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg_name']));
-        $wg_name = ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
+        $wg_name = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg_name']),array('group_name'))[0]['group_name'];
         if (!empty($request['wg2_name'])) {
-            $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
-            $wg_name .= "; " . ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
+            $wg_name .= "; " . \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg2_name']),array('group_name'))[0]['group_name'];
         }
     } else if (!empty($request['wg2_name'])) {
-        $RecordSetWG = \REDCap::getData($pidsArray['GROUP'], 'array', array('record_id' => $request['wg2_name']));
-        $wg_name = ProjectData::getProjectInfoArray($RecordSetWG)[0]['group_name'];
+        $wg_name = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg2_name']),array('group_name'))[0]['group_name'];
     }
 
     $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($request['due_d'], $request['region_response_status'][$current_user['person_region']], '', '1');
@@ -136,17 +133,17 @@ if($request !="") {
     <div class="panel panel-info">
         <div class="panel-heading" id="singleRequestHeader">
             <h2 class="panel-title" style="display: inline-block;padding: 8px 0px 10px;">
-                Request #<?=$request['request_id'];?> | <?=$request_type_label[$request['request_type']];?> | <?=$request['contact_name'];?>
+                Request #<?=$module->escape($request['request_id']);?> | <?=$module->escape($request_type_label[$request['request_type']]);?> | <?=$module->escape($request['contact_name']);?>
             </h2>
             <?php if($isAdmin){
                 $editRequestButton ='';
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "request", "");
-                $editRequest = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                $editRequest = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
 
-                $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['RMANAGER']."&arm=1&id=".$request['request_id'];
+                $gotoredcap = APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$module->escape($pidsArray['RMANAGER'])."&arm=1&id=".$module->escape($request['request_id']);
 
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $request_id, "admin_review", "");
-                $changeApproval = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                $changeApproval = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
                 ?>
                 <div class="btn-group hidden-xs pull-right">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -159,7 +156,7 @@ if($request !="") {
                         <li><a href="<?=$changeApproval?>"target="_blank">Change Approval</a></li>
                         <?php
                         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $record, "finalization_of_request", "");
-                        $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                        $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
                         echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-finalize\',\'redcap-finalize-frame\',\''.$survey_link.'\');" style="cursor:pointer">Finalize Request</a></li>';
                         ?>
                         <li role="separator" class="divider"></li>
@@ -185,8 +182,7 @@ if($request !="") {
                                     </thead>
                                     <tbody>
                                     <?php
-                                    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                                    $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                                    $regions = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1"));
                                     ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                                     $region_row = '';
@@ -204,15 +200,15 @@ if($request !="") {
                                             $menu = '<li><span><em>No vote recorded</em></li></span><input type="hidden" value="" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_none" >';
                                             $selected = '<span><em>No vote recorded</em></span><input type="hidden" value="" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_none">';
                                             foreach ($region_vote_status as $index => $vote_text) {
-                                                $menu .= '<li><span class="fa ' . $region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index] . '" aria-hidden="true"></span><span class="' . $region_vote_icon_text[$index] . '"> ' . $vote_text . '</span>';
-                                                $menu .= '<input type="hidden" value="' . $index . '" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_' . $index . '"></li>';
+                                                $menu .= '<li><span class="fa ' . $module->escape($region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index]) . '" aria-hidden="true"></span><span class="' . $module->escape($region_vote_icon_text[$index]) . '"> ' . $module->escape($vote_text) . '</span>';
+                                                $menu .= '<input type="hidden" value="' . $module->escape($index) . '" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $module->escape($region_id . '_' . $index) . '"></li>';
                                                 if ($request['region_vote_status'][$region_id] == $index && $request['region_vote_status'][$region_id] != '') {
-                                                    $selected = '<span class="fa ' . $region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index] . '" aria-hidden="true"></span><span class="' . $region_vote_icon_text[$index] . '"> ' . $vote_text . '</span>';
-                                                    $selected .= '<input type="hidden" value="' . $index . '" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_' . $index . '"">';
+                                                    $selected = '<span class="fa ' . $module->escape($region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index]) . '" aria-hidden="true"></span><span class="' . $module->escape($region_vote_icon_text[$index]) . '"> ' . $module->escape($vote_text) . '</span>';
+                                                    $selected .= '<input type="hidden" value="' . $module->escape($index) . '" class="dropdown_votes" request="' . $module->escape($request['request_id']) . '" id="' . $module->escape($region_id . '_' . $index) . '"">';
                                                 }
                                             }
                                             $region_row .= '<tr>' .
-                                                '<td>' . $region['region_code'] . '/' . $region['region_name'] . '</td>' .
+                                                '<td>' . $module->escape($region['region_code'] . '/' . $region['region_name']) . '</td>' .
                                                 '<td>
                                                                 <div style="float:left;">
                                                                     <ul class="nav navbar-nav navbar-right">
@@ -224,7 +220,7 @@ if($request !="") {
                                                                         </li>
                                                                     </ul>
                                                                     </div></td>' .
-                                                '<td><span class="' . $class . '">' . $region_time . '</span></td>' .
+                                                '<td><span class="' . $module->escape($class) . '">' . $module->escape($region_time) . '</span></td>' .
                                                 '</tr>';
                                         }
                                     }
@@ -372,7 +368,7 @@ if($request !="") {
                             </div>
                             <div class="modal-body">
                                 <?php
-                                $survey_path = htmlentities(APP_PATH_WEBROOT_FULL."/surveys/?s=".$pidsArray['SURVEYLINK']."&author_revision_y=1"."&request_id=".$record."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal",ENT_QUOTES);
+                                $survey_path = APP_PATH_WEBROOT_FULL."/surveys/?s=".$module->escape($pidsArray['SURVEYLINK'])."&author_revision_y=1"."&request_id=".$module->escape($record)."&response_person=".$module->escape($current_user['record_id'])."&response_region=".$module->escape($current_user['person_region'])."&response_pi_level=".$module->escape($response_pi_level)."&modal=modal";
                                 ?>
                                 <iframe class="commentsform" id="redcap-author-revision" name="redcap-author-revision" message="R" src="<?=$survey_path?>" style="border: none;height: 810px;width: 100%;"></iframe>
                             </div>
@@ -416,8 +412,7 @@ if($request !="") {
                         $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, $parameter, false);
                         krsort($comments);
 
-                        $RecordSetCommentsRecent = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''");
-                        $most_recent_file = ProjectData::getProjectInfoArray($RecordSetCommentsRecent)[0];
+                        $most_recent_file = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''")[0];
                         foreach($most_recent_file as $k=>$v)
                         {
                             if($v['responsecomplete_ts']>$max)
@@ -448,8 +443,7 @@ if($request !="") {
                                         $revised_class = 'last_file';
                                     }
 
-                                    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $comment['response_person']));
-                                    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname','email'))[0];
                                     $name = trim($people['firstname'].' '.$people['lastname']);
 
                                     $comment_time ="";
@@ -499,8 +493,7 @@ if($request !="") {
 
                                     $region_code = $comment['response_regioncode'];
                                     if($region_code == ""){
-                                        $RecordSetRegionC = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $comment['response_region']));
-                                        $region_code = ProjectData::getProjectInfoArray($RecordSetRegionC)[0]['region_code'];
+                                        $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $comment['response_region']),array('region_code'))[0]['region_code'];
                                     }
 
                                     $writing_group = "";
@@ -514,7 +507,7 @@ if($request !="") {
                                         "<td  style='width:5%'>";
                                     if($comment['response_person'] == $current_user['record_id']){
                                         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['COMMENTSVOTES'], $comment['record_id'], "comments_and_votes", "");
-                                        $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                                        $survey_link = $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
                                         $group_discussion .= '<button class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button>';
                                     }
                                     $group_discussion .= "</td></tr>";
@@ -582,11 +575,11 @@ if($request !="") {
             if($current_user['harmonist_regperm'] == '3'){
                 $response_pi_level = 1;
             }
-            $survey_path = htmlentities(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['SURVEYLINK']."&request_id=".$record."&response_person=".$current_user['record_id']."&response_region=".$current_user['person_region']."&response_pi_level=".$response_pi_level."&modal=modal",ENT_QUOTES);
+            $survey_path = APP_PATH_WEBROOT_FULL."surveys/?s=".$module->escape($pidsArray['SURVEYLINK'])."&request_id=".$module->escape($record)."&response_person=".$module->escape($current_user['record_id'])."&response_region=".$module->escape($current_user['person_region'])."&response_pi_level=".$module->escape($response_pi_level)."&modal=modal";
         ?>
         <div id="collapse_review" class="panel-collapse collapse in" aria-expanded="true">
             <div class="panel-body">
-                <iframe class="commentsform" id="redcap-frame" src="<?=$survey_path?>" stayrequest_y="<?=($current_user['stayrequest_y'][1]=="")?"0":"1"?>" message="A" style="border: none;height: 810px;width: 100%;"></iframe>
+                <iframe class="commentsform" id="redcap-frame" src="<?=$survey_path?>" stayrequest_y="<?=($current_user['stayrequest_y___1']=="")?"0":"1"?>" message="A" style="border: none;height: 810px;width: 100%;"></iframe>
             </div>
         </div>
     </div>

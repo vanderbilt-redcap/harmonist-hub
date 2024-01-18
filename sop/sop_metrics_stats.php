@@ -3,8 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 $q = $module->query("SELECT MAX(record) as record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['METRICS'])." WHERE project_id = ?",[$pidsArray['METRICS']]);
 $row = $q->fetch_assoc();
-$RecordSetMetrics = \REDCap::getData($pidsArray['METRICS'], 'array', array('record_id' => $row['record']));
-$metrics = ProjectData::getProjectInfoArray($RecordSetMetrics)[0];
+$metrics = $module->escape(\REDCap::getData($pidsArray['METRICS'], 'json-array', array('record_id' => $row['record']))[0]);
 
 $array_sections = array(0=>'requests',1=>'comments',2=>'users');
 $array_sections_title = array(0=>'requests', 1=>'comments',2=>'users by region');
@@ -52,8 +51,7 @@ foreach ($request as $req){
 }
 
 #USERS
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array',  null);
-$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array',  null,array('record_id','region_code'));
 $array_region = array();
 $array_region_code = array();
 foreach ($regions as $region){
@@ -65,8 +63,7 @@ foreach ($regions as $region){
     }
 }
 
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array',  null,null,null,null,false,false,false,"[last_requested_token_d] <> ''");
-$people = ProjectData::getProjectInfoArray($RecordSetPeople);
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array',  null,array('person_region'),null,null,false,false,false,"[last_requested_token_d] <> ''");
 foreach ($people as $person){
     foreach ($array_region as $region=>$value){
         if($region == $person['person_region']){
@@ -75,13 +72,13 @@ foreach ($people as $person){
     }
 }
 
-$requests_values = array(0 => $number_concepts,1=> $number_abstracts,2 => $number_manuscripts,3 => $number_fastTrack,4 => $number_poster ,5 => $number_other );
-$requests_labels = array(0 => "Concepts",1 => "Abstracts",2 => "Manuscripts",3 => "Fast Track",4 => "Poster", 5=>"Other");
-$requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777");
+$requests_values = $module->escape(array(0 => $number_concepts,1=> $number_abstracts,2 => $number_manuscripts,3 => $number_fastTrack,4 => $number_poster ,5 => $number_other));
+$requests_labels = $module->escape(array(0 => "Concepts",1 => "Abstracts",2 => "Manuscripts",3 => "Fast Track",4 => "Poster", 5=>"Other"));
+$requests_colors = $module->escape(array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777"));
 
-$comments_values = array(0 => $metrics['comments_pi'],1 => $metrics['comments_n']);
-$comments_labels = array(0 => "PI",1 => "non PI");
-$comments_colors = array(0 => "#1ad1ff",1 => "#eb6e60");
+$comments_values = $module->escape(array(0 => $metrics['comments_pi'],1 => $metrics['comments_n']));
+$comments_labels = $module->escape(array(0 => "PI",1 => "non PI"));
+$comments_colors = $module->escape(array(0 => "#1ad1ff",1 => "#eb6e60"));
 
 $users_values = array();
 foreach ($array_region as $number){
@@ -103,17 +100,10 @@ foreach ($array_region_code as $rcode){
 #Data Exchange
  **/
 #FILE ACTIVITY
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$number_uploads = count(ProjectData::getProjectInfoArray($RecordSetDU));
-
-$RecordSetDN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null);
-$number_downloads = count(ProjectData::getProjectInfoArray($RecordSetDN));
-
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '2'");
-$number_deletes = count(ProjectData::getProjectInfoArray($RecordSetDU));
-
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '1'");
-$number_deletes_auto = count(ProjectData::getProjectInfoArray($RecordSetDU));
+$number_uploads = count(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null));
+$number_downloads = count(\REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null));
+$number_deletes = count(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '2'"));
+$number_deletes_auto = count(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[deleted_y] = '1' AND [deletion_type] = '1'"));
 
 $fileActivity_values = array(0 => $number_uploads,1 => $number_downloads,2 => $number_deletes);
 $fileActivity_total = $number_uploads + $number_downloads;
@@ -128,16 +118,15 @@ $downRegion_values = array();
 $downRegion_colors = array();
 $wg_percent_down = 75;
 $wg_percent_up = 75;
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
 foreach ($regions as $region){
     array_push($upRegion_labels,$region['region_code']);
     array_push($downRegion_labels,$region['region_code']);
 
-    $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_upload_region] = '".$region['record_id']."'");
-    array_push($upRegion_values,count(ProjectData::getProjectInfoArray($RecordSetDU)));
-    $RecordSetDN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null,null,null,null,false,false,false,"[downloader_region] = '".$region['record_id']."'");
-    array_push($downRegion_values,count(ProjectData::getProjectInfoArray($RecordSetDN)));
+    $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_upload_region] = '".$region['record_id']."'");
+    array_push($upRegion_values,count($RecordSetDU));
+    $RecordSetDN = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null,null,null,null,false,false,false,"[downloader_region] = '".$region['record_id']."'");
+    array_push($downRegion_values,count($RecordSetDN));
 
     $color_up = "hsl(120,39%,".$wg_percent_up."%)";
     $color_down = "hsl(210,50%,".$wg_percent_down."%)";
@@ -148,8 +137,8 @@ foreach ($regions as $region){
 }
 
 #TITLES AND COLORS
-$fileActivity_labels = array(0 => "Uploads",1 => "Downloads",2 => "Manual Delete");
-$fileActivity_colors = array(0 => "#5cb85c",1 => "#337ab7",2 => "#eb6e60");
+$fileActivity_labels = $module->escape(array(0 => "Uploads",1 => "Downloads",2 => "Manual Delete"));
+$fileActivity_colors = $module->escape(array(0 => "#5cb85c",1 => "#337ab7",2 => "#eb6e60"));
 
 
 /**
@@ -216,8 +205,9 @@ foreach ($request_dataCall as $dataCall){
     }
     if($dataCall['sop_closed_y'][1] == '1'){
         $dataCall_closed += 1;
-        $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
-        $dataCall_avg_count +=count(ProjectData::getProjectInfoArray($RecordSetDU)[0]);
+        $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
+        if(!empty($RecordSetDU[0]))
+            $dataCall_avg_count +=count($RecordSetDU[0]);
     }
 
     if($dataCall['sop_downloaders'] != ""){
@@ -229,8 +219,8 @@ foreach ($request_dataCall as $dataCall){
         }
     }
 
-    $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
-    if(strtotime($dataCall['sop_due_d']) >= strtotime(ProjectData::getProjectInfoArray($RecordSetDU)[0]['responsecomplete_ts'])){
+    $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
+    if(strtotime($dataCall['sop_due_d']) >= strtotime($RecordSetDU[0]['responsecomplete_ts'])){
         $datasets_up_due++;
     }else{
         $datasets_up_afterdue++;
@@ -276,8 +266,7 @@ $dataCall_avg = round($dataCall_avg_count/$dataCall_closed,2);
 #Hub Communications
  **/
 $harmonist_regperm_labels = $module->getChoiceLabels('harmonist_regperm', $pidsArray['PEOPLE']);
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', null);
-$people = ProjectData::getProjectInfoArray($RecordSetPeople);
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('first_ever_login_d','active_y','inactive_d','harmonist_regperm'));
 $array_communications = array();
 $communications_years = array();
 for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++){
@@ -302,6 +291,37 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
         }
     }
 }
+
+#Escape All Data
+$dataCall_timeline_labels = $module->escape($dataCall_timeline_labels);
+$dataCall_ended_timeline = $module->escape($dataCall_ended_timeline);
+$dataCall_started_timeline = $module->escape($dataCall_started_timeline);
+$time_labels = $module->escape($time_labels);
+$array_communications = $module->escape($array_communications);
+$communications_years = $module->escape($communications_years);
+$array_sections = $module->escape($array_sections);
+$array_sections_data = $module->escape($array_sections_data);
+$array_sections_title_data = $module->escape($array_sections_title_data);
+$sections_donuts = $module->escape($sections_donuts);
+$sections_donuts_title = $module->escape($sections_donuts_title);
+$requests_values = $module->escape($requests_values);
+$requests_labels = $module->escape($requests_labels);
+$requests_colors = $module->escape($requests_colors);
+$comments_values = $module->escape($comments_values);
+$comments_labels = $module->escape($comments_labels);
+$comments_colors = $module->escape($comments_colors);
+$users_values = $module->escape($users_values);
+$users_labels = $module->escape($users_labels);
+$users_colors = $module->escape($users_colors);
+$fileActivity_values = $module->escape($fileActivity_values);
+$fileActivity_labels = $module->escape($fileActivity_labels);
+$fileActivity_colors = $module->escape($fileActivity_colors);
+$upRegion_values = $module->escape($upRegion_values);
+$upRegion_labels = $module->escape($upRegion_labels);
+$upRegion_colors = $module->escape($upRegion_colors);
+$downRegion_values = $module->escape($downRegion_values);
+$downRegion_labels = $module->escape($downRegion_labels);
+$downRegion_colors = $module->escape($downRegion_colors);
 ?>
 <script>
     $(document).ready(function() {
@@ -345,31 +365,9 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
         var array_sections = <?=json_encode($array_sections)?>;
         var array_sections_title = <?=json_encode($array_sections_title)?>;
 
-        var requests_values = <?=json_encode($requests_values)?>;
-        var requests_labels = <?=json_encode($requests_labels)?>;
-        var requests_colors = <?=json_encode($requests_colors)?>;
-        var comments_values = <?=json_encode($comments_values)?>;
-        var comments_labels = <?=json_encode($comments_labels)?>;
-        var comments_colors = <?=json_encode($comments_colors)?>;
-        var users_values = <?=json_encode($users_values)?>;
-        var users_labels = <?=json_encode($users_labels)?>;
-        var users_colors = <?=json_encode($users_colors)?>;
-
         //Data Exchange
         var array_sections_data = <?=json_encode($array_sections_data)?>;
         var array_sections_title_data = <?=json_encode($array_sections_title_data)?>;
-
-        var fileActivity_values = <?=json_encode($fileActivity_values)?>;
-        var fileActivity_labels = <?=json_encode($fileActivity_labels)?>;
-        var fileActivity_colors = <?=json_encode($fileActivity_colors)?>;
-
-        var upRegion_values = <?=json_encode($upRegion_values)?>;
-        var upRegion_labels = <?=json_encode($upRegion_labels)?>;
-        var upRegion_colors = <?=json_encode($upRegion_colors)?>;
-
-        var downRegion_values = <?=json_encode($downRegion_values)?>;
-        var downRegion_labels = <?=json_encode($downRegion_labels)?>;
-        var downRegion_colors = <?=json_encode($downRegion_colors)?>;
 
         //Data Call Timeline
         var time_labels = <?=json_encode($time_labels)?>;
@@ -383,6 +381,38 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
         var communications_viewonly = <?=json_encode(array_values($array_communications[1]))?>;
         var communications_submitccomments = <?=json_encode(array_values($array_communications[2]))?>;
         var communications_voteregion = <?=json_encode(array_values($array_communications[3]))?>;
+        const sectionsAll = {
+            requests: {
+                values: <?=json_encode($requests_values)?>,
+                labels: <?=json_encode($requests_labels)?>,
+                colors: <?=json_encode($requests_colors)?>
+            },
+            comments: {
+                values: <?=json_encode($comments_values)?>,
+                labels: <?=json_encode($comments_labels)?>,
+                colors: <?=json_encode($comments_colors)?>
+            },
+            users: {
+                values: <?=json_encode($users_values)?>,
+                labels: <?=json_encode($users_labels)?>,
+                colors: <?=json_encode($users_colors)?>
+            },
+            fileActivity: {
+                values: <?=json_encode($fileActivity_values)?>,
+                labels: <?=json_encode($fileActivity_labels)?>,
+                colors: <?=json_encode($fileActivity_colors)?>
+            },
+            upRegion: {
+                values: <?=json_encode($upRegion_values)?>,
+                labels: <?=json_encode($upRegion_labels)?>,
+                colors: <?=json_encode($upRegion_colors)?>
+            },
+            downRegion: {
+                values: <?=json_encode($downRegion_values)?>,
+                labels: <?=json_encode($downRegion_labels)?>,
+                colors: <?=json_encode($downRegion_colors)?>
+            }
+        }
 
         //DONUTS
         Object.keys(sections_donuts).forEach(function (section) {
@@ -390,10 +420,10 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
             var config = {
                 type: 'doughnut',
                 data: {
-                    labels: eval(sections_donuts[section]+"_labels"),
+                    labels: sectionsAll[sections_donuts[section]]["labels"],
                     datasets: [{
-                        backgroundColor: eval(sections_donuts[section]+"_colors"),
-                        data: eval(sections_donuts[section]+"_values")
+                        backgroundColor: sectionsAll[sections_donuts[section]]["colors"],
+                        data: sectionsAll[sections_donuts[section]]["values"]
                     }]
                 },
                 options: {
@@ -650,13 +680,13 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
 </div>
 <div class="container">
     <h3>General Hub Stats</h3>
-    <p class="hub-title"><?=$settings['hub_statistics_gen_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_statistics_gen_text'])?></p>
     <p class="hub-title"><i class="fa fa-refresh" aria-hidden="true"></i> Last update on <span style="font-weight: bold"><?=$metrics['date']?></span></p>
 </div>
 
 <div class="container" style="padding-top: 60px">
     <h4>General Hub Usage Stats</h4>
-    <p class="hub-title"><?=$settings['hub_stats_general_usage']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_general_usage'])?></p>
 </div>
 <div class="container">
     <?php foreach ($sections_donuts as $index=>$section) {
@@ -681,7 +711,7 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
 
 <div class="container" style="padding-top: 60px">
     <h4>Statistics data</h4>
-    <p class="hub-title"><?=$settings['hub_stats_data']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_data'])?></p>
 </div>
 <div class="container" style="padding-bottom: 40px">
     <div class="col-sm-4">
@@ -847,7 +877,7 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
 
 <div class="container" style="padding-top: 10px">
     <h4>Data Exchange</h4>
-    <p class="hub-title"><?=$settings['hub_stats_data_exchange']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_data_exchange'])?></p>
 </div>
 <div class="container">
     <?php foreach ($sections_donuts as $index=>$section) {
@@ -870,7 +900,7 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
 </div>
 <div class="container" style="padding-top: 80px">
     <h4>Statistics data</h4>
-    <p class="hub-title"><?=$settings['hub_stats_data_requests']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_data_requests'])?></p>
 </div>
 <div class="container" style="padding-bottom: 40px">
     <div class="col-sm-4">
@@ -969,7 +999,7 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
         Data Call Timeline
         <a href="#" download="statistics_data.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downdatacalltimeline" name="downdatacalltimeline"></a>
     </h4>
-    <p class="hub-title"><?=$settings['hub_stats_datacall_time']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_datacall_time'])?></p>
 </div>
 <div class="container">
     <canvas id="dataTimelineChart" class="canvas_statistics" width="1100px" height="310px"></canvas>
@@ -980,7 +1010,7 @@ for($year = $settings['oldestyear_communications']; $year <= date("Y"); $year++)
         <?=$settings['hub_name']?> Hub Communications
         <a href="#" download="communications.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downcommunications" name="downcommunications"></a>
     </h4>
-    <p class="hub-title"><?=$settings['hub_stats_comunications']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_stats_comunications'])?></p>
 </div>
 <div class="container">
     <canvas id="iedeaChartCommunications" class="canvas_statistics" width="1100px" height="310px"></canvas>

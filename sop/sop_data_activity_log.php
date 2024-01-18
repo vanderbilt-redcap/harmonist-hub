@@ -3,12 +3,10 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
 
-$RecordSetDataUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$dataUpload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataUpload);
+$dataUpload_sevenDaysYoung = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 ArrayFunctions::array_sort_by_column($dataUpload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
-$RecordSetDataDownload = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'array', null);
-$dataDownload_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetDataDownload);
+$dataDownload_sevenDaysYoung = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null);
 ArrayFunctions::array_sort_by_column($dataDownload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
 $all_data_recent_activity = array_merge($dataUpload_sevenDaysYoung, $dataDownload_sevenDaysYoung);
@@ -150,14 +148,14 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
         if($_REQUEST['type'] == "upload") {
             ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'?>">< Back to Submit Data</a><?php
         }else if($datareq_id != "") {
-            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record='.$datareq_id.'&type=s'?>">< Back to Data Request</a><?php
+            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record='.$module->escape($datareq_id).'&type=s'?>">< Back to Data Request</a><?php
         }else{
             ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a><?php
         }
         ?>
     </div>
     <h3>Data Activity Log <?=$datareq_title?></h3>
-    <p class="hub-title"><?=$settings['hub_data_activity_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_data_activity_text'])?></p>
     <br>
     <div class="optionSelect conceptSheets_optionMenu">
         <div id="options_wrapper"></div>
@@ -169,8 +167,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                 <select class="form-control" name="selectRegion" id="selectRegion">
                     <option value="">Select All</option>
                     <?php
-                    $recordsRegions = \REDCap::getData($pidsArray['REGIONS'], 'array');
-                    $regions = ProjectData::getProjectInfoArray($recordsRegions);
+                    $regions = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array'));
                     ArrayFunctions::array_sort_by_column($regions, 'region_code');
                     if (!empty($regions)) {
                         foreach ($regions as $region){
@@ -249,30 +246,26 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 
                         if($recent_activity['download_id'] != ""){
                             #DOWNLOADS
-                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['downloader_id']));
-                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-                            $RecordSetRegionPeople = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $people['person_region']));
-                            $region_code_person = ProjectData::getProjectInfoArray($RecordSetRegionPeople)[0]['region_code'];
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['downloader_id']), array('firstname','lastname','person_region'))[0];
+                            $region_code_person = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
 
                             $name = trim($people['firstname'] . ' ' . $people['lastname'])." (".$region_code_person.")";
 
-                            $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $recent_activity['downloader_region']));
-                            $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
+                            $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $recent_activity['downloader_region']),array('region_code'))[0]['region_code'];
 
                             $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept']);
 
-                            $RecordSetDataUploadReq = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', array('record_id' => $recent_activity['download_id']));
-                            $data_request = ProjectData::getProjectInfoArray($RecordSetDataUploadReq)[0]['data_assoc_request'];
+                            $data_request = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $recent_activity['download_id']),array('data_assoc_request'))[0]['data_assoc_request'];
 
                             $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
-                            echo '<tr><td width="150px">'.$comment_time.'</td>'.
+                            echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
                                 '<td width="105px"><i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i> download</td>'.
-                                '<td width="220px">'.$name.'</td>'.
-                                '<td width="20px">'.$region_code.'</td>'.
+                                '<td width="220px">'.$module->escape($name).'</td>'.
+                                '<td width="20px">'.$module->escape($region_code).'</td>'.
                                 '<td width="80px">'.$assoc_concept.'</td>'.
-                                '<td width="80px">'.$data_request.'</td>'.
-                                '<td width="220px"> '.$recent_activity['download_files'].'</td>'.
+                                '<td width="80px">'.$module->escape($data_request).'</td>'.
+                                '<td width="220px"> '.$module->escape($recent_activity['download_files']).'</td>'.
                                 '<td>download</td>'.
                                 '<td width="50px"> </td>'.
                                 '<td width="50px"> </td>';
@@ -283,15 +276,12 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                             echo '</tr>';
                         }else{
                             #UPLOADS
-                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['data_upload_person']));
-                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-                            $RecordSetRegionPeople = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $people['person_region']));
-                            $region_code_person = ProjectData::getProjectInfoArray($RecordSetRegionPeople)[0]['region_code'];
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['data_upload_person']), array('firstname','lastname','person_region'))[0];
+                            $region_code_person = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
 
                             $name = trim($people['firstname'] . ' ' . $people['lastname'])." (".$region_code_person.")";
 
-                            $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $recent_activity['data_upload_region']));
-                            $region_code = ProjectData::getProjectInfoArray($RecordSetRegion)[0]['region_code'];
+                            $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $recent_activity['data_upload_region']),array('region_code'))[0]['region_code'];
 
                             $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
 
@@ -307,19 +297,19 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                     $buttons = "<a href='#' onclick='$(\"#deleted_record\").val(\"".$crypt."\");$(\"#modal-data-download-confirmation\").modal(\"show\");' class='fa fa-trash' style='color: #000;cursor:pointer;text-decoration: none;' title='delete'></a>";
                             }
 
-                            echo '<tr><td width="150px">'.$comment_time.'</td>'.
-                                '<td width="105px">'.$activity.'</td>'.
-                                '<td width="220px">'.$name.'</td>'.
-                                '<td width="20px">'.$region_code.'</td>'.
+                            echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
+                                '<td width="105px">'.filter_tags($activity).'</td>'.
+                                '<td width="220px">'.$module->escape($name).'</td>'.
+                                '<td width="20px">'.$module->escape($region_code).'</td>'.
                                 '<td width="80px">'.$assoc_concept.'</td>'.
-                                '<td width="80px">'.$recent_activity['data_assoc_request'].'</td>'.
-                                '<td width="220px">'.$recent_activity['data_upload_zip'].'</td>'.
-                                '<td>'.$activity_hidden.'</td>'.
-                                '<td width="50px"> '.$file.'</td>'.
-                                '<td width="50px"> '.$buttons.'</td>';
+                                '<td width="80px">'.$module->escape($recent_activity['data_assoc_request']).'</td>'.
+                                '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
+                                '<td>'.$module->escape($activity_hidden).'</td>'.
+                                '<td width="50px"> '.$module->escape($file).'</td>'.
+                                '<td width="50px"> '.filter_tags($buttons).'</td>';
 
                             if($isAdmin){
-                                $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recent_activity['record_id'];
+                                $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $module->escape($pidsArray['DATAUPLOAD']) . "&arm=1&id=" . $module->escape($recent_activity['record_id']);
                                 echo '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
                             }
                             echo '</tr>';
@@ -328,14 +318,12 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                 $activity_hidden = "delete";
                                 $activity = "<i class='fa fa-fw fa-close text-error'></i> delete";
                                 if ($recent_activity['deletion_type'][0] == '1') {
-                                    $name = "<em>Automatic</em>";
+                                    $name = filter_tags("<em>Automatic</em>");
                                 } else if ($recent_activity['deletion_type'][0] == '2') {
-                                    $RecordSetPeopleDelete = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $recent_activity['deletion_hubuser']));
-                                    $peopleDelete = ProjectData::getProjectInfoArray($RecordSetPeopleDelete)[0];
-                                    $RecordSetRegionPeople = \REDCap::getData($pidsArray['REGIONS'], 'array',array('record_id' => $peopleDelete['person_region']));
-                                    $region_code_person = ProjectData::getProjectInfoArray($RecordSetRegionPeople)[0]['region_code'];
+                                    $peopleDelete = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['deletion_hubuser']),array('firstname','lastname','person_region'))[0];
+                                    $region_code_person = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $peopleDelete['person_region']),array('region_code'))[0]['region_code'];
 
-                                    $name = trim($peopleDelete['firstname'] . ' ' . $peopleDelete['lastname'])." (".$region_code_person.")";
+                                    $name = $module->escape(trim($peopleDelete['firstname'] . ' ' . $peopleDelete['lastname'])." (".$region_code_person.")");
                                 }
 
                                 $comment_time ="";
@@ -345,15 +333,15 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                     $comment_time = $dateComment->format("Y-m-d H:i:s");
                                 }
 
-                                echo '<tr><td width="150px">'.$comment_time.'</td>'.
-                                    '<td width="105px">'.$activity.'</td>'.
-                                    '<td width="220px">'.$name.'</td>'.
-                                    '<td width="20px">'.$region_code.'</td>'.
+                                echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
+                                    '<td width="105px">'.filter_tags($activity).'</td>'.
+                                    '<td width="220px">'.filter_tags($name).'</td>'.
+                                    '<td width="20px">'.$module->escape($region_code).'</td>'.
                                     '<td width="80px">'.$assoc_concept.'</td>'.
-                                    '<td width="80px">'.$recent_activity['data_assoc_request'].'</td>'.
-                                    '<td width="220px">'.$recent_activity['data_upload_zip'].'</td>'.
-                                    '<td>'.$activity_hidden.'</td>'.
-                                    '<td width="50px"> '.$file.'</td>'.
+                                    '<td width="80px">'.$module->escape($recent_activity['data_assoc_request']).'</td>'.
+                                    '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
+                                    '<td>'.$module->escape($activity_hidden).'</td>'.
+                                    '<td width="50px"> '.$module->escape($file).'</td>'.
                                     '<td width="50px"></td>';
 
                                 if($isAdmin){

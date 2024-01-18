@@ -56,7 +56,6 @@ if($option == "1" && $save_option == ""){
         }
         $data_select .=  "</select>";
     }
-
 }else if($option == "2"){
     #LOAD TEMPLATE
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record));
@@ -90,7 +89,6 @@ if($option == "1" && $save_option == ""){
     $arraySOP[$record][$event_id]['sop_name'] = $sop_name;
     $arraySOP[$record][$event_id]['sop_created_dt'] = $sop_created_dt;
     $arraySOP[$record][$event_id]['sop_updated_dt'] = $sop_created_dt;
-
 }else{
     #LOAD DRAFT
     if($option == "1"){
@@ -115,13 +113,11 @@ if($option == "1" && $save_option == ""){
         $arraySOP[$record][$event_id]['sop_updated_dt'] = $sop_created_dt;
         $arraySOP[$record][$event_id]['sop_due_d'] = $sop['sop_due_d'];;
     }
-
 }
 $results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 \Records::addRecordToRecordListCache($pidsArray['SOP'], $record,1);
 
-$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record));
-$data = ProjectData::getProjectInfoArray($RecordSetSOP)[0];
+$data = \REDCap::getData($pidsArray['SOP'], 'json-array', array("record_id" => $record))[0];
 
 $data['select'] = $data_select;
 $data['save_option'] = $save_option;
@@ -154,29 +150,25 @@ $data['sop_concept_id'] = $concept['concept_id'];
 $data['sop_concept_title'] = $concept['concept_title'];
 
 if($data['sop_creator'] != ""){
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $data['sop_creator']));
-    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $data['sop_creator']),array('firstname','lastname','email'))[0];
     $data['sop_creator_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_creator_email'] = $people['email'];
 }
 
 if($data['sop_creator2'] != ""){
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $data['sop_creator2']));
-    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $data['sop_creator2']),array('firstname','lastname','email'))[0];
     $data['sop_creator2_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_creator2_email'] = $people['email'];
 }
 
 if($data['sop_datacontact'] != "") {
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $data['sop_datacontact']));
-    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $data['sop_datacontact']),array('firstname','lastname','email'))[0];
     $data['sop_datacontact_name'] = $people['firstname'].' '.$people['lastname'];
     $data['sop_datacontact_email'] = $people['email'];
 }
 
 if($data['sop_hubuser'] != "") {
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $data['sop_hubuser']));
-    $sop_hubuser_region = ProjectData::getProjectInfoArray($RecordSetPeople)[0]['person_region'];
+    $sop_hubuser_region = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $data['sop_hubuser']),array('person_region'))[0]['person_region'];
     $data['sopCreator_region'] = $sop_hubuser_region;
 }
 
@@ -186,5 +178,6 @@ if($selectConcept == "" && $option == "1" && $save_option != "") {
     $data['sop_discuss'] = $data['record_id'];
     $data['selectConcept'] = $sop_concept_id;
 }
-echo json_encode($data);
+error_log($data['sop_inclusion']);
+echo json_encode($module->escape($data));
 ?>

@@ -1,29 +1,28 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
+use PhpParser\Lexer\TokenEmulator\EnumTokenEmulator;
+
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record));
-$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0]);
 
 if($sop !="") {
     $sop_status = $module->getChoiceLabels('sop_status', $pidsArray['SOP']);
     $sop_visibility = $module->getChoiceLabels('sop_visibility', $pidsArray['SOP']);
     $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
 
-    $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $sop['sop_concept_id']));
-    $concept_id = ProjectData::getProjectInfoArray($RecordSetConceptSheets)[0]['concept_id'];
+    $concept_id = \REDCap::getData($pidsArray['HARMONIST'], 'json-array', array('record_id' => $sop['sop_concept_id']),array('concept_id'))[0]['concept_id'];
     $concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $sop['sop_concept_id'], 1);
 
-    $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_creator']));
-    $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_creator']),array('firstname','lastname','email'))[0];
     $research_contact = "<em>None</em>";
     if($people['firstname'] != ''){
         $research_contact = $people['firstname'] . ' ' . $people['lastname']." (<a href='mailto:".$people['email']."'>".$people['email']."</a>)";
     }
 
-    $RecordSetPeopleDC = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
-    $peopleDC = ProjectData::getProjectInfoArray($RecordSetPeopleDC)[0];
+    $RecordSetPeopleDC = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('firstname','lastname','email'))[0];
     $data_contact = "<em>None</em>";
     if($peopleDC != ''){
         $data_contact = $peopleDC['firstname'] . ' ' . $peopleDC['lastname']." (<a href='mailto:".$peopleDC['email']."'>".$peopleDC['email']."</a>)";
@@ -54,7 +53,7 @@ if($sop !="") {
         $event_id = $Proj->firstEventId;
         $recordSaveDU = array();
 
-        $RecordSetFollowAct = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record_id));
+        $RecordSetFollowAct = \REDCap::getData($pidsArray['SOP'], 'json-array', array('record_id' => $record_id));
         $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetFollowAct)[0]['follow_activity'];
         $array_userid = explode(',', $follow_activity);
 
@@ -69,7 +68,7 @@ if($sop !="") {
     }
 }
 
-$harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
+$harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
 ?>
 <script>
     $(document).ready(function() {
@@ -184,7 +183,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             if ($sop['data_response_status'][$current_user['person_region']] == "") {
                                 $status_text = $status_type[0];
                             }
-                            $current_region_status = htmlentities($status_icons . '<span class="status-text"> ' . $status_text . '</span>');
+                            $current_region_status = htmlentities($status_icons . '<span class="status-text"> ' . htmlspecialchars($status_text,ENT_QUOTES) . '</span>');
 
                             echo '<li>
                                 <a href="#" onclick="changeStatus(\'' . $current_region_status . '\',\'' . $sop['record_id'] . '\',\'' . $current_user['person_region'] . '\',\'' . htmlspecialchars($sop['data_response_notes'][$current_user['person_region']]) . '\',\'' . $sop['region_update_ts'][$current_user['person_region']] . '\',\'modal-data-change-status\')">Change Status</a>
@@ -195,12 +194,12 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             }
                             if($sop['sop_status'] != "1") {
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "finalization_of_data_request", "");
-                                $survey_link =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                                $survey_link =  $module->escape($module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']));
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" style="cursor:pointer">Start Data Call</a></li>';
                             }
                             if($sop['sop_status'] == "1" && $sop['sop_visibility'] == "2" && $sop['sop_finalize_y'][1] == '1' && empty($sop['sop_closed_y'][0])){
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "data_call_closure", "");
-                                $survey_link_closure =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                                $survey_link_closure =  $module->escape($module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']));
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-closure\',\'redcap-closure-frame\',\'' . $survey_link_closure . '\');" style="cursor:pointer">Archive Data Call</a></li>';
                             }
                             ?>
@@ -228,7 +227,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                     <input type="hidden" id="user" name="user">
                                     <div class="modal-footer">
                                         <?php
-                                        $url = $module->getUrl('sop/sop_copy_data_request_AJAX.php?id='.$sop['record_id'])."&NOAUTH";
+                                        $url = $module->getUrl('sop/sop_copy_data_request_AJAX.php?id='.$module->escape($sop['record_id'])."&NOAUTH");
                                         $urlgoto = $module->getUrl("index.php?&option=ss1&step=3")."&NOAUTH";
                                         ?>
                                         <a type="submit" onclick='copy_data_request("<?=$url?>","<?=$urlgoto?>")' class="btn btn-default btn-success" id='btnModalRescheduleForm'>Continue</a>
@@ -280,8 +279,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                         </thead>
                                         <tbody>
                                         <?php
-                                        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-                                        $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                                        $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
                                         ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                                         $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
@@ -306,18 +304,18 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                             if ($sop['data_response_status'][$region['record_id']] == "") {
                                                 $status_text = $status_type[0];
                                             }
-                                            $current_region_status = htmlentities($status_icons . '<span class="status-text"> ' . $status_text . '</span>');
+                                            $current_region_status = htmlentities($status_icons . '<span class="status-text"> ' . htmlspecialchars($status_text,ENT_QUOTES) . '</span>');
 
-                                            $selected = $status_icons .'<span class="status-text"> ' . $status_text . '</span>';
-                                            $selected .= '<input type="hidden" value="" class="dropdown_votes" record="'.$sop['record_id'].'" id="'.$region_id.'_'.$sop['data_response_status'][$region['record_id']].'">';
+                                            $selected = $module->escape($status_icons) .'<span class="status-text"> ' . htmlspecialchars($status_text,ENT_QUOTES) . '</span>';
+                                            $selected .= '<input type="hidden" value="" class="dropdown_votes" record="'.$module->escape($sop['record_id']).'" id="'.$module->escape($region_id.'_'.$sop['data_response_status'][$region['record_id']]).'">';
                                             $menu = '';
                                             foreach ($status_type as $index=>$status){
-                                                $menu .= '<li style="width:290px"><span class="fa-label status fa fa-fw '.$status_icon[$index].' '.$status_icon_color[$index].'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.$status.'</span>';
-                                                $menu .= '<input type="hidden" value="'.$index.'" class="dropdown_votes" record="'.$sop['record_id'].'" id="'.$region_id.'_'.$index.'"></li>';
+                                                $menu .= '<li style="width:290px"><span class="fa-label status fa fa-fw '.$module->escape($status_icon[$index].' '.$status_icon_color[$index]).'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.htmlspecialchars($status,ENT_QUOTES).'</span>';
+                                                $menu .= '<input type="hidden" value="'.$module->escape($index).'" class="dropdown_votes" record="'.$module->escape($sop['record_id']).'" id="'.$module->escape($region_id.'_'.$index).'"></li>';
                                             }
 
                                             $region_row .= '<tr>'.
-                                                '<td>'.$region['region_code'].'/'.$region['region_name'].'</td>'.
+                                                '<td>'.htmlspecialchars($region['region_code'],ENT_QUOTES).'/'.htmlspecialchars($region['region_name'],ENT_QUOTES).'</td>'.
                                                 '<td>
                                                             <div style="float:left;">
                                                                 <ul class="nav" style="margin:0;width:290px" name="data_status_region">
@@ -329,7 +327,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                                                     </li>
                                                                 </ul>
                                                                 </div></td>'.
-                                                '<td><span class="'.$class.'">'.$region_time.'</span></td>'.
+                                                '<td><span class="'.$class.'">'.htmlspecialchars($region_time,ENT_QUOTES).'</span></td>'.
                                                 '</tr>';
                                         }
                                         echo $region_row;
@@ -361,19 +359,19 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                             <div style="float: left;line-height: 30px;">Set my status:</div>
                                             <div style="float: left;padding-left: 10px">
                                                 <?php
-                                                $status_type = $module->getChoiceLabels('data_response_status', $pidsArray['SOP']);
-                                                $status_icon_color = array(0=>"label-default_light",1=>"label-warning",2=>"label-approved",3=>"label-default",4=>"label-default",9=>"label-other");
-                                                $status_icon = array(0=>"fa-times text-default_light",1=>"fa-wrench",2=>"fa-check",3=>"fa-ban",4=>"fa-times",9=>"fa-question");
-                                                $selected .= '<input type="hidden" value="" class="dropdown_votes" record="'.$sop['record_id'].'" id="'.$region_id.'_'.$sop['data_response_status'][$region['record_id']].'">';
+                                                $status_type = $module->escape($module->getChoiceLabels('data_response_status', $pidsArray['SOP']));
+                                                $status_icon_color = $module->escape(array(0=>"label-default_light",1=>"label-warning",2=>"label-approved",3=>"label-default",4=>"label-default",9=>"label-other"));
+                                                $status_icon = $module->escape(array(0=>"fa-times text-default_light",1=>"fa-wrench",2=>"fa-check",3=>"fa-ban",4=>"fa-times",9=>"fa-question"));
+                                                $selected .= '<input type="hidden" value="" class="dropdown_votes" record="'.$module->escape($sop['record_id']).'" id="'.$module->escape($region_id.'_'.$sop['data_response_status'][$region['record_id']]).'">';
                                                 $menu = '';
                                                 foreach ($status_type as $index=>$status){
-                                                    $menu .= '<li style="width:290px"><span class="fa-label status fa fa-fw '.$status_icon[$index].' '.$status_icon_color[$index].'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.$status.'</span>';
-                                                    $menu .= '<input type="hidden" value="'.$index.'" class="dropdown_votes" record="'.$sop['record_id'].'" id="'.$region_id.'_'.$index.'"></li>';
+                                                    $menu .= '<li style="width:290px"><span class="fa-label status fa fa-fw '.$status_icon[$index].' '.$status_icon_color[$index].'" style="padding: 2px;border-radius:3px;color:#fff" aria-hidden="true" status="'.$index.'"></span><span class="status-text"> '.htmlspecialchars($status,ENT_QUOTES).'</span>';
+                                                    $menu .= '<input type="hidden" value="'.$module->escape($index).'" class="dropdown_votes" record="'.$module->escape($sop['record_id']).'" id="'.$module->escape($region_id.'_'.$index).'"></li>';
                                                 }
                                                 ?>
                                                 <ul class="nav" style="margin:0;width:290px" id="data_status" name="data_status">
                                                     <li class="menu-item dropdown">
-                                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-custom form-control output_select btn-group" id="default-select-value" style="width: 300px;"><?=$selected?><span class="caret" style="float: right;margin-top:8px"></span></a>
+                                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-custom form-control output_select btn-group" id="default-select-value" style="width: 300px;"><?=$module->escape($selected)?><span class="caret" style="float: right;margin-top:8px"></span></a>
                                                         <ul class="dropdown-menu output-dropdown-menu dropdown-menu-custom" style="width:290px">
                                                             <?=$menu?>
                                                         </ul>
@@ -469,15 +467,15 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                         }
                     }
                     ?>
-                    <button onclick="follow_activity('<?= $follow_option ?>','<?= $current_user['record_id'] ?>','<?= $sop['record_id'] ?>','<?= $module->getUrl("sop/sop_data_request_follow_activity_AJAX.php") ?>')"
-                            class="btn <?= $follow_class ?> actionbutton"><i
-                                class="<?= $follow_icon_class ?>"></i> <span class="hidden-xs"><?= $follow_text ?></span></button>
+                    <button onclick="follow_activity('<?= $module->escape($follow_option) ?>','<?= $module->escape($current_user['record_id']) ?>','<?= $module->escape($sop['record_id']) ?>','<?= $module->getUrl("sop/sop_data_request_follow_activity_AJAX.php") ?>')"
+                            class="btn <?= $module->escape($follow_class) ?> actionbutton"><i
+                                class="<?= $module->escape($follow_icon_class) ?>"></i> <span class="hidden-xs"><?= htmlspecialchars($follow_text,ENT_QUOTES) ?></span></button>
                 </div>
                 <div class="pull-right" id="btn_follow" style="padding-right: 10px">
                     <?php
                     if ($sop['sop_visibility'] == '1') {
                         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $_REQUEST['record_id'], "dhwg_review_request", "");
-                        $survey_link =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                        $survey_link =  $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
 
                         echo '<a href="#" onclick="editIframeModal(\'sop-make-public\',\'redcap-edit-frame-make-public\',\'' . $survey_link . '\');" class="btn btn-success open-codesModal"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send for Review</a>';
                     }
@@ -557,8 +555,8 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     ?>
                     <div class="alert alert-warning fade in col-md-12 col-xs-12" id="succMsgContainer_stay">
                         <?php
-                        echo "<div class='pull-left'>".$message_text."</div>";
-                        echo '<a href="#" onclick="confirmDataUpload(\'' . $sop['sop_concept_id'] . '\',\'' . $current_user['record_id'] . '\',\'' .$concept_id . '\',\'' .$sop['record_id'] . '\');" class="pull-right btn btn-default btn-xs hidden-sm hidden-xs">Upload Data</a>';
+                        echo "<div class='pull-left'>".htmlspecialchars($message_text,ENT_QUOTES)."</div>";
+                        echo '<a href="#" onclick="confirmDataUpload(\'' . $module->escape($sop['sop_concept_id']) . '\',\'' . $module->escape($current_user['record_id']) . '\',\'' .$module->escape($concept_id) . '\',\'' .$module->escape($sop['record_id']) . '\');" class="pull-right btn btn-default btn-xs hidden-sm hidden-xs">Upload Data</a>';
                         ?>
                     </div>
                     <div class="modal fade" id="modal-data-upload-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
@@ -587,22 +585,22 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     </div>
                 <?php } ?>
                 <div class="row request">
-                    <div class="col-md-8 col-sm-12"><strong>Linked Concept:</strong> <?= $concept; ?></div>
+                    <div class="col-md-8 col-sm-12"><strong>Linked Concept:</strong> <?= filter_tags($concept); ?></div>
                     <div class="col-md-4">
-                        <strong>Version: </strong><span><em><?=$sop_updated_dt?></em></span>
-                        <span class="label label-as-badge <?= $status ?>"><?= $sop_status[$sop['sop_status']]; ?></span>&nbsp;&nbsp;
-                        <span class="label label-as-badge <?= $visibility ?>"><?= $sop_visibility[$sop['sop_visibility']]; ?></span>
+                        <strong>Version: </strong><span><em><?=htmlspecialchars($sop_updated_dt,ENT_QUOTES)?></em></span>
+                        <span class="label label-as-badge <?= $status ?>"><?= htmlspecialchars($sop_status[$sop['sop_status']],ENT_QUOTES); ?></span>&nbsp;&nbsp;
+                        <span class="label label-as-badge <?= $visibility ?>"><?= htmlspecialchars($sop_visibility[$sop['sop_visibility']],ENT_QUOTES); ?></span>
                     </div>
                 </div>
                 <div class="row request">
-                    <div class="col-md-8 col-sm-12"><strong>Research Contact:</strong> <?= $research_contact; ?>
+                    <div class="col-md-8 col-sm-12"><strong>Research Contact:</strong> <?= filter_tags($research_contact); ?>
                     </div>
                     <div class="col-md-4"><strong>Data Due: </strong>
-                        <?= $array_dates['text'] ?> <?= $array_dates['button'] ?>
+                        <?= filter_tags($array_dates['text']) ?> <?= filter_tags($array_dates['button']) ?>
                     </div>
                 </div>
                 <div class="row request">
-                    <div class="col-md-8 col-sm-12"><strong>Data Contact:</strong> <?= $data_contact; ?>
+                    <div class="col-md-8 col-sm-12"><strong>Data Contact:</strong> <?= filter_tags($data_contact); ?>
                     </div>
                     <div class="col-md-4">
                         <strong>Status: </strong>
@@ -611,10 +609,8 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                         if($sop['data_response_status'][$current_user['person_region']] == ""){
                             $status_text = $status_type[0];
                         }
-
-                        $status_row .= "<td style='text-align: center'>";
                         $status_icons = \Vanderbilt\HarmonistHubExternalModule\getDataCallStatusIcons($sop['data_response_status'][$current_user['person_region']]);
-                        echo $status_icons.'<span class="status-text"> '.$status_text.'</span>';
+                        echo $status_icons.'<span class="status-text"> '.htmlspecialchars($status_text,ENT_QUOTES).'</span>';
                         ?>
                     </div>
                 </div>
@@ -628,10 +624,8 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             $downloaders_list = "";
                             $downloadersOrdered = array();
                             foreach ($downloaders as $down) {
-                                $RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $down));
-                                $peopleDown = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
-                                $RecordSetRegionsLoginDown = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $peopleDown['person_region']));
-                                $region_codeDown = ProjectData::getProjectInfoArray($RecordSetRegionsLoginDown)[0]['region_code'];
+                                $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down),array('firstname','lastname','email'))[0];
+                                $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
 
                                 $downloadersOrdered[$down]['name'] = $peopleDown['firstname'] . " " . $peopleDown['lastname'];
                                 $downloadersOrdered[$down]['email'] = $peopleDown['email'];
@@ -641,12 +635,13 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
 
                             $count = 0;
                             foreach ($downloadersOrdered as $downO) {
+                                $downO = $module->escape($downO);
                                 $comma = ",&nbsp;";
                                 $count++;
                                 if(count($downloadersOrdered) == $count){
                                     $comma = "";
                                 }
-                                $downloaders_list .= "<div style='display:inline-block;'><a href='mailto:" . $downO['email'] . "'>" . $downO['name'] . "</a> ".$downO['region_code'].$comma."</div>";
+                                $downloaders_list .= "<div style='display:inline-block;'><a href='mailto:" . $downO['email'] . "'>" . $downO['name'] . "</a> ".htmlspecialchars($downO['region_code'].$comma,ENT_QUOTES)."</div>";
                             }
 
                         }else{
@@ -659,7 +654,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                 </div>
                 <div class="row request">
                     <div class="col-md-12"><strong>Data Call Notes: </strong><br>
-                        <?= empty($sop['sop_final_notes']) ? "<em>None</em>" : $sop['sop_final_notes']; ?>
+                        <?=filter_tags(empty($sop['sop_final_notes']) ? "<em>None</em>" : $sop['sop_final_notes'],ENT_QUOTES); ?>
                     </div>
                 </div>
                 <?php if (!empty($conference_info)) { ?>
@@ -745,8 +740,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                         <col>
                     </colgroup>
                     <?php
-                    $RecordSetUpload = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$record."'");
-                    $uploads = ProjectData::getProjectInfoArray($RecordSetUpload);
+                    $uploads = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$record."'");
                     ArrayFunctions::array_sort_by_column($uploads, 'responsecomplete_ts',SORT_DESC);
                     if (!empty($uploads)){
                     ?>
@@ -765,12 +759,10 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     $count=0;
                     foreach ($uploads as $up) {
                         if($settings['dataupload_dur'] > $count) {
-                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $up['data_upload_person']));
-                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                            $people = $module->escape(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $up['data_upload_person']),array('firstname','lastname','email'))[0]);
                             $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
-                            $RecordSetRegionsLogin = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $up['data_upload_region']));
-                            $region_code = ProjectData::getProjectInfoArray($RecordSetRegionsLogin)[0]['region_code'];
+                            $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $up['data_upload_region']),array('region_code'))[0]['region_code'];
 
                             $status = '<span class="badge label-updated">Available</span>';
                             if ($up['deleted_y'] == '1') {
@@ -778,11 +770,11 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                             }
 
                             echo "<tr>";
-                            echo "<td width='200px'>" . $up['responsecomplete_ts'] . "</td>" .
-                                "<td width='250px'>" . $contact_person . "</td>" .
-                                "<td width='500px'>" . $up['upload_notes'] . "</td>" .
-                                "<td width='120px'>" . $region_code . "</td>" .
-                                "<td width='120px'>" . $status . "</td>" .
+                            echo "<td width='200px'>" . htmlspecialchars($up['responsecomplete_ts'],ENT_QUOTES) . "</td>" .
+                                "<td width='250px'>" .  $contact_person . "</td>" .
+                                "<td width='500px'>" .  htmlspecialchars($up['upload_notes'],ENT_QUOTES) . "</td>" .
+                                "<td width='120px'>" .  htmlspecialchars($region_code,ENT_QUOTES) . "</td>" .
+                                "<td width='120px'>" .  $status . "</td>" .
                                 "</tr>";
                             $count++;
                         }else{
@@ -816,11 +808,11 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     </thead>
                     <tbody>
                     <?php
-                    $RecordSetComments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'array', null,null,null,null,false,false,false,"[sop_id] = '".$record."'");
-                    $comments = ProjectData::getProjectInfoArray($RecordSetComments);
+                    $comments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'json-array', null,null,null,null,false,false,false,"[sop_id] = '".$record."'");
                     krsort($comments);
                     if (!empty($comments)) {
                         foreach ($comments as $comment) {
+                            $comment = $module->escape($comment);
                             $comment_time = "";
                             if (!empty($comment['responsecomplete_ts'])) {
                                 $dateComment = new \DateTime($comment['responsecomplete_ts']);
@@ -828,9 +820,8 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                 $comment_time = $dateComment->format("Y-m-d H:i:s");
                             }
 
-                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $comment['response_person']));
-                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
-                            $name = trim($people['firstname'] . ' ' . $people['lastname']);
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname','email'))[0];
+                            $name = $module->escape(trim($people['firstname'] . ' ' . $people['lastname']));
 
                             $gd_files = "";
                             if (!empty($comment['revised_file'])) {
@@ -854,7 +845,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                                 "<td  style='width:5%'>";
                             if ($comment['response_person'] == $current_user['record_id']) {
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOPCOMMENTS'], $comment['record_id'], "sop_comments", "");
-                                $survey_link =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                                $survey_link =  $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
 
                                 $group_discussion .= '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_comment_and_votes_survey\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
                             }
@@ -897,7 +888,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                 </h4>
             </div>
             <?php
-            $survey_path = APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $pidsArray['SURVEYLINKSOP'] . "&sop_id=" . $record . "&response_person=" . $current_user['record_id'] . "&response_region=" . $current_user['person_region'] . "&comment_ver=" . $sop['sop_status'];
+            $survey_path = APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $module->escape($pidsArray['SURVEYLINKSOP']) . "&sop_id=" . $module->escape($record) . "&response_person=" . $module->escape($current_user['record_id']) . "&response_region=" . $module->escape($current_user['person_region']) . "&comment_ver=" . $module->escape($sop['sop_status']);
             ?>
             <div id="collapse_ask" class="panel-collapse collapse in" aria-expanded="true">
                 <div class="panel-body">

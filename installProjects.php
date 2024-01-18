@@ -31,7 +31,7 @@ if($hub_projectname == '' || $hub_profile == ''){
     echo '  <div class="container" style="margin-top: 60px">  
                 <div class="alert alert-danger col-md-12">
                     <div class="col-md-10">
-                        To start the installation you need fill up the fields in the <a href="'.APP_PATH_WEBROOT_FULL."external_modules/manager/project.php?pid=".$pid.'" target="_blank">External Modules configuration settings</a>.
+                        To start the installation you need fill up the fields in the <a href="'.$module->escape(APP_PATH_WEBROOT_FULL."external_modules/manager/project.php?pid=".$pid).'" target="_blank">External Modules configuration settings</a>.
                     </div>
                  </div>
             </div>';

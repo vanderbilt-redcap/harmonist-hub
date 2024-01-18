@@ -15,8 +15,7 @@ if(!empty($assoc_concept)){
     $concept_title = $concept['concept_title'];
 }
 
-$RecordSetPeopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $user));
-$upload_user = ProjectData::getProjectInfoArray($RecordSetPeopleDown)[0];
+$upload_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $user),array('access_token','email','firstname','lastname','person_region'))[0];
 
 $token = \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(12);
 

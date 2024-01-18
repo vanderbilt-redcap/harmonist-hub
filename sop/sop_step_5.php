@@ -5,7 +5,7 @@ $record_id = htmlentities($_REQUEST['record'],ENT_QUOTES);
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record_id));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-$harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
+$harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
 ?>
 <br>
 <?php
@@ -23,7 +23,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
         <div class="hub-title">
             <p>Your Data Request has been generated successfully. You can review and download the PDF below or download a ZIP file with an HTML and a PDF version. If you need to make changes, <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ss1&record='.$record_id.'&step=3'?>">you can go back to edit your data request</a>.</p>
             <?php
-            echo $settings['hub_steps_complete_text'];
+            echo filter_tags($settings['hub_steps_complete_text']);
             if($sop['sop_visibility'] != "2"){
                 $style = "margin: 0 auto;width: 350px; margin-top:20px";
             }else{
@@ -44,7 +44,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
                     </div>
                 <?php }else if($harmonist_perm){
                     $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], 1, "finalization_of_data_request","");
-                    $survey_link =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                    $survey_link =  $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
                     ?>
                     <div style="display: inline-block">
                         <a href="#" onclick="editIframeModal('hub-modal-data-finalize','redcap-finalize-frame','<?=$survey_link?>');" class="btn btn-primary btn-md">Finalize Data Request</a>

@@ -4,8 +4,7 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 
 $module->log("HUB: " . $pidsArray['PROJECTS'] . " - GET LINK");
 
-$RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
-$settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+$settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null, array('hub_name','accesslink_dur','accesslink_sender_email','accesslink_sender_name','hub_contact_email'))[0];
 
 $result = "";
 $current_record = $_POST['record'];
@@ -18,8 +17,7 @@ $options = array(0=>"map",1=>"sop",2=>"ss1",3=>"cpt",4=>"ttl",5=>"pup",6=>"cup",
 
 if(!empty($_REQUEST['email'])) {
     $module->log("HUB: " . $pidsArray['PROJECTS'] . " - link requested for ".$email);
-    $RecordSetEmail = \REDCap::getData($pidsArray['PEOPLE'], 'array', null,null,null,null,false,false,false,"lower([email]) ='".strtolower($email)."'");
-    $people = ProjectData::getProjectInfoArray($RecordSetEmail)[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','harmonist_regperm','active_y','email','first_ever_login_d'),null,null,false,false,false,"lower([email]) ='".strtolower($email)."'")[0];
     if(strtolower($people['email']) == strtolower($email) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
         $arrayLogin = array(array('record_id' => $people['record_id']));
         $module->log("HUB: " . $pidsArray['PROJECTS'] . " - Email found in database. Proceeding to send link");

@@ -44,21 +44,20 @@ class REDCapManagement {
 
     public static function getProjectConstantsArrayWithoutDeactivatedProjects(){
         $projects_array = self::getProjectsContantsArray();
-        $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
-        $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+        $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 
         $deactivatedConstants = array();
-        if($settings['deactivate_toolkit'][1] == '1'){
+        if($settings['deactivate_toolkit___1'] == '1'){
             array_push($deactivatedConstants,'DATATOOLUPLOADSECURITY');
             array_push($deactivatedConstants,'DATATOOLMETRICS');
         }
-        if($settings['deactivate_datahub'][1] == '1'){
+        if($settings['deactivate_datahub___1'] == '1'){
             array_push($deactivatedConstants,'DATAUPLOAD');
             array_push($deactivatedConstants,'DATADOWNLOAD');
             array_push($deactivatedConstants,'SOP');
             array_push($deactivatedConstants,'SOPCOMMENTS');
         }
-        if($settings['deactivate_tblcenter'][1] == '1'){
+        if($settings['deactivate_tblcenter___1'] == '1'){
             array_push($deactivatedConstants,'TBLCENTERREVISED');
         }
 
@@ -76,8 +75,7 @@ class REDCapManagement {
         $projects_array = array_merge(self::getProjectsContantsArray(),self::getSurveyContantsArray());
         $pidsArray = array();
         foreach ($projects_array as $constant){
-            $RecordSetHarmonist = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='".$constant."'");
-            $pid = ProjectData::getProjectInfoArray($RecordSetHarmonist)[0]['project_id'];
+            $pid = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='".$constant."'")[0]['project_id'];
             if($pid != ""){
                 $pidsArray[$constant] = $pid;
             }

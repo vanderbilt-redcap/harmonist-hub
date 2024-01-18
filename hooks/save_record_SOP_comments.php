@@ -8,8 +8,7 @@ use ExternalModules\ExternalModules;
 $hub_mapper = $this->getProjectSetting('hub-mapper');
 $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
 
-$RecordSetComment = \REDCap::getData($project_id, 'array', array('record_id' => $record));
-$comment = ProjectData::getProjectInfoArray($RecordSetComment)[0];
+$comment = \REDCap::getData($project_id, 'json-array', array('record_id' => $record))[0];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
 
@@ -25,8 +24,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $arrayCV = array();
     $arrayCV[$record][$event_id]['responsecomplete_ts'] = $completion_time;
 
-    $recordsRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $comment['response_region']));
-    $regions = ProjectData::getProjectInfoArray($recordsRegions)[0];
+    $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $comment['response_region']),array('region_code'))[0];
     if(!empty($regions)){
         $arrayCV[$record][$event_id]['response_regioncode'] = $regions['region_code'];
     }
@@ -37,16 +35,12 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
     if(!empty($sop)){
         if($sop['follow_activity'] != ''){
-            $RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array');
-            $settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+            $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array')[0];
 
             $array_userid = explode(',',$sop['follow_activity']);
             foreach ($array_userid as $user_id){
-                $RecordSetEmail = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $user_id));
-                $people = ProjectData::getProjectInfoArray($RecordSetEmail)[0];
-
-                $RecordSetContact = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
-                $data_contact = ProjectData::getProjectInfoArray($RecordSetContact)[0];
+                $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $user_id),array('access_token','email','record_id'))[0];
+                $data_contact = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('email','firstname','lastname'))[0];
 
                 $sender_email = "noreply.harmonist@vumc.org";
                 if($settings['accesslink_sender_email'] != ""){

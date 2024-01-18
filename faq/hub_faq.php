@@ -1,9 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetFaq = \REDCap::getData($pidsArray['FAQ'], 'array', null,null,null,null,false,false,false,"[help_show_y] = '1'");
-$faqs = ProjectData::getProjectInfoArray($RecordSetFaq);
-ArrayFunctions::array_sort_by_column($regions, 'help_category');
+$faqs = \REDCap::getData($pidsArray['FAQ'], 'json-array', null,null,null,null,false,false,false,"[help_show_y] = '1'");
 $help_category = $module->getChoiceLabels('help_category', $pidsArray['FAQ']);
 
 ?>
@@ -69,7 +67,7 @@ $help_category = $module->getChoiceLabels('help_category', $pidsArray['FAQ']);
 </script>
 <div class="container">
     <h3>FAQ</h3>
-    <p class="hub-title">This page lists frequently asked questions about the <?=$settings['hub_name']?> Hub. To submit a new question for the list, contact <a href="mailto:<?=$settings['hub_contact_email']?>"><?=$settings['hub_contact_email']?></a></p>
+    <p class="hub-title">This page lists frequently asked questions about the <?=$module->escape($settings['hub_name'])?> Hub. To submit a new question for the list, contact <a href="mailto:<?=$settings['hub_contact_email']?>"><?=$settings['hub_contact_email']?></a></p>
 </div>
 
 <!-- Filter Form -->
@@ -104,12 +102,12 @@ $help_category = $module->getChoiceLabels('help_category', $pidsArray['FAQ']);
                         echo '<div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#' . $collapse_id . '">' . $faq['help_question'] . '</a>
+                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#' . $collapse_id . '">' . filter_tags($faq['help_question']) . '</a>
                                     </h4>
                                 </div>
                                 <div id="' . $collapse_id . '" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <div>' . $faq['help_answer'] . '</div>';
+                                        <div>' . filter_tags($faq['help_answer']) . '</div>';
 
                         if ($faq['help_image'] != '') {
                             $q = $module->query("SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id = ?",[$faq['help_image']]);
@@ -119,9 +117,9 @@ $help_category = $module->getChoiceLabels('help_category', $pidsArray['FAQ']);
                         }
 
                         if ($faq['help_videoformat'] == '1') {
-                            echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq['help_videolink'] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
+                            echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . filter_tags($faq['help_videolink']) . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
                         }else{
-                            echo '</br><div class="help_embedcode">' . $faq['help_embedcode'] . '</div>';
+                            echo '</br><div class="help_embedcode">' . filter_tags($faq['help_embedcode']) . '</div>';
                         }
 
                         echo '</div>

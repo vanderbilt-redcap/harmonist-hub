@@ -6,24 +6,6 @@ class ProjectData
 {
     public $default_value;
 
-    /**
-     * Function that returns the info array from a specific project
-     * @param $project, the project id
-     * @param $info_array, array that contains the conditionals
-     * @param string $type, if its single or a multidimensional array
-     * @return array, the info array
-     */
-    public static function getProjectInfoArray($records){
-        $array = array();
-        foreach ($records as $event) {
-            foreach ($event as $data) {
-                array_push($array,$data);
-            }
-        }
-
-        return $array;
-    }
-
     public static function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
         $array = array();
         $found = array();
@@ -132,6 +114,34 @@ class ProjectData
             }
         }
         return $default_value;
+    }
+
+    public static function sanitizeALLVariablesFromInstrument($module,$project_id, $instruments, $data){
+        if(!empty($project_id)) {
+            foreach ($instruments as $iid => $instrument_name) {
+                $data_dictionary = \REDCap::getDataDictionary($project_id, 'array', false, null, $instrument_name);
+                if (!empty($data_dictionary)) {
+                    $fields = array_keys($data_dictionary);
+                    foreach ($fields as $id => $name) {
+                        $data[$name] = $module->escape($data[$name]);
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+
+    public static function getCheckboxValuesAsArray($module, $project_id, $field_name, $data){
+        $labels = $module->getChoiceLabels($field_name, $project_id);
+        $values = array();
+        foreach ($labels as $index => $value){
+            if($data[$field_name.'___'.$index] == 1){
+                array_push($values,'1');
+            }else{
+                array_push($values,'0');
+            }
+        }
+        return $values;
     }
 }
 ?>

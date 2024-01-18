@@ -5,7 +5,8 @@ use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 use Vanderbilt\HarmonistHubExternalModule\AllCrons;
 
-require_once "/app001/credentials/".$pidsArray['PROJECTS']."_hubsettings.php";
+require_once $module->getSafePath("/app001/credentials/".$pidsArray['PROJECTS']."_hubsettings.php","/app001/credentials/");
+
 if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
     #Don't do pending
 }else if(ENVIRONMENT == 'PROD') {

@@ -5,8 +5,8 @@ namespace Vanderbilt\HarmonistHubExternalModule;
  **/
 
 $wg_link = $module->getChoiceLabels('wg_link', $pidsArray['HARMONIST']);
-$Recordwg_link = \REDCap::getData($pidsArray['GROUP'], 'array', null);
-$wg_array = ProjectData::getProjectInfoArray($Recordwg_link,'');
+$wg_array = \REDCap::getData($pidsArray['GROUP'], 'json-array', null,array('record_id','group_name','group_abbr'));
+
 $wg_link = array();
 foreach ($wg_array as $wg){
     $wg_link[$wg['record_id']] = $wg['group_name'].' ('.$wg['group_abbr'].')';
@@ -48,8 +48,7 @@ foreach ($wg_link as $code => $text){
 $conceptswg_short_label_index[''] = 'No WG';
 array_push($conceptswg_short_label,'No WG');
 
-$RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null);
-$regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null);
 $conceptsleadregion_values = array();
 $conceptsleadregion_labels = array();
 $requests_array_region = array();
@@ -229,6 +228,42 @@ $array_sections = array(0=>'concepts',1=>'conceptswg',2=>'requests');
 $array_sections_title = array(0=>'concepts by status', 1=>'concepts by wg',2=>'Hub Review Requests');
 $array_sections_all = array(0=>'concepts',1=>'conceptswg',2=>'requests');
 $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Working Group',2=>'Hub Review Requests');
+
+#Escape All Data
+$requests_values = $module->escape($requests_values);
+$requests_labels = $module->escape($requests_labels);
+$requests_colors = $module->escape($requests_colors);
+$array_sections = $module->escape($array_sections);
+$array_sections_title = $module->escape($array_sections_title);
+$array_sections_all = $module->escape($array_sections_all);
+$array_sections_title_all = $module->escape($array_sections_title_all);
+$concepts_values = $module->escape($concepts_values);
+$concepts_labels = $module->escape($concepts_labels);
+$concepts_colors = $module->escape($concepts_colors);
+$conceptswg_values = $module->escape($conceptswg_values);
+$conceptswg_labels = $module->escape($conceptswg_labels);
+$conceptswg_colors = $module->escape($conceptswg_colors);
+$conceptswg_short_label_index = $module->escape($conceptswg_short_label_index);
+$conceptswg_short_label = $module->escape($conceptswg_short_label);
+$conceptsleadregion_values = $module->escape($conceptsleadregion_values);
+$conceptsleadregion_labels = $module->escape($conceptsleadregion_labels);
+$regionalmrdata_manuscripts = $module->escape($regionalmrdata_manuscripts);
+$regionalmrpubs_color_abstracts = $module->escape($regionalmrpubs_color_abstracts);
+$years_label_concepts = $module->escape($years_label_concepts);
+$iedea_concepts = $module->escape($iedea_concepts);
+$iedea_manuscripts = $module->escape($iedea_manuscripts);
+$iedea_abstracts = $module->escape($iedea_abstracts);
+$iedea_mrdatarequests = $module->escape($iedea_mrdatarequests);
+$requestsreq_values = $module->escape($requestsreq_values);
+$requestsreq_labels = $module->escape($requestsreq_labels);
+$requestsreq_colors = $module->escape($requestsreq_colors);
+$concept_type = $module->escape($concept_type);
+
+$show_donuts_single = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'hub_stats_consortium_select', $settings);
+$pub_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'pub_data', $settings);
+$abs_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'abs_data', $settings);
+$activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'activity_data', $settings);
+
 ?>
 <script>
     $(document).ready(function() {
@@ -271,17 +306,17 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
     }
     $(function () {
         var show_donuts = <?=json_encode($settings['hub_stats_section1_y'])?>;
-        var show_donuts_single = <?=json_encode($settings['hub_stats_consortium_select'])?>;
+        var show_donuts_single = <?=json_encode($show_donuts_single)?>;
         var show_publications = <?=json_encode($settings['hub_stats_section2_y'])?>;
-        var show_manuscripts_single = <?=json_encode($settings['pub_data'])?>;
+        var show_manuscripts_single = <?=json_encode($pub_data)?>;
         var show_manuscripts_single_label1 = <?=json_encode(($settings['pub_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>;
         var show_manuscripts_single_label2 = <?=json_encode(($settings['pub_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>;
         var show_abstracts = <?=json_encode($settings['hub_stats_section3_y'])?>;
-        var show_abstracts_single = <?=json_encode($settings['abs_data'])?>;
+        var show_abstracts_single = <?=json_encode($abs_data)?>;
         var show_abstracts_single_label1 = <?=json_encode(($settings['abs_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>;
         var show_abstracts_single_label2 = <?=json_encode(($settings['abs_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>;
         var show_activity = <?=json_encode($settings['hub_stats_section4_y'])?>;
-        var show_activity_single = <?=json_encode($settings['activity_data'])?>;
+        var show_activity_single = <?=json_encode($activity_data)?>;
 
         var url = <?=json_encode($module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=cpt')?>;
 
@@ -291,54 +326,76 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         var array_sections_title_all = <?=json_encode($array_sections_title_all)?>;
 
         //Consortium Productivity
-        var concepts_values = <?=json_encode($concepts_values)?>;
-        var concepts_labels = <?=json_encode($concepts_labels)?>;
-        var concepts_colors = <?=json_encode($concepts_colors)?>;
-        var conceptswg_values = <?=json_encode($conceptswg_values)?>;
-        var conceptswg_labels = <?=json_encode($conceptswg_labels)?>;
-        var conceptswg_short_label_index = <?=json_encode($conceptswg_short_label_index)?>;
-        var conceptswg_short_label = <?=json_encode($conceptswg_short_label)?>;
-        var conceptswg_colors = <?=json_encode($conceptswg_colors)?>;
         var conceptsleadregion_values = <?=json_encode($conceptsleadregion_values)?>;
         var conceptsleadregion_labels = <?=json_encode($conceptsleadregion_labels)?>;
         var conceptsleadregion_colors = <?=json_encode($conceptswg_colors)?>;
 
         //Multiregional and Regional Publications
         var concept_type = <?=json_encode($concept_type)?>;
-        var years_label_regional_pubs_manuscripts = <?=json_encode($regionalmrdata_manuscripts['years'])?>;
-        var regionalmrpubs_mr_manuscripts = <?=json_encode(array_values($regionalmrdata_manuscripts['mr']))?>;
         var regionalmrpubs_mrw_manuscripts = <?=json_encode($regionalmrdata_manuscripts['mrw'])?>;
         var regionalmrpubs_r_manuscripts = <?=json_encode($regionalmrdata_manuscripts['r'])?>;
-        var regionalmrpubs_outputs_manuscripts = <?=json_encode($regionalmrdata_manuscripts['outputsAll'])?>;
         var regionalmrpubs_color_manuscripts = <?=json_encode(array_values($regionalmrpubs_color_manuscripts))?>;
 
         //Multiregional and Regional Abstracts
-        var years_label_regional_pubs_abstracts = <?=json_encode($regionalmrdata_abstracts['years'])?>;
-        var regionalmrpubs_mr_abstracts = <?=json_encode(array_values($regionalmrdata_abstracts['mr']))?>;
         var regionalmrpubs_mrw_abstracts = <?=json_encode($regionalmrdata_abstracts['mrw'])?>;
         var regionalmrpubs_r_abstracts = <?=json_encode($regionalmrdata_abstracts['r'])?>;
-        var regionalmrpubs_outputs_abstracts = <?=json_encode($regionalmrdata_abstracts['outputsAll'])?>;
         var regionalmrpubs_color_abstracts = <?=json_encode(array_values($regionalmrpubs_color_abstracts))?>;
 
         //Multi-regional Activity by Year
+        const multiregionalActivityByYear = {
+            concepts:<?=json_encode($iedea_concepts)?>,
+            manuscripts:<?=json_encode($iedea_manuscripts)?>,
+            abstracts:<?=json_encode($iedea_abstracts)?>,
+            mrdatarequests:<?=json_encode($iedea_mrdatarequests)?>
+        }
         var years_label_concepts = <?=json_encode($years_label_concepts)?>;
-        var iedea_concepts = <?=json_encode($iedea_concepts)?>;
-        var iedea_manuscripts = <?=json_encode($iedea_manuscripts)?>;
-        var iedea_abstracts = <?=json_encode($iedea_abstracts)?>;
-        var iedea_mrdatarequests = <?=json_encode($iedea_mrdatarequests)?>;
 
         //Requests
-        var requests_values = <?=json_encode($requests_values)?>;
-        var requests_labels = <?=json_encode($requests_labels)?>;
-        var requests_colors = <?=json_encode($requests_colors)?>;
         var requestsreq_values = <?=json_encode($requestsreq_values)?>;
         var requestsreq_labels = <?=json_encode($requestsreq_labels)?>;
         var requestsreq_colors = <?=json_encode($requestsreq_colors)?>;
 
+        const sectionsAll = {
+            concepts:{
+                values: <?=json_encode($concepts_values)?>,
+                labels: <?=json_encode($concepts_labels)?>,
+                colors: <?=json_encode($concepts_colors)?>
+            },
+            conceptswg:{
+                values: <?=json_encode($conceptswg_values)?>,
+                labels: <?=json_encode($conceptswg_labels)?>,
+                colors: <?=json_encode($conceptswg_colors)?>,
+                short_label: <?=json_encode($conceptswg_short_label)?>,
+                short_label_index: <?=json_encode($conceptswg_short_label_index)?>
+            },
+            requests:{
+                values: <?=json_encode($requests_values)?>,
+                labels: <?=json_encode($requests_labels)?>,
+                colors: <?=json_encode($requests_colors)?>
+            },
+            manuscripts:{
+                years_label: <?=json_encode($regionalmrdata_abstracts['years'])?>,
+                single: <?=json_encode($pub_data)?>,
+                label1: <?=json_encode(($settings['pub_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>,
+                label2: <?=json_encode(($settings['pub_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>,
+                regionalmrpubs_mr: <?=json_encode(array_values($regionalmrdata_manuscripts['mr']))?>,
+                regionalmrpubs_outputs: <?=json_encode($regionalmrdata_manuscripts['outputsAll'])?>,
+                regionalmrpubs_color: <?=json_encode(array_values($regionalmrpubs_color_manuscripts))?>
+            },
+            abstracts:{
+                years_label: <?=json_encode($regionalmrdata_manuscripts['years'])?>,
+                single: <?=json_encode($abs_data)?>,
+                label1: <?=json_encode(($settings['abs_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>,
+                label2: <?=json_encode(($settings['abs_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>,
+                regionalmrpubs_mr: <?=json_encode(array_values($regionalmrdata_abstracts['mr']))?>,
+                regionalmrpubs_outputs: <?=json_encode($regionalmrdata_abstracts['outputsAll'])?>,
+                regionalmrpubs_color: <?=json_encode(array_values($regionalmrpubs_color_abstracts))?>
+            }
+        }
         //DONUTS
         if(show_donuts == "1") {
             Object.keys(array_sections_all).forEach(function (section) {
-                if(show_donuts_single[(parseInt(section)+1)] == '1') {
+                if(show_donuts_single[(parseInt(section))] == '1') {
                     var ctx = $("#" + array_sections_all[section] + "Chart");
                     if (array_sections_all[section] == 'conceptswg') {
                         var customTooltips = function (tooltip) {
@@ -377,12 +434,12 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
                                 var label = bodyLines[0][0].substr(0, bodyLines[0][0].indexOf(':'));
                                 var labelIndex = "";
                                 var labelLong = "";
-                                Object.keys(conceptswg_short_label_index).forEach(function (index) {
-                                    if (conceptswg_short_label_index[index] == label) {
+                                Object.keys(sectionsAll[array_sections_all[section]]['short_label_index']).forEach(function (index) {
+                                    if (sectionsAll[array_sections_all[section]]['short_label_index'][index] == label) {
                                         if (index == "") {
                                             labelLong = "No WG";
                                         } else {
-                                            labelLong = conceptswg_labels[index];
+                                            labelLong = sectionsAll[array_sections_all[section]]['labels'][index];
                                         }
                                         labelIndex = index;
                                     }
@@ -422,10 +479,10 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
                         var config = {
                             type: 'doughnut',
                             data: {
-                                labels: eval(array_sections_all[section] + "_short_label"),
+                                labels: sectionsAll[array_sections_all[section]]["short_label"],
                                 datasets: [{
-                                    backgroundColor: eval(array_sections_all[section] + "_colors"),
-                                    data: eval(array_sections_all[section] + "_values")
+                                    backgroundColor: sectionsAll[array_sections_all[section]]["colors"],
+                                    data: sectionsAll[array_sections_all[section]]["values"]
                                 }]
                             },
                             options: {
@@ -472,15 +529,14 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
                         }
 
                         var donuts_chart = new Chart(ctx, config);
-
                     } else {
                         var config = {
                             type: 'doughnut',
                             data: {
-                                labels: eval(array_sections_all[section] + "_labels"),
+                                labels: sectionsAll[array_sections_all[section]]["labels"],
                                 datasets: [{
-                                    backgroundColor: eval(array_sections_all[section] + "_colors"),
-                                    data: eval(array_sections_all[section] + "_values")
+                                    backgroundColor: sectionsAll[array_sections_all[section]]["colors"],
+                                    data: sectionsAll[array_sections_all[section]]["values"]
                                 }]
                             },
                             options: {
@@ -533,22 +589,22 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         Object.keys(concept_type).forEach(function (section) {
             if((show_publications == '1' && section == '1') || (show_abstracts == '1' && section == "2")) {
                 var dataset = [];
-                if(eval("show_" + concept_type[section] + "_single")['1'] == '1'){
+                if(sectionsAll[concept_type[section]]["single"]['1'] == '1'){
                     dataset.push(
                         {
-                            label: eval("show_" + concept_type[section] + "_single_label1"),
-                            data: eval("regionalmrpubs_mr_" + concept_type[section]),
-                            backgroundColor: eval("regionalmrpubs_color_" + concept_type[section])[0],
+                            label: sectionsAll[concept_type[section]]["label1"],
+                            data: sectionsAll[concept_type[section]]["regionalmrpubs_mr"],
+                            backgroundColor: sectionsAll[concept_type[section]]["regionalmrpubs_color"][0],
                             borderWidth: 0
                         }
                     );
                 }
-                if(eval("show_" + concept_type[section] + "_single")['2'] == '1'){
+                if(sectionsAll[concept_type[section]]["single"]['2'] == '1'){
                     dataset.push(
                         {
-                            label: eval("show_" + concept_type[section] + "_single_label2"),
-                            data: eval("regionalmrpubs_outputs_" + concept_type[section]),
-                            backgroundColor: eval("regionalmrpubs_color_" + concept_type[section])[1],
+                            label: sectionsAll[concept_type[section]]["label2"],
+                            data: sectionsAll[concept_type[section]]["regionalmrpubs_outputs"],
+                            backgroundColor: sectionsAll[concept_type[section]]["regionalmrpubs_color"][1],
                             borderWidth: 0
                         }
                     );
@@ -557,7 +613,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
                 var configdataTimelineChart = {
                     type: 'bar',
                     data: {
-                        labels: eval("years_label_regional_pubs_" + concept_type[section]),
+                        labels: sectionsAll[concept_type[section]]["years_label"],
                         datasets: []
                     },
                     options: {
@@ -641,7 +697,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
                     dataset.push(
                         {
                             label: activity_labels[index],
-                            data: eval("iedea_"+activity_data[index]),
+                            data: multiregionalActivityByYear[activity_data[index]],
                             backgroundColor: activity_color[index],
                             borderColor: activity_color[index],
                             fill: false
@@ -690,18 +746,18 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 </div>
 <div class="container">
     <h3><?=$settings['hub_name']?> Metrics</h3>
-    <p class="hub-title"><?=($settings['hub_statistics_text']=="")? $default_values_settings['hub_statistics_text']:$settings['hub_statistics_text']?></p>
+    <p class="hub-title"><?=filter_tags(($settings['hub_statistics_text']=="")? $default_values_settings['hub_statistics_text']:$settings['hub_statistics_text'])?></p>
 </div>
 
 <!-- DONUTS -->
 <?php if($settings['hub_stats_section1_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
     <h4><?=($settings['hub_stats_consortium_title']=="")? $default_values_settings['hub_stats_consortium_title']:$settings['hub_stats_consortium_title']?></h4>
-    <p class="hub-title"><?=($settings['hub_stats_consortium']=="")? $default_values_settings['hub_stats_consortium']:$settings['hub_stats_consortium']?></p>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_consortium']=="")? $default_values_settings['hub_stats_consortium']:$settings['hub_stats_consortium'])?></p>
 </div>
 <div class="container">
     <?php foreach ($array_sections_title_all as $index=>$section){
-        if($index <= 2 && $settings['hub_stats_consortium_select'][$index+1] == '1'){?>
+        if($index <= 2 && $settings['hub_stats_consortium_select___'.($index+1)] == '1'){?>
         <div class="canvas_title"><?=$section?>
             <a href="#" download="<?=$array_sections_all[$index].".png"?>" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="<?="down".$array_sections_all[$index]?>" name="<?="down".$array_sections_all[$index]?>"></a>
         </div>
@@ -711,7 +767,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 <div class="container">
     <?php foreach ($array_sections as $index => $section){
         $id = $section."Chart";
-        if($settings['hub_stats_consortium_select'][$index+1] == '1'){
+        if($settings['hub_stats_consortium_select___'.($index+1)] == '1'){
             if($section == 'conceptswg'){
                 $idtool = $section."tooltip";
                 ?><div id="<?=$idtool?>"></div><?php
@@ -730,7 +786,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         <?=($settings['hub_stats_pubs_title']=="")?$default_values_settings['hub_stats_pubs_title']:$settings['hub_stats_pubs_title']?>
         <a href="#" download="mr_r_publications.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downmanuscripts" name="downmanuscripts"></a>
     </h4>
-    <p class="hub-title"><?=($settings['hub_stats_rmr_publications']=="")?$default_values_settings['hub_stats_rmr_publications']:$settings['hub_stats_rmr_publications']?></p>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_rmr_publications']=="")?$default_values_settings['hub_stats_rmr_publications']:$settings['hub_stats_rmr_publications'])?></p>
 </div>
 <div class="container">
     <canvas id="manuscriptsChart" class="canvas_statistics" width="1100px" height="310px"></canvas>
@@ -770,7 +826,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         <?=($settings['hub_stats_abs_title']=="")?$default_values_settings['hub_stats_abs_title']:$settings['hub_stats_abs_title']?>
         <a href="#" download="mr_r_abstracts.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downabstracts" name="downabstracts"></a>
     </h4>
-    <p class="hub-title"><?=($settings['hub_stats_rmr_abstratcs']=="")?$default_values_settings['hub_stats_rmr_abstratcs']:$settings['hub_stats_rmr_abstratcs']?></p>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_rmr_abstratcs']=="")?$default_values_settings['hub_stats_rmr_abstratcs']:$settings['hub_stats_rmr_abstratcs'])?></p>
 </div>
 <div class="container">
     <canvas id="abstractsChart" class="canvas_statistics" width="1100px" height="310px"></canvas>
@@ -810,7 +866,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
         <?=$settings['hub_name']?> <?=($settings['hub_stats_activity_title']=="")?$default_values_settings['hub_stats_activity_title']:$settings['hub_stats_activity_title']?>
         <a href="#" download="multiregional_activity_year.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downmultiregionalyear" name="downmultiregionalyear"></a>
     </h4>
-    <p class="hub-title"><?=($settings['hub_stats_mr_activity_year']=="")?$default_values_settings['hub_stats_mr_activity_year']:$settings['hub_stats_mr_activity_year']?></p>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_mr_activity_year']=="")?$default_values_settings['hub_stats_mr_activity_year']:$settings['hub_stats_mr_activity_year'])?></p>
 </div>
 <div class="container">
     <canvas id="IedeaChart" class="canvas_statistics" width="350px" height="100px"></canvas>
@@ -820,8 +876,8 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 <!-- MAP -->
 <?php if($settings['hub_stats_section5_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
-    <h4><?=$settings['hub_name']?> <?=($settings['hub_stats_map_title']=="")?$default_values_settings['hub_stats_map_title']:$settings['hub_stats_map_title']?></h4>
-    <p class="hub-title"><?=($settings['hub_stats_map']=="")?$default_values_settings['hub_stats_map']:$settings['hub_stats_map']?></p>
+    <h4><?=$settings['hub_name']?> <?=filter_tags(($settings['hub_stats_map_title']=="")?$default_values_settings['hub_stats_map_title']:$settings['hub_stats_map_title'])?></h4>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_map']=="")?$default_values_settings['hub_stats_map']:$settings['hub_stats_map'])?></p>
 </div>
 <div class="container" style="padding-top: 20px">
     <?php include(dirname(dirname(__FILE__)).'/map/map_stats.php');?>
@@ -834,20 +890,18 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 <?php } ?>
 <?php if($settings['hub_stats_section5a_y'] == '1'){?>
 <div class="container" style="padding-top: 60px">
-    <h4><?=$settings['hub_name']?> <?=($settings['hub_stats_sitelist_title']=="")?$default_values_settings['hub_stats_sitelist_title']:$settings['hub_stats_sitelist_title']?></h4>
-    <p class="hub-title"><?=($settings['hub_stats_site_list']=="")?$default_values_settings['hub_stats_site_list']:$settings['hub_stats_site_list']?></p>
+    <h4><?=$settings['hub_name']?> <?=filter_tags(($settings['hub_stats_sitelist_title']=="")?$default_values_settings['hub_stats_sitelist_title']:$settings['hub_stats_sitelist_title'])?></h4>
+    <p class="hub-title"><?=filter_tags(($settings['hub_stats_site_list']=="")?$default_values_settings['hub_stats_site_list']:$settings['hub_stats_site_list'])?></p>
 </div>
 
 <div class="container">
     <?php
-    $RecordSetTBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'array', null);
-    $TBLCenter = ProjectData::getProjectInfoArray($RecordSetTBLCenter);
+    $TBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'json-array', null);
     $country = $module->getChoiceLabels('country', $pidsArray['TBLCENTERREVISED']);
     $region_name = $module->getChoiceLabels('region', $pidsArray['TBLCENTERREVISED']);
 
     $tbl_array = array();
-    $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
-    $regions_ordered = ProjectData::getProjectInfoArray($RecordSetRegions);
+    $regions_ordered = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = '1'");
     ArrayFunctions::array_sort_by_column($regions_ordered,'region_code');
     //To order the display
     foreach ($regions_ordered as $region){
@@ -932,7 +986,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <a data-toggle="collapse" href="#collapse_consortium"><?=$settings['hub_name']?> <?=($settings['hub_stats_sitelist_title']=="")?$default_values_settings['hub_stats_sitelist_title']:$settings['hub_stats_sitelist_title']?> <span class="badge badge-primary"><?=$tbl_adultped_array['sites']?></span></a>
+                <a data-toggle="collapse" href="#collapse_consortium"><?=$settings['hub_name']?> <?=filter_tags(($settings['hub_stats_sitelist_title']=="")?$default_values_settings['hub_stats_sitelist_title']:$settings['hub_stats_sitelist_title'])?> <span class="badge badge-primary"><?=$tbl_adultped_array['sites']?></span></a>
             </h3>
         </div>
         <div id="collapse_consortium" class="panel-collapse collapse" aria-expanded="true">

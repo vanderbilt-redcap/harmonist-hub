@@ -15,8 +15,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array');
     $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,"[output_year] <> ''");
 
-    $RecordSetExtraOut = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'array', null);
-    $extra_outputs = ProjectData::getProjectInfoArray($RecordSetExtraOut);
+    $extra_outputs = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'json-array', null);
     ArrayFunctions::array_sort_by_column($extra_outputs, 'output_year', SORT_DESC);
 
     $abstracts_publications_type = $moduleAux->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
@@ -49,7 +48,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     }
 
                     $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "");
-                    $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=" . $passthru_link['hash'];
+                    $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
 
                     $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
@@ -76,8 +75,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             if ($output['producedby_region'] == 2) {
                 $type = "<span class='badge badge-pill badge-draft'>MR</span>";
             } else if ($output['producedby_region'] == 1) {
-                $RecordSetMyRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $output['lead_region']));
-                $my_region = ProjectData::getProjectInfoArray($RecordSetMyRegion)[0]['region_code'];
+                $my_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $output['lead_region']),array('region_code'))[0]['region_code'];
                 $type = "<span class='badge badge-pill badge-draft'>R</span><div><i>" . $my_region . "</i></div>";
             }
 
@@ -97,7 +95,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
 
             $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
-            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
             $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
             $table_aux = array();
@@ -127,7 +125,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     fwrite($file, json_encode($table_array, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_PRETTY_PRINT));
     fclose($file);
 
-    $output = file_get_contents(EDOC_PATH . $storedName);
+    $output = file_get_contents($module->getSafePath(EDOC_PATH.$storedName,EDOC_PATH));
     $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
     //Save document on DB
         $moduleAux->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$filename,$filesize,'txt','application/octet-stream','0',$pidsArray['SETTINGS'], date('Y-m-d h:i:s')]);

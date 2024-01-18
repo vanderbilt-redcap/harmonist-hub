@@ -1,8 +1,4 @@
-
 <?php
-#this avoids asking to log in in RedCap
-define('NOAUTH',true);
-
 require_once dirname(dirname(__FILE__))."/base.php";
 
 #Color code & Region names
@@ -18,8 +14,8 @@ foreach ($regionCountryArray as $code=>$region){
 }
 
 #Convert to ISO3 to ISO2
-$codes = json_decode(file_get_contents('map/countryCodeConverter/iso2.json'), true);
-$names = json_decode(file_get_contents('map/countryCodeConverter/names.json'), true);
+$codes = json_decode(file_get_contents($module->getSafePath('map/countryCodeConverter/iso2.json')), true);
+$names = json_decode(file_get_contents($module->getSafePath('map/countryCodeConverter/names.json')), true);
 $iso3_to_name = array();
 foreach($codes as $iso2 => $iso3) {
     $iso3_to_name[$iso3] = $names[$iso3];

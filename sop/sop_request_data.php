@@ -33,7 +33,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     </div>
     <div class="optionSelect">
             <h3>Request Data</h3>
-        <?=str_replace('reqdatalink',APP_PATH_WEBROOT_FULL.'surveys/?s='.$pidsArray['DATARELEASEREQUEST'],$settings['hub_req_data_text'])?>
+        <?=filter_tags(str_replace('reqdatalink',$module->escape(APP_PATH_WEBROOT_FULL.'surveys/?s='.$pidsArray['DATARELEASEREQUEST']),$settings['hub_req_data_text']))?>
         <div class="optionSelect">
             <div style="margin: 0 auto 15px auto;width: 200px;">
                 <div style="display: inline-block">
@@ -42,7 +42,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             </div>
         </div>
 
-        <?=$settings['hub_req_data_text_after']?>
+        <?=filter_tags($settings['hub_req_data_text_after'])?>
     </div>
 
     <div class="optionSelect">
@@ -71,7 +71,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             <th class="sorting_disabled" data-sortable="false">Actions</th></tr>
                         </thead>
                         <?php
-                        $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
+                        $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
 
                         $data = "";
                         foreach ($sop_drafts as $draft){

@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
-$project_id = $_REQUEST['pid'];
+$project_id = (int)$_REQUEST['pid'];
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
 #hardcoded value for now.
@@ -182,10 +182,8 @@ if($pidHome != ""){
     #create the first record
     $module->addProjectToList($pidHome, $event_id, 1, 'record_id', 1);
 
-    $RecordSetRequesLink = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='REQUESTLINK'");
-    $RequestLinkPid = ProjectData::getProjectInfoArray($RecordSetRequesLink)[0]['project_id'];
-    $RecordSetSurveyPersonInfo = \REDCap::getData($project_id, 'array', null,null,null,null,false,false,false,"[project_constant]='SURVEYPERSONINFO'");
-    $surveyPersonInfoPid = ProjectData::getProjectInfoArray($RecordSetSurveyPersonInfo)[0]['project_id'];
+    $RequestLinkPid = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='REQUESTLINK'")[0]['project_id'];
+    $surveyPersonInfoPid = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='SURVEYPERSONINFO'")[0]['project_id'];
 
     $array_repeat_instances = array();
     $aux = array();

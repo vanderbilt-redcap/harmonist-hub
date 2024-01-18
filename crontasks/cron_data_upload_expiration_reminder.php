@@ -3,11 +3,8 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once(dirname(dirname(__FILE__))."/classes/AllCrons.php");
 include_once(__DIR__ ."/../projects.php");
 
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
-
-$RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
-$settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+$request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
+$settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 
 $days_expiration = intval($settings['downloadreminder_dur']);
 $expire_number = $settings['retrievedata_expiration'] - $days_expiration;

@@ -15,7 +15,7 @@ include_once(__DIR__ . "/classes/ExcelFunctions.php");
 REDCapManagement::getEnvironment();
 
 #Mapper Project
-$project_id_main = ($project_id != '')?$project_id:$_GET['pid'];
+$project_id_main = ($project_id != '')?$project_id:(int)$_GET['pid'];
 #Get Projects ID's
 $pidsArray = REDCapManagement::getPIDsArray($project_id_main);
 
@@ -27,16 +27,25 @@ define('APP_PATH_PLUGIN',APP_PATH_WEBROOT_FULL."external_modules/".substr(__DIR_
 define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
 define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
-
-$projects = \REDCap::getData(array('project_id'=>$pidsArray['PROJECTS']),'array');
+//$projects = \REDCap::getData(array('project_id'=>$pidsArray['PROJECTS']),'array');
 
 $secret_key="";
 $secret_iv="";
 
-$RecordSetSettings = \REDCap::getData($pidsArray['SETTINGS'], 'array', null);
-$settings = ProjectData::getProjectInfoArray($RecordSetSettings)[0];
+if($module == null)
+    $module = $this;
+
+$settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
+if(!empty($settings)){
+    $settings = $module->escape($settings);
+}else{
+    $settings = htmlspecialchars($settings,ENT_QUOTES);
+}
+
 #Escape name just in case they add quotes
 $settings["hub_name"] = addslashes($settings["hub_name"]);
+#Sanitize text title and descrition for pages
+$settings = ProjectData::sanitizeALLVariablesFromInstrument($module,$pidsArray['SETTINGS'],array(0=>"harmonist_text"),$settings);
 
 $default_values = new ProjectData;
 $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);

@@ -41,9 +41,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                 //Do nothing
             } else {
                 include_once("projects.php");
-                $settings = \REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$module->framework->getEventId($pidsArray['SETTINGS'])];
-
-                /***
+              /***
                  * Installation updates check to update new/missing variables
                  * -Data Dictionary Variables
                  * -Repeating Forms
@@ -158,9 +156,6 @@ if($hub_projectname != '' && $hub_profile != ''){
                     if( array_key_exists('option', $_REQUEST) && $option === 'map' )
                     {
                         include('map/index.php');
-                    }else if( array_key_exists('option', $_REQUEST) && $option === 'dfq')
-                    {
-                        include('faq/datatoolkit_faq.php');
                     }else if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])){
                         include('hub/hub_login.php');
                     }else if($current_user['active_y'] == "0"){
@@ -257,7 +252,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                             include('sop/sop_data_call_archive.php');
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown'][1] != "1")
                         {
-                            include('sop/sop_download_data.php');
+                            include('sop/sop_retrieve_data.php');
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'out')
                         {
                             include('hub/hub_publications.php');
@@ -266,7 +261,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                             include('hub/hub_metrics_stats.php');
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'mth' && ($settings['deactivate_datametrics'][1] != "1" || $isAdmin))
                         {
-                            include('hub/hub_metrics_general_stats.php');
+                            include('sop/sop_metrics_stats.php');
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'faq')
                         {
                             include('faq/hub_faq.php');

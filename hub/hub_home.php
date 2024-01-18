@@ -29,8 +29,7 @@ $number_of_deadlines = $settings['home_number_deadlines'];
 $number_of_quicklinks = $settings['home_number_quicklinks'];
 $number_of_recentactivity = $settings['home_number_recentactivity'];
 
-$RecordSetComments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null);
-$comments_sevenDaysYoung = ProjectData::getProjectInfoArray($RecordSetComments);
+$comments_sevenDaysYoung = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null);
 ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
 
 $dealines = array();
@@ -90,7 +89,7 @@ if(!empty($homepage)) {
     for($i = 1; $i<$number_of_announcements+1; $i++){
         if(!empty($homepage['announce_text'.$i])){
             $announcements .= '<ul class="fa-ul">'.
-                '<li><i class="fa-li fa fa-bell-o"></i>'.$homepage['announce_text'.$i];
+                '<li><i class="fa-li fa fa-bell-o"></i>'.filter_tags($homepage['announce_text'.$i]);
             if($i == 1 && $isAdmin){
                 $announcements .= '<a href="#" onclick="javascript:$(\'#announcements_survey\').modal(\'show\');" style="cursor: pointer"><span class="fa fa-cog" style="float: right;padding-right: 10px;"></span></a>';
             }
@@ -98,7 +97,7 @@ if(!empty($homepage)) {
         }
     }
     if(!empty($announcements)){
-        echo '<div class="alert alert-info">'.$announcements.'</div>';
+        echo '<div class="alert alert-info">'.filter_tags($announcements).'</div>';
     }else{
         echo '<div class="alert alert-info"><ul class="fa-ul"><li><i class="fa-li fa fa-bell-o"></i>No Announcements. ';
         if($isAdmin){
@@ -121,7 +120,7 @@ if(!empty($homepage)) {
                 <input type="hidden" value="0" id="announcement_loaded">
                 <?php
                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HOME'], 1, "announcements", "");
-                $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash'])."&modal=modal";
                 ?>
                 <iframe class="commentsform" id="announcements-frame" name="announcements-frame" message="U" src="<?=$survey_link?>" style="border: none;height: 810px;width: 100%;" message="F"></iframe>
             </div>
@@ -173,7 +172,7 @@ if(!empty($homepage)) {
                         <h3 class="panel-title">
                             Deadlines and Events
                             <?php
-                            if($isAdmin || \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 7)){ ?>
+                            if($isAdmin || ($current_user['harmonist_perms___7'] == 1) ? true : false){ ?>
                             <a href="#" onclick="javascript:$('#deadlines_survey').modal('show');" style="cursor: pointer"><span class="fa fa-cog" style="float: right;padding-right: 10px;"></span></a>
                             <?php } ?>
                         </h3>
@@ -213,7 +212,7 @@ if(!empty($homepage)) {
                         <div class="modal-body">
                             <?php
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HOME'], 1, "deadlines", "");
-                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']."&modal=modal";
+                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash'])."&modal=modal";
                             ?>
                             <iframe class="commentsform" id="deadlines-frame" message="E" name="deadlines-frame" src="<?=$survey_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
                         </div>
@@ -236,8 +235,7 @@ if(!empty($homepage)) {
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                     <?php
                     if(!empty($requests)) {
-                        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] =1");
-                        $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                        $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                         ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                         $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $current_user['person_region'], $settings['vote_grid'], '1','home');
@@ -286,12 +284,10 @@ if(!empty($homepage)) {
                             if ($i < $number_of_recentactivity) {
                                 echo '<li class="list-group-item">';
 
-                                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $comment['response_person']));
-                                $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                                $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname'))[0];
                                 $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                                $RecordSetRMComment = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
-                                $requestComment = ProjectData::getProjectInfoArray($RecordSetRMComment)[0];
+                                $requestComment = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']))[0];
 
                                 $time = \Vanderbilt\HarmonistHubExternalModule\getDateForHumans($comment['responsecomplete_ts']);
 
@@ -425,7 +421,7 @@ if(!empty($homepage)) {
                     <?php
                     if(!empty($homepage)) {
                         foreach ($homepage['links_sectionhead'] as $linkid => $linkvalue){
-                            echo '<li class="list-group-item quicklink_header"><i class="fa fa-fw '.$homepage_links_sectionorder[$homepage['links_sectionicon'][$linkid]].'" aria-hidden="true"></i> '.$linkvalue.'</li>';
+                            echo '<li class="list-group-item quicklink_header"><i class="fa fa-fw '.$module->escape($homepage_links_sectionorder[$homepage['links_sectionicon'][$linkid]]).'" aria-hidden="true"></i> '.$module->escape($linkvalue).'</li>';
 
                             for($i = 1; $i<$number_of_quicklinks+1; $i++){
                                 if(!empty($homepage['links_text'.$i][$linkid])){
@@ -433,7 +429,7 @@ if(!empty($homepage)) {
                                     if($homepage['links_stay'.$i][$linkid][0] == '1'){
                                         $stay = "";
                                     }
-                                    echo '<li class="list-group-item"><i class="fa fa-fw" aria-hidden="true"></i><a href="'.$homepage['links_link'.$i][$linkid].'" '.$stay.'>'.$homepage['links_text'.$i][$linkid].'</a></li>';
+                                    echo '<li class="list-group-item"><i class="fa fa-fw" aria-hidden="true"></i><a href="'.$module->escape($homepage['links_link'.$i][$linkid]).'" '.$module->escape($stay).'>'.$module->escape($homepage['links_text'.$i][$linkid]).'</a></li>';
                                 }
                             }
                         }

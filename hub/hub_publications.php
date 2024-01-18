@@ -5,7 +5,7 @@ $abstracts_publications_badge_text = array("1" => "badge-manuscript-text", "2" =
 
 $date = new \DateTime();
 $export_name = "publications_".$date->format('Y-m-d H:i:s');
-$harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 10);
+$harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
 
 $canEdit = false;
 if($harmonist_perm || $isAdmin) {
@@ -23,7 +23,7 @@ if($harmonist_perm || $isAdmin) {
 </div>
 <div class="container">
     <h3>Publications</h3>
-    <p class="hub-title"><?=$settings['hub_publications_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_publications_text'])?></p>
 </div>
 
 <div class="optionSelect">
@@ -95,7 +95,7 @@ if($harmonist_perm || $isAdmin) {
                         $table = "";
                         $q = $module->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id = ?",[$settings["publications_json"]]);
                         while ($row = $q->fetch_assoc()) {
-                            $path = EDOC_PATH.$row['stored_name'];
+                            $path = $module->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH);
                             $strJsonFileContents = file_get_contents($path);
                             $json_array = json_decode($strJsonFileContents, true);
                             foreach ($json_array['data'] as $variables){

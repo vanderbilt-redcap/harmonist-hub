@@ -64,7 +64,7 @@ if($_REQUEST['type'] != ""){
         <?=$back_button?>
     </div>
     <h3>Requests Archive</h3>
-    <p class="hub-title"><?=$settings['hub_req_archive_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_req_archive_text'])?></p>
     <br>
     <?php if($isAdmin){?>
     <div class="pull-right">
@@ -108,8 +108,7 @@ if($_REQUEST['type'] != ""){
         <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
             <?php
             if(!empty($requests)) {
-                $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                $regions = ProjectData::getProjectInfoArray($RecordSetRegions);
+                $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                 $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $current_user['person_region'], $settings['vote_grid'], '1','archive');

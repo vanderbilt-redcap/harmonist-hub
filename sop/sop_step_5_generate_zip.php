@@ -21,18 +21,15 @@ $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcep
 $concept_id = $concept['concept_id'];
 $concept_title = $concept['concept_title'];
 
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_creator']));
-$people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $sop['sop_creator']),array('firstname','lastname','email'))[0];
 $sop_creator_name = $people['firstname'].' '.$people['lastname'];
 $sop_creator_email = $people['email'];
 
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_creator2']));
-$people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $sop['sop_creator2']),array('firstname','lastname','email'))[0];
 $sop_creator2_name  = $people['firstname'].' '.$people['lastname'];
 $sop_creator2_email = $people['email'];
 
-$RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array("record_id" => $sop['sop_datacontact']));
-$people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array("record_id" => $sop['sop_datacontact']),array('firstname','lastname','email'))[0];
 $sop_datacontact_name  = $people['firstname'].' '.$people['lastname'];
 $sop_datacontact_email = $people['email'];
 
@@ -94,7 +91,7 @@ if($sop['sop_notes'] != ""){
 $second_page .= "<p><span style='font-size:16pt'><strong>5. List of Requested Tables</strong></span></p>";
 $second_page .= "<p><span style='font-size: 12pt'>".$requested_tables."</span></p>";
 
-$img = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'pdf')));
+$img = base64_encode(file_get_contents($module->getSafePath(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'pdf'))));
 
 $page_num = '<style>a{text-decoration: none;}</style>';
 
@@ -118,28 +115,29 @@ while ($row = $q->fetch_assoc()) {
 #CREATE ZIP FILE
 $filename = $concept_id."_DataRequest_".date("Y-m-d_hi",time());
 $zipname = $filename.'.zip';
+$zipPath = $module->getSafePath(EDOC_PATH.$zipname,EDOC_PATH);
 
 $zip = new \ZipArchive();
-if ( $zip->open(EDOC_PATH.$zipname, \ZipArchive::CREATE) !== TRUE) {
+if ( $zip->open($zipPath, \ZipArchive::CREATE) !== TRUE) {
     exit("Error creating ZIP file");
 }
 #Add a file to zip and rename it
-$zip->addFile(EDOC_PATH.$pdf_file, $filename.'.pdf');
+$zip->addFile($module->getSafePath(EDOC_PATH.$pdf_file,EDOC_PATH), $filename.'.pdf');
 
 # Add a file new file to zip using the text specified
-$download_file = file_get_contents( $filename.'.html' );
+$download_file = file_get_contents( $module->getSafePath(EDOC_PATH.$filename.'.html',EDOC_PATH ));
 $zip->addFromString(basename($filename.'.html'),$html_print);
 
 $zip->close();
 
 header("Content-type: application/zip");
 header("Content-Disposition: attachment; filename=$zipname");
-header("Content-length: " . filesize(EDOC_PATH.$zipname));
+header("Content-length: " . filesize($zipPath));
 header("Pragma: no-cache");
 header("Expires: 0");
 ob_clean();
 flush();
-readfile(EDOC_PATH.$zipname);
-unlink(EDOC_PATH.$zipname);
+readfile($zipPath);
+unlink($zipPath);
 ?>
 

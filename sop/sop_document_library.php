@@ -1,11 +1,10 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetFileLibrary = \REDCap::getData($pidsArray['FILELIBRARY'], 'array');
-$fileLibrary = ProjectData::getProjectInfoArray($RecordSetFileLibrary);
+$fileLibrary = \REDCap::getData($pidsArray['FILELIBRARY'], 'json-array');
 
-$file_tags = $module->getChoiceLabels('file_tags', $pidsArray['FILELIBRARY']);
-$upload_type = $module->getChoiceLabels('upload_type', $pidsArray['FILELIBRARY']);
+$file_tags = $module->escape($module->getChoiceLabels('file_tags', $pidsArray['FILELIBRARY']));
+$upload_type = $module->escape($module->getChoiceLabels('upload_type', $pidsArray['FILELIBRARY']));
 
 ?>
 <script>
@@ -67,7 +66,7 @@ $upload_type = $module->getChoiceLabels('upload_type', $pidsArray['FILELIBRARY']
     <p class="hub-title"><?=$settings['hub_doc_librabry_text']?></p>
     <br>
     <div style="text-align: center">
-        <a href="#" onclick="$('#redcap-new-file-frame').attr('src','<?=APP_PATH_WEBROOT_FULL."/surveys/?s=".$pidsArray['SURVEYFILELIBRARY']?>');$('#sop_add_library_file').modal('show');" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add Library File</a>
+        <a href="#" onclick="$('#redcap-new-file-frame').attr('src','<?=$module->escape(APP_PATH_WEBROOT_FULL."/surveys/?s=".$pidsArray['SURVEYFILELIBRARY'])?>');$('#sop_add_library_file').modal('show');" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add Library File</a>
     </div>
     <br>
     <br>
@@ -156,21 +155,20 @@ $upload_type = $module->getChoiceLabels('upload_type', $pidsArray['FILELIBRARY']
                                 }
                             }
 
-                            $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $filel['file_uploader']));
-                            $people = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $filel['file_uploader']),array('firstname','lastname','email'))[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $file_pdf = (!is_numeric($filel['file'])) ? $filel['file_title'] : \Vanderbilt\HarmonistHubExternalModule\getOtherFilesLink($module, $filel['file'], $filel['record_id'], $current_user['record_id'], $secret_key, $secret_iv, $filel['file_title']);
 
-                            echo '<tr><td width="250x">' .$file_pdf . '</td>' .
-                                '<td width="450px"><div>' . $filel['file_description'] . '</div><div style="padding-top: 10px">'.$tags.'</div></td>' .
-                                '<td width="100px">' . $upload_type[$filel['upload_type']] . '</td>' .
-                                '<td width="150px"><a href="mailto:' . $people['email'] . '">' . $name . '</a></td>' .
-                                '<td width="150px;">' . $filel['upload_dt'] . '</td>';
+                            echo '<tr><td width="250x">' .htmlspecialchars($file_pdf,ENT_QUOTES) . '</td>' .
+                                '<td width="450px"><div>' . htmlspecialchars($filel['file_description'],ENT_QUOTES) . '</div><div style="padding-top: 10px">'.$module->escape($tags).'</div></td>' .
+                                '<td width="100px">' . htmlspecialchars($upload_type[$filel['upload_type']],ENT_QUOTES) . '</td>' .
+                                '<td width="150px"><a href="mailto:' . $module->escape($people['email']) . '">' . htmlspecialchars($name ,ENT_QUOTES). '</a></td>' .
+                                '<td width="150px;">' . htmlspecialchars($filel['upload_dt'],ENT_QUOTES) . '</td>';
 
                             if ($isAdmin) {
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['FILELIBRARY'], $filel['record_id'], "file_information","");
-                                $survey_link =  APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash'];
+                                $survey_link =  $module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']);
 
                                 $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'sop_other_files_modal\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
                                 echo '<td width="55px">' . $edit . '</td>';

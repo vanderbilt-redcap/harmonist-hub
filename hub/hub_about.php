@@ -5,8 +5,8 @@ $about = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetAbout)[0
 ?>
 
 <div class="container">
-    <h3><?=$about['about_title']?> - About Us Page</h3>
-    <?=$about['about_text']?>
+    <h3><?=filter_tags($about['about_title'])?> - About Us Page</h3>
+    <?=filter_tags($about['about_text'])?>
     <div>
         <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;display: none;" id="succMsgContainer">Your edits have been saved.</div>
     </div>
@@ -22,10 +22,10 @@ $about = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetAbout)[0
 
             echo '<div class="col-sm-6 col-md-2">'.
             '<div class="thumbnail">'.
-                '<img src="'.\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $about['about_photo'][$id],'src').'" alt="'.$about['about_firstname'][$id].' '.$about['about_lastname'][$id].'" class="about_portrait">'.
+                '<img src="'.$module->escape(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $about['about_photo'][$id],'src')).'" alt="'.htmlspecialchars($about['about_firstname'][$id].' '.$about['about_lastname'][$id],ENT_QUOTES).'" class="about_portrait">'.
                 '<div class="caption" style="text-align: center">'.
-                    '<h4 style="min-height: 50px;">'.$about['about_firstname'][$id].' '.$about['about_lastname'][$id].$degree.'</h4>'.
-                    '<p>'.$about['about_project_title'][$id].'</p>'.
+                    '<h4 style="min-height: 50px;">'.htmlspecialchars($about['about_firstname'][$id].' '.$about['about_lastname'][$id].$degree,ENT_QUOTES).'</h4>'.
+                    '<p>'.htmlspecialchars($about['about_project_title'][$id],ENT_QUOTES).'</p>'.
                 '</div>'.
             '</div>'.
         '</div>';

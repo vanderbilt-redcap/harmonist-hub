@@ -1,8 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'array', null);
-$request_DU = ProjectData::getProjectInfoArray($RecordSetDU);
+$request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 krsort($request_DU);
 ArrayFunctions::array_sort_by_column($request_DU,'responsecomplete_ts',SORT_DESC);
 
@@ -39,7 +38,7 @@ foreach ($request_DU as $down){
     </div>
     <div class="optionSelect">
         <h3>Retrieve Data</h3>
-        <p class="hub-title"><?=$settings['hub_download_data_text']?></p>
+        <p class="hub-title"><?=filter_tags($settings['hub_download_data_text'])?></p>
     </div>
 </div>
 <div class="optionSelect">
@@ -53,7 +52,7 @@ foreach ($request_DU as $down){
         </tbody>
         </table>
     <?php
-    }else if($current_user['allowgetdata_y'][1] != "1"){?>
+    }else if($current_user['allowgetdata_y___1'] != "1"){?>
         <table>
         <tbody>
         <tr>
@@ -75,20 +74,17 @@ foreach ($request_DU as $down){
                 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
                 $array_userid = explode(',', $sop['sop_downloaders']);
 
-                $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $sop['sop_datacontact']));
-                $person_info = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('firstname','lastname','email'))[0];
                 if($person_info != ""){
                     $contact_concept_person = $person_info['firstname'] . " " . $person_info['lastname'] . " (<a href='mailto:" . $person_info['email'] . "'>" . $person_info['email'] . "</a>)";
                 }else{
                     $contact_concept_person = "<i>None</i>";
                 }
 
-
-
-                $concept_header = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $concept_id . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_sheet . '</a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . '</a>';
+//                $concept_header = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $concept_id . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_sheet . '</a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . '</a>';
                 $concept_header = $concept_sheet . ' | Data Request #' . $sop_id;
 
-                $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1');
+                $array_dates = $module->escape(\Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1'));
 
                 $downloads_active = 0;
                 $body = '';
@@ -99,11 +95,9 @@ foreach ($request_DU as $down){
                         $data_printed = true;
                         $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $data_up['data_assoc_concept']);
 
-                        $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $data_up['data_assoc_request']));
-                        $assoc_request = ProjectData::getProjectInfoArray($RecordSetRM)[0]['request_title'];
+                        $assoc_request = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $data_up['data_assoc_request']),array('request_title'))[0]['request_title'];
 
-                        $RecordSetPeople = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $data_up['data_upload_person']));
-                        $person_info = ProjectData::getProjectInfoArray($RecordSetPeople)[0];
+                        $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $data_up['data_upload_person']),array('firstname','lastname','email'))[0];
                         $contact_person = "<a href='mailto:" . $person_info['email'] . "'>" . $person_info['firstname'] . " " . $person_info['lastname'] . "</a>";
 
                         $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $data_up['data_upload_region']));
@@ -124,15 +118,14 @@ foreach ($request_DU as $down){
                             $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&code=' . \Vanderbilt\HarmonistHubExternalModule\getCrypt("id=". $data_up['record_id']."&pid=".$user,'e',$secret_key,$secret_iv). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
                         } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != ""){
                             if($data_up['deletion_type'] == '2'){
-                                $RecordSetPeopleDelete = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $data_up['deletion_hubuser']));
-                                $person_info_delete = ProjectData::getProjectInfoArray($RecordSetPeopleDelete)[0];
+                                $person_info_delete = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $data_up['deletion_hubuser']),array('firstname','lastname','email'))[0];
                                 $contact_person_delete = "<a href='mailto:" . $person_info['email'] . "'>" . $person_info_delete['firstname'] . " " . $person_info_delete['lastname'] . "</a>";
 
-                                $deleted = '<div><i>File deleted by ' . $contact_person_delete . ' on '.$data_up['deletion_ts'].'</i></div>';
-                                $expiration_date = "<span class='text-error'>".date("d M Y",strtotime($data_up['deletion_ts']))."</span>";
+                                $deleted = '<div><i>File deleted by ' . $contact_person_delete . ' on '.htmlspecialchars($data_up['deletion_ts'],ENT_QUOTES).'</i></div>';
+                                $expiration_date = "<span class='text-error'>".htmlspecialchars(date("d M Y",strtotime($data_up['deletion_ts'])),ENT_QUOTES)."</span>";
                             }else{
-                                $expiration_date = "<span class='text-error'>".date("d M Y",strtotime($data_up['deletion_ts']))."</span>";
-                                $deleted = '<div><i>File auto-deleted on ' . $data_up['deletion_ts'] . '</i></div>';
+                                $expiration_date = "<span class='text-error'>".htmlspecialchars(date("d M Y",strtotime($data_up['deletion_ts'])),ENT_QUOTES)."</span>";
+                                $deleted = '<div><i>File auto-deleted on ' . htmlspecialchars($data_up['deletion_ts'],ENT_QUOTES) . '</i></div>';
                             }
                         }else if(strtotime ($expire_date) >= strtotime(date('Y-m-d'))){
 
@@ -145,14 +138,14 @@ foreach ($request_DU as $down){
                             $color_notes = "retrieve-notes";
                         }
 
-                        $body .= "<tr><td>" . $data_up['responsecomplete_ts'] . "</td>" .
-                            "<td>" . $region_code . "</td>" .
-                            "<td>" . $contact_person . "</td>" .
-                            "<td>" . $data_up['data_upload_zip'] . $deleted . "</td>" .
-                            "<td style='text-align: center;'>" . $file_pdf . "</td>" .
-                            "<td>" . $expiration_date . "</td>" .
-                            "<td>" . $buttons . "</td>" .
-                            "<td>" . $notes . "</td></tr>" ;
+                        $body .= "<tr><td>" . htmlspecialchars($data_up['responsecomplete_ts'],ENT_QUOTES) . "</td>" .
+                            "<td>" . htmlspecialchars($region_code,ENT_QUOTES) . "</td>" .
+                            "<td>" . filter_tags($contact_person) . "</td>" .
+                            "<td>" . htmlspecialchars($data_up['data_upload_zip'],ENT_QUOTES).filter_tags($deleted) . "</td>" .
+                            "<td style='text-align: center;'>" . htmlspecialchars($file_pdf,ENT_QUOTES) . "</td>" .
+                            "<td>" . filter_tags($expiration_date) . "</td>" .
+                            "<td>" . filter_tags($buttons) . "</td>" .
+                            "<td>" . filter_tags($notes) . "</td></tr>" ;
                     }
                 }
 
@@ -160,22 +153,22 @@ foreach ($request_DU as $down){
             <div class="panel panel-default" style="margin-bottom: 20px">
                 <div class="panel-heading" style="height: 38px">
                     <h3 class="panel-title">
-                        <a data-toggle="collapse" href="#collapse_concept_' . $concept_id . $sop_id . '">' . $concept_header . '</a>
-                        <span style="float:right;padding-right: 30px;font-size: 14px"> ' . $array_dates['button'] . ' <span class="label label-as-badge btn-info" style="font-weight: normal;"><i class="fa fa-arrow-down"></i> '. $downloads_active . '</span></span>
+                        <a data-toggle="collapse" href="#collapse_concept_' . htmlspecialchars($concept_id . $sop_id,ENT_QUOTES) . '">' . htmlspecialchars($concept_header,ENT_QUOTES) . '</a>
+                        <span style="float:right;padding-right: 30px;font-size: 14px"> ' . filter_tags($array_dates['button'],ENT_QUOTES) . ' <span class="label label-as-badge btn-info" style="font-weight: normal;"><i class="fa fa-arrow-down"></i> '. htmlspecialchars($downloads_active,ENT_QUOTES) . '</span></span>
                     </h3>
     
                 </div>
     
-                <div id="collapse_concept_' . $concept_id . $sop_id . '" class="panel-collapse collapse" aria-expanded="true">
+                <div id="collapse_concept_' . htmlspecialchars($concept_id . $sop_id,ENT_QUOTES) . '" class="panel-collapse collapse" aria-expanded="true">
                     <table class="table table_requests sortable-theme-bootstrap">
                         <div class="row request">
-                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Title: </strong><a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept_id . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_title . ' <i class="fa fa-external-link"></i></a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . ' <i class="fa fa-external-link"></i></a></div>
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Title: </strong><a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . htmlspecialchars($concept_id,ENT_QUOTES) . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . htmlspecialchars($concept_title,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . htmlspecialchars($sop_id,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a></div>
                         </div>
                         <div class="row request">
-                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Contact: </strong>' . $contact_concept_person . '</div>
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Contact: </strong>' . filter_tags($contact_concept_person) . '</div>
                         </div>
                         <div class="row request">
-                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Due: ' . $array_dates['text'] . '</strong></div>
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Due: ' . filter_tags($array_dates['text']) . '</strong></div>
                         </div>
                         <div class="row request"></div>
                     </table>

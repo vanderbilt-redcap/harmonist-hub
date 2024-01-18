@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-$harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($current_user['harmonist_perms'], 1);
+$harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
 ?>
 <div class="container">
     <div class="col-md-12 col lg-12" style="padding: 30px 0px 20px">
@@ -15,6 +15,7 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive);
                 ArrayFunctions::array_sort_by_column($concepts, 'concept_id');
                 if (!empty($concepts)) {
+                    $concepts = $module->escape($concepts);
                     foreach ($concepts as $concept){
                         $concept_short_title= strlen($concept['concept_title']) > 120 ? substr($concept['concept_title'],0,120)."..." : $concept['concept_title'];
                         echo "<option value='".$concept['record_id']."' concept='".$concept['concept_id']."'>".$concept['concept_id']." - ".$concept_short_title . "</option>";
@@ -50,7 +51,8 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                         <?php
                         foreach ($sop_templates as $template){
                             $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $template['sop_concept_id']));
-                            $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+                            $concept_id = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id']);
+                            $template = $module->escape($template);
                             echo "<option value='".$template['record_id']."' concept='".$template['sop_concept_id']."' concept_id='".$concept_id."'>".$template['sop_name']."</option>";
                         }?>
                     </select>
@@ -71,8 +73,9 @@ $harmonist_perm = \Vanderbilt\HarmonistHubExternalModule\hasUserPermissions($cur
                     <?php
                     foreach ($sop_drafts as $draft){
                         if($isAdmin || $harmonist_perm || $draft['sop_hubuser'] == $current_user['record_id'] || $draft['sop_creator'] == $current_user['record_id'] || $draft['sop_creator2'] == $current_user['record_id'] || $draft['sop_datacontact'] == $current_user['record_id'] ){
+                            $draft = $module->escape($draft);
                             $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $draft['sop_concept_id']));
-                            $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+                            $concept_id = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id']);
                             echo "<option value='" . $draft['record_id'] . "' concept='" . $draft['sop_concept_id'] . "' concept_id='" . $concept_id . "'>" . $draft['sop_name'] . "</option>";
                         }
                     }?>
