@@ -43,7 +43,9 @@ if(!empty($settings)){
 }
 
 #Escape name just in case they add quotes
-$settings["hub_name"] = addslashes($settings["hub_name"]);
+if(!empty($settings["hub_name"])) {
+    $settings["hub_name"] = addslashes($settings["hub_name"]);
+}
 #Sanitize text title and descrition for pages
 $settings = ProjectData::sanitizeALLVariablesFromInstrument($module,$pidsArray['SETTINGS'],array(0=>"harmonist_text"),$settings);
 
