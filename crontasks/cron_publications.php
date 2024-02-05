@@ -116,7 +116,6 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
         $table_array["recordsFiltered"] = $records;
     }
 
-
     #create and save file with json
     $filename = "jsoncopy_file_publications_" . date("YmdsH") . ".txt";
     $storedName = date("YmdsH") . "_pid" . $pidsArray['SETTINGS'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6) . ".txt";
@@ -127,9 +126,9 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
     $output = file_get_contents($module->getSafePath(EDOC_PATH.$storedName,EDOC_PATH));
     $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
+
     //Save document on DB
-        $moduleAux->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$filename,$filesize,'txt','application/octet-stream','0',$pidsArray['SETTINGS'], date('Y-m-d h:i:s')]);
-    $docId = db_insert_id();
+    $docId = \REDCap::storeFile(EDOC_PATH . $storedName,  $pidsArray['SETTINGS'], $filename);
 
     //Add document DB ID to project
     $Proj = new \Project($pidsArray['SETTINGS']);
@@ -137,7 +136,5 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $json = json_encode(array(array('record_id' => 1, 'publications_json' => $docId,'publications_lastupdate' => date("Y-m-d H:m:s"))));
     $results = \Records::saveData($pidsArray['SETTINGS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($pidsArray['SETTINGS'], 1, $event_id);
-
-
 }
 ?>
