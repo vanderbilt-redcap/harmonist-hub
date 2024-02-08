@@ -111,7 +111,7 @@ if($option == "1" && $save_option == ""){
         $sop_name = $record.". Data Request for ".$concept_id.", ".$concept_title;
         $arraySOP[$record][$event_id]['sop_name'] = $sop_name;
         $arraySOP[$record][$event_id]['sop_updated_dt'] = $sop_created_dt;
-        $arraySOP[$record][$event_id]['sop_due_d'] = $sop['sop_due_d'];;
+        $arraySOP[$record][$event_id]['sop_due_d'] = $sop['sop_due_d'];
     }
 }
 $results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
