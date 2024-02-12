@@ -194,7 +194,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                     //It's not Monday
                     return;
                 }
-                $firstMondayDate = new \DateTime(date());
+                $firstMondayDate = new \DateTime(date('Y-m-j'));
                 $firstMondayMonth = date("j", strtotime($firstMondayDate->modify('first monday of this month')->format('Y-m-j')));
                 if ($firstMondayMonth != date('j')) {
                     // We only want it to send on the first Monday of the month
