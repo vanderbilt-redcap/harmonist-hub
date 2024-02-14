@@ -46,6 +46,23 @@ $all_data_recent_activity = array_merge($dataUpload_sevenDaysYoung, $dataDownloa
 ## Sort into list by responsecomplete_ts
 ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
 
+$activityToPrint = [];
+
+foreach($all_data_recent_activity as $recordDetails) {
+    $activityToPrint[] = $recordDetails;
+
+    ## Add additional deleted row to display this on activity log
+    if($recordDetails['deleted_y'] == "1"){
+        $deletedDataRow = [];
+        foreach($recordDetails as $fieldName => $fieldValue) {
+            $deletedDataRow[$fieldName] = $fieldValue;
+        }
+        $deletedDataRow["IS_DELETED_ROW"] = 1;
+        
+        $deletedDataRow["responsecomplete_ts"] = $recordDetails['deletion_ts'];
+        $activityToPrint[] = $deletedDataRow;
+    }
+}
 
 ## Post page load data lookup details
 $datareq_id = '';
@@ -241,7 +258,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                 
                 ### Data displayed
                 ### responsecomplete_ts, download_id
-                if(!empty($all_data_recent_activity)) {?>
+                if(!empty($activityToPrint)) {?>
                     <colgroup>
                         <col>
                         <col>
@@ -271,7 +288,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                     </thead>
                     <tbody>
                     <?php
-                    foreach ($all_data_recent_activity as $recent_activity) {
+                    foreach ($activityToPrint as $recent_activity) {
                         $comment_time ="";
                         if(!empty($recent_activity['responsecomplete_ts'])){
                             $dateComment = new \DateTime($recent_activity['responsecomplete_ts']);
@@ -281,6 +298,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 	
 						$file = "";
 						$buttons = "";
+                        $name = "";
                         if(array_key_exists("downloader_id", $recent_activity)) {
                             $redcapPid = $pidsArray['DATADOWNLOAD'];
 	                        $person = $peopleDetails[$recent_activity["downloader_id"]];
@@ -313,8 +331,24 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 							$filenameColumn = $recent_activity['data_upload_zip'];
 							$activityHiddenColumn = "upload";
 						}
-						$region_code_person = $person[$recent_activity["person_region"]];
-						$name = trim($person['firstname'] . ' ' . $person['lastname'])." (".$region_code_person.")";
+                        
+                        if(array_key_exists("IS_DELETED_ROW", $recent_activity)) {
+                            $activityHiddenColumn = "delete";
+                            $activityColumn = "<i class='fa fa-fw fa-close text-error'></i> delete";
+                            $buttons = "";
+							if ($recent_activity['deletion_type'][0] == '1') {
+								$name = filter_tags("<em>Automatic</em>");
+                                $person = false;
+							} else if ($recent_activity['deletion_type'][0] == '2') {
+								$person = $peopleDetails[$recent_activity["deletion_hubuser"]];
+                            }
+                        }
+                        
+                        ## Not sure what to do if person is somehow empty
+                        if($person !== false && $person !== null) {
+						    $region_code_person = $person[$recent_activity["person_region"]];
+    						$name = trim($person['firstname'] . ' ' . $person['lastname'])." (".$region_code_person.")";
+						}
 	
 						$adminLink = "";
 						if($isAdmin){
@@ -335,41 +369,6 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 						echo $adminLink;
       
 						echo '</tr>';
-                        
-                        if($recent_activity['deleted_y'] == "1"){
-							$activityHiddenColumn = "delete";
-							$activityColumn = "<i class='fa fa-fw fa-close text-error'></i> delete";
-							$buttons = "";
-                            if ($recent_activity['deletion_type'][0] == '1') {
-                                $name = filter_tags("<em>Automatic</em>");
-                            } else if ($recent_activity['deletion_type'][0] == '2') {
-                                $deleter = $peopleDetails[$recent_activity["deletion_hubuser"]];
-                                $region_code_person = $regionList[$deleter["person_region"]];
-
-                                $name = $module->escape(trim($deleter['firstname'] . ' ' . $deleter['lastname'])." (".$region_code_person.")");
-                            }
-
-                            $comment_time ="";
-                            if(!empty($recent_activity['deletion_ts'])){
-                                $dateComment = new \DateTime($recent_activity['deletion_ts']);
-                                $dateComment->modify("+1 hours");
-                                $comment_time = $dateComment->format("Y-m-d H:i:s");
-                            }
-	
-							echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>';
-							echo '<td width="105px">'.$activityColumn.'</td>';
-							echo '<td width="220px">'.$module->escape($name).'</td>';
-							echo '<td width="20px">'.$module->escape($region_code).'</td>';
-							echo '<td width="80px">'.$assoc_concept.'</td>';
-							echo '<td width="80px">'.$module->escape($data_request).'</td>';
-							echo '<td width="220px">'.$module->escape($filenameColumn).'</td>';
-							echo '<td>'.$module->escape($activityHiddenColumn).'</td>';
-							echo '<td width="50px"> '.$module->escape($file).'</td>';
-							echo '<td width="50px"> '.filter_tags($buttons).'</td>';
-							echo $adminLink;
-                            
-                            echo '</tr>';
-                        }
                     }
                     ?>
                     </tbody>
