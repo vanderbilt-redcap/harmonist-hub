@@ -3,16 +3,56 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
 
-$dataUpload_sevenDaysYoung = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
-ArrayFunctions::array_sort_by_column($dataUpload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
+### Fetch People and Region data for inclusion in upload/download details
+$people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null, array('firstname','lastname','person_region'));
 
+$peopleDetails = [];
+foreach($people as $personDetails) {
+	$peopleDetails[$personDetails["record_id"]] = $personDetails;
+}
+
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null);
+
+$regionDetails = [];
+foreach($regions as $thisRegionDetails) {
+	$regionDetails[$thisRegionDetails["record_id"]] = $thisRegionDetails;
+}
+
+## Sort into list by region_code
+ArrayFunctions::array_sort_by_column($regions, 'region_code');
+
+$regionList = [];
+if (!empty($regions)) {
+	foreach ($regions as $region) {
+        $regionList[$region["record_id"]] = $region["region_code"];
+	}
+}
+
+## Pull ALL data from Data Upload
+$dataUpload_sevenDaysYoung = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
+
+## Set up upload records array keyed by record_id
+$uploadDetails = [];
+foreach($dataUpload_sevenDaysYoung as $recordDetails) {
+	$uploadDetails[$recordDetails["record_id"]] = $recordDetails;
+}
+
+## Pull ALL data from Data Download
 $dataDownload_sevenDaysYoung = \REDCap::getData($pidsArray['DATADOWNLOAD'], 'json-array', null);
-ArrayFunctions::array_sort_by_column($dataDownload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
+
+$downloadDetails = [];
+## Fetch the upload details for each download record
+foreach($dataDownload_sevenDaysYoung as $recordDetails) {
+	$downloadDetails[$recordDetails["record_id"]] = $recordDetails;
+}
 
 $all_data_recent_activity = array_merge($dataUpload_sevenDaysYoung, $dataDownload_sevenDaysYoung);
 
+## Sort into list by responsecomplete_ts
 ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
 
+
+## Post page load data lookup details
 $datareq_id = '';
 $datareq_title = '';
 if(array_key_exists('record', $_REQUEST) && $record != ''){
@@ -167,16 +207,11 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                 <select class="form-control" name="selectRegion" id="selectRegion">
                     <option value="">Select All</option>
                     <?php
-                    $regions = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array'));
-                    ArrayFunctions::array_sort_by_column($regions, 'region_code');
-                    if (!empty($regions)) {
-                        foreach ($regions as $region){
-                            if($region['record_id'] == $current_user['person_region'] && $_REQUEST['type'] != ""){
-                                echo "<option value='".$region['record_id']."' selected>".$region['region_code']."</option>";
-                            }else{
-                                echo "<option value='".$region['record_id']."'>".$region['region_code']."</option>";
-                            }
-
+                    foreach($regionList as $record => $regionCode) {
+                        if($record == $current_user['person_region'] && $_REQUEST['type'] != ""){
+                            echo "<option value='".$record."' selected>".$regionCode."</option>";
+                        }else{
+                            echo "<option value='".$record."'>".$regionCode."</option>";
                         }
                     }
                     ?>
@@ -206,6 +241,11 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
         <div class="table-responsive table-archive" style="overflow-x: hidden;">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
                 <?php
+                
+                
+                
+                ### Data displayed
+                ### responsecomplete_ts, download_id
                 if(!empty($all_data_recent_activity)) {?>
                     <colgroup>
                         <col>
@@ -244,18 +284,23 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                             $comment_time = $dateComment->format("Y-m-d H:i:s");
                         }
 
+                        ### Pull and print data for DOWNLOADs only
                         if($recent_activity['download_id'] != ""){
+                            
+                            ### Get more data from PEOPLE project and REGIONS project
                             #DOWNLOADS
-                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['downloader_id']), array('firstname','lastname','person_region'))[0];
-                            $region_code_person = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
+                            $downloader = $peopleDetails[$recent_activity["downloader_id"]];
+							$region_code_person = $downloader[$recent_activity["person_region"]];
 
-                            $name = trim($people['firstname'] . ' ' . $people['lastname'])." (".$region_code_person.")";
+                            $name = trim($downloader['firstname'] . ' ' . $downloader['lastname'])." (".$region_code_person.")";
 
-                            $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $recent_activity['downloader_region']),array('region_code'))[0]['region_code'];
+                            $region_code = $regionList[$recent_activity["downloader_region"]];
 
+                            ### Pulls data from HARMONIST project
                             $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept']);
 
-                            $data_request = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $recent_activity['download_id']),array('data_assoc_request'))[0]['data_assoc_request'];
+                            $thisUpload = $uploadDetails[$recent_activity['download_id']];
+                            $data_request = $thisUpload["data_assoc_request"];
 
                             $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
@@ -275,13 +320,14 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                             }
                             echo '</tr>';
                         }else{
+                            ### Pull additional data and print for uploads
                             #UPLOADS
-                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['data_upload_person']), array('firstname','lastname','person_region'))[0];
-                            $region_code_person = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
+							$uploader = $peopleDetails[$recent_activity["data_upload_person"]];
+							$region_code_person = $regionList[$uploader["person_region"]];
 
-                            $name = trim($people['firstname'] . ' ' . $people['lastname'])." (".$region_code_person.")";
-
-                            $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $recent_activity['data_upload_region']),array('region_code'))[0]['region_code'];
+                            $name = trim($uploader['firstname'] . ' ' . $uploader['lastname'])." (".$region_code_person.")";
+	
+							$region_code = $regionList[$recent_activity["data_upload_region"]];
 
                             $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
 
@@ -320,10 +366,10 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                 if ($recent_activity['deletion_type'][0] == '1') {
                                     $name = filter_tags("<em>Automatic</em>");
                                 } else if ($recent_activity['deletion_type'][0] == '2') {
-                                    $peopleDelete = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['deletion_hubuser']),array('firstname','lastname','person_region'))[0];
-                                    $region_code_person = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $peopleDelete['person_region']),array('region_code'))[0]['region_code'];
+                                    $deleter = $peopleDetails[$recent_activity["deletion_hubuser"]];
+                                    $region_code_person = $regionList[$deleter["person_region"]];
 
-                                    $name = $module->escape(trim($peopleDelete['firstname'] . ' ' . $peopleDelete['lastname'])." (".$region_code_person.")");
+                                    $name = $module->escape(trim($deleter['firstname'] . ' ' . $deleter['lastname'])." (".$region_code_person.")");
                                 }
 
                                 $comment_time ="";
@@ -363,6 +409,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
     </div>
 </div>
 
+<?php ### MODALS ?>
 <div class="modal fade" id="modal-data-download-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
     <form class="form-horizontal" action="" method="post" id='dataDownloadForm'>
         <div class="modal-dialog" role="document">
