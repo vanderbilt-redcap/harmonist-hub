@@ -254,10 +254,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
                 <?php
                 
-                
-                
                 ### Data displayed
-                ### responsecomplete_ts, download_id
                 if(!empty($activityToPrint)) {?>
                     <colgroup>
                         <col>
