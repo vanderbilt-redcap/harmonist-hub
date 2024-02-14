@@ -184,13 +184,10 @@ ob_start();
 $dompdf->render();
 //#Download option
 $output = $dompdf->output();
-//$dompdf->stream($filename);
 $filesize = file_put_contents(EDOC_PATH.$storedName, $output);
-//$filesize = file_put_contents(EDOC_PATH.$storedName, ob_get_contents());
 
 //Save document on DB
-$q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$reportHash.".pdf",$filesize,'.pdf','application/octet-stream','0',$pidsArray['SOP'],date('Y-m-d h:i:s')]);
-$docId = db_insert_id();
+$docId = \REDCap::storeFile($filePath, $pidsArray['SOP'], $filename);
 
 //Add document DB ID to project
 $jsonConcepts = json_encode(array(array('record_id' => $record_id, 'sop_finalpdf' => $docId)));

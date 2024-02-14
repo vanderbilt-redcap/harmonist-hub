@@ -94,11 +94,13 @@ if($_REQUEST['type'] != ""){
                 <select class="form-control" name="selectReqType" id="selectReqType">
                     <option value="">Select All</option>
                     <?php
-                        foreach ($request_type_label as $value => $label){
-                            if(!in_array($value,$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])) {
+                    if(!empty($request_type_label) && is_array($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])){
+                        foreach ($request_type_label as $value => $label) {
+                            if (!in_array($value, $default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])) {
                                 echo "<option value='" . $label . "'>" . $label . "</option>";
                             }
                         }
+                    }
                     ?>
                 </select>
             </div>
