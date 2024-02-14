@@ -11,12 +11,7 @@ foreach($people as $personDetails) {
 	$peopleDetails[$personDetails["record_id"]] = $personDetails;
 }
 
-$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null);
-
-$regionDetails = [];
-foreach($regions as $thisRegionDetails) {
-	$regionDetails[$thisRegionDetails["record_id"]] = $thisRegionDetails;
-}
+$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null, array('region_code'));
 
 ## Sort into list by region_code
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
@@ -283,120 +278,97 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                             $dateComment->modify("+1 hours");
                             $comment_time = $dateComment->format("Y-m-d H:i:s");
                         }
-
-                        ### Pull and print data for DOWNLOADs only
-                        if($recent_activity['download_id'] != ""){
-                            
-                            ### Get more data from PEOPLE project and REGIONS project
-                            #DOWNLOADS
-                            $downloader = $peopleDetails[$recent_activity["downloader_id"]];
-							$region_code_person = $downloader[$recent_activity["person_region"]];
-
-                            $name = trim($downloader['firstname'] . ' ' . $downloader['lastname'])." (".$region_code_person.")";
-
-                            $region_code = $regionList[$recent_activity["downloader_region"]];
-
-                            ### Pulls data from HARMONIST project
-                            $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept']);
-
-                            $thisUpload = $uploadDetails[$recent_activity['download_id']];
-                            $data_request = $thisUpload["data_assoc_request"];
-
-                            $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
-
-                            echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
-                                '<td width="105px"><i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i> download</td>'.
-                                '<td width="220px">'.$module->escape($name).'</td>'.
-                                '<td width="20px">'.$module->escape($region_code).'</td>'.
-                                '<td width="80px">'.$assoc_concept.'</td>'.
-                                '<td width="80px">'.$module->escape($data_request).'</td>'.
-                                '<td width="220px"> '.$module->escape($recent_activity['download_files']).'</td>'.
-                                '<td>download</td>'.
-                                '<td width="50px"> </td>'.
-                                '<td width="50px"> </td>';
-                            if($isAdmin){
-                                $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATADOWNLOAD'] . "&arm=1&id=" . $recent_activity['record_id'];
-                                echo '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
-                            }
-                            echo '</tr>';
-                        }else{
-                            ### Pull additional data and print for uploads
-                            #UPLOADS
-							$uploader = $peopleDetails[$recent_activity["data_upload_person"]];
-							$region_code_person = $regionList[$uploader["person_region"]];
-
-                            $name = trim($uploader['firstname'] . ' ' . $uploader['lastname'])." (".$region_code_person.")";
 	
+						$file = "";
+						$buttons = "";
+                        if(array_key_exists("downloader_id", $recent_activity)) {
+                            $redcapPid = $pidsArray['DATADOWNLOAD'];
+	                        $person = $peopleDetails[$recent_activity["downloader_id"]];
+							$region_code = $regionList[$recent_activity["downloader_region"]];
+							$assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept']);
+	
+                            $activityColumn = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i> download';
+							$thisUpload = $uploadDetails[$recent_activity['download_id']];
+							$data_request = $thisUpload["data_assoc_request"];
+                            $filenameColumn = $recent_activity['download_files'];
+                            $activityHiddenColumn = "download";
+						}
+                        else {
+							$redcapPid = $pidsArray['DATAUPLOAD'];
+	                        $person = $peopleDetails[$recent_activity["data_upload_person"]];
 							$region_code = $regionList[$recent_activity["data_upload_region"]];
+							$assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
+	      
+							$activity = '<i class="fa fa-fw fa-arrow-up text-success" aria-hidden="true"></i> upload ';
+							if($current_user['person_region'] == $recent_activity['data_upload_region'] || $isAdmin) {
+								$file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['data_upload_pdf'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+							}
+							if($recent_activity['deleted_y'] != "1" && ($recent_activity['data_upload_person'] == $current_user['record_id'] || $isAdmin)){
+								$crypt = \Vanderbilt\HarmonistHubExternalModule\getCrypt("&id=".$recent_activity['record_id']."&idu=".$current_user['record_id'],'e',$secret_key,$secret_iv);
+								$buttons = "<a href='#' onclick='$(\"#deleted_record\").val(\"".$crypt."\");$(\"#modal-data-download-confirmation\").modal(\"show\");' class='fa fa-trash' style='color: #000;cursor:pointer;text-decoration: none;' title='delete'></a>";
+							}
+                            
+                            $activityColumn = filter_tags($activity);
+							$data_request = $recent_activity["data_assoc_request"];
+							$filenameColumn = $recent_activity['data_upload_zip'];
+							$activityHiddenColumn = "upload";
+						}
+						$region_code_person = $person[$recent_activity["person_region"]];
+						$name = trim($person['firstname'] . ' ' . $person['lastname'])." (".$region_code_person.")";
+	
+						$adminLink = "";
+						if($isAdmin){
+							$gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $module->escape($redcapPid) . "&arm=1&id=" . $module->escape($recent_activity['record_id']);
+							$adminLink = '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
+						}
+      
+						echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>';
+						echo '<td width="105px">'.$activityColumn.'</td>';
+						echo '<td width="220px">'.$module->escape($name).'</td>';
+						echo '<td width="20px">'.$module->escape($region_code).'</td>';
+						echo '<td width="80px">'.$assoc_concept.'</td>';
+						echo '<td width="80px">'.$module->escape($data_request).'</td>';
+						echo '<td width="220px">'.$module->escape($filenameColumn).'</td>';
+						echo '<td>'.$module->escape($activityHiddenColumn).'</td>';
+						echo '<td width="50px"> '.$module->escape($file).'</td>';
+						echo '<td width="50px"> '.filter_tags($buttons).'</td>';
+						echo $adminLink;
+      
+						echo '</tr>';
+                        
+                        if($recent_activity['deleted_y'] == "1"){
+							$activityHiddenColumn = "delete";
+							$activityColumn = "<i class='fa fa-fw fa-close text-error'></i> delete";
+							$buttons = "";
+                            if ($recent_activity['deletion_type'][0] == '1') {
+                                $name = filter_tags("<em>Automatic</em>");
+                            } else if ($recent_activity['deletion_type'][0] == '2') {
+                                $deleter = $peopleDetails[$recent_activity["deletion_hubuser"]];
+                                $region_code_person = $regionList[$deleter["person_region"]];
 
-                            $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
-
-                            $file = "";
-                            $buttons = "";
-                            $activity_hidden = "upload";
-                            $activity = '<i class="fa fa-fw fa-arrow-up text-success" aria-hidden="true"></i> upload ';
-                            if($current_user['person_region'] == $recent_activity['data_upload_region'] || $isAdmin) {
-                                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['data_upload_pdf'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                                $name = $module->escape(trim($deleter['firstname'] . ' ' . $deleter['lastname'])." (".$region_code_person.")");
                             }
-                            if($recent_activity['deleted_y'] != "1" && ($recent_activity['data_upload_person'] == $current_user['record_id'] || $isAdmin)){
-                                    $crypt = \Vanderbilt\HarmonistHubExternalModule\getCrypt("&id=".$recent_activity['record_id']."&idu=".$current_user['record_id'],'e',$secret_key,$secret_iv);
-                                    $buttons = "<a href='#' onclick='$(\"#deleted_record\").val(\"".$crypt."\");$(\"#modal-data-download-confirmation\").modal(\"show\");' class='fa fa-trash' style='color: #000;cursor:pointer;text-decoration: none;' title='delete'></a>";
-                            }
 
-                            echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
-                                '<td width="105px">'.filter_tags($activity).'</td>'.
-                                '<td width="220px">'.$module->escape($name).'</td>'.
-                                '<td width="20px">'.$module->escape($region_code).'</td>'.
-                                '<td width="80px">'.$assoc_concept.'</td>'.
-                                '<td width="80px">'.$module->escape($recent_activity['data_assoc_request']).'</td>'.
-                                '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
-                                '<td>'.$module->escape($activity_hidden).'</td>'.
-                                '<td width="50px"> '.$module->escape($file).'</td>'.
-                                '<td width="50px"> '.filter_tags($buttons).'</td>';
-
-                            if($isAdmin){
-                                $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $module->escape($pidsArray['DATAUPLOAD']) . "&arm=1&id=" . $module->escape($recent_activity['record_id']);
-                                echo '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
+                            $comment_time ="";
+                            if(!empty($recent_activity['deletion_ts'])){
+                                $dateComment = new \DateTime($recent_activity['deletion_ts']);
+                                $dateComment->modify("+1 hours");
+                                $comment_time = $dateComment->format("Y-m-d H:i:s");
                             }
+	
+							echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>';
+							echo '<td width="105px">'.$activityColumn.'</td>';
+							echo '<td width="220px">'.$module->escape($name).'</td>';
+							echo '<td width="20px">'.$module->escape($region_code).'</td>';
+							echo '<td width="80px">'.$assoc_concept.'</td>';
+							echo '<td width="80px">'.$module->escape($data_request).'</td>';
+							echo '<td width="220px">'.$module->escape($filenameColumn).'</td>';
+							echo '<td>'.$module->escape($activityHiddenColumn).'</td>';
+							echo '<td width="50px"> '.$module->escape($file).'</td>';
+							echo '<td width="50px"> '.filter_tags($buttons).'</td>';
+							echo $adminLink;
+                            
                             echo '</tr>';
-
-                            if($recent_activity['deleted_y'] == "1"){
-                                $activity_hidden = "delete";
-                                $activity = "<i class='fa fa-fw fa-close text-error'></i> delete";
-                                if ($recent_activity['deletion_type'][0] == '1') {
-                                    $name = filter_tags("<em>Automatic</em>");
-                                } else if ($recent_activity['deletion_type'][0] == '2') {
-                                    $deleter = $peopleDetails[$recent_activity["deletion_hubuser"]];
-                                    $region_code_person = $regionList[$deleter["person_region"]];
-
-                                    $name = $module->escape(trim($deleter['firstname'] . ' ' . $deleter['lastname'])." (".$region_code_person.")");
-                                }
-
-                                $comment_time ="";
-                                if(!empty($recent_activity['deletion_ts'])){
-                                    $dateComment = new \DateTime($recent_activity['deletion_ts']);
-                                    $dateComment->modify("+1 hours");
-                                    $comment_time = $dateComment->format("Y-m-d H:i:s");
-                                }
-
-                                echo '<tr><td width="150px">'.$module->escape($comment_time).'</td>'.
-                                    '<td width="105px">'.filter_tags($activity).'</td>'.
-                                    '<td width="220px">'.filter_tags($name).'</td>'.
-                                    '<td width="20px">'.$module->escape($region_code).'</td>'.
-                                    '<td width="80px">'.$assoc_concept.'</td>'.
-                                    '<td width="80px">'.$module->escape($recent_activity['data_assoc_request']).'</td>'.
-                                    '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
-                                    '<td>'.$module->escape($activity_hidden).'</td>'.
-                                    '<td width="50px"> '.$module->escape($file).'</td>'.
-                                    '<td width="50px"></td>';
-
-                                if($isAdmin){
-                                    $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recent_activity['record_id'];
-                                    echo '<td style="text-align: center;"><a href="' . $gotoredcap . '" target="_blank"> <img src="'.$module->getUrl('img/REDCap_R_logo_transparent.png').'" style="width: 18px;" alt="REDCap Logo"></a></td>';
-                                }
-                                echo '</tr>';
-
-                            }
                         }
                     }
                     ?>
