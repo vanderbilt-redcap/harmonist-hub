@@ -308,7 +308,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                             $filenameColumn = $recent_activity['download_files'];
                             $activityHiddenColumn = "download";
 						}
-                        else {
+                        else if(array_key_exists("data_upload_person", $recent_activity)) {
 							$redcapPid = $pidsArray['DATAUPLOAD'];
 	                        $person = $peopleDetails[$recent_activity["data_upload_person"]];
 							$region_code = $regionList[$recent_activity["data_upload_region"]];
@@ -329,6 +329,10 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 							$activityHiddenColumn = "upload";
 						}
                         
+                        ## Deleted rows are copies of an upload row, so only setting column values
+                        ## below where they're different from the upload row
+                        ## This could be rolled into a separate block of the above if/else,
+                        ## but would duplicate 4-5 lines of code
                         if(array_key_exists("IS_DELETED_ROW", $recent_activity)) {
                             $activityHiddenColumn = "delete";
                             $activityColumn = "<i class='fa fa-fw fa-close text-error'></i> delete";
