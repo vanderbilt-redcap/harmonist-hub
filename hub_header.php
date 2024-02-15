@@ -2,18 +2,18 @@
 use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
-$current_user = $module->escape(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,null,null,null,false,false,false,"[access_token] = '".$token."'")[0]);
-$name = $current_user['firstname'].' '.$current_user['lastname'];
-
-$isAdmin = false;
-if($current_user['harmonistadmin_y'] == '1'){//$userRights->super_user == "1"
-    $isAdmin = true;
-}
-$person_region = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $current_user['person_region']))[0]);
-
-$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array',null);
-$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
-ArrayFunctions::array_sort_by_column($requests, 'due_d');
+//$current_user = $module->escape(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,null,null,null,false,false,false,"[access_token] = '".$token."'")[0]);
+//$name = $current_user['firstname'].' '.$current_user['lastname'];
+//
+//$isAdmin = false;
+//if($current_user['harmonistadmin_y'] == '1'){//$userRights->super_user == "1"
+//    $isAdmin = true;
+//}
+//$person_region = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $current_user['person_region']))[0]);
+//
+//$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array',null);
+//$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
+//ArrayFunctions::array_sort_by_column($requests, 'due_d');
 
 $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $request_response_person = $module->getChoiceLabels('response_person', $pidsArray['RMANAGER']);
