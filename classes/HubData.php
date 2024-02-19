@@ -9,13 +9,16 @@ class HubData
     public $person_region;
     public $requests;
     public $number_open_requests;
+	
+	private $pidsArray;
 
     function __construct($module,$name,$token, $pidsArray) {
         $this->session_name = $name;
+		
+		$this->pidsArray = $pidsArray;
 
         self::setCurrentUser($module, $pidsArray['PEOPLE'], $token);
         self::setPersonRegion($module, $pidsArray['REGIONS']);
-        self::setAllRequests($pidsArray['RMANAGER']);
     }
 
     public function getCurrentUser()
@@ -49,15 +52,18 @@ class HubData
     }
     public function getAllRequests()
     {
+		$project_id = $this->pidsArray['RMANAGER'];
+		
+		## Check if session data is already set and if a logged event (record update/creation) has happened since the cache was set
+		$last_logged_event = \Project::getLastLoggedEvent($project_id, true);
+		if (empty($_SESSION['requests'][$this->session_name]) || ($_SESSION['requests']['last_logged_event'][$this->session_name] != $last_logged_event)) {
+			$RecordSetRM = \REDCap::getData($project_id, 'array', null);
+			$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM, array('approval_y' => 1));
+			ArrayFunctions::array_sort_by_column($requests, 'due_d');
+			$_SESSION['requests'][$this->session_name] = $requests;
+			$_SESSION['requests']['last_logged_event'][$this->session_name] = $last_logged_event;
+		}
+		
         return $_SESSION['requests'][$this->session_name];
-    }
-    public function setAllRequests($project_id)
-    {
-        if (empty($_SESSION['requests'][$this->session_name])) {
-            $RecordSetRM = \REDCap::getData($project_id, 'array', null);
-            $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM, array('approval_y' => 1));
-            ArrayFunctions::array_sort_by_column($requests, 'due_d');
-            $_SESSION['requests'][$this->session_name] = $requests;
-        }
     }
 }

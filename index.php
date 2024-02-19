@@ -152,7 +152,6 @@ if($hub_projectname != '' && $hub_profile != ''){
                 $current_user = $hubData->getCurrentUser();
                 $name = $current_user['firstname'].' '.$current_user['lastname'];
                 $person_region = $hubData->getPersonRegion();
-                $requests = $hubData->getAllRequests();
 
                 if( array_key_exists('option', $_REQUEST) && $option === 'dfq'){
                     //No header

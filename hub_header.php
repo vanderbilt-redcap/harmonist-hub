@@ -15,14 +15,16 @@ use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 //$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
 //ArrayFunctions::array_sort_by_column($requests, 'due_d');
 
+$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, ["requestopen_ts","approval_y","finalize_y","region_response_status"]);
+$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
+
 $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $request_response_person = $module->getChoiceLabels('response_person', $pidsArray['RMANAGER']);
 $numberOfOpenRequest = $module->escape(\Vanderbilt\HarmonistHubExternalModule\numberOfOpenRequest($requests,$current_user['person_region']));
 
 $request_admin = "";
 if($isAdmin) {
-    $RecordSetRM_admin = \REDCap::getData($pidsArray['RMANAGER'], 'array', null);
-    $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM_admin);
+    $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
     ArrayFunctions::array_sort_by_column($request_admin, 'requestopen_ts');
     $numberOfAdminRequest = $module->escape(\Vanderbilt\HarmonistHubExternalModule\numberOfAdminRequest($request_admin));
 }
