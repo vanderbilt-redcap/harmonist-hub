@@ -63,7 +63,7 @@ if($harmonist_perm || $isAdmin) {
             <div style="float:left;padding-left:50px;margin-top: 8px;">
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="mr_active" name="mr_active" checked>
-                    <label class="custom-control-label" for="mr_active">Multiregional Only</label>
+                    <label class="custom-control-label" for="mr_active"><?=empty($settings['pubtext2']) ? "Multiregional Only" : $settings['pubtext2']?></label>
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@ if($harmonist_perm || $isAdmin) {
                     <tr>
                         <th class="sorted_class">Concept</th>
                         <th class="sorted_class" data-sorted="true">Year</th>
-                        <th class="sorted_class" data-sorted="false">Region</th>
+                        <th class="sorted_class" data-sorted="false"><?=empty($settings['pubtext1']) ? "Region" : $settings['pubtext1']?></th>
                         <th class="sorted_class"><span style="display:block">Journal /</span><span>Conference</span></th>
                         <th class="sorted_class" data-sorted="false">Publication Type</th>
                         <th class="sorted_class" data-sorted="false">Title and Authors</th>
