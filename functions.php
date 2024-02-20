@@ -546,7 +546,6 @@ function getRequestHeader($regions, $hubData, $vote_grid, $option, $type=""){
     }
     $header_region = '';
     $count_regions = 0;
-    $total_regions = count($regions);
 
     if($option != '2' && $type != 'home'){
         $small_screen_class = 'hidden-sm hidden-xs';
