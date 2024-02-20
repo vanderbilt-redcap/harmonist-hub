@@ -50,6 +50,18 @@ class HubData
             $_SESSION['person_region'][$this->session_name] = $module->escape(\REDCap::getData($project_id, 'json-array', array('record_id' => $_SESSION['current_user'][$this->session_name]['person_region']))[0]);
         }
     }
+    public function getAllRegions()
+    {
+        $project_id = $this->pidsArray['REGIONS'];
+        $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
+        if (empty($_SESSION['regions'][$this->session_name]) || ($_SESSION['regions']['last_logged_event'][$this->session_name] != $last_logged_event)) {
+            $regions = \REDCap::getData($project_id, 'json-array', null,null,null,null,false,false,false,"[showregion_y] =1");
+            ArrayFunctions::array_sort_by_column($regions, 'region_code');
+            $_SESSION['regions'][$this->session_name] = $regions;
+            $_SESSION['regions']['last_logged_event'][$this->session_name] = $last_logged_event;
+        }
+        return $_SESSION['regions'][$this->session_name];
+    }
     public function getAllRequests()
     {
 		$project_id = $this->pidsArray['RMANAGER'];
@@ -65,5 +77,14 @@ class HubData
 		}
 		
         return $_SESSION['requests'][$this->session_name];
+    }
+    public function getChoiceLabel($module, $project_id, $type){
+        $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
+        if (empty($_SESSION['choice_label'][$type][$this->session_name]) || ($_SESSION['choice_label'][$type]['last_logged_event'][$this->session_name] != $last_logged_event)) {
+            $_SESSION['choice_label'][$type][$this->session_name] = $module->getChoiceLabels($type, $project_id);
+            $_SESSION['choice_label'][$type]['last_logged_event'][$this->session_name] = $last_logged_event;
+        }
+        return $_SESSION['choice_label'][$type][$this->session_name];
+
     }
 }

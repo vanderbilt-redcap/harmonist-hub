@@ -114,7 +114,7 @@ if($_REQUEST['type'] != ""){
                 $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $current_user['person_region'], $settings['vote_grid'], '1','archive');
+                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $hubData, $settings['vote_grid'], '1','archive');
 
                 $requests_counter = 0;
                 foreach ($requests as $req) {
