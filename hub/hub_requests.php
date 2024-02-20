@@ -16,6 +16,8 @@ if($_REQUEST['type'] != ''){
 $completed_req = '';
 $pending_req = '';
 
+$requests = $hubData->getAllRequests();
+
 foreach ($requests as $req){
     if (($_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || $_REQUEST['type'] == "") {
         if (!\Vanderbilt\HarmonistHubExternalModule\hideRequestForNonVoters($settings, $req, $person_region)) {

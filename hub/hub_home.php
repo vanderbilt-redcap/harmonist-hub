@@ -234,6 +234,7 @@ if(!empty($homepage)) {
             <div class="table-responsive">
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                     <?php
+					$requests = $hubData->getAllRequests();
                     if(!empty($requests)) {
                         $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                         ArrayFunctions::array_sort_by_column($regions, 'region_code');

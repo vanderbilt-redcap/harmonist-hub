@@ -137,6 +137,21 @@ if($hub_projectname != '' && $hub_profile != ''){
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
                 }
 
+                //Session OUT
+                if(array_key_exists('sout', $_REQUEST)){
+                    unset($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]);
+                }
+
+                if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
+                    $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $_REQUEST['token'];
+                }
+
+                #OTHER DATA DISPLAYED ALWAYS OR OFTEN
+                $hubData = new HubData($module, $settings['hub_name'].$pidsArray['PROJECTS'], $token, $pidsArray);
+                $current_user = $hubData->getCurrentUser();
+                $name = $current_user['firstname'].' '.$current_user['lastname'];
+                $person_region = $hubData->getPersonRegion();
+
                 if( array_key_exists('option', $_REQUEST) && $option === 'dfq'){
                     //No header
                 }else{
@@ -145,14 +160,6 @@ if($hub_projectname != '' && $hub_profile != ''){
                 ?>
                 <div class="container" style="margin: 0 auto;float:none;min-height: 900px;">
                     <?php
-                    //Session OUT
-                    if(array_key_exists('sout', $_REQUEST)){
-                        unset($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]);
-                    }
-
-                    if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
-                        $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $_REQUEST['token'];
-                    }
                     if( array_key_exists('option', $_REQUEST) && $option === 'map' )
                     {
                         include('map/index.php');
