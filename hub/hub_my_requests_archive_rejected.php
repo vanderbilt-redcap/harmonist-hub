@@ -69,7 +69,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                 $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions, $hubData, $settings['vote_grid'], '2','archive');
+                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions, $hubData, $settings['vote_grid'], '2','archive');
 
                 $requests_counter = 0;
                 foreach ($request_reject as $req) {

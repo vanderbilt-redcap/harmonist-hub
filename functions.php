@@ -524,7 +524,7 @@ function numberOfAdminRequest($request){
  * @param $regions
  * @return string
  */
-function getRequestHeader($pidRegions, $regions, $hubData, $vote_grid, $option, $type=""){
+function getRequestHeader($regions, $hubData, $vote_grid, $option, $type=""){
     $current_user = $hubData->getCurrentUser();
     $header_colgroup = '<colgroup>
                     <col>
