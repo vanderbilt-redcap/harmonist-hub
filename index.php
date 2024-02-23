@@ -141,6 +141,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                 //Session OUT
                 if(array_key_exists('sout', $_REQUEST)){
                     unset($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]);
+                    unset($_SESSION[$settings['hub_name'].$pidsArray['PROJECTS']]);
                 }
 
                 if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
