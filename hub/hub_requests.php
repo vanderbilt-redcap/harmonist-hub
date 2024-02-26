@@ -2,7 +2,8 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 
 $regions = $hubData->getAllRegions();
-$request_type_label = $hubData->getChoiceLabel($module, $pidsArray['RMANAGER'], 'request_type');
+$request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
+
 
 $header =  \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions,$hubData,$settings['vote_grid'],'0');
 

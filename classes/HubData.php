@@ -78,13 +78,4 @@ class HubData
 		
         return $_SESSION[$this->session_name]['requests'];
     }
-    public function getChoiceLabel($module, $project_id, $type){
-        $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
-        if (empty($_SESSION[$this->session_name]['choice_label'][$type]) || ($_SESSION[$this->session_name]['choice_label'][$type]['last_logged_event'] != $last_logged_event)) {
-            $_SESSION[$this->session_name]['choice_label'][$type] = $module->getChoiceLabels($type, $project_id);
-            $_SESSION[$this->session_name]['choice_label'][$type]['last_logged_event'] = $last_logged_event;
-        }
-        return $_SESSION[$this->session_name]['choice_label'][$type];
-
-    }
 }
