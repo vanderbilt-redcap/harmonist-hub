@@ -524,8 +524,8 @@ function numberOfAdminRequest($request){
  * @param $regions
  * @return string
  */
-function getRequestHeader($pidRegions, $regions, $person_region, $vote_grid, $option, $type=""){
-
+function getRequestHeader($regions, $hubData, $vote_grid, $option, $type=""){
+    $current_user = $hubData->getCurrentUser();
     $header_colgroup = '<colgroup>
                     <col>
                     <col>
@@ -546,43 +546,38 @@ function getRequestHeader($pidRegions, $regions, $person_region, $vote_grid, $op
     }
     $header_region = '';
     $count_regions = 0;
-    $total_regions = count($regions);
 
     if($option != '2' && $type != 'home'){
         $small_screen_class = 'hidden-sm hidden-xs';
         if ($vote_grid == '2') {
-            $my_region = \REDCap::getData($pidRegions, 'json-array', array('record_id' => $person_region),array('region_code'))[0]['region_code'];
-            $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" style="width:150px" data-sortable="false">' . $my_region . '</th>';
+            $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" style="width:150px" data-sortable="false">' . $current_user['region_code'] . '</th>';
         } else {
             foreach ($regions as $region) {
                 if ($vote_grid == "0") {
-                    $instance = $person_region;
+                    $instance = $current_user['person_region'];
                 } else {
                     $instance = $region['record_id'];
                 }
 
                 $count_regions++;
-                if ($person_region == $instance) {
+                if ($current_user['person_region'] == $instance) {
                     $small_screen_class = '';
                 } else {
                     $small_screen_class = 'hidden-sm hidden-xs';
                 }
 
-                if ($vote_grid == "0" && $person_region == $region['record_id']) {
+                if (
+                    ($vote_grid == "0" && $current_user['person_region'] == $region['record_id'])
+                    || ($vote_grid == "1")
+                ) {
                     $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" data-sortable="false">' . $region['region_code'] . '</th>';
-                    if ($instance == $person_region && $vote_grid != "0" && $option == '0') {
+                    if ($instance == $current_user['person_region'] && $vote_grid != "0" && $option == '0') {
                         $header_colgroup .= '<col class="active">';
                     } else {
                         $header_colgroup .= '<col>';
                     }
-                    break;
-                } else if ($vote_grid == "1") {
-                    $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" data-sortable="false">' . $region['region_code'] . '</th>';
-                    if ($instance == $person_region && $vote_grid != "0" && $option == '0') {
-                        $header_colgroup .= '<col class="active">';
-                    } else {
-                        $header_colgroup .= '<col>';
-                    }
+                    if(($vote_grid == "0" && $current_user['person_region'] == $region['record_id']))
+                        break;
                 }
             }
         }
@@ -599,10 +594,11 @@ function getRequestHeader($pidRegions, $regions, $person_region, $vote_grid, $op
 
     if($type != 'home') {
         if ($option == "1") {
-            $header .= '<th class="request_grid_actions" data-sortable="false">Final Status</th></tr></thead>';
+            $row_text = 'Final Status';
         } else {
-            $header .= '<th class="request_grid_actions" data-sortable="false">Actions</th></tr></thead>';
+            $row_text = 'Actions';
         }
+        $header .= '<th class="request_grid_actions" data-sortable="false">'.$row_text.'</th></tr></thead>';
     }
 
     return $header_colgroup.$header;

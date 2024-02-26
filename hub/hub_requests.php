@@ -1,10 +1,11 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] =1");
-ArrayFunctions::array_sort_by_column($regions, 'region_code');
+$regions = $hubData->getAllRegions();
+$request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
-$header =  \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($pidsArray['REGIONS'], $regions,$current_user['person_region'],$settings['vote_grid'],'0');
+
+$header =  \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions,$hubData,$settings['vote_grid'],'0');
 
 $title = "Requests";
 $link_all_requests = '';

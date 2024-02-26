@@ -45,7 +45,6 @@ $download_date = $date->format('d M Y');
 $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }</style>';
 
 $img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'pdf');
-error_log($img);
 
 $html_pdf = "<html><body style='font-family:\"Calibri\";font-size:10pt;'>".$page_num
     ."<div class='footer' style='left: 600px;'><span class='page-number'>Page </span></div>"
