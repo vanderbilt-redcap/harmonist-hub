@@ -5,16 +5,10 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 class HubData
 {
     public $session_name;
-    public $is_admin;
-    public $person_region;
-    public $requests;
-    public $number_open_requests;
-	
 	private $pidsArray;
 
     function __construct($module,$name,$token, $pidsArray) {
         $this->session_name = $name;
-		error_log("***SESSION: ".$this->session_name);
 		$this->pidsArray = $pidsArray;
 
         self::setCurrentUser($module, $pidsArray['PEOPLE'], $token);
@@ -30,15 +24,15 @@ class HubData
         if(empty($_SESSION[$this->session_name]['current_user']) && !empty($token)){
             $_SESSION[$this->session_name]['current_user'] = $module->escape(\REDCap::getData($project_id, 'json-array', null,null,null,null,false,false,false,"[access_token] = '".$token."'")[0]);
             ## Check if current user is an Admin
-            $this->is_admin = false;
-            if($this->current_user['harmonistadmin_y'] == '1'){
-                $this->is_admin = true;
+            $_SESSION[$this->session_name]['is_admin'] = false;
+            if($_SESSION[$this->session_name]['current_user']['harmonistadmin_y'] == '1'){
+                $_SESSION[$this->session_name]['is_admin'] = true;
             }
         }
     }
     public function getIsAdmin()
     {
-        return $this->is_admin;
+        return $_SESSION[$this->session_name]['is_admin'];
     }
     public function getPersonRegion()
     {
