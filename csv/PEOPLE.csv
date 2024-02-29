@@ -19,8 +19,10 @@ allowgetdata_y,harmonist_permissions,,checkbox,"Allow user to download secure da
 <div style=""font-weight:lighter;font-style:italic"">If this option is selected, the user will be included in a list of people who can be given access to download patient-level data for specified concept sheets.</div>","1,",,,,,,,,,,,,
 redcap_name,harmonist_permissions,,text,"REDCap username",,,,,,,,,,,,,
 harmonist_txt,harmonist_permissions,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Harmonist Access</h3></div>",,,,,,,,,,,,,
-harmonistadmin_y,harmonist_permissions,,yesno,"Hub System Admin",,,,,,,,,,,,," @DEFAULT='0'"
-harmonist_perms,harmonist_permissions,,checkbox,"Permissions for regular users","1, Edit/finalize data requests | 2, Create new concept sheets | 3, Edit concept sheets | 4, Edit requests | 5, Upload file revisions | 6, Edit the data model ('Harmonist 0' Projects) | 7, Edit Deadlines & Events (Home page) | 8, Edit Site Census project | 9, Add news items | 10, Edit publications",,,,,,,,,,,,
+harmonistadmin_y,harmonist_permissions,,yesno,"Hub System Admin
+<div style=""font-weight:lighter;font-style:italic"">A Hub Admin will have access to all of the below permissions.</div>",,,,,,,,,,,,," @DEFAULT='0'"
+harmonist_perms,harmonist_permissions,,checkbox,"Permissions for regular users
+<div style=""font-weight:lighter;font-style:italic"">If someone is not a Hub Admin, you can select the below permissions to give access to certain tasks.</div>","1, Edit/finalize data requests | 2, Create new concept sheets | 3, Edit concept sheets | 4, Edit requests | 5, Upload file revisions | 6, Edit the data model ('Harmonist 0' Projects) | 7, Edit Deadlines & Events (Home page) | 8, Edit Site Census project | 9, Add news items | 10, Edit publications",,,,,,,,,,,,
 blockedfields,user_profile,,descriptive,"<span style=""font-weight:lighter; font-style:italic""> These fields are only editable by an Hub Admin. Please contact your Hub Admin if you need a change to these fields.</span>
 Email: <span style=""font-weight:lighter"">[email]</span>
 REDCap username (optional): <span style=""font-weight:lighter"">[redcap_name]</span>

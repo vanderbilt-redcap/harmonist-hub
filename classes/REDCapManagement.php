@@ -501,6 +501,14 @@ class REDCapManagement {
         }
     }
 
+    public static function getProjectsModuleGetPMIDArray(){
+        $projects_array_module_getpmid = array(
+            2=> array("instrument-name" => "outputs"),
+            26=> array("instrument-name" => "output_record")
+        );
+        return $projects_array_module_getpmid;
+    }
+
     public static function getProjectsModuleEmailAlertsArray($module, $hub_projectname){
         $projects_array_module_emailalerts = array(
             3=> array(

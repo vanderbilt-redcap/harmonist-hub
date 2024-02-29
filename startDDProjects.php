@@ -19,6 +19,7 @@ $projects_titles_array = REDCapManagement::getProjectsTitlesArray();
 $projects_array_repeatable = REDCapManagement::getProjectsRepeatableArray();
 $projects_array_surveys = REDCapManagement::getProjectsSurveysArray();
 $projects_array_module_emailalerts = REDCapManagement::getProjectsModuleEmailAlertsArray($module, $hub_projectname);
+$projects_array_module_getpmid = REDCapManagement::getProjectsModuleGetPMIDArray();
 $projects_array_show = REDCapManagement::getProjectsShowArray();
 $custom_record_label_array = REDCapManagement::getCustomRecordLabelArray();
 $projects_array_hooks = REDCapManagement::getProjectsHooksArray();
@@ -84,7 +85,7 @@ foreach ($projects_array as $index=>$name){
             }
         }
     }
-    #enable modules in projects
+    #Enable External Modules in projects
     if($projects_array_hooks[$index] == '1') {
         #enable current module to activate hooks
         $module->enableModule($project_id_new, "harmonist-hub");
@@ -92,10 +93,19 @@ foreach ($projects_array as $index=>$name){
     }
 
     if(array_key_exists($index,$projects_array_module_emailalerts)){
-        #enable modules to certain projects
+        #Email Alerts
         $module->enableModule($project_id_new,"vanderbilt_emailTrigger");
         $othermodule = ExternalModules::getModuleInstance("vanderbilt_emailTrigger");
         foreach ($projects_array_module_emailalerts[$index] as $setting_name => $setting_value){
+            $othermodule->setProjectSetting($setting_name, $setting_value, $project_id_new);
+        }
+    }
+
+    if(array_key_exists($index,$projects_array_module_getpmid)){
+        #Get PMID Details
+        $module->enableModule($project_id_new,"get-pmid-details");
+        $othermodule = ExternalModules::getModuleInstance("get-pmid-details");
+        foreach ($projects_array_module_getpmid[$index] as $setting_name => $setting_value){
             $othermodule->setProjectSetting($setting_name, $setting_value, $project_id_new);
         }
     }
@@ -116,7 +126,7 @@ foreach ($projects_array as $index=>$name){
     \Records::addRecordToRecordListCache($project_id, $record,1);
     $record++;
 
-    #we create the surveys
+    #We create the surveys
     if(array_key_exists($index,$projects_array_surveys)){
         $module->query("UPDATE redcap_projects SET surveys_enabled = ? WHERE project_id = ?",["1",$project_id_new]);
         foreach ($projects_array_surveys[$index] as $survey){
