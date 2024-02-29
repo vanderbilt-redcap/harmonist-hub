@@ -558,6 +558,38 @@ $projects_array_sql = array(
             'autocomplete' => '0',
             'label' => ""
         )
+    ),
+    $pidsArray['PROJECTSSTUDIES']=>array(
+        'study_concept' => array (
+            'query' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM [data-table:".$pidsArray['HARMONIST']."] WHERE project_id = ".$pidsArray['HARMONIST']." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".$pidsArray['HARMONIST']." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value ",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'study_wg' => array (
+            'query' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM [data-table:".$pidsArray['GROUP']."] a WHERE a.project_id=".$pidsArray['GROUP']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'topfile1' => array (
+            'query' => "SELECT value FROM (SELECT record,value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['PROJECTSSTUDIES']."] WHERE project_id=".$pidsArray['PROJECTSSTUDIES']." AND field_name = 'studyfile_desc' AND record = [record-name]) as value ORDER BY value, instance",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'topfile2' => array (
+            'query' => "SELECT value FROM (SELECT record,value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['PROJECTSSTUDIES']."] WHERE project_id=".$pidsArray['PROJECTSSTUDIES']." AND field_name = 'studyfile_desc' AND record = [record-name]) as value ORDER BY value, instance",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'topfile3' => array (
+            'query' => "SELECT value FROM (SELECT record,value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['PROJECTSSTUDIES']."] WHERE project_id=".$pidsArray['PROJECTSSTUDIES']." AND field_name = 'studyfile_desc' AND record = [record-name]) as value ORDER BY value, instance",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'topfile4' => array (
+            'query' => "SELECT value FROM (SELECT record,value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['PROJECTSSTUDIES']."] WHERE project_id=".$pidsArray['PROJECTSSTUDIES']." AND field_name = 'studyfile_desc' AND record = [record-name]) as value ORDER BY value, instance",
+            'autocomplete' => '1',
+            'label' => ""
+        )
     )
 );
 
