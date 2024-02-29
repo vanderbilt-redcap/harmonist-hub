@@ -141,18 +141,6 @@ foreach ($projects_array as $index=>$name){
             }
         }
     }
-
-    #We add the analytics
-    if($index == 1){
-        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'record_id', $record);
-        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_id', '');
-        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_constant', $projects_array_surveys_hash[$index]['constant']);
-        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_show_y', 0);
-        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_info_complete', 2);
-
-        \Records::addRecordToRecordListCache($project_id, $record,1);
-        $record++;
-    }
 }
 
 #SET USER PERMISSIONS AS READONLY ON MAIN PROJECT
