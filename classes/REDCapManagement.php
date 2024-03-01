@@ -33,11 +33,10 @@ class REDCapManagement {
             33=>'SURVEYLINK',
             34=>'SURVEYLINKSOP',
             35=>'SURVEYPERSONINFO',
-            36=>'REPORTBUGSURVEY',
-            37=>'SURVEYFILELIBRARY',
-            38=>'SURVEYNEWS',
-            39=>'SURVEYTBLCENTERREVISED',
-            40=>'DATARELEASEREQUEST');
+            36=>'SURVEYFILELIBRARY',
+            37=>'SURVEYNEWS',
+            38=>'SURVEYTBLCENTERREVISED',
+            39=>'DATARELEASEREQUEST');
 
         return $projects_array;
     }
@@ -215,7 +214,6 @@ class REDCapManagement {
             4=>array('constant'=>'SURVEYLINK','instrument' => 'comments_and_votes'),
             6=>array('constant'=>'SURVEYLINKSOP','instrument' => 'sop_comments'),
             8=>array('constant'=>'SURVEYPERSONINFO','instrument' => 'person_information'),
-            17=>array('constant'=>'REPORTBUGSURVEY','instrument' => 'issue_report_survey'),
             22=>array('constant'=>'SURVEYFILELIBRARY','instrument' => 'file_information'),
             24=>array('constant'=>'SURVEYNEWS','instrument' => 'news_item'),
             27=>array('constant'=>'SURVEYTBLCENTERREVISED','instrument' => 'tblcenter')
