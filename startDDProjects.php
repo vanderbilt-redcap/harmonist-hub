@@ -19,6 +19,7 @@ $projects_titles_array = REDCapManagement::getProjectsTitlesArray();
 $projects_array_repeatable = REDCapManagement::getProjectsRepeatableArray();
 $projects_array_surveys = REDCapManagement::getProjectsSurveysArray();
 $projects_array_module_emailalerts = REDCapManagement::getProjectsModuleEmailAlertsArray($module, $hub_projectname);
+$projects_array_module_getpmid = REDCapManagement::getProjectsModuleGetPMIDArray();
 $projects_array_show = REDCapManagement::getProjectsShowArray();
 $custom_record_label_array = REDCapManagement::getCustomRecordLabelArray();
 $projects_array_hooks = REDCapManagement::getProjectsHooksArray();
@@ -84,7 +85,7 @@ foreach ($projects_array as $index=>$name){
             }
         }
     }
-    #enable modules in projects
+    #Enable External Modules in projects
     if($projects_array_hooks[$index] == '1') {
         #enable current module to activate hooks
         $module->enableModule($project_id_new, "harmonist-hub");
@@ -92,10 +93,19 @@ foreach ($projects_array as $index=>$name){
     }
 
     if(array_key_exists($index,$projects_array_module_emailalerts)){
-        #enable modules to certain projects
+        #Email Alerts
         $module->enableModule($project_id_new,"vanderbilt_emailTrigger");
         $othermodule = ExternalModules::getModuleInstance("vanderbilt_emailTrigger");
         foreach ($projects_array_module_emailalerts[$index] as $setting_name => $setting_value){
+            $othermodule->setProjectSetting($setting_name, $setting_value, $project_id_new);
+        }
+    }
+
+    if(array_key_exists($index,$projects_array_module_getpmid)){
+        #Get PMID Details
+        $module->enableModule($project_id_new,"get-pmid-details");
+        $othermodule = ExternalModules::getModuleInstance("get-pmid-details");
+        foreach ($projects_array_module_getpmid[$index] as $setting_name => $setting_value){
             $othermodule->setProjectSetting($setting_name, $setting_value, $project_id_new);
         }
     }
@@ -116,7 +126,7 @@ foreach ($projects_array as $index=>$name){
     \Records::addRecordToRecordListCache($project_id, $record,1);
     $record++;
 
-    #we create the surveys
+    #We create the surveys
     if(array_key_exists($index,$projects_array_surveys)){
         $module->query("UPDATE redcap_projects SET surveys_enabled = ? WHERE project_id = ?",["1",$project_id_new]);
         foreach ($projects_array_surveys[$index] as $survey){
@@ -546,6 +556,38 @@ $projects_array_sql = array(
         'height_units' =>  array (
             'query' => "SELECT CONCAT(a.record, ':', b.instance), CONCAT(a.value, ':', b.value) FROM (SELECT record,value FROM [data-table:".$pidsArray['DATAMODEL']."] WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['DATAMODEL']."] WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance",
             'autocomplete' => '0',
+            'label' => ""
+        )
+    ),
+    $pidsArray['PROJECTSSTUDIES']=>array(
+        'study_concept' => array (
+            'query' => "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM [data-table:".$pidsArray['HARMONIST']."] WHERE project_id = ".$pidsArray['HARMONIST']." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = ".$pidsArray['HARMONIST']." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value ",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'study_wg' => array (
+            'query' => "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM [data-table:".$pidsArray['GROUP']."] a WHERE a.project_id=".$pidsArray['GROUP']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'topfile1' => array (
+            'query' => "SELECT value FROM (SELECT record,value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['PROJECTSSTUDIES']."] WHERE project_id=".$pidsArray['PROJECTSSTUDIES']." AND field_name = 'studyfile_desc' AND record = [record-name]) as value ORDER BY value, instance",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'topfile2' => array (
+            'query' => "SELECT value FROM (SELECT record,value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['PROJECTSSTUDIES']."] WHERE project_id=".$pidsArray['PROJECTSSTUDIES']." AND field_name = 'studyfile_desc' AND record = [record-name]) as value ORDER BY value, instance",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'topfile3' => array (
+            'query' => "SELECT value FROM (SELECT record,value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['PROJECTSSTUDIES']."] WHERE project_id=".$pidsArray['PROJECTSSTUDIES']." AND field_name = 'studyfile_desc' AND record = [record-name]) as value ORDER BY value, instance",
+            'autocomplete' => '1',
+            'label' => ""
+        ),
+        'topfile4' => array (
+            'query' => "SELECT value FROM (SELECT record,value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['PROJECTSSTUDIES']."] WHERE project_id=".$pidsArray['PROJECTSSTUDIES']." AND field_name = 'studyfile_desc' AND record = [record-name]) as value ORDER BY value, instance",
+            'autocomplete' => '1',
             'label' => ""
         )
     )

@@ -7,7 +7,7 @@ class REDCapManagement {
     public static function getProjectsContantsArray(){
         $projects_array = array(28=>'SETTINGS', 0=>'DATAMODEL',1=>'CODELIST',29=>'DATAMODELMETADATA',2=>'HARMONIST',3=>'RMANAGER',4=>'COMMENTSVOTES',5=>'SOP',6=>'SOPCOMMENTS',
             7=>'REGIONS',8=>'PEOPLE',9=>'GROUP', 10=>'FAQ',11=>'HOME',12=>'DATAUPLOAD',13=>'DATADOWNLOAD',
-            14=>'JSONCOPY',15=>'METRICS',16=>'DATAAVAILABILITY',17=>'ISSUEREPORTING',18=>'DATATOOLMETRICS',19=>'DATATOOLUPLOADSECURITY',
+            14=>'JSONCOPY',15=>'METRICS',16=>'DATAAVAILABILITY',17=>'PROJECTSSTUDIES',18=>'DATATOOLMETRICS',19=>'DATATOOLUPLOADSECURITY',
             20=>'FAQDATASUBMISSION',21=>'CHANGELOG',22=>'FILELIBRARY',23=>'FILELIBRARYDOWN',24=>'NEWITEMS',25=>'ABOUT',26=>'EXTRAOUTPUTS',
             27=>'TBLCENTERREVISED');
 
@@ -18,7 +18,7 @@ class REDCapManagement {
         $projects_array_title= array(0=>'Data Model (0A)',1=>'Code Lists (0B)',2=>'Concept Sheets (1)',3=>'Request Manager (2)',
             4=>'Comments and Votes (2B)',5=>'Data Requests (3)',6=>'Data Request Comments (3B)', 7=>'Research Groups (4)',8=>'People (5)',
             9=>'Working Groups (6)', 10=>'Hub FAQ (7)',11=>'Homepage Content (8)',12=>'Data Upload Log (9)',13=>'Data Download Log (10)',
-            14=>'Data Model JSON (11)',15=>'Metrics (12)',16=>'Data Availability (13)',17=>'Issue Reporting (14)',
+            14=>'Data Model JSON (11)',15=>'Metrics (12)',16=>'Data Availability (13)',17=>'Projects and Studies (14)',
             18=>'Toolkit Usage Metrics (15)',19=>'External Tool Security (16)',20=>'Toolkit FAQ (17)', 21=>'Changelog (18)',
             22=>'File Library (19)',23=>'File Library Log (20)',24=>'News Items (21)',25=>'About (22)',26=>'Extra Outputs (23)',
             27=>'Consortium Site List (24)',28=>'Settings (99)',29=>'Toolkit Metadata (0C)');
@@ -33,7 +33,6 @@ class REDCapManagement {
             33=>'SURVEYLINK',
             34=>'SURVEYLINKSOP',
             35=>'SURVEYPERSONINFO',
-            36=>'REPORTBUGSURVEY',
             37=>'SURVEYFILELIBRARY',
             38=>'SURVEYNEWS',
             39=>'SURVEYTBLCENTERREVISED',
@@ -108,7 +107,11 @@ class REDCapManagement {
             14=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),
             15=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),
             16=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),
-            17=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),
+            17=>array(
+                0=>array('status'=>1,'instrument'=>'participating_sites','params'=>'[site_name]([site_location])'),
+                1=>array('status'=>1,'instrument'=>'study_documents','params'=>'[studyfile_desc],[studyfile_date'),
+                2=>array('status'=>1,'instrument'=>'restricted_files_datasets','params'=>'[datafile_name],[datafile_date]')
+            ),
             18=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),
             19=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),
             20=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),
@@ -161,9 +164,6 @@ class REDCapManagement {
                 0=>'deadlines',
                 1=>'announcements'
             ),
-            17=>array(
-                0=>'issue_report_survey'
-            ),
             22>array(
                 0=>'file_information'
             ),
@@ -215,7 +215,6 @@ class REDCapManagement {
             4=>array('constant'=>'SURVEYLINK','instrument' => 'comments_and_votes'),
             6=>array('constant'=>'SURVEYLINKSOP','instrument' => 'sop_comments'),
             8=>array('constant'=>'SURVEYPERSONINFO','instrument' => 'person_information'),
-            17=>array('constant'=>'REPORTBUGSURVEY','instrument' => 'issue_report_survey'),
             22=>array('constant'=>'SURVEYFILELIBRARY','instrument' => 'file_information'),
             24=>array('constant'=>'SURVEYNEWS','instrument' => 'news_item'),
             27=>array('constant'=>'SURVEYTBLCENTERREVISED','instrument' => 'tblcenter')
@@ -499,6 +498,14 @@ class REDCapManagement {
         }else {
             define("ENVIRONMENT", "DEV");
         }
+    }
+
+    public static function getProjectsModuleGetPMIDArray(){
+        $projects_array_module_getpmid = array(
+            2=> array("instrument-name" => "outputs"),
+            26=> array("instrument-name" => "output_record")
+        );
+        return $projects_array_module_getpmid;
     }
 
     public static function getProjectsModuleEmailAlertsArray($module, $hub_projectname){
@@ -1124,136 +1131,7 @@ class REDCapManagement {
                     14 => "To PMs: notification of new concept",
                     15 => "To Author: non-concept approved by EC",
                 )
-            ),
-            17=> array(
-                "datapipeEmail_var" => "[email],Contact Email",
-                "emailFromForm_var" => "",
-                "emailSender_var" => "Harmonist Issue Report",
-                "datapipe_var" => "[issue_type],Issue Type\n[issue_text],Issue Text\n[name],Name\n[email],Email\n[record_id],Record ID",
-                "surveyLink_var" => "[__SURVEYLINK_issue_report_survey],Issue Report Survey Link",
-                "formLink_var" => "",
-                "emailFailed_var" => "harmonist@vumc.org",
-                "form-name" => array
-                (
-                    0 => "issue_report_survey",
-                    1 => "issue_report_survey"
-                ),
-                "form-name-event" => array
-                (
-                    0 => "",
-                    1 => ""
-                ),
-                "email-from" => array
-                (
-                    0 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                    1 => "noreply@fakemail.com, ".$hub_projectname." Hub"
-                ),
-                "email-to" => array
-                (
-                    0 => "harmonist@vumc.org",
-                    1 => "[email]"
-                ),
-                "email-cc" => array
-                (
-                    0 => "",
-                    1 => ""
-                ),
-                "email-bcc" => array
-                (
-                    0 => "",
-                    1 => ""
-                ),
-                "email-subject" => array
-                (
-                    0 => "Issue Reported, Record ID #[record_id]",
-                    1 => $hub_projectname." Hub Issue Report Received, #[record_id]"
-                ),
-                "email-text" => array
-                (
-                    0 => '<h2>Issue Report</h2>
-<p><strong>Report submitted by:</strong>&nbsp;[name], [email]</p>
-<p><strong>Issue:</strong>&nbsp;[issue_type]</p>
-<p><strong>Message:</strong>&nbsp;[issue_text]</p>
-<p>&nbsp;</p>
-<p><strong>Link to review report #[record_id]:</strong>&nbsp;[__SURVEYLINK_issue_report_survey]</p>
-<p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the '.$hub_projectname.' Hub system.. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:brian.aloisi@vumc.org">brian.aloisi@vumc.org</a>.&nbsp;</span></p>',
-                    1 => '<h2>Issue Report Confirmation</h2>
-<p>Thank you for submitting an issue report to the eMERGE Hub team. An admin will reach out to you shortly to resolve the issue. You may also reply to this e-mail to provide any additional information.</p>
-<p><strong>Issue:</strong>&nbsp;[issue_type]</p>
-<p><strong>Message:</strong>&nbsp;[issue_text]</p>
-<p>&nbsp;</p>
-<p><strong>Link to review report #[record_id]:</strong>&nbsp;[__SURVEYLINK_issue_report_survey]</p>
-<p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the '.$hub_projectname.' Hub system. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:brian.aloisi@vumc.org">brian.aloisi@vumc.org</a>.&nbsp;</span></p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>',
-                ),
-                "email-attachment-variable" => array
-                (
-                    0 => "[issue_file]",
-                    1 => "[issue_file]"
-                ),
-                "email-repetitive" => array
-                (
-                    0 => 0,
-                    1 => 0
-                ),
-                "email-deleted" => array
-                (
-                    0 => 0,
-                    1 => 0
-                ),
-                "email-deactivate" => array
-                (
-                    0 => 1,
-                    1 => 1
-                ),
-                "email-condition" => array
-                (
-                    0 => "",
-                    1 => ""
-                ),
-                "email-incomplete" => array
-                (
-                    0 => 0,
-                    1 => 0
-                ),
-                "cron-send-email-on" => array
-                (
-                    0 => "now",
-                    1 => "now"
-                ),
-                "cron-send-email-on-field" => array
-                (
-                    0 => "",
-                    1 => ""
-                ),
-                "cron-repeat-for" => array
-                (
-                    0 => 0,
-                    1 => 0
-                ),
-                "cron-queue-expiration-date" => array
-                (
-                    0 => "never",
-                    1 => "never"
-                ),
-                "cron-queue-expiration-date-field" => array
-                (
-                    0 => "",
-                    1 => ""
-                ),
-                "alert-id" => array
-                (
-                    0 => 0,
-                    1 => 1
-                ),
-                "alert-name" => array(
-                    0 => "Email to Harmonist",
-                    1 => "Email to user"
-                )
-            ),
+            )
         );
         return $projects_array_module_emailalerts;
     }
