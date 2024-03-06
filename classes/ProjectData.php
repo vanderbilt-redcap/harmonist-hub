@@ -131,14 +131,22 @@ class ProjectData
         return $data;
     }
 
-    public static function getCheckboxValuesAsArray($module, $project_id, $field_name, $data){
+    public static function getCheckboxValuesAsArray($module, $project_id, $field_name, $data, $option=""){
         $labels = $module->getChoiceLabels($field_name, $project_id);
         $values = array();
         foreach ($labels as $index => $value){
             if($data[$field_name.'___'.$index] == 1){
-                array_push($values,'1');
+                if($option = 'chart'){
+                    array_push($values,'1');
+                }else{
+                    $values[$index] = '1';
+                }
             }else{
-                array_push($values,'0');
+                if($option = 'chart'){
+                    array_push($values,'0');
+                }else{
+                    $values[$index] = '0';
+                }
             }
         }
         return $values;
