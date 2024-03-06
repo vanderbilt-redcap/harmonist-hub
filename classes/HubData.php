@@ -36,7 +36,7 @@ class HubData
     }
     public function getPersonRegion()
     {
-        return $_SESSION['person_region'][$this->session_name];
+        return $_SESSION[$this->session_name]['person_region'];
     }
     public function setPersonRegion($module,$project_id)
     {
