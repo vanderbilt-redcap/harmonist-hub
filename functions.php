@@ -526,6 +526,8 @@ function numberOfAdminRequest($request){
  */
 function getRequestHeader($regions, $hubData, $vote_grid, $option, $type=""){
     $current_user = $hubData->getCurrentUser();
+    $person_region = $hubData->getPersonRegion();
+    $isAdmin = $hubData->getIsAdmin();
     $header_colgroup = '<colgroup>
                     <col>
                     <col>
@@ -546,14 +548,13 @@ function getRequestHeader($regions, $hubData, $vote_grid, $option, $type=""){
     }
     $header_region = '';
     $count_regions = 0;
-
     if($option != '2' && $type != 'home'){
         $small_screen_class = 'hidden-sm hidden-xs';
-        if ($vote_grid == '2') {
-            $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" style="width:150px" data-sortable="false">' . $current_user['region_code'] . '</th>';
+        if ($vote_grid == '2' || ($isAdmin && $vote_grid == "0")) {
+            $header_region .= '<th class="request_grid_icon ' . $small_screen_class . '" style="width:150px" data-sortable="false">' . $person_region['region_code'] . '</th>';
         } else {
             foreach ($regions as $region) {
-                if ($vote_grid == "0") {
+                if ($vote_grid == "0" && !$isAdmin) {
                     $instance = $current_user['person_region'];
                 } else {
                     $instance = $region['record_id'];
@@ -785,7 +786,8 @@ function getPublicVotesHTML($response_status,$vote,$small_screen_class){
  * @param $option
  * @return string
  */
-function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$current_user, $option, $vote_visibility, $vote_grid, $req_type){
+function getRequestHTML($module,$hubData,$pidsArray,$req,$regions,$request_type_label,$current_user, $option, $vote_visibility, $vote_grid, $req_type){
+    $isAdmin = $hubData->getIsAdmin();
     $class = "nowrap";
 
     if($option == 0){
@@ -850,7 +852,7 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
     $current_req_region = '';
     if($option != '2') {
         if($req_type != 'home') {
-            if ($vote_grid == '2') {
+            if ($vote_grid == '2' || ($vote_grid == '0' && $isAdmin)) {
                 $my_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $current_user['person_region']),array('record_id'))[0];
                 $current_req_region = \Vanderbilt\HarmonistHubExternalModule\getRequestVoteIcon($pidsArray['COMMENTSVOTES'], $current_req_region, $vote_grid, $current_user['person_region'], $my_region['record_id'], $vote_visibility, $req, $current_user);
             } else {
@@ -865,7 +867,7 @@ function getRequestHTML($module,$pidsArray,$req,$regions,$request_type_label,$cu
         }
 
         $view_all_votes = "";
-        if ($vote_grid == '2') {
+        if ($vote_grid == '2' || ($vote_grid == '0' && $isAdmin)) {
             $url = $module->getUrl("hub/hub_requests_view_all_votes_AJAX.php")."&NOAUTH";
             $view_all_votes = '<div><a href="#" onclick="viewAllVotes(' . $req['request_id'] . ',\''.$url.'\');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> All votes</a></div>';
         }
@@ -1027,14 +1029,14 @@ function getRequestVoteIcon($pidCommentsVotes,$current_req_region,$vote_grid,$pe
  * @param $vote_grid
  * @return string
  */
-function getHomeRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $request_duration, $type){
+function getHomeRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $request_duration, $type){
     //Only open requests
     if (($req['contactperson_id'] == $current_user['record_id'] && !empty($req['due_d'])) || $request_duration == "none"){
         $extra_days = ' + ' . $request_duration . " days";
         $due_date_time = date('Y-m-d', strtotime($req['due_d'] . $extra_days));
         $today = date('Y-m-d');
         if ((strtotime($due_date_time) > strtotime($today))|| $request_duration == "none") {
-            return \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $type);
+            return \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, $option, $vote_visibility, $vote_grid, $type);
         }
     }
 }

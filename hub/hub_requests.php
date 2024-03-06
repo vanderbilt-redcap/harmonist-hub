@@ -24,13 +24,13 @@ foreach ($requests as $req){
         if (!\Vanderbilt\HarmonistHubExternalModule\hideRequestForNonVoters($settings, $req, $person_region)) {
             if (\Vanderbilt\HarmonistHubExternalModule\showClosedRequest($settings, $req, $current_user['person_region'])) {
                 //COMPLETED REQUESTS
-                $completed_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $completed_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
             } else if ($current_user['pendingpanel_y___1'] == '1' && \Vanderbilt\HarmonistHubExternalModule\showPendingRequest($pidsArray['COMMENTSVOTES'], $req['request_id'], $req, $current_user['person_region']) && $current_user['pendingpanel_y'][0] == '1' && $req['region_response_status'][$current_user['person_region']] != '2') {
                 //PENDING REQUESTS
-                $pending_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $pending_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
             } else if (\Vanderbilt\HarmonistHubExternalModule\showOpenRequest($req, $current_user['person_region']) && $req['region_response_status'][$current_user['person_region']] != '2') {
                 //OPEN REQUESTS
-                $current_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $current_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
             }
         }
     }
