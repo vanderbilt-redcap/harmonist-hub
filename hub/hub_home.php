@@ -354,7 +354,7 @@ if(!empty($homepage)) {
             }
         }
         ?>
-        <?php if($settings['deactivate_datahub'][1] != "1"){ ?>
+        <?php if($settings['deactivate_datahub___1'] != "1"){ ?>
         <div class="panel panel-default">
             <div class="panel-heading" style="background-color: #5cb85c;color:#fff">
                 <h3 class="panel-title">
@@ -372,7 +372,7 @@ if(!empty($homepage)) {
             <div class="panel-heading">
                 <h3 class="panel-title panelHeight">
                     <span class="col-sm-6" style="padding:0">Hub Metrics</span>
-                    <?php if($settings['deactivate_metrics'][1] != "1" || $isAdmin){ ?>
+                    <?php if($settings['deactivate_metrics___1'] != "1" || $isAdmin){ ?>
                         <span class="col-sm-6" style="text-align:right;padding:0"><a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mts"?>">View more</a></span>
                     <?php } ?>
                 </h3>

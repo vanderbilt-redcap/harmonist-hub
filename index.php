@@ -104,16 +104,16 @@ if($hub_projectname != '' && $hub_profile != ''){
                 <body>
                 <?php
                 $deactivate_datahub = false;
-                if($settings['deactivate_datahub'][1] == "1"){
+                if($settings['deactivate_datahub___1'] == "1"){
                     $deactivate_datahub = true;
                 }
                 $deactivate_tblcenter = false;
-                if($settings['deactivate_tblcenter'][1] == "1"){
+                if($settings['deactivate_tblcenter___1'] == "1"){
                     $deactivate_tblcenter = true;
                 }
 
                 $deactivate_toolkit = false;
-                if($settings['deactivate_toolkit'][1] == "1"){
+                if($settings['deactivate_toolkit___1'] == "1"){
                     $deactivate_toolkit = true;
                 }
                 #TOKEN
@@ -259,16 +259,16 @@ if($hub_projectname != '' && $hub_profile != ''){
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'pdc' && !$deactivate_datahub)
                         {
                             include('sop/sop_data_call_archive.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown'][1] != "1")
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown___1'] != "1")
                         {
                             include('sop/sop_retrieve_data.php');
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'out')
                         {
                             include('hub/hub_publications.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $option === 'mts' && ($settings['deactivate_metrics'][1] != "1" || $isAdmin))
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'mts' && ($settings['deactivate_metrics___1'] != "1" || $isAdmin))
                         {
                             include('hub/hub_metrics_stats.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $option === 'mth' && ($settings['deactivate_datametrics'][1] != "1" || $isAdmin))
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'mth' && ($settings['deactivate_datametrics___1'] != "1" || $isAdmin))
                         {
                             include('sop/sop_metrics_stats.php');
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'faq')

@@ -76,7 +76,7 @@ $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-
         </div>
     </div>
     <?php
-    if($settings['deactivate_datadown'][1] != "1") {
+    if($settings['deactivate_datadown___1'] != "1") {
         ?>
         <div class="col-sm-3">
             <div class="well centerwell data_boxes">
@@ -97,7 +97,7 @@ $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-
         <?php } ?>
 </div>
 <?php
-if($settings['deactivate_datadown'][1] != "1"){
+if($settings['deactivate_datadown___1'] != "1"){
     ?>
 <div class="hidden-xs" style="margin-bottom: 20px;"></div>
 <div class="modal fade" id="modal-data-download-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
@@ -385,7 +385,7 @@ if($settings['deactivate_datadown'][1] != "1"){
                     <p class="mb-1">Browse the <?=$settings['hub_name']?> Data Exchange Standard.</p>
                 </div>
             </a>
-            <?php if($settings['deactivate_tblcenter'][1] != "1"){?>
+            <?php if($settings['deactivate_tblcenter___1'] != "1"){?>
             <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=tbl'?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
@@ -404,7 +404,7 @@ if($settings['deactivate_datadown'][1] != "1"){
             </a>
             <?php } ?>
 
-            <?php if($settings['deactivate_datametrics'][1] != "1" || $isAdmin){?>
+            <?php if($settings['deactivate_datametrics___1'] != "1" || $isAdmin){?>
             <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mth'?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div style="display: inline-block;width: 50%;vertical-align:top;padding-right:5px">
                     <div style="font-weight:bold; padding-bottom:20px">

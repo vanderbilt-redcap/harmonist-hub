@@ -380,7 +380,7 @@ $img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJE
         <div style="<?=$button_style;?>">
             <?php
             $newconcept_btn_css = "text-align:center";
-            if($isAdmin && $settings['deactivate_concept_tracker'][1] != 1){
+            if($isAdmin && $settings['deactivate_concept_tracker___1'] != 1){
                 $newconcept_btn_css = "display: inline-block";
                 ?>
                 <div style="display: inline-block">
