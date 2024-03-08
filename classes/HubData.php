@@ -22,7 +22,7 @@ class HubData
     public function setCurrentUser($module,$project_id,$token)
     {
         $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
-        if(empty($_SESSION[$this->session_name]['current_user']) && !empty($token) || ($_SESSION[$this->session_name]['last_logged_event']['current_user'] != $last_logged_event)){
+        if((empty($_SESSION[$this->session_name]['current_user']) || $_SESSION[$this->session_name]['last_logged_event']['current_user'] != $last_logged_event) && !empty($token)){
             $_SESSION[$this->session_name]['current_user'] = $module->escape(\REDCap::getData($project_id, 'json-array', null,null,null,null,false,false,false,"[access_token] = '".$token."'")[0]);
             $_SESSION[$this->session_name]['last_logged_event']['current_user'] = $last_logged_event;
             ## Check if current user is an Admin
