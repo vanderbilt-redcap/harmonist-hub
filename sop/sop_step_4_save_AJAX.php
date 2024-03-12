@@ -171,23 +171,24 @@ $filename = $concept_id."_DataRequest_".date("Y-m-d_hi",time());
 //SAVE PDF ON DB
 $reportHash = $filename;
 $storedName = md5($reportHash);
-$filePath = EDOC_PATH.$storedName;
+$filePath = APP_PATH_TEMP.$storedName;
 
 //DOMPDF
 $dompdf = new \Dompdf\Dompdf();
 $dompdf->loadHtml($html_pdf);
 $dompdf->setPaper('A4', 'portrait');
 $options = $dompdf->getOptions();
-$options->setChroot(EDOC_PATH);
+$options->setChroot(APP_PATH_TEMP);
 $dompdf->setOptions($options);
 ob_start();
 $dompdf->render();
 //#Download option
 $output = $dompdf->output();
-$filesize = file_put_contents(EDOC_PATH.$storedName, $output);
+$filesize = file_put_contents($filePath, $output);
 
 //Save document on DB
 $docId = \REDCap::storeFile($filePath, $pidsArray['SOP'], $filename);
+unlink($filePath);
 
 //Add document DB ID to project
 $jsonConcepts = json_encode(array(array('record_id' => $record_id, 'sop_finalpdf' => $docId)));
