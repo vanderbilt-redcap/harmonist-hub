@@ -382,7 +382,15 @@ if(!empty($homepage)) {
                     <div style="font-weight:bold; padding-bottom:20px">
                         Requests
                     </div>
-                    All <?=$settings['hub_name']?> Hub requests by category.
+                    <?php
+                    $requests_values="";
+                    if(empty($requests_values)){
+                        ?> No data available.<?php
+                    }else{
+                        ?> All <?=$settings['hub_name']?> Hub requests by category.<?php
+                    }
+                    ?>
+
                 </div>
 
                 <div style="display: inline-block">
@@ -452,6 +460,13 @@ if(!empty($homepage)) {
         var requests_values = <?=json_encode($requests_values)?>;
         var requests_labels = <?=json_encode($requests_labels)?>;
         var requests_colors = <?=json_encode($requests_colors)?>;
+
+        //Show an empty donut
+        if (requests_values.length === 0 || requests_values == "") {
+            requests_values = [-1];
+            requests_labels = ["No data"];
+            requests_colors = ["#f1f1f1"];
+        }
 
         var  ctx_iedea = $("#IedeaChart");
         var config_iedea = {
