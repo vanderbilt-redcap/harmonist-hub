@@ -74,7 +74,7 @@ class AllCrons
         $messageArray = array();
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
         if(strtotime($expired_date) >= strtotime(date('Y-m-d'))) {
-            if(!array_key_exists('emails_sent_y',$upload) || $upload['emails_sent_y'][1] == '0') {
+            if(!array_key_exists('emails_sent_y',$upload) || $upload['emails_sent_y___1'] == '0') {
                 if($email) {
                     //Save data on project
                     $Proj = new \Project($pidsArray['DATAUPLOAD']);
@@ -129,7 +129,7 @@ class AllCrons
                     $subject = "Successful " . $settings['hub_name'] . " data upload for " . $concept_id;
                     $message = "<div>Dear " . $firstname . ",</div><br/><br/>" .
                         "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=sop&record=" . $upload['data_assoc_request'] . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
-                        "<div>You may log into the " . $settings['hub_name'] . " Hub and view the <a href='" . $module->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=slgd" . "' target='_blank'>Data Activity Log</a> report, track downloads, and delete your dataset. Your dataset will be available for " .
+                        "<div>You may log into the " . $settings['hub_name'] . " Hub and view the <a href='" . $module->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=lgd" . "' target='_blank'>Data Activity Log</a> report, track downloads, and delete your dataset. Your dataset will be available for " .
                         "download by the approved data downloaders <strong>until " . $expire_date . " 23:59</strong> ET unless you choose to delete it before then. </div><br/>" .
                         "<div>Approved Data Downloaders:</div>" .
                         $downloaders_list . "<br/>" .

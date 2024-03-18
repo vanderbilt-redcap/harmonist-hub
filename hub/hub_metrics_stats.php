@@ -259,11 +259,10 @@ $requestsreq_labels = $module->escape($requestsreq_labels);
 $requestsreq_colors = $module->escape($requestsreq_colors);
 $concept_type = $module->escape($concept_type);
 
-$show_donuts_single = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'hub_stats_consortium_select', $settings);
+$show_donuts_single = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'hub_stats_consortium_select', $settings, "chart");
 $pub_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'pub_data', $settings);
 $abs_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'abs_data', $settings);
 $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'activity_data', $settings);
-
 ?>
 <script>
     $(document).ready(function() {
@@ -313,8 +312,8 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
         var show_manuscripts_single_label2 = <?=json_encode(($settings['pub_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>;
         var show_abstracts = <?=json_encode($settings['hub_stats_section3_y'])?>;
         var show_abstracts_single = <?=json_encode($abs_data)?>;
-        var show_abstracts_single_label1 = <?=json_encode(($settings['abs_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>;
-        var show_abstracts_single_label2 = <?=json_encode(($settings['abs_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>;
+        var show_abstracts_single_label1 = <?=json_encode(($settings['abs_data_label']=="")?$default_values_settings['abs_data_label']:$settings['abs_data_label'])?>;
+        var show_abstracts_single_label2 = <?=json_encode(($settings['abs_data_label2']=="")?$default_values_settings['abs_data_label2']:$settings['abs_data_label2'])?>;
         var show_activity = <?=json_encode($settings['hub_stats_section4_y'])?>;
         var show_activity_single = <?=json_encode($activity_data)?>;
 
@@ -385,8 +384,8 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
             abstracts:{
                 years_label: <?=json_encode($regionalmrdata_manuscripts['years'])?>,
                 single: <?=json_encode($abs_data)?>,
-                label1: <?=json_encode(($settings['abs_data_label1']=="")?$default_values_settings['pub_data_label1']:$settings['pub_data_label1'])?>,
-                label2: <?=json_encode(($settings['abs_data_label2']=="")?$default_values_settings['pub_data_label2']:$settings['pub_data_label2'])?>,
+                label1: <?=json_encode(($settings['abs_data_label']=="")?$default_values_settings['abs_data_label']:$settings['abs_data_label'])?>,
+                label2: <?=json_encode(($settings['abs_data_label2']=="")?$default_values_settings['abs_data_label2']:$settings['abs_data_label2'])?>,
                 regionalmrpubs_mr: <?=json_encode(array_values($regionalmrdata_abstracts['mr']))?>,
                 regionalmrpubs_outputs: <?=json_encode($regionalmrdata_abstracts['outputsAll'])?>,
                 regionalmrpubs_color: <?=json_encode(array_values($regionalmrpubs_color_abstracts))?>

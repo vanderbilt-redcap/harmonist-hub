@@ -118,7 +118,7 @@ if($_REQUEST['type'] != ""){
 
                 $requests_counter = 0;
                 foreach ($requests as $req) {
-                    $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
+                    $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
                     if($user_req_body != ""){
                         $requests_counter++;
                     }

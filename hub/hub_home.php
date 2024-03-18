@@ -243,7 +243,7 @@ if(!empty($homepage)) {
                         $user_req_body = "";
                         $requests_counter = 0;
                         foreach ($requests as $req) {
-                            $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
+                            $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
                             if($user_req_body != ""){
                                 $requests_counter++;
                             }
@@ -354,7 +354,7 @@ if(!empty($homepage)) {
             }
         }
         ?>
-        <?php if($settings['deactivate_datahub'][1] != "1"){ ?>
+        <?php if($settings['deactivate_datahub___1'] != "1"){ ?>
         <div class="panel panel-default">
             <div class="panel-heading" style="background-color: #5cb85c;color:#fff">
                 <h3 class="panel-title">
@@ -372,7 +372,7 @@ if(!empty($homepage)) {
             <div class="panel-heading">
                 <h3 class="panel-title panelHeight">
                     <span class="col-sm-6" style="padding:0">Hub Metrics</span>
-                    <?php if($settings['deactivate_metrics'][1] != "1" || $isAdmin){ ?>
+                    <?php if($settings['deactivate_metrics___1'] != "1" || $isAdmin){ ?>
                         <span class="col-sm-6" style="text-align:right;padding:0"><a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mts"?>">View more</a></span>
                     <?php } ?>
                 </h3>
@@ -382,7 +382,15 @@ if(!empty($homepage)) {
                     <div style="font-weight:bold; padding-bottom:20px">
                         Requests
                     </div>
-                    All <?=$settings['hub_name']?> Hub requests by category.
+                    <?php
+                    $requests_values="";
+                    if(empty($requests_values)){
+                        ?> No data available.<?php
+                    }else{
+                        ?> All <?=$settings['hub_name']?> Hub requests by category.<?php
+                    }
+                    ?>
+
                 </div>
 
                 <div style="display: inline-block">
@@ -452,6 +460,13 @@ if(!empty($homepage)) {
         var requests_values = <?=json_encode($requests_values)?>;
         var requests_labels = <?=json_encode($requests_labels)?>;
         var requests_colors = <?=json_encode($requests_colors)?>;
+
+        //Show an empty donut
+        if (requests_values.length === 0 || requests_values == "") {
+            requests_values = [-1];
+            requests_labels = ["No data"];
+            requests_colors = ["#f1f1f1"];
+        }
 
         var  ctx_iedea = $("#IedeaChart");
         var config_iedea = {

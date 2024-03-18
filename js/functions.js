@@ -1262,3 +1262,18 @@ function getParamUrl(url, newParam){
     }
     return url;
 }
+
+function exploreDataToken(data){
+    $.ajax({
+        type: "POST",
+        url: "sop/sop_explore_data_AJAX.php",
+        data: data,
+        error: function (xhr, status, error) {
+            alert(xhr.responseText);
+        },
+        success: function (result) {
+            var tokendt = JSON.parse(result);
+            window.location = 'index.php?option=dab&tokendab='+tokendt;
+        }
+    });
+}

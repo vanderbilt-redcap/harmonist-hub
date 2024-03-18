@@ -72,7 +72,7 @@ if($isAdmin) {
                 </li>
             </ul>
 
-            <?php if($settings['deactivate_datahub'][1] != "1"){ ?>
+            <?php if($settings['deactivate_datahub___1'] != "1"){ ?>
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
                     <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>"role="button" option="dat">Data Hub</a>
