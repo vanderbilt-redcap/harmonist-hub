@@ -112,7 +112,6 @@ class AllCrons
 
                 #Uploader email
                 $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
-                $to = $people['email'];
                 $firstname = $people['firstname'];
                 $name_uploader = $people['firstname'] . " " . $people['lastname'];
                 $region_code_uploader = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
@@ -125,7 +124,7 @@ class AllCrons
                 $date_time = $date->format("Y-m-d H:i");
                 $expire_date = date('Y-m-d', strtotime($date_time . $extra_days));
 
-                if ($email) {
+                if ($email && $people['email'] != "") {
                     $subject = "Successful " . $settings['hub_name'] . " data upload for " . $concept_id;
                     $message = "<div>Dear " . $firstname . ",</div><br/><br/>" .
                         "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=sop&record=" . $upload['data_assoc_request'] . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
@@ -135,7 +134,7 @@ class AllCrons
                         $downloaders_list . "<br/>" .
                         "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
-                    \Vanderbilt\HarmonistHubExternalModule\sendEmail($to, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset submission notification", $pidsArray['DATAUPLOAD']);
+                    \Vanderbilt\HarmonistHubExternalModule\sendEmail($people['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset submission notification", $pidsArray['DATAUPLOAD']);
 
                 }
                 #Data Downloaders email
@@ -149,7 +148,7 @@ class AllCrons
                     $subject = "New " . $settings['hub_name'] . " " . $concept_id . " dataset available for download";
 
                     foreach ($downloadersOrdered as $down) {
-                        if ($email) {
+                        if ($email && $down['email'] != "") {
                             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
                                 "<div>A new dataset has been submitted to secure cloud storage by <strong>" . $name_uploader . "</strong> from <strong>" . $region_code_uploader . "</strong> in response to \"" . $sop['sop_name'] . "\" for concept <b>" . $concept_id . "</b>. The upload was received at " . $date_time . " Eastern US Time (ET). </div><br/>" .
                                 "<div>The data will be available to download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .
