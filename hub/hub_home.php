@@ -70,6 +70,7 @@ if(array_key_exists('message', $_REQUEST)){
         echo '<div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">Deadlines and Events has been successfully updated.</div>';
     }
 }
+require_once(dirname(dirname(__FILE__))."/classes/AllCrons.php");
 ?>
 
 <div class="container">
@@ -383,7 +384,6 @@ if(!empty($homepage)) {
                         Requests
                     </div>
                     <?php
-                    $requests_values="";
                     if(empty($requests_values)){
                         ?> No data available.<?php
                     }else{
