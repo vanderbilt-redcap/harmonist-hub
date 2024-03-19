@@ -12,6 +12,7 @@ include_once(__DIR__ . "/classes/ArrayFunctions.php");
 include_once(__DIR__ . "/classes/ProjectData.php");
 include_once(__DIR__ . "/classes/HubData.php");
 include_once(__DIR__ . "/classes/ExcelFunctions.php");
+include_once(__DIR__ . "/classes/CopyJSON.php");
 
 REDCapManagement::getEnvironment();
 

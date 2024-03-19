@@ -8,7 +8,7 @@ class ArrayFunctions
     {
         foreach ($array as $key => &$value) {
             if (is_array($value)) {
-                $value = array_filter_empty($value);
+                $value = self::array_filter_empty($value);
             }
             if (is_array($value) && empty($value)) {
                 unset($array[$key]);
@@ -22,7 +22,7 @@ class ArrayFunctions
         foreach($arr1 as $key => $val) {
             if(isset($arr2[$key])){
                 if(is_array($val)){
-                    $arrDiff[$key] = multi_array_diff($val, $arr2[$key]);
+                    $arrDiff[$key] = self::multi_array_diff($val, $arr2[$key]);
                 }else{
                     if(in_array($val, $arr2)!= 1){
                         $arrDiff[$key] = $val;

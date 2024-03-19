@@ -383,7 +383,6 @@ if(!empty($homepage)) {
                         Requests
                     </div>
                     <?php
-                    $requests_values="";
                     if(empty($requests_values)){
                         ?> No data available.<?php
                     }else{
