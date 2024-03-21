@@ -6,7 +6,7 @@ class ProjectData
 {
     public $default_value;
 
-    public static function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null){
+    public static function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null,$option=null){
         $array = array();
         $found = array();
         $index=0;
@@ -49,6 +49,9 @@ class ProjectData
                             #check if non repeatable value is empty and add repeatable value
                             #empty value or checkboxes
                             if($array[$index][$field] == "" || (is_array($array[$index][$field]) && empty($array[$index][$field]))){
+                                $array[$index][$field] = $datarepeat[$field];
+                            }else if(is_array($datai) && $option == "json"){
+                                #only for the JSON format
                                 $array[$index][$field] = $datarepeat[$field];
                             }
                         }

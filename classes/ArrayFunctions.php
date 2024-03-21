@@ -4,35 +4,22 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 class ArrayFunctions
 {
-    public static function array_filter_empty($array)
-    {
-        foreach ($array as $key => &$value) {
-            if (is_array($value)) {
-                $value = self::array_filter_empty($value);
-            }
-            if (is_array($value) && empty($value)) {
-                unset($array[$key]);
-            }
-        }
-        return $array;
-    }
-
-    public static function multi_array_diff($arr1, $arr2){
-        $arrDiff = array();
-        foreach($arr1 as $key => $val) {
-            if(isset($arr2[$key])){
-                if(is_array($val)){
-                    $arrDiff[$key] = self::multi_array_diff($val, $arr2[$key]);
-                }else{
-                    if(in_array($val, $arr2)!= 1){
-                        $arrDiff[$key] = $val;
-                    }
+    public static function array_diff_assoc_recursive($array1, $array2) {
+        $difference=array();
+        foreach($array1 as $key => $value) {
+            if( is_array($value) ) {
+                if( !isset($array2[$key]) || !is_array($array2[$key]) ) {
+                    $difference[$key] = $value;
+                } else {
+                    $new_diff = self::array_diff_assoc_recursive($value, $array2[$key]);
+                    if( !empty($new_diff) )
+                        $difference[$key] = $new_diff;
                 }
-            }else if(isset($val)){
-                $arrDiff[$key] = $val;
+            } else if( !array_key_exists($key,$array2) || $array2[$key] !== $value ) {
+                $difference[$key] = $value;
             }
         }
-        return $arrDiff;
+        return $difference;
     }
 
     public static function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
