@@ -355,7 +355,7 @@ class AllCrons
         return $message;
     }
 
-    public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $sop, $peopleDown, $expired_date, $settings, $email = false)
+    public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $sop, $expired_date, $settings, $email = false)
     {
         if((!array_key_exists('deleted_y',$upload) || $upload['deleted_y'] != "1") && strtotime($expired_date) <= strtotime(date('Y-m-d'))){
             try {
@@ -411,36 +411,32 @@ class AllCrons
 
                     $downloadersOrdered = array();
                     foreach ($downloaders as $down) {
-                        if ($peopleDown == null) {
-                            $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
-                            $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
-                        } else {
-                            $region_codeDown = "TT";
-                            $peopleDownData = $peopleDown[$down];
-                        }
-                        $downloadersOrdered = self::getDownloadersOrdered($down, $downloadersOrdered, $peopleDownData, $region_codeDown);
+                        $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
+                        $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
+
+                        $downloadersOrdered[$down]['name'] = $peopleDown['firstname'] . " " . $peopleDown['lastname'];
+                        $downloadersOrdered[$down]['email'] = $peopleDown['email'];
+                        $downloadersOrdered[$down]['region_code'] = "(" . $region_codeDown . ")";
+                        $downloadersOrdered[$down]['id'] = $peopleDown['record_id'];
+                        $downloadersOrdered[$down]['firstname'] = $peopleDown['firstname'];
                     }
                     ArrayFunctions::array_sort_by_column($downloadersOrdered, 'name');
 
                     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
                     $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
 
-                    if($email) {
-                        $subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
-                        foreach ($downloadersOrdered as $down) {
-                            $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
-                                "<div>The dataset previously submitted in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) by&nbsp;<b>" . $peopleUp['firstname'] . " " . $peopleUp['lastname'] . " from " . $region_codeUp . "</b> has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
-                                "If you still need to access this dataset, please e-mail <a href='mailto:" . $peopleUp['email'] . "'>" . $peopleUp['email'] . "</a> to request a new dataset.</div><br/>" .
-                                "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
+                    $subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
+                    foreach ($downloadersOrdered as $down) {
+                        $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
+                            "<div>The dataset previously submitted in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) by&nbsp;<b>" . $peopleUp['firstname'] . " " . $peopleUp['lastname'] . " from " . $region_codeUp . "</b> has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
+                            "If you still need to access this dataset, please e-mail <a href='mailto:" . $peopleUp['email'] . "'>" . $peopleUp['email'] . "</a> to request a new dataset.</div><br/>" .
+                            "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
-                            \Vanderbilt\HarmonistHubExternalModule\sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
-                        }
+                        \Vanderbilt\HarmonistHubExternalModule\sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
                     }
                     $message['code_test'] = "1";
                 }
-                if($email) {
-                    \REDCap::logEvent("Dataset deleted automatically\nRecord " . $upload['record_id'], "Concept ID: " . $concept_id . "\n Draft ID: " . $sop['record_id'], null, null, null, $pidsArray['DATAUPLOAD']);
-                }
+                \REDCap::logEvent("Dataset deleted automatically\nRecord " . $upload['record_id'], "Concept ID: " . $concept_id . "\n Draft ID: " . $sop['record_id'], null, null, null, $pidsArray['DATAUPLOAD']);
             } catch (S3Exception $e) {
                 echo $e->getMessage() . "\n";
             }
