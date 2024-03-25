@@ -1,5 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+use Aws\S3\Exception\S3Exception;
 
 class AllCrons
 {
@@ -354,93 +355,93 @@ class AllCrons
         $message['code_test'] = 1;
         return $message;
     }
-
-    public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $sop, $peopleDown, $expired_date, $settings, $email = false)
+	
+	/**
+	 * @param $module Object Module object to access module functions
+	 * @param $pidsArray array Full list of every PID mapped in project
+	 * @param $s3 Object Amazon S3 interaction object
+	 * @param $upload array Array of S3 parameters
+	 * @param $sop array SOP Record Data with AWS data to be deleted
+	 * @param $expired_date string Date the SOP dataset expires
+	 * @param $settings array Hub settings for this Harmonist instance
+	 * @return array|string
+	 */
+    public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $sop, $expired_date, $settings)
     {
         if((!array_key_exists('deleted_y',$upload) || $upload['deleted_y'] != "1") && strtotime($expired_date) <= strtotime(date('Y-m-d'))){
             try {
-                if($email) {
-                    #Delete the object
-                    $result = $s3->deleteObject(array(
-                        'Bucket' => $upload['data_upload_bucket'],
-                        'Key' => $upload['data_upload_folder'] . $upload['data_upload_zip']
-                    ));
+				#Delete the object
+				$result = $s3->deleteObject(array(
+					'Bucket' => $upload['data_upload_bucket'],
+					'Key' => $upload['data_upload_folder'] . $upload['data_upload_zip']
+				));
 
-                    //Save data on project
-                    $Proj = new \Project($pidsArray['DATAUPLOAD']);
-                    $event_id = $Proj->firstEventId;
-                    $recordSaveDU = array();
-                    $recordSaveDU[$upload['record_id']][$event_id]['record_id'] = $upload['record_id'];
-                    $recordSaveDU[$upload['record_id']][$event_id]['deletion_type'] = "1";
-                    $date = new \DateTime();
-                    $recordSaveDU[$upload['record_id']][$event_id]['deletion_ts'] = $date->format('Y-m-d H:i:s');
-                    $recordSaveDU[$upload['record_id']][$event_id]['deletion_rs'] = "Expired. Deleted automatically";
-                    $recordSaveDU[$upload['record_id']][$event_id]['deletion_information_complete'] = "2";
-                    $recordSaveDU[$upload['record_id']][$event_id]['deleted_y'] = "1";
-                    $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $recordSaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-                    \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $upload['record_id'], 1);
+				//Save data on project
+				$Proj = new \Project($pidsArray['DATAUPLOAD']);
+				$event_id = $Proj->firstEventId;
+				$recordSaveDU = array();
+				$recordSaveDU[$upload['record_id']][$event_id]['record_id'] = $upload['record_id'];
+				$recordSaveDU[$upload['record_id']][$event_id]['deletion_type'] = "1";
+				$date = new \DateTime();
+				$recordSaveDU[$upload['record_id']][$event_id]['deletion_ts'] = $date->format('Y-m-d H:i:s');
+				$recordSaveDU[$upload['record_id']][$event_id]['deletion_rs'] = "Expired. Deleted automatically";
+				$recordSaveDU[$upload['record_id']][$event_id]['deletion_information_complete'] = "2";
+				$recordSaveDU[$upload['record_id']][$event_id]['deleted_y'] = "1";
+				$results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $recordSaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+				\Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $upload['record_id'], 1);
 
-                    #EMAIL NOTIFICATION
-                    $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-                    $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
-                    $concept_id = $concepts['concept_id'];
-                    $concept_title = $concepts['concept_title'];
+				#EMAIL NOTIFICATION
+				$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
+				$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+				$concept_id = $concepts['concept_id'];
+				$concept_title = $concepts['concept_title'];
 
-                    $peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
-                    $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array('region_code'))[0]['region_code'];
+				$peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
+				$region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array('region_code'))[0]['region_code'];
 
-                    $date = new \DateTime($upload['responsecomplete_ts']);
-                    $date->modify("+1 hours");
-                    $date_time = $date->format("Y-m-d H:i");
+				$date = new \DateTime($upload['responsecomplete_ts']);
+				$date->modify("+1 hours");
+				$date_time = $date->format("Y-m-d H:i");
 
-                    #to uploader user
-                    $url = $module->getUrl("index.php")."&NOAUTH&option=dat=&pid=" . $pidsArray['PROJECTS'];
-                    $subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
-                    $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
-                        "<div>The dataset you submitted to secure cloud storage in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
-                        "This dataset will not be available for future downloads. To replace the deleted dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Submit Data on the <a href='" . $url . "' target='_blank'>Data page</a></strong>.</div><br/>" .
-                        "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
-                    \Vanderbilt\HarmonistHubExternalModule\sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
-                }
+				#to uploader user
+				$url = $module->getUrl("index.php")."&NOAUTH&option=dat=&pid=" . $pidsArray['PROJECTS'];
+				$subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
+				$message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
+					"<div>The dataset you submitted to secure cloud storage in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
+					"This dataset will not be available for future downloads. To replace the deleted dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Submit Data on the <a href='" . $url . "' target='_blank'>Data page</a></strong>.</div><br/>" .
+					"<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
+				\Vanderbilt\HarmonistHubExternalModule\sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
 
-                #to downloaders
-                if ($sop['sop_downloaders'] != "") {
-                    $downloaders = explode(',', $sop['sop_downloaders']);
-                    $number_downloaders = count($downloaders);
-                    $messageArray['numDownloaders'] = $number_downloaders;
+				#to downloaders
+				if ($sop['sop_downloaders'] != "") {
+					$downloaders = explode(',', $sop['sop_downloaders']);
+					$number_downloaders = count($downloaders);
+					$messageArray['numDownloaders'] = $number_downloaders;
 
-                    $downloadersOrdered = array();
-                    foreach ($downloaders as $down) {
-                        if ($peopleDown == null) {
-                            $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
-                            $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
-                        } else {
-                            $region_codeDown = "TT";
-                            $peopleDownData = $peopleDown[$down];
-                        }
-                        $downloadersOrdered = self::getDownloadersOrdered($down, $downloadersOrdered, $peopleDownData, $region_codeDown);
-                    }
-                    ArrayFunctions::array_sort_by_column($downloadersOrdered, 'name');
+					$downloadersOrdered = array();
+					foreach ($downloaders as $down) {
+						$peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
+						$region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
 
-                    $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-                    $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+						$downloadersOrdered = self::getDownloadersOrdered($down,$downloadersOrdered,$peopleDown,$region_codeDown);
+					}
+					ArrayFunctions::array_sort_by_column($downloadersOrdered, 'name');
 
-                    if($email) {
-                        $subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
-                        foreach ($downloadersOrdered as $down) {
-                            $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
-                                "<div>The dataset previously submitted in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) by&nbsp;<b>" . $peopleUp['firstname'] . " " . $peopleUp['lastname'] . " from " . $region_codeUp . "</b> has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
-                                "If you still need to access this dataset, please e-mail <a href='mailto:" . $peopleUp['email'] . "'>" . $peopleUp['email'] . "</a> to request a new dataset.</div><br/>" .
-                                "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
+					$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
+					$concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
 
-                            \Vanderbilt\HarmonistHubExternalModule\sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
-                        }
-                    }
-                    $message['code_test'] = "1";
-                }
-                if($email) {
-                    \REDCap::logEvent("Dataset deleted automatically\nRecord " . $upload['record_id'], "Concept ID: " . $concept_id . "\n Draft ID: " . $sop['record_id'], null, null, null, $pidsArray['DATAUPLOAD']);
-                }
+					$subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
+					foreach ($downloadersOrdered as $down) {
+						$message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
+							"<div>The dataset previously submitted in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) by&nbsp;<b>" . $peopleUp['firstname'] . " " . $peopleUp['lastname'] . " from " . $region_codeUp . "</b> has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
+							"If you still need to access this dataset, please e-mail <a href='mailto:" . $peopleUp['email'] . "'>" . $peopleUp['email'] . "</a> to request a new dataset.</div><br/>" .
+							"<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
+
+						\Vanderbilt\HarmonistHubExternalModule\sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
+					}
+					$message['code_test'] = "1";
+				}
+				\REDCap::logEvent("Dataset deleted automatically\nRecord " . $upload['record_id'], "Concept ID: " . $concept_id . "\n Draft ID: " . $sop['record_id'], null, null, null, $pidsArray['DATAUPLOAD']);
             } catch (S3Exception $e) {
                 echo $e->getMessage() . "\n";
             }
