@@ -47,7 +47,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                         $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $pidsArray['PROJECTS'], $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                     }
 
-                    $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "");
+                    $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "",$index);
                     $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$moduleAux->escape($passthru_link['hash']);
 
                     $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
