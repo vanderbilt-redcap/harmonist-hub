@@ -348,9 +348,7 @@ class AllCrons
             if ($settings['hub_subs_monthly_digest'] != "") {
                 $emails = explode(';', $settings['hub_subs_monthly_digest']);
                 foreach ($emails as $email) {
-                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                        sendEmail($email, 'noreply.harmonist@vumc.org', $settings['accesslink_sender_name'], $subject, $email_req, "Not in database", "Monthly Digest", $pidsArray['RMANAGER']);
-                    }
+                    sendEmail($email, 'noreply.harmonist@vumc.org', $settings['accesslink_sender_name'], $subject, $email_req, "Not in database", "Monthly Digest", $pidsArray['RMANAGER']);
                 }
             }
         }
