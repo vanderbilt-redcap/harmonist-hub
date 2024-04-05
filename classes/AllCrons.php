@@ -135,7 +135,7 @@ class AllCrons
                         $downloaders_list . "<br/>" .
                         "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
-                    \Vanderbilt\HarmonistHubExternalModule\sendEmail($people['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset submission notification", $pidsArray['DATAUPLOAD']);
+                    sendEmail($people['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset submission notification", $pidsArray['DATAUPLOAD']);
 
                 }
                 #Data Downloaders email
@@ -157,7 +157,7 @@ class AllCrons
                                 "A summary report for the dataset is also available on that page. The dataset will be deleted on " . $expire_date . " 23:59 ET</div><br/>" .
                                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
-                            \Vanderbilt\HarmonistHubExternalModule\sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset submission notification", $pidsArray['DATAUPLOAD']);
+                            sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset submission notification", $pidsArray['DATAUPLOAD']);
                         }
                     }
                 }
@@ -348,7 +348,9 @@ class AllCrons
             if ($settings['hub_subs_monthly_digest'] != "") {
                 $emails = explode(';', $settings['hub_subs_monthly_digest']);
                 foreach ($emails as $email) {
-                    \Vanderbilt\HarmonistHubExternalModule\sendEmail($email, 'noreply.harmonist@vumc.org', $settings['accesslink_sender_name'], $subject, $email_req, "Not in database","Monthly Digest", $pidsArray['RMANAGER']);
+                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        sendEmail($email, 'noreply.harmonist@vumc.org', $settings['accesslink_sender_name'], $subject, $email_req, "Not in database", "Monthly Digest", $pidsArray['RMANAGER']);
+                    }
                 }
             }
         }
@@ -410,7 +412,7 @@ class AllCrons
 					"<div>The dataset you submitted to secure cloud storage in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
 					"This dataset will not be available for future downloads. To replace the deleted dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Submit Data on the <a href='" . $url . "' target='_blank'>Data page</a></strong>.</div><br/>" .
 					"<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
-				\Vanderbilt\HarmonistHubExternalModule\sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
+				sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
 
 				#to downloaders
 				if ($sop['sop_downloaders'] != "") {
@@ -437,7 +439,7 @@ class AllCrons
 							"If you still need to access this dataset, please e-mail <a href='mailto:" . $peopleUp['email'] . "'>" . $peopleUp['email'] . "</a> to request a new dataset.</div><br/>" .
 							"<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
-						\Vanderbilt\HarmonistHubExternalModule\sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
+						sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
 					}
 					$message['code_test'] = "1";
 				}
@@ -536,7 +538,7 @@ class AllCrons
         $req_id = array_unique($req_id);
 
         $query = $module->framework->createQuery();
-        $query->add("SELECT record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['RMANAGER'])." WHERE field_name = ? AND project_id = ? AND value = ?", ["approval_y", $pidsArray['RMANAGER'], "9"]);
+        $query->add("SELECT record FROM ".getDataTable($pidsArray['RMANAGER'])." WHERE field_name = ? AND project_id = ? AND value = ?", ["approval_y", $pidsArray['RMANAGER'], "9"]);
         $query->add('and')->addInClause('record ', $req_id);
         $query->add('group by record');
         $q = $query->execute();
@@ -547,7 +549,7 @@ class AllCrons
         }
 
         $query = $module->framework->createQuery();
-        $query->add("SELECT a.record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['COMMENTSVOTES'])." a INNER JOIN ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['COMMENTSVOTES'])." b on a.record=b.record and a.project_id=b.project_id WHERE a.field_name = ? AND a.project_id = ? ", ["request_id", $pidsArray['COMMENTSVOTES']]);
+        $query->add("SELECT a.record FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." a INNER JOIN ".getDataTable($pidsArray['COMMENTSVOTES'])." b on a.record=b.record and a.project_id=b.project_id WHERE a.field_name = ? AND a.project_id = ? ", ["request_id", $pidsArray['COMMENTSVOTES']]);
         $query->add('and')->addInClause('a.value ', $req_id);
         $query->add('group by a.record');
         $q = $query->execute();
@@ -560,7 +562,7 @@ class AllCrons
         $arrayMetrics[0]['comments'] = $total_comments;
 
         $query = $module->framework->createQuery();
-        $query->add("SELECT * FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["response_pi_level", $pidsArray['COMMENTSVOTES']]);
+        $query->add("SELECT * FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["response_pi_level", $pidsArray['COMMENTSVOTES']]);
         $query->add('and')->addInClause('record ', $comments_id);
         $query->add('group by record');
         $q = $query->execute();
@@ -577,7 +579,7 @@ class AllCrons
         $arrayMetrics[0]['comments_n'] = $number_comments_nonpi;
 
         $query = $module->framework->createQuery();
-        $query->add("SELECT * FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["pi_vote", $pidsArray['COMMENTSVOTES']]);
+        $query->add("SELECT * FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["pi_vote", $pidsArray['COMMENTSVOTES']]);
         $query->add('and')->addInClause('record ', $comments_id);
         $query->add('group by record');
         $q = $query->execute();
@@ -592,7 +594,7 @@ class AllCrons
         $arrayMetrics[0]['votes'] = $number_votes;
 
         $query = $module->framework->createQuery();
-        $query->add("SELECT * FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["vote_now", $pidsArray['COMMENTSVOTES']]);
+        $query->add("SELECT * FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["vote_now", $pidsArray['COMMENTSVOTES']]);
         $query->add('and')->addInClause('record ', $comments_id);
         $query->add('group by record');
         $q = $query->execute();
@@ -673,7 +675,7 @@ class AllCrons
 
         #USERS
         $query = $module->framework->createQuery();
-        $query->add("SELECT count(*) as total_registered_users FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['PEOPLE'])." WHERE field_name = ? AND project_id = ? AND value in (1,2,3)", ["harmonist_regperm", $pidsArray['PEOPLE']]);
+        $query->add("SELECT count(*) as total_registered_users FROM ".getDataTable($pidsArray['PEOPLE'])." WHERE field_name = ? AND project_id = ? AND value in (1,2,3)", ["harmonist_regperm", $pidsArray['PEOPLE']]);
         $q = $query->execute();
         $arrayMetrics[0]['users'] = $q->fetch_assoc()['total_registered_users'];
 
@@ -681,7 +683,7 @@ class AllCrons
         $arrayMetrics[0]['users_pi'] = $number_users_pi;
 
         $query = $module->framework->createQuery();
-        $query->add("SELECT count(*) as number_users_accesslink FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['PEOPLE'])." WHERE field_name = ? AND project_id = ? AND DATEDIFF(NOW(),value) between 0 AND 30", ["last_requested_token_d", $pidsArray['PEOPLE']]);
+        $query->add("SELECT count(*) as number_users_accesslink FROM ".getDataTable($pidsArray['PEOPLE'])." WHERE field_name = ? AND project_id = ? AND DATEDIFF(NOW(),value) between 0 AND 30", ["last_requested_token_d", $pidsArray['PEOPLE']]);
         $q = $query->execute();
         $arrayMetrics[0]['users_access'] = $q->fetch_assoc()['number_users_accesslink'];
 
@@ -845,7 +847,7 @@ class AllCrons
         }
 
         if ($email) {
-            \Vanderbilt\HarmonistHubExternalModule\sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Data Request expiration reminder for " . $concept_id, $pidsArray['DATAUPLOAD']);
+            sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Data Request expiration reminder for " . $concept_id, $pidsArray['DATAUPLOAD']);
             \REDCap::logEvent("Reminder Sent<br/>Record " . $upload['record_id'], $reminder_num . " days reminder \nTo: " . $down['email'] . "\nConcept ID: " . $concept_id . "\n", null, null, null, $pidsArray['DATAUPLOAD']);
         }
         return $messageArray;
@@ -860,7 +862,7 @@ class AllCrons
         $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $uploadData[0]['data_assoc_request']));
         $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
 
-        $uploader_name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $uploadData[0]['data_upload_person'], "");
+        $uploader_name = getPeopleName($pidsArray['PEOPLE'], $uploadData[0]['data_upload_person'], "");
 
         $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $uploadData[0]['data_upload_region']),array('region_code'))[0]['region_code'];
 
@@ -933,7 +935,7 @@ class AllCrons
         if ($settings['hub_email_pending_uploads'] != "") {
             $emails = explode(';', $settings['hub_email_pending_uploads']);
             foreach ($emails as $email) {
-                \Vanderbilt\HarmonistHubExternalModule\sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $recordpdf,"Pending dataset upload notification", $pidsArray['DATAUPLOAD']);
+                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $recordpdf,"Pending dataset upload notification", $pidsArray['DATAUPLOAD']);
             }
         }
     }
@@ -968,7 +970,7 @@ class AllCrons
         <tbody>";
             foreach ($comments as $comment) {
                 $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array("record_id"=>$comment['response_region']))[0];
-                $name =  \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'],$comment['response_person'],"email");
+                $name =  getPeopleName($pidsArray['PEOPLE'],$comment['response_person'],"email");
 
                 $comment_time ="";
                 if(!empty($comment['responsecomplete_ts'])){
@@ -1025,7 +1027,7 @@ class AllCrons
             </table>
             </br><div>Link to review request #".$request['request_id'].": <a href='".$url."'>".$url."</a></div>";
             if($email) {
-                \Vanderbilt\HarmonistHubExternalModule\sendEmail($request['contact_email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $body, $request['request_id'], "Request Finalized notification", $pidsArray['RMANAGER'], $settings['hub_email_author_summary']);
+                sendEmail($request['contact_email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $body, $request['request_id'], "Request Finalized notification", $pidsArray['RMANAGER'], $settings['hub_email_author_summary']);
             }
         }
     }
