@@ -428,16 +428,23 @@ if(!empty($homepage)) {
                 <ul class="list-group">
                     <?php
                     if(!empty($homepage)) {
-                        foreach ($homepage['links_sectionhead'] as $linkid => $linkvalue){
-                            echo '<li class="list-group-item quicklink_header"><i class="fa fa-fw '.$module->escape($homepage_links_sectionorder[$homepage['links_sectionicon'][$linkid]]).'" aria-hidden="true"></i> '.$module->escape($linkvalue).'</li>';
+                        $section_order = $homepage['links_sectionorder'];
+                        if(is_array($section_order)) {
+                            $section_order = array_flip($section_order);
+                            ksort($section_order);
+                        }else {
+                            $section_order = $homepage['links_sectionhead'];
+                        }
+                        foreach ($section_order as $linkid => $order){
+                            echo '<li class="list-group-item quicklink_header"><i class="fa fa-fw '.$module->escape($homepage_links_sectionorder[$homepage['links_sectionicon'][$order]]).'" aria-hidden="true"></i> '.$module->escape($homepage['links_sectionhead'][$order]).'</li>';
 
                             for($i = 1; $i<$number_of_quicklinks+1; $i++){
-                                if(!empty($homepage['links_text'.$i][$linkid])){
+                                if(!empty($homepage['links_text'.$i][$order])){
                                     $stay = "target='_blank'";
-                                    if($homepage['links_stay'.$i][$linkid][0] == '1'){
+                                    if($homepage['links_stay'.$i][$order][1] == '1'){
                                         $stay = "";
                                     }
-                                    echo '<li class="list-group-item"><i class="fa fa-fw" aria-hidden="true"></i><a href="'.$module->escape($homepage['links_link'.$i][$linkid]).'" '.$module->escape($stay).'>'.$module->escape($homepage['links_text'.$i][$linkid]).'</a></li>';
+                                    echo '<li class="list-group-item"><i class="fa fa-fw" aria-hidden="true"></i><a href="'.$module->escape($homepage['links_link'.$i][$order]).'" '.$module->escape($stay).'>'.$module->escape($homepage['links_text'.$i][$order]).'</a></li>';
                                 }
                             }
                         }
