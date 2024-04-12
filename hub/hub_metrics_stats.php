@@ -584,11 +584,11 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
             });
         }
 
-        //Multiregional and Regional Publications / ABSTRACTS
+        //MULTIREGIONAL & REGIONAL PUBLICATIONS / ABSTRACTS
         Object.keys(concept_type).forEach(function (section) {
             if((show_publications == '1' && section == '1') || (show_abstracts == '1' && section == "2")) {
                 var dataset = [];
-                if(sectionsAll[concept_type[section]]["single"]['1'] == '1'){
+                if(sectionsAll[concept_type[section]]["single"]['0'] == '1'){
                     dataset.push(
                         {
                             label: sectionsAll[concept_type[section]]["label1"],
@@ -598,7 +598,7 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
                         }
                     );
                 }
-                if(sectionsAll[concept_type[section]]["single"]['2'] == '1'){
+                if(sectionsAll[concept_type[section]]["single"]['1'] == '1'){
                     dataset.push(
                         {
                             label: sectionsAll[concept_type[section]]["label2"],
