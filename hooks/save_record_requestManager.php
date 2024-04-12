@@ -8,13 +8,13 @@ use ExternalModules\ExternalModules;
 $hub_mapper = $this->getProjectSetting('hub-mapper');
 $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
 
-$request = \REDCap::getData($project_id, 'json-array', array('request_id' => $record));
+$request = \REDCap::getData($project_id, 'json-array', array('request_id' => $record),null,null,false,false,false,true)[0];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
 if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'request'){
-    $data = \REDCap::getData($project_id, 'array',$record,$instrument.'_complete', null,null,false,false,true);
+    $data = \REDCap::getData($project_id, 'json-array',$record,array($instrument.'_complete',$instrument.'_timestamp'), null,false,false,false,true)[0];
 
-    $completion_time = ($request[$instrument.'_complete'] == '2')?$data[$record][$event_id][$instrument.'_timestamp']:"";
+    $completion_time = $data[$instrument.'_timestamp'];
     if(empty($completion_time)){
        $date = new \DateTime();
        $completion_time = $date->format('Y-m-d H:i:s');
