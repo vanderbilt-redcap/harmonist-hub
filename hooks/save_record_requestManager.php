@@ -8,7 +8,8 @@ use ExternalModules\ExternalModules;
 $hub_mapper = $this->getProjectSetting('hub-mapper');
 $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
 
-$request = \REDCap::getData($project_id, 'json-array', array('request_id' => $record),null,null,false,false,false,true)[0];
+$requestData = \REDCap::getData($project_id, 'array', array('request_id' => $record),null,null,false,false,false,true);
+$request = $requestData[$record][$event_id];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
 if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'request'){
@@ -22,7 +23,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
     $arrayRM = array(array('request_id' => $record,'requestopen_ts' => $completion_time));
 
-    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,null,null,null,false,false,false,"[email] = '".$request['contact_email']."'")[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','firstname','lastname','active_y'),null,null,false,false,false,"lower([email]) = '".strtolower($request['contact_email'])."'")[0];
     if(!empty($people)){
         $arrayRM[0]['contactperson_id'] = $people['record_id'];
         $arrayRM[0]['request_contact_display'] = $people['firstname']." ".$people['lastname'];
@@ -44,7 +45,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     foreach ($regions as $region){
         $instance = $region['record_id'];
         //only if it's the first time we save the info
-        if(empty($request["region_response_status"][$instance])) {
+        if(empty($requestData[$record]['repeat_instances']['dashboard_voting_status'][$instance])) {
             $array_repeat_instances = array();
             $aux = array();
             $aux['region_response_status'] = '0';
@@ -210,7 +211,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 }
 
 #We save the date for Recently Finalized Requests table
-if(($request['finalize_y'] != "" && ($request['request_type'] != '1' && $request['request_type'] != '5')) || ($request['finalize_y'][0] == "2" && ($request['request_type'] == '1' || $request['request_type'] == '5')) || ($request['mr_assigned'] != "" && $request['finalconcept_doc'] != "" && $request['finalconcept_pdf'] != "")) {
+if(($request['finalize_y'] != "" && ($request['request_type'] != '1' && $request['request_type'] != '5')) || ($request['finalize_y'] == "2" && ($request['request_type'] == '1' || $request['request_type'] == '5')) || ($request['mr_assigned'] != "" && $request['finalconcept_doc'] != "" && $request['finalconcept_pdf'] != "")) {
     $arrayRM = array(array('record_id' => $record));
     $arrayRM[0]['workflowcomplete_d'] = date("Y-m-d");
     $json = json_encode($arrayRM);
