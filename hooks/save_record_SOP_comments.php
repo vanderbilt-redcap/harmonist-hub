@@ -47,7 +47,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                     $sender_email = $settings['accesslink_sender_email'];
                 }
                 $environment = "";
-                if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST') {
+                if(ENVIRONMENT == 'TEST') {
                     $environment = " " . ENVIRONMENT." - ";
                 }
 

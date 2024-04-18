@@ -262,7 +262,7 @@ class UnitTestFunctions
         );
 
         $environment = "";
-        if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
+        if(ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
         $message = $this->module->escape($message);

@@ -7,7 +7,7 @@ use Vanderbilt\HarmonistHubExternalModule\AllCrons;
 
 require_once $module->getSafePath("/app001/credentials/".$pidsArray['PROJECTS']."_hubsettings.php","/app001/credentials/");
 
-if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
+if(ENVIRONMENT == 'TEST'){
     #Don't do pending
 }else if(ENVIRONMENT == 'PROD') {
     $credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
