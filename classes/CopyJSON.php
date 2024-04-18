@@ -132,7 +132,7 @@ class CopyJSON
             }
             if (!empty($record)) {
                 $environment = "";
-                if (ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST') {
+                if (ENVIRONMENT == 'TEST') {
                     $environment = " " . ENVIRONMENT;
                 }
 

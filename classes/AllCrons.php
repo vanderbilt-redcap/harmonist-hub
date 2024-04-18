@@ -169,7 +169,7 @@ class AllCrons
     public static function runCronMonthlyDigest($module, $pidsArray, $requests, $requests_hub, $sops, $settings, $email = false)
     {
         $environment = "";
-        if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
+        if(ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
 

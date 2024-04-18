@@ -108,7 +108,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' =>$user_id))[0];
 
                 $environment = "";
-                if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST') {
+                if(ENVIRONMENT == 'TEST') {
                     $environment = " " . ENVIRONMENT." - ";
                 }
 

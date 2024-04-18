@@ -43,7 +43,7 @@ if(!empty($_REQUEST['email'])) {
 
 
         $environment = "";
-        if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
+        if(ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
 
@@ -69,7 +69,7 @@ if(!empty($_REQUEST['email'])) {
                     "Your email address may not be registered in the system or you may be registered under a different email. Please e-mail ".$settings['hub_contact_email']." to confirm.</html>";
 
         $environment = "";
-        if(ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST'){
+        if(ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
         \Vanderbilt\HarmonistHubExternalModule\sendEmail(strtolower($email), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database","Access denied",$pidsArray['PEOPLE']);
