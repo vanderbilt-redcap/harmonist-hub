@@ -11,6 +11,6 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#explore-dab').attr('src', 'https://iedeaharmonist.app.vumc.org/dab/?tokendab=' + <?=json_encode($_REQUEST['tokendab'])?>);
+        $('#explore-dab').attr('src', 'https://iedeaharmonist.app.vumc.org/dab/?tokendab=' + <?=json_encode(html_entities($_REQUEST['tokendab'],ENT_QUOTES))?>);
     });
 </script>
