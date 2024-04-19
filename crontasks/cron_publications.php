@@ -20,7 +20,10 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
     $abstracts_publications_type = $moduleAux->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
     $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
-    $abstracts_publications_badge_text = array("1" => "badge-manuscript-text", "2" => "badge-abstract-text", "3" => "badge-poster-text", "4" => "badge-presentation-text", "5" => "badge-report-text", "99" => "badge-other-text");
+
+    $pubtext3 = empty($settings['pubtext3']) ? $settings['hub_name'] : $settings['pubtext3'];
+    $pubtext4 = empty($settings['pubtext4']) ? "Site" : $settings['pubtext4'];
+    $pubtext5 = empty($settings['pubtext5']) ? "Multi" : $settings['pubtext5'];
 
     if (!empty($concepts)) {
         $table_array['data'] = array();
@@ -55,7 +58,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     $table_aux = array();
                     $table_aux['concept'] = '<a href="' . $moduleAux->getUrl('index.php') .'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']. '">' . htmlentities($concept['concept_id']) . '</a>';
                     $table_aux['year'] = '<strong>' . htmlentities($concept['output_year'][$index]) . '</strong>';
-                    $table_aux['region'] = '<span class="badge badge-pill badge-draft">'.$settings['pubtext3'].'</span>';
+                    $table_aux['region'] = '<span class="badge badge-pill badge-draft">'.$pubtext3.'</span>';
                     $table_aux['conf'] = htmlentities($concept['output_venue'][$index]);
                     $table_aux['type'] = htmlentities($abstracts_publications_type[$concept['output_type'][$index]]);
                     $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$concept['output_type'][$index]] . '">' . htmlentities($abstracts_publications_type[$concept['output_type'][$index]]) . '</span><span style="display:none">.</span> <strong>' . htmlentities($concept['output_title'][$index]) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($concept['output_authors'][$index]) . '</span>';
@@ -71,12 +74,12 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
         #Regional Content
         foreach ($extra_outputs as $output) {
             $records++;
-            $type = "<span class='badge badge-pill badge-draft'>".$settings['pubtext4']."</span>";
+            $type = "<span class='badge badge-pill badge-draft'>".$pubtext3."</span>";
             if ($output['producedby_region'] == 2) {
-                $type = "<span class='badge badge-pill badge-draft'>".$settings['pubtext3']."</span>";
+                $type = "<span class='badge badge-pill badge-draft'>".$pubtext5."</span>";
             } else if ($output['producedby_region'] == 1) {
                 $my_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $output['lead_region']),array('region_code'))[0]['region_code'];
-                $type = "<span class='badge badge-pill badge-draft'>".$settings['pubtext3']."</span><div><i>" . $my_region . "</i></div>";
+                $type = "<span class='badge badge-pill badge-draft'>".$pubtext4."</span><div><i>" . $my_region . "</i></div>";
             }
 
             $available = '';

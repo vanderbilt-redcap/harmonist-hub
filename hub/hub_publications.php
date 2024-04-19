@@ -11,6 +11,9 @@ $canEdit = false;
 if($harmonist_perm || $isAdmin) {
     $canEdit = true;
 }
+$pubtext3 = empty($settings['pubtext3']) ? $settings['hub_name'] : $settings['pubtext3'];
+$pubtext4 = empty($settings['pubtext4']) ? "Site" : $settings['pubtext4'];
+$pubtext5 = empty($settings['pubtext5']) ? "Multi" : $settings['pubtext5'];
 ?>
 
 <div class="container">
@@ -142,6 +145,7 @@ if($harmonist_perm || $isAdmin) {
 </div>
 <script>
     var showcolumn = <?=json_encode($canEdit)?>;
+    var pubtext5 = <?=json_encode($pubtext5)?>;
     //To filter the data
     $.fn.dataTable.ext.search.push(
         function( settings, data, dataIndex ) {
@@ -150,7 +154,7 @@ if($harmonist_perm || $isAdmin) {
             var column_publication = data[4];
             var column_active = data[2];
 
-            if(active == true && column_active == 'MR'){
+            if(active == true && column_active == pubtext5){
                 if(publication != 'Select All' && column_publication == publication ){
                     return true
                 }else if(publication == 'Select All'){
