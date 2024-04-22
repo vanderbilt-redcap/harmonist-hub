@@ -1,5 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+
+$request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 ?>
 <script>
     $(document).ready(function() {
@@ -65,15 +67,20 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             <?php
             $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array',null,null,null,null,false,false,false,"[approval_y] != 1");
             $request_reject = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+            $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null,array('request_id','vote_now','response_region','finalize_y','revision_counter', 'responsecomplete_ts'));
+            $commentsDetails = [];
+            foreach($comments as $commentDetails) {
+                $commentsDetails[$commentDetails["request_id"]][] = $commentDetails;
+            }
             if(!empty($request_reject)) {
                 $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions, $hubData, $settings['vote_grid'], '2','archive');
+                $user_req_header = getRequestHeader($hubData, $settings['vote_grid'], '2','archive');
 
                 $requests_counter = 0;
                 foreach ($request_reject as $req) {
-                    $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 2, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
+                    $user_req_body .= getHomeRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails[$req['request_id']], $request_type_label, 2, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
                     if($user_req_body != ""){
                         $requests_counter++;
                     }

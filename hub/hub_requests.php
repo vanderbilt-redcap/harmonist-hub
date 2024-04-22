@@ -1,11 +1,9 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$regions = $hubData->getAllRegions();
 $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
-
-$header =  \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions,$hubData,$settings['vote_grid'],'0');
+$header = getRequestHeader($hubData,$settings['vote_grid'],'0');
 
 $title = "Requests";
 $link_all_requests = '';
@@ -14,23 +12,27 @@ if($_REQUEST['type'] != ''){
     $link_all_requests = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub'.'">View All Requests</a> | ';
 }
 
-$completed_req = '';
-$pending_req = '';
-
 $requests = $hubData->getAllRequests();
 
+$comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null,array('request_id','vote_now','response_region','finalize_y','revision_counter', 'responsecomplete_ts','pi_vote'));
+$commentsDetails = [];
+foreach($comments as $commentDetails) {
+    $commentsDetails[$commentDetails["request_id"]][] = $commentDetails;
+}
+
+$types_of_requests_data = [];
 foreach ($requests as $req){
     if (($_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || $_REQUEST['type'] == "") {
-        if (!\Vanderbilt\HarmonistHubExternalModule\hideRequestForNonVoters($settings, $req, $person_region)) {
-            if (\Vanderbilt\HarmonistHubExternalModule\showClosedRequest($settings, $req, $current_user['person_region'])) {
+        if (!hideRequestForNonVoters($settings, $req, $person_region)) {
+            if (showClosedRequest($settings, $req, $current_user['person_region'])) {
                 //COMPLETED REQUESTS
-                $completed_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
-            } else if ($current_user['pendingpanel_y___1'] == '1' && \Vanderbilt\HarmonistHubExternalModule\showPendingRequest($pidsArray['COMMENTSVOTES'], $req['request_id'], $req, $current_user['person_region']) && $current_user['pendingpanel_y'][0] == '1' && $req['region_response_status'][$current_user['person_region']] != '2') {
+                $types_of_requests_data['completed'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails[$req['request_id']], $request_type_label, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
+            } else if ($current_user['pendingpanel_y___1'] == '1' && showPendingRequest($commentsDetails[$req['request_id']], $current_user['person_region'], $req) && $current_user['pendingpanel_y'][0] == '1' && $req['region_response_status'][$current_user['person_region']] != '2') {
                 //PENDING REQUESTS
-                $pending_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
-            } else if (\Vanderbilt\HarmonistHubExternalModule\showOpenRequest($req, $current_user['person_region']) && $req['region_response_status'][$current_user['person_region']] != '2') {
+                $types_of_requests_data['pending'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails[$req['request_id']], $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+            } else if (showOpenRequest($req, $current_user['person_region']) && $req['region_response_status'][$current_user['person_region']] != '2') {
                 //OPEN REQUESTS
-                $current_req .= \Vanderbilt\HarmonistHubExternalModule\getRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $types_of_requests_data['open'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails[$req['request_id']], $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
             }
         }
     }
@@ -45,7 +47,6 @@ foreach ($requests as $req){
     }
 </style>
 
-
 <div class="container">
     <h3><?=$title;?></h3>
     <p class="hub-title"><?=$settings['hub_req_text']?></p>
@@ -53,106 +54,60 @@ foreach ($requests as $req){
         <p><?php echo $link_all_requests; ?><a href="<?=$module->escape(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['REQUESTLINK'])?>" target="_blank">Create New Request</a> | <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mra&type=r'?>">View Archived Requests</a></p>
     </div>
     <ul class="list-inline">
+        <li><span class="label label-default_light" title="Not Started"><i class="fa fa-times text-default_light" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="No regional activity on this request." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Not started</a></li>
+        <li><span class="label label-warning" title="In Progress"><i class="fa fa-wrench" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region has posted comments." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">In Progress</a></li>
+
         <?php if($settings['vote_visibility'] == "" || $settings['vote_visibility'] =="1"){?>
-            <li><span class="label label-default_light" title="Not Started"><i class="fa fa-times text-default_light" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="No regional activity on this request." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Not started</a></li>
-            <li><span class="label label-warning" title="In Progress"><i class="fa fa-wrench" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region has posted comments." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">In Progress</a></li>
             <li><span class="label label-info" title="Complete"><i class="fa fa-check" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region voted on this request." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Complete</a></li>
-        <?php }else if($settings['vote_visibility'] =="3"){?>
-            <li><span class="label label-default_light" title="Not Started"><i class="fa fa-times text-default_light" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="No regional activity on this request." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Not started</a></li>
-            <li><span class="label label-warning" title="In Progress"><i class="fa fa-wrench" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region has posted comments." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">In Progress</a></li>
+        <?php } else {?>
             <li><span class="label label-approved" title="Approved"><i class="fa fa-check" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region approved this request." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Approved</a></li>
             <li><span class="label label-notapproved" title="Not Approved"><i class="fa fa-times" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region did not approve this request." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Not Approved</a></li>
             <li><span class="label label-default" title="Abstained"><i class="fa fa-ban" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region abstained from voting." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Abstained</a></li>
-            <li><span class="label label-default" title="Mixed"><i class="fa fa-clone" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region has different types of vote." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Mixed</a></li>
-        <?php }else{ ?>
-            <li><span class="label label-default_light" title="Not Started"><i class="fa fa-times text-default_light" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="No regional activity on this request." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Not started</a></li>
-            <li><span class="label label-warning" title="In Progress"><i class="fa fa-wrench" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region has posted comments." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">In Progress</a></li>
-            <li><span class="label label-approved" title="Approved"><i class="fa fa-check" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region approved this request." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Approved</a></li>
-            <li><span class="label label-notapproved" title="Not Approved"><i class="fa fa-times" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region did not approve this request." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Not Approved</a></li>
-            <li><span class="label label-default" title="Abstained"><i class="fa fa-ban" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region abstained from voting." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Abstained</a></li>
+            <?php if($settings['vote_visibility'] =="3"){ ?>
+                <li><span class="label label-default" title="Mixed"><i class="fa fa-clone" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="Your region has different types of vote." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Mixed</a></li>
+            <?php } ?>
         <?php } ?>
     </ul>
 </div>
 
 <div class="container">
-    <div class="panel panel-default">
-        <div class="panel-heading ">
-            <h3 class="panel-title">
-                Open Requests
-            </h3>
-        </div>
+    <?php
+    foreach ($types_of_requests_data as $type => $requestData){
+        if(!empty($requestData) && $type != "open" || $type == "open"){
+            $style = 'hub_requests_'.$type;
+            ?>
+            <div class="panel panel-default">
+                <div class="panel-heading <?=$style;?>">
+                    <h3 class="panel-title">
+                        <?=ucfirst($type)?> Requests
+                    </h3>
+                </div>
 
-        <div class="table-responsive">
-            <table class="table table_requests sortable-theme-bootstrap" data-sortable>
-                <table class="table table_requests sortable-theme-bootstrap" data-sortable>
-                    <?php
-                    if($current_req == ""){
-                        ?><td>No requests available.</td><?php
-                    }else {
-                        echo $header;
-                        ?>
-                        <tbody><?php
-                        echo $current_req;
-                        ?></tbody><?php
-                    }
-                    ?>
-                </table>
-            </table>
-        </div>
-    </div>
-
-    <?php if(!empty($pending_req)){?>
-        <div class="panel panel-default" style="margin-bottom: 40px">
-            <div class="panel-heading hub_pending_requests">
-                <h3 class="panel-title">
-                    Pending Requests
-                </h3>
+                <div class="table-responsive">
+                    <table class="table table_requests sortable-theme-bootstrap" data-sortable>
+                        <table class="table table_requests sortable-theme-bootstrap" data-sortable>
+                            <?php
+                            if($requestData == ""){
+                                ?><td>No requests available.</td><?php
+                            }else {
+                                echo $header;
+                                ?>
+                                <tbody><?php
+                                echo $requestData;
+                                ?></tbody><?php
+                            }
+                            ?>
+                        </table>
+                    </table>
+                </div>
             </div>
-
-            <div class="table-responsive">
-                <table class="table table_requests sortable-theme-bootstrap" data-sortable>
-                    <?php
-                    if($pending_req == ""){
-                        ?><td>No pending requests available.</td><?php
-                    }else {
-                        echo $header;
-                        ?>
-                        <tbody><?php
-                        echo $pending_req;
-                        ?></tbody><?php
-                    }
-                    ?>
-                </table>
-            </div>
-        </div>
-    <?php } ?>
-
-    <?php if(!empty($completed_req)){?>
-    <div class="panel panel-default" style="margin-bottom: 40px">
-        <div class="panel-heading hub_completed_requests">
-            <h3 class="panel-title">
-                Completed Requests
-            </h3>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table_requests sortable-theme-bootstrap" data-sortable>
-                <?php
-                if($completed_req == ""){
-                    ?><td>No completed requests available.</td><?php
-                }else {
-                    echo $header;
-                    ?>
-                    <tbody><?php
-                    echo $completed_req;
-                    ?></tbody><?php
-                }
-                ?>
-            </table>
-        </div>
-    </div>
-    <?php } ?>
+            <?php
+        }
+    }
+    ?>
 </div>
+
+<!-- MODALS -->
 <div class="modal fade" id="hub_view_votes" tabindex="-1" role="dialog" aria-labelledby="Codes">
     <div class="modal-dialog" role="document" style="width: 800px">
         <div class="modal-content">
