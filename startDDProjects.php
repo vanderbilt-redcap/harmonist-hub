@@ -55,7 +55,7 @@ foreach ($projects_array as $index=>$name){
             $module->addProjectToList($project_id_new, $rowtype['event_id'], 1, 'deactivate_toolkit', 1);
         }else if($hub_profile == 'all'){
             #We show everything
-            if(SERVER_NAME == 'redcap.vanderbilt.edu') {
+            if(SERVER_NAME == 'redcap.vanderbilt.edu' || SERVER_NAME == "redcap.vumc.org") {
                 #We send an email with a list of things to set up only in the Vardebilt server
                 $subject = "Data Toolkit activation request for " . $hub_projectname . " Hub";
                 $message = "<div>Dear Administrator,</div><br/>" .
@@ -189,9 +189,9 @@ if($pidHome != ""){
     $aux['links_sectionorder'] = '1';
     $aux['links_sectionicon'] = '1';
     $aux['links_text1'] = 'Create EC request';
-    $aux['links_link1'] = 'https://redcap.vanderbilt.edu/surveys/?s='.$RequestLinkPid;
+    $aux['links_link1'] = 'https://redcap.vumc.org/surveys/?s='.$RequestLinkPid;
     $aux['links_text2'] = 'Add Hub user';
-    $aux['links_link2'] = 'https://redcap.vanderbilt.edu/surveys/?s='.$surveyPersonInfoPid;
+    $aux['links_link2'] = 'https://redcap.vumc.org/surveys/?s='.$surveyPersonInfoPid;
 
     $array_repeat_instances[1]['repeat_instances'][$event_id]['quick_links_section'][1] = $aux;
     $results = \REDCap::saveData($pidHome, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
@@ -310,7 +310,7 @@ $projects_array_sql = array(
                                   <span style='font-weight:lighter;'>[contact_name], <a href='mailto:[contact_email]'>[contact_email]</a></span>
 
                                     If blank, map this person to official Hub Members List
-                                    <div style='font-weight:lighter;font-style:italic'>(Find the name above in the official list. If it doesn't exist, you can add this person (<a href='https://redcap.vanderbilt.edu/redcap_v8.2.1/DataEntry/record_home.php?pid=".$pidsArray['PEOPLE']."'>via REDCap</a>) or list their PI's name instead.)</div>"
+                                    <div style='font-weight:lighter;font-style:italic'>(Find the name above in the official list. If it doesn't exist, you can add this person (<a href='".APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['PEOPLE']."'>via REDCap</a>) or list their PI's name instead.)</div>"
         ),
         'reviewer_id' => array (
             'query' => "SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM [data-table:".$pidsArray['PEOPLE']."] WHERE project_id = ".$pidsArray['PEOPLE']." AND field_name = 'firstname') a JOIN (SELECT record, value FROM [data-table:".$pidsArray['PEOPLE']."] where project_id = ".$pidsArray['PEOPLE']." and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from [data-table:".$pidsArray['PEOPLE']."] where project_id = ".$pidsArray['PEOPLE']." and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",

@@ -488,12 +488,12 @@ class REDCapManagement {
     }
 
     public static function getEnvironment(){
-        if(preg_match("/vanderbilt.edu/i", SERVER_NAME)){
+        if(preg_match("/vanderbilt.edu/i", SERVER_NAME) || preg_match("/vumc.org/i", SERVER_NAME)){
             #Other institutions
             define("ENVIRONMENT", "PROD");
-        }else if (SERVER_NAME == "redcap.vanderbilt.edu") {
+        }else if (SERVER_NAME == "redcap.vanderbilt.edu" || SERVER_NAME == "redcap.vumc.org") {
             define("ENVIRONMENT", "PROD");
-        }else  if (SERVER_NAME == "redcaptest.vanderbilt.edu") {
+        }else  if (SERVER_NAME == "redcaptest.vanderbilt.edu" || SERVER_NAME == "redcaptest.vumc.org") {
             define("ENVIRONMENT", "TEST");
         }else {
             define("ENVIRONMENT", "DEV");
@@ -807,7 +807,7 @@ class REDCapManagement {
 <p>We are pleased to confirm approval of your '.$hub_projectname.' concept,&nbsp;<strong>[request_title]</strong>. The '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME] approval date is <strong>[final_d]</strong>.</p>
 <p><strong>Next Steps</strong></p>
 <ol>
-<li style="padding-bottom: 5px;">Please check the '.$hub_projectname.' Hub for <a href="https://redcap.vanderbilt.edu/plugins/iedea/index.php?option=hub&amp;record=[request_id]">any changes requested by the Executive Comitee</a> and incorporate further revisions into your concept sheet.</li>
+<li style="padding-bottom: 5px;">Please check the '.$hub_projectname.' Hub for <a href="https://redcap.vumc.org/plugins/iedea/index.php?option=hub&amp;record=[request_id]">any changes requested by the Executive Comitee</a> and incorporate further revisions into your concept sheet.</li>
 <li style="padding-bottom: 5px;">Remove all comments and tracked changes from the document.</li>
 <li style="padding-bottom: 5px;"><strong><span style="color: #e74c3c;">Upload a final version of your concept</span></strong> to the '.$hub_projectname.' Hub using the link below. <strong>This will trigger all subsequent steps for your project.</strong></li>
 </ol>
