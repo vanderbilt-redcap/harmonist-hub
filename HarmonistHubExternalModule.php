@@ -9,6 +9,7 @@ include_once(__DIR__ . "/classes/REDCapManagement.php");
 include_once(__DIR__ . "/classes/ArrayFunctions.php");
 include_once(__DIR__ . "/classes/ProjectData.php");
 include_once(__DIR__ . "/classes/CopyJSON.php");
+include_once(__DIR__ . "/classes/HubUpdates.php");
 include_once(__DIR__ . "/functions.php");
 
 require_once(dirname(__FILE__)."/vendor/autoload.php");
@@ -18,31 +19,55 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     #If it's not the main PID project hide the Harmonist Hub link
     public function redcap_module_link_check_display($project_id, $link) {
-        $hub_projectname = $this->getProjectSetting('hub-projectname');
-        $dd_array = \REDCap::getDataDictionary('array');
-        $data_array = \REDCap::getData($_GET['pid'], 'array');
-
-        #User rights
-        $isAdmin = false;
-        if(defined('USERID')) {
-            $UserRights = \REDCap::getUserRights(USERID)[USERID];
-            if ($UserRights['user_rights'] == '1') {
-                $isAdmin = true;
-            }
-        }
-
-        if($hub_projectname != "" && ($_REQUEST['pid'] == $this->getProjectSetting('hub-mapper') || $this->getProjectSetting('hub-mapper') == "")){
-            $link['name'] = $hub_projectname." Hub";
-        }
-
-        if (count($dd_array) == 1 && $isAdmin && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
-            $link['url'] = $this->getUrl("installProjects.php");
-        }
-
         #Do not show link unless we are in the main project
         $hub_mapper = $this->getProjectSetting('hub-mapper');
-        if($hub_mapper != "" && $project_id != $hub_mapper){
+        if ($hub_mapper != "" && $project_id != $hub_mapper) {
             return false;
+        }
+        if($link['name'] == "Harmonist Hub") {
+            $hub_projectname = $this->getProjectSetting('hub-projectname');
+            $dd_array = \REDCap::getDataDictionary('array');
+            $data_array = \REDCap::getData($_GET['pid'], 'array');
+
+            #User rights
+            $isAdmin = false;
+            if (defined('USERID')) {
+                $UserRights = \REDCap::getUserRights(USERID)[USERID];
+                if ($UserRights['user_rights'] == '1') {
+                    $isAdmin = true;
+                }
+            }
+
+            if ($hub_projectname != "" && ($_REQUEST['pid'] == $this->getProjectSetting('hub-mapper') || $this->getProjectSetting('hub-mapper') == "")) {
+                $link['name'] = $hub_projectname . " Hub";
+            }
+
+            if (count($dd_array) == 1 && $isAdmin && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
+                $link['url'] = $this->getUrl("installProjects.php");
+            }
+        }else{
+            #User has no permissions to see Last Updates, do not show link
+            if(!$this->getUser()->hasDesignRights($project_id)){
+                return false;
+            }else{
+                $pidsArray = REDCapManagement::getPIDsArray($project_id);
+                $hub_updates = $this->getProjectSetting('hub-updates');
+                $today = date("Y-m-d");
+
+                #Only save & check updates once a day
+                if(strtotime($hub_updates['timestamp']) < strtotime($today)){
+                    $allUpdates['data'] = HubUpdates::compareDataDictionary($this, $pidsArray);
+                    $allUpdates['timestamp'] = $today;
+                    $total_updates = count($allUpdates['data']);
+                    $allUpdates['total_updates'] = $total_updates;
+                    $this->setProjectSetting('hub-updates', $allUpdates);
+                }else{
+                    $total_updates = $hub_updates['total_updates'];
+                }
+
+                if($total_updates > 0)
+                    $link['name'] .= " (".$total_updates.")";
+            }
         }
 
         return parent::redcap_module_link_check_display($project_id,$link);

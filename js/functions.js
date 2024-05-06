@@ -67,6 +67,52 @@ function checkselectDoubles(id){
 
     //to remove loaded text
     $('#num_selected'+table_id).text("");
+
+    //Check or uncheck the 'Select All' checkbox
+    var table = id.split('_')[0];
+    if (($('[parent_table='+table+']').length-1) == $('[chk_name=chk_table_'+table+']:checked').length) {
+        $('[name=chkAll_'+table+']').prop("checked", true);
+    }else{
+        $('[name=chkAll_'+table+']').prop("checked", false);
+    }
+}
+
+function checkselect(id){
+    var checked = $('#'+id).is(':checked');
+    if (!checked) {
+        $('#' + id).prop("checked", true);
+        $('[row="' + id + '"]').addClass('rowSelected');
+    } else {
+        $('#' + id).prop("checked", false);
+        $('[row="' + id + '"]').removeClass('rowSelected');
+    }
+
+    //Update the counter label
+    var table = id.split('-')[0];
+    checkTableCounter(table);
+
+    //Check or uncheck the 'Select All' checkbox
+    var constant = id.split('-')[0];
+    if ($('[parent_table='+constant+']').length == $('[chk_name=chk_table_'+constant+']:checked').length) {
+        $('#ckb_'+constant).prop("checked", true);
+    }else{
+        $('#ckb_'+constant).prop("checked", false);
+    }
+
+}
+
+function getIcon(status){
+    var icon = "fa-pencil-alt";
+    if(status == "changed"){
+        icon = "fa-pencil-alt";
+    }else if(status == "added"){
+        icon = "fa-plus";
+    }else if(status == "removed"){
+        icon = "fa-minus";
+    }
+
+    var icon_legend = '<a href="#" data-toggle="tooltip" title="'+status+'" data-placement="top" class="custom-tooltip" style="vertical-align: -2px;"><span class="label '+status+'" title="'+status+'"><i class="fas '+icon+'" aria-hidden="true"></i></span></a>';
+    return icon_legend;
 }
 
 /**
