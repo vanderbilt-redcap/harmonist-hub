@@ -67,11 +67,7 @@ $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANA
             <?php
             $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array',null,null,null,null,false,false,false,"[approval_y] != 1");
             $request_reject = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
-            $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null,array('request_id','vote_now','response_region','finalize_y','revision_counter', 'responsecomplete_ts'));
-            $commentsDetails = [];
-            foreach($comments as $commentDetails) {
-                $commentsDetails[$commentDetails["request_id"]][] = $commentDetails;
-            }
+            $commentDetails = $hubData->getCommentDetails();
             if(!empty($request_reject)) {
                 $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
                 ArrayFunctions::array_sort_by_column($regions, 'region_code');

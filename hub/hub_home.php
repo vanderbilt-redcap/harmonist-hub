@@ -236,12 +236,7 @@ if(!empty($homepage)) {
                     <?php
 					$requests = $hubData->getAllRequests();
                     if(!empty($requests)) {
-                        $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null,array('request_id','vote_now','response_region','finalize_y','revision_counter', 'responsecomplete_ts'));
-                        $commentsDetails = [];
-                        foreach($comments as $commentDetails) {
-                            $commentsDetails[$commentDetails["request_id"]][] = $commentDetails;
-                        }
-
+                        $commentDetails = $hubData->getCommentDetails();
 
                         $user_req_header = getRequestHeader($hubData, $settings['vote_grid'], '1','home');
                         $user_req_body = "";
