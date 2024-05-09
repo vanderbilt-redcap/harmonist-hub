@@ -10,26 +10,30 @@ if($option == "save"){
     HubUpdates::updateDataDictionary($module, $pidsArray, $checked_values);
 }else if($option == "resolved"){
     $hub_updates_resolved_list = $module->getProjectSetting('hub-updates-resolved-list');
-
-    $checked_values = explode(",",$checked_values);
-    $hub_updates_resolved_list = explode(",",$hub_updates_resolved_list);
-    $result = implode("," ,array_unique(array_merge($hub_updates_resolved_list, $checked_values)));
+    $hub_updates_resolved_list = "";
+    $checked_values_array = explode(",",$checked_values);
+    if(!empty($hub_updates_resolved_list)){
+        $hub_updates_resolved_list = explode(",",$hub_updates_resolved_list);
+        $result = implode("," ,array_unique(array_merge($hub_updates_resolved_list, $checked_values_array)));
+    }else{
+        $result = $checked_values;
+    }
     $module->setProjectSetting('hub-updates-resolved-list',$result);
-//    $module->setProjectSetting('hub-updates-resolved-list',"");
 }
 
-//Save the updates to refresh the data
-$hub_updates = $module->getProjectSetting('hub-updates');
-$today = date("Y-m-d");
-
+//Save the hub-updates to refresh the data
 $allUpdates['data'] = HubUpdates::compareDataDictionary($module, $pidsArray);
+$today = date("Y-m-d");
 $allUpdates['timestamp'] = $today;
 $total_updates = count($allUpdates['data']);
 $allUpdates['total_updates'] = $total_updates;
 $module->setProjectSetting('hub-updates', $allUpdates);
 
-
-echo json_encode(array(
-    'status' => 'success'
-));
+if(isset($checked_values)) {
+    echo json_encode(array(
+        'status' => 'success'
+    ));
+}else{
+    header($module->getUrl('hub-updates/index.php'));
+}
 ?>

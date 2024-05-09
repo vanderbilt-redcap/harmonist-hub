@@ -262,7 +262,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     $project_status = $module->getChoiceLabels('project_status', $pidsArray['HARMONIST']);
                     $admin_status = $module->getChoiceLabels('admin_status', $pidsArray['HARMONIST']);
                     if($concept['adminupdate_d'] == "" && $concept['update_d'] == ""){
-                        echo '<tr><td colspan="3">No updates available</td></tr>';
+                        echo '<tr><td colspan="3">No hub-updates available</td></tr>';
                     }else if($concept['adminupdate_d'] != "" && $concept['update_d'] != ""){
                         $adminUpdateD = array();
                         foreach ($concept['adminupdate_d'] as $aindex => $adminupdate){

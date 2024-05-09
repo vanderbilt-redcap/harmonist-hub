@@ -29,3 +29,7 @@ tr.rowSelected td{
     background-color: #adacac;
     border-color:#797979;
 }
+.btn-resolved {
+    background-color: #dcdcdc;
+    border-color: #adacac;
+}

@@ -24,7 +24,7 @@
       {
         "name": "Hub Updates",
         "icon": "fas fa-refresh",
-        "url": "updates/index.php",
+        "url": "hub-updates/index.php",
         "show-header-and-footer": true
       }
     ]

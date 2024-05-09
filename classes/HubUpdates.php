@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ . "/REDCapManagement.php");
-//require_once(APP_PATH_DOCROOT."Classes/ProjectDesigner.php");
+include_once(__DIR__ . "/../simplediff-modified/simplediff.php");
 
 class HubUpdates{
     const CHANGED = 'changed';
@@ -12,11 +12,13 @@ class HubUpdates{
     {
         $allItems = array();
         $constants_array = REDCapManagement::getProjectsContantsArray();
+//        $constants_array = array(0=>"RMANAGER");
         foreach ($constants_array as $constant){
             $path = $module->framework->getModulePath()."csv/".$constant.".csv";
             $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
             $new = $module->dataDictionaryCSVToMetadataArray($path);
 
+            #TODO: ADD table changes on new SQL
             $removed = array_diff_key($old, $new);
             $added = array_diff_key($new, $old);
 
@@ -28,14 +30,30 @@ class HubUpdates{
                     foreach ($value as $fieldType => $dataValue) {
                         if (trim($dataValue) != trim($old[$key][$fieldType])) {
                             //check if they have enetered the choices with a space between the '|' separator
-                            if($fieldType == "select_choices_or_calculations"){
+                            if($fieldType == "select_choices_or_calculations" && strtolower($value['field_type']) != "sql"){
                                 $choicesOld = self::parseArray($old[$key][$fieldType]);
                                 $choices = self::parseArray($value[$fieldType]);
-                                $possiblyChangedChoicesValues = array_diff($choices, $choicesOld);
-                                $possiblyChangedChoicesKey = array_diff_key($choices, $choicesOld);
+                                $possiblyChangedChoicesValues = array_diff($choicesOld, $choices);
+                                $possiblyChangedChoicesKey = array_diff_key($choicesOld, $choices);
+
                                 if(!empty($possiblyChangedChoicesValues) && !empty($possiblyChangedChoicesKey)){
                                     $hasValueChanged = true;
                                 }
+
+                            }else if($fieldType == "select_choices_or_calculations" && strtolower($value['field_type']) == "sql") {
+//                                print_array($key);
+//                                print_array("OLD: ".$old[$key][$fieldType]);
+//                                print_array("NEW: ".$possiblyChanged[$key][$fieldType]);
+                                $sql['sql'] = $possiblyChanged[$key][$fieldType];
+                                $sql['changed'] = false;
+                                $sql = self::changeSQLDataTable($old[$key][$fieldType], $sql);
+                                $sql = self::compareSQL($old[$key][$fieldType], $sql);
+                                if($sql['changed']){
+//                                    print_array("CHANGED: ".$sql['sql']);
+                                    $hasValueChanged = true;
+                                    $value[$fieldType] = $sql['sql'];
+                                }
+
                             }else{
                                 $hasValueChanged = true;
                             }
@@ -44,7 +62,6 @@ class HubUpdates{
                     if($hasValueChanged){
                         $changed[$key] = $value;
                     }
-
                 }
             }
             $result = array();
@@ -59,10 +76,89 @@ class HubUpdates{
         return $allItems;
     }
 
+    public static function compareSQL($sqlOld, $sqlNew)
+    {
+        foreach (['/project_id\s=\s(\d+)/','/project_id=(\d+)/','/\[data-table:(.*?)\]/'] as $pattern) {
+            preg_match_all($pattern, $sqlOld, $matchOld);
+            preg_match_all($pattern, $sqlNew['sql'], $matchNew);
+            //Change pids in Admins SQL (NEW) to match the old and check for changes again
+            foreach ($matchOld[0] as $index => $slqPid) {
+                $pattern_replace = "/" . $matchNew[0][$index] . "/";
+                if ($pattern == '/\[data-table:(.*?)\]/') {
+                    $pattern_replace = "/\[data-table:" . $matchNew[1][$index] . "\]/";
+                }
+                $sqlNew['sql'] = preg_replace($pattern_replace, $slqPid, $sqlNew['sql'], 1);
+            }
+        }
+        //Compare if the newly changed SQL is the same as the old if not return sql as it has changed
+        if($sqlNew['sql'] != $sqlOld){
+            $sqlNew['changed'] = true;
+        }
+        return $sqlNew;
+    }
+
+    public static function changeSQLDataTable($sqlOld, $sqlNew)
+    {
+        if(str_contains($sqlOld, 'redcap_data')){
+            $sql_redcap_data = $sqlOld;
+        }else if(str_contains($sqlNew['sql'], 'redcap_data')){
+            $sql_redcap_data = $sqlNew['sql'];
+        }
+
+        while (($lastPos = strpos($sql_redcap_data, 'redcap_data', $lastPos))!== false) {
+            $positions[] = $lastPos;
+            $lastPos = $lastPos + strlen('redcap_data');
+        }
+        $redcap_data_ocurrences = substr_count($sql_redcap_data, 'redcap_data');
+        for($i = 0 ; $i < $redcap_data_ocurrences; $i++){
+            $rest = substr($sql_redcap_data, $positions[$i], strlen($sql_redcap_data));
+            $pos_pid_1 = (strpos($rest, 'project_id=')) ?? null;
+            $pos_pid_2 = (strpos($rest, 'project_id = ')) ?? null;
+            $table_replace = "";
+            if($pos_pid_1 != null && $pos_pid_2 != null){
+                if($pos_pid_1 <= $pos_pid_2 && $pos_pid_1 != null){
+                    preg_match_all('/project_id=(\d+)/', $rest, $matchNew);
+                    $slqPid = $matchNew[1][0];
+                    $table_replace = "[data-table:" . $slqPid . "]";
+                }else{
+                    preg_match_all('/project_id\s=\s(\d+)/', $rest, $matchNew);
+                    $slqPid = $matchNew[1][0];
+                    $table_replace = "[data-table:" . $slqPid . "]";
+                }
+            }else if($pos_pid_1 != null){
+                preg_match_all('/project_id=(\d+)/', $rest, $matchNew);
+                $slqPid = $matchNew[1][0];
+                $table_replace = "[data-table:" . $slqPid . "]";
+            }else if($pos_pid_2 != null){
+                preg_match_all('/project_id\s=\s(\d+)/', $rest, $matchNew);
+                $slqPid = $matchNew[1][0];
+                $table_replace = "[data-table:" . $slqPid . "]";
+            }
+            if($table_replace != "") {
+                if(str_contains($sql_redcap_data, 'redcap_data')){
+                    $sql_redcap_data = preg_replace("/redcap_data/", $table_replace, $sql_redcap_data, 1);
+                }
+            }
+        }
+
+        if($sql_redcap_data != $sqlOld){
+            if(str_contains($sqlOld, 'redcap_data')){
+                $sqlNew['changed'] = true;
+            }
+            $sqlNew['sql'] = $sql_redcap_data;
+        }
+
+//        if($sql_redcap_data != $sqlOld){
+//            print_array("FOUND: ".$sql_redcap_data);
+//            $sqlNew['changed'] = true;
+//            $sqlNew['sql'] = $sql_redcap_data;
+//        }
+        return $sqlNew;
+    }
+
     public static function updateDataDictionary($module, $pidsArray, $checked_values)
     {
         $hub_updates_list = explode(",", $checked_values);
-
         $update_list = [];
         foreach ($hub_updates_list as $updates) {
             $hub_updates = explode("-", $updates);
@@ -76,46 +172,75 @@ class HubUpdates{
         }
 
         $constants_array = REDCapManagement::getProjectsContantsArray();
-        $constants_array = ['SETTINGS'];
         foreach ($constants_array as $constant) {
+            if(array_key_exists($constant, $update_list)) {
+                $path = $module->framework->getModulePath() . "csv/" . $constant . ".csv";
+                $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
+                $new = $module->dataDictionaryCSVToMetadataArray($path);
 
-            $path = $module->framework->getModulePath() . "csv/" . $constant . ".csv";
-            $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
-            $new = $module->dataDictionaryCSVToMetadataArray($path);
-
-            $Proj = new \Project($pidsArray[$constant]);
-            if(array_key_exists(self::CHANGED,$update_list[$constant])){
-                foreach ($update_list[$constant][self::CHANGED] as $item){
-
-                    print_array($old[$item]);
-                    print_array($new[$item]);
-                    print_array(APP_PATH_DOCROOT."Classes/ProjectDesigner.php");
-                    print_array(debug_backtrace());
-                    $designerInstance = new \ProjectDesigner($Proj);
-                    print_array($designerInstance);
-//                    \ProjectDesigner::updateField($old[$item]['form_name'], $old[$item]['field_name'], $old[$item]);
-                }
-            }else if(array_key_exists(self::ADDED,$update_list[$constant])){
-//                \ProjectDesigner::createField($form_name, $fieldParams=[], $next_field_name='', $was_section_header=false, $grid_name='', $add_form_name=NULL, $add_before_after=NULL, $add_form_place='');
-            }else if(array_key_exists(self::REMOVED,$update_list[$constant])){
-//                \ProjectDesigner::deleteField($fieldName, $form_name, $sectionHeader=false);
+                self::saveFieldData($update_list[$constant], $old, $new, $pidsArray[$constant]);
             }
-
         }
     }
 
-    public static function getResolvedList($module)
+    public static function saveFieldData($update_list, $old, $new, $project_id)
+    {
+        $save_data = $old;
+        foreach ($update_list as $status => $statusData) {
+            foreach ($statusData as $index => $variable) {
+                if ($status == self::CHANGED) {
+                    $save_data[$variable] = $new[$variable];
+                } else if ($status == self::ADDED) {
+                    $next_field_name = self::getNextFieldName($variable, $new, $old);
+                    $save_data_aux = [];
+                    foreach($save_data as $varname => $value){
+                        if($varname == $next_field_name){
+                            $save_data_aux[$variable] = $new[$variable];
+                        }
+                        $save_data_aux[$varname] = $save_data[$varname];
+                    }
+                    $save_data = $save_data_aux;
+                } else if ($status == self::REMOVED) {
+                    unset($save_data[$variable]);
+                }
+            }
+        }
+        $save_data = \MetaData::convertFlatMetadataToDDarray($save_data);
+        $sql_errors = \MetaData::save_metadata($save_data, false, false, $project_id);
+    }
+
+    public static function getNextFieldName($variable, $new, $old)
+    {
+        $new_var_list = array_keys($new);
+        $new_var_list_index = array_search($variable,$new_var_list);
+        $next_field_name = '';
+        for($i = $new_var_list_index; $i <= count($new_var_list); $i++){
+            if(array_key_exists($new_var_list[$i],$new) && $variable != $new_var_list[$i] && isset($old[$new_var_list[$i]])){
+                $next_field_name = $new_var_list[$i];
+                break;
+            }
+        }
+        return $next_field_name;
+    }
+
+    public static function getResolvedList($module, $status='')
     {
         $hub_updates_resolved_list = $module->getProjectSetting('hub-updates-resolved-list');
         $hub_updates_resolved_list = explode(",",$hub_updates_resolved_list);
         $resolved_list = [];
         foreach ($hub_updates_resolved_list as $resolved) {
-            $hub_updates_resolved = explode("-",$resolved);
-            if(!array_key_exists($hub_updates_resolved[0],$resolved_list)){
-                $resolved_list[$hub_updates_resolved[0]] = [];
+            if(!empty($resolved)) {
+                $hub_updates_resolved = explode("-", $resolved);
+                if (!array_key_exists($hub_updates_resolved[0], $resolved_list)) {
+                    $resolved_list[$hub_updates_resolved[0]] = [];
+                }
+                if($status == 'resolved'){
+                    $aux = ['field_name' => $hub_updates_resolved[1], 'field_status' => $hub_updates_resolved[2], 'field_type' => $hub_updates_resolved[3]];
+                }else{
+                    $aux = ['field_name' => $hub_updates_resolved[1], 'field_type' => $hub_updates_resolved[2]];
+                }
+                array_push($resolved_list[$hub_updates_resolved[0]], $aux);
             }
-            $aux = ['field_name' => $hub_updates_resolved[1],'field_type' => $hub_updates_resolved[2]];
-            array_push($resolved_list[$hub_updates_resolved[0]],$aux);
         }
         return $resolved_list;
     }
@@ -218,7 +343,7 @@ class HubUpdates{
                 } else {
                     $color = "class='mb-2 bg-warning p-1' style='font-size:12px;';";
                     $col .= "<div $color>$string " . $new[$var] . "</div>";
-                    $col .= "<small class='mb-2 p-1 d-flex' style='font-size:12px; text-decoration:line-through;'>$string" . $old[$var] . "</small>";
+                    $col .= "<small class='mb-2 p-1 d-flex' style='font-size:12px; text-decoration:line-through;'>$string " . $old[$var] . "</small>";
                 }
             } else if ($old[$var] != "") {
                 $col .= "<small class='d-flex mb-2'><div><i class='text-muted'>$string </i><i class='text-info'> " . $old[$var] . "</i></div></small>";
@@ -447,9 +572,10 @@ class HubUpdates{
                 $col .= '</tr>';
                 $col .= '</table>';
             } elseif ($new['field_type'] == 'sql') {
+                $sql_different = printSQLDifferences($old['select_choices_or_calculations'], $new['select_choices_or_calculations']);
                 $col .= '<table border="0" cellpadding="2" cellspacing="0" class="ReportTableWithBorder">'.
-                    '<tr><td style="background-color:#ffc107;">' . $new['select_choices_or_calculations'] . '</td></tr>'.
-                    '<tr><td style="text-decoration: line-through;">' . $old['select_choices_or_calculations'] . '</td></tr>'.
+                    '<tr><td>' . $sql_different['new'] . '</td></tr>'.
+                    '<tr><td style="text-decoration: line-through;">' . $sql_different['old'] . '</td></tr>'.
                     '</table>';
             } else {
                 $col .= '<table border="0" cellpadding="2" cellspacing="0" class="ReportTableWithBorder">';

@@ -4,6 +4,8 @@ include_once(__DIR__ ."/../projects.php");
 include_once(__DIR__ . "/../classes/HubUpdates.php");
 
 $allUpdates = $module->getProjectSetting('hub-updates')['data'];
+#Sanitize text title and descrition for pages
+$hub_name = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', ('hub_name'))[0];
 
 $printData = [];
 $oldValues = [];
@@ -16,6 +18,23 @@ foreach ($allUpdates as $constant => $project_data) {
     $printData[$constant]['gotoredcap'] = $gotoredcap;
     $printData[$constant]['pid'] = $pidsArray[$constant];
 }
+//$new="SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM [data-table:195] WHERE project_id = 195 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM [data-table:195] where project_id = 195 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value";
+//$old = "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 195 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data  where project_id = 195 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value";
+//$sql_different = HubUpdates::printSQLDifferences($old, $new);
+//print_array($sql_different);
+
+//$allUpdates['data'] = HubUpdates::compareDataDictionary($module, $pidsArray);
+//print_array($allUpdates['data']);
+
+$constant = "RMANAGER";
+$path = $module->framework->getModulePath() . "csv/" . $constant . ".csv";
+$new = $module->dataDictionaryCSVToMetadataArray($path);
+$old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
+//print_array($allUpdates[$constant]['request']['changed']['assoc_concept']);
+//print_array($new['variable_replacedby']);
+//print_array($old['variable_replacedby']);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,7 +92,7 @@ foreach ($allUpdates as $constant => $project_data) {
                                 if(sButton.name == "save_btn"){
                                     display_data += getIcon(status)+" <div style='display: inline;vertical-align: sub;'>";
                                 }
-                                display_data += printData[constant_name]['pid'] + " - " + printData[constant_name]['title'] + " => <strong>" + variable_name + "</strong> <em>(" + field_type + ")</em></div>";
+                                display_data += printData[constant_name]['pid'] + " - " + printData[constant_name]['title'] + " => <strong>" + variable_name + "</strong> (<em>" + field_type + "</em><)/div>";
                                 if(sButton.name == "save_btn"){
                                     display_data += "</div>";
                                 }
@@ -113,39 +132,80 @@ foreach ($allUpdates as $constant => $project_data) {
                 $('#data_confirmation').submit(function (event) {
                     var redcap_csrf_token = <?=json_encode($module->getCSRFToken())?>;
                     var option = $('#option').val();
-                    var checked_values = [];
-                    $("input[name='tablefields[]']:checked").each(function() {
-                        checked_values.push($(this).val());
-                    });
-                    url = <?=json_encode($module->getUrl('updates/last_updates_process_data_AJAX.php'))?>;
-                    console.log(url+"&checked_values="+checked_values+"&option="+option+"&redcap_csrf_token="+redcap_csrf_token);
-                    $("#confirmationForm").dialog("close");
+                    var success_message = "";
+                    url = <?=json_encode($module->getUrl('hub-updates/last_updates_process_data_AJAX.php'))?>;
 
-                    // $.ajax({
-                    //    type: "POST",
-                    //    url: url,
-                    //    data: "&checked_values="+checked_values+"&option="+option+"&redcap_csrf_token="+redcap_csrf_token,
-                    //    error: function (xhr, status, error) {
-                    //        alert(xhr.responseText);
-                    //    },
-                    //    success: function (result) {
-                    //        var status = jQuery.parseJSON(result)['status'];
-                    //        location.reload();
-                    //    }
-                    // });
+                    var checked_values = [];
+                    if(option != "update"){
+                        $("input[name='tablefields[]']:checked").each(function() {
+                            checked_values.push($(this).val());
+                        });
+                        $("#confirmationForm").dialog("close");
+
+                        if(option == 'save'){
+                            success_message = "S";
+                        }else{
+                            success_message = "R";
+                        }
+                    }else{
+                        success_message = "U";
+                    }
+
+                    console.log(url+"&checked_values="+checked_values+"&option="+option+"&redcap_csrf_token="+redcap_csrf_token)
+                    $.ajax({
+                       type: "POST",
+                       url: url,
+                       data: "&checked_values="+checked_values+"&option="+option+"&redcap_csrf_token="+redcap_csrf_token,
+                       error: function (xhr, status, error) {
+                           alert(xhr.responseText);
+                       },
+                       success: function (result) {
+
+                           var status = jQuery.parseJSON(result)['status'];
+                           // location.reload();
+                           window.location = getMessageLetterUrl(window.location.href, success_message);
+                       }
+                    });
                     return false;
                 });
             });
         </script>
     </head>
     <body>
+    <?php if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){ ?>
+        <div class="container" style="margin-top: 20px">
+            <div class="alert alert-success col-md-12" id="success_message">The Data Dictionary has been successfully updated.</div>
+        </div>
+    <?php } else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'R')){?>
+        <div class="container" style="margin-top: 20px">
+            <div class="alert alert-success col-md-12" id="success_message">The variables have been successfully added to the resolved list.</div>
+        </div>
+    <?php } else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'U')){?>
+        <div class="container" style="margin-top: 20px">
+            <div class="alert alert-success col-md-12" id="success_message">Last Updates has been successfully updated.</div>
+        </div>
+    <?php } ?>
         <h4 class="title">
             You have <strong><?=count($allUpdates)?></strong> projects to update.
         </h4>
+        <h4 class="title" style="padding-top:15px">
+            The data displayed shows the projects from your <strong><?=$settings['hub_name']?> Hub</strong> that have different values when compared against the administrator's version.<br>
+            <form method="POST" action="" class="" id="update_list" name="update_list">
+                The data only uploads once a day. To recalculate any new changes you do without using this tool <a href="#" onclick="$('#option').val('update');$('#data_confirmation').submit();" id="update_btn" name="update_btn" style="font-size: 16px;text-decoration: underline;">click here</a>
+            </form>
+        </h4>
+        <h4 class="title" style="padding-top:15px">
+            <form method="POST" action="<?=$module->getUrl('hub-updates/resolved_list.php').'&redcap_csrf_token='.$module->getCSRFToken()?>" class="" id="resolved_list">
+                If you do not want to make changes to certain variables <mark style="background-color: #fffbce">mark them as resolved</mark> and the updates will omit them from now onwards.
+                <br><br>
+                <div style="float: left">You can always add them back by clicking here: </div>
+                <button type="submit" class="btn btn-resolved" style="display: block;" id="select_btn">See Resolved List</button>
+            </form>
+        </h4>
         <div class="container-fluid p-y-1" style="margin-top:60px">
             <form method="POST" action="" id="save_data">
-                <button type="submit" class="btn btn-primary float-right btnClassConfirm" id="save_btn" name="save_btn">Save Changes</button>
-                <button type="submit" class="btn btn-resolved float-right btnClassConfirm" id="resolved_btn" name="resolved_btn" style="margin-right:10px">Mark as Resolved</button>
+                <button type="submit" onclick="$('#option').val('save');" class="btn btn-primary float-right btnClassConfirm" id="save_btn" name="save_btn">Save Changes</button>
+                <button type="submit" onclick="$('#option').val('resolved');" class="btn btn-warning float-right btnClassConfirm" id="resolved_btn" name="resolved_btn" style="margin-right:10px">Mark as Resolved</button>
             </form>
         </div>
         <div class="container-fluid p-y-1">
@@ -199,7 +259,7 @@ foreach ($allUpdates as $constant => $project_data) {
                                             <td><?=HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_name')?></td>
                                             <td><?php
                                                 if($status == HubUpdates::CHANGED) {
-                                                    $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, 'Section Header :', 'section_header');
+                                                    $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, 'Section Header:', 'section_header');
                                                     $col .= HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_label');
                                                     $col .= HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', 'field_note');
                                                 }else{
