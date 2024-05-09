@@ -14,11 +14,7 @@ if($_REQUEST['type'] != ''){
 
 $requests = $hubData->getAllRequests();
 
-$comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null,array('request_id','vote_now','response_region','finalize_y','revision_counter', 'responsecomplete_ts','pi_vote'));
-$commentsDetails = [];
-foreach($comments as $commentDetails) {
-    $commentsDetails[$commentDetails["request_id"]][] = $commentDetails;
-}
+$commentDetails = $hubData->getCommentDetails();
 
 $types_of_requests_data = [];
 foreach ($requests as $req){

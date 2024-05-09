@@ -74,4 +74,21 @@ class HubData
 		
         return $_SESSION[$this->session_name]['requests'];
     }
+    public function getCommentDetails()
+    {
+        $project_id = $this->pidsArray['COMMENTSVOTES'];
+
+        $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
+        if (empty($_SESSION[$this->session_name]['commentsDetails']) || ($_SESSION[$this->session_name]['last_logged_event']['commentsDetails'] != $last_logged_event)) {
+            $comments = \REDCap::getData($project_id, 'json-array', null,array('request_id','vote_now','response_region','finalize_y','revision_counter', 'responsecomplete_ts'));
+            $commentsDetails = [];
+            foreach($comments as $commentDetails) {
+                $commentsDetails[$commentDetails["request_id"]][] = $commentDetails;
+            }
+            $_SESSION[$this->session_name]['commentsDetails'] = $commentsDetails;
+            $_SESSION[$this->session_name]['last_logged_event']['commentsDetails'] = $last_logged_event;
+        }
+
+        return $_SESSION[$this->session_name]['commentsDetails'];
+    }
 }
