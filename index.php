@@ -64,7 +64,6 @@ if($hub_projectname != '' && $hub_profile != ''){
 
                     <?php include_once("head_scripts.php");?>
 
-                    <title><?= $settings['des_doc_title'] ?></title>
                     <script type='text/javascript'>
                         $(document).ready(function() {
                             Sortable.init();
