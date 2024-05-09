@@ -35,7 +35,7 @@ ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete
 $dealines = array();
 for($i = 1; $i<$number_of_deadlines+1; $i++){
     if(!empty($homepage['deadline_text'.$i]) || !empty($homepage['deadline_date'.$i])){
-        $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($homepage['deadline_date'.$i],'','float:right','0');
+        $array_dates = getNumberOfDaysLeftButtonHTML($homepage['deadline_date'.$i],'','float:right','0');
         $event['date'] = $homepage['deadline_date'.$i];
         $event['print'] = '<tr><td>'.$array_dates['text'].' '.$array_dates['button'].'</td><td>'.$homepage['deadline_text'.$i].'</td></tr>';
         array_push($dealines,$event);
@@ -151,7 +151,7 @@ if(!empty($homepage)) {
 
                                #GRADIENT for the Badge
                                $total_colors = count($requests_values) - count(empty($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']) ? $request_type:$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']);
-                               $color = \Vanderbilt\HarmonistHubExternalModule\getGradientColor("777777","003D99",$total_colors,$i);
+                               $color = getGradientColor("777777","003D99",$total_colors,$i);
                                echo '<li class="list-group-item">
                                         <a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&type=1".'" title="concept sheets" class="home_openrequests_link">
                                         <span class="badge" style="background-color:'.$color.'">'.$open_req_value.'</span>
@@ -236,14 +236,18 @@ if(!empty($homepage)) {
                     <?php
 					$requests = $hubData->getAllRequests();
                     if(!empty($requests)) {
-                        $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                        ArrayFunctions::array_sort_by_column($regions, 'region_code');
+                        $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null,array('request_id','vote_now','response_region','finalize_y','revision_counter', 'responsecomplete_ts'));
+                        $commentsDetails = [];
+                        foreach($comments as $commentDetails) {
+                            $commentsDetails[$commentDetails["request_id"]][] = $commentDetails;
+                        }
 
-                        $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions, $hubData, $settings['vote_grid'], '1','home');
+
+                        $user_req_header = getRequestHeader($hubData, $settings['vote_grid'], '1','home');
                         $user_req_body = "";
                         $requests_counter = 0;
                         foreach ($requests as $req) {
-                            $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
+                            $user_req_body .= getHomeRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails, $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
                             if($user_req_body != ""){
                                 $requests_counter++;
                             }
@@ -290,7 +294,7 @@ if(!empty($homepage)) {
 
                                 $requestComment = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']))[0];
 
-                                $time = \Vanderbilt\HarmonistHubExternalModule\getDateForHumans($comment['responsecomplete_ts']);
+                                $time = getDateForHumans($comment['responsecomplete_ts']);
 
                                 $title = substr($requestComment['request_title'], 0, 50) . '...';
 

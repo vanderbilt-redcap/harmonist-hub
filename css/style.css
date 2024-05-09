@@ -620,13 +620,13 @@ span .btn-info:hover{
 }
 
 /***HUB: REQUESTS***/
-.hub_completed_requests{
+.hub_requests_completed{
     background-color: #dff0d8 !important;
     background-image: none !important;
     color: #3c763d !important;
     border-color: #d6e9c6 !important;
 }
-.hub_pending_requests{
+.hub_requests_pending{
     background-color: #fcf8e3 !important;
     background-image: none !important;
 }
