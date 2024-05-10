@@ -18,7 +18,6 @@ class HubUpdates{
             $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
             $new = $module->dataDictionaryCSVToMetadataArray($path);
 
-            #TODO: ADD table changes on new SQL
             $removed = array_diff_key($old, $new);
             $added = array_diff_key($new, $old);
 
@@ -41,15 +40,11 @@ class HubUpdates{
                                 }
 
                             }else if($fieldType == "select_choices_or_calculations" && strtolower($value['field_type']) == "sql") {
-//                                print_array($key);
-//                                print_array("OLD: ".$old[$key][$fieldType]);
-//                                print_array("NEW: ".$possiblyChanged[$key][$fieldType]);
                                 $sql['sql'] = $possiblyChanged[$key][$fieldType];
                                 $sql['changed'] = false;
                                 $sql = self::changeSQLDataTable($old[$key][$fieldType], $sql);
                                 $sql = self::compareSQL($old[$key][$fieldType], $sql);
                                 if($sql['changed']){
-//                                    print_array("CHANGED: ".$sql['sql']);
                                     $hasValueChanged = true;
                                     $value[$fieldType] = $sql['sql'];
                                 }
@@ -104,6 +99,7 @@ class HubUpdates{
         }else if(str_contains($sqlNew['sql'], 'redcap_data')){
             $sql_redcap_data = $sqlNew['sql'];
         }
+        $sql_redcap_data_compare = $sql_redcap_data;
 
         while (($lastPos = strpos($sql_redcap_data, 'redcap_data', $lastPos))!== false) {
             $positions[] = $lastPos;
@@ -141,18 +137,12 @@ class HubUpdates{
             }
         }
 
-        if($sql_redcap_data != $sqlOld){
+        if($sql_redcap_data != $sql_redcap_data_compare){
             if(str_contains($sqlOld, 'redcap_data')){
                 $sqlNew['changed'] = true;
             }
             $sqlNew['sql'] = $sql_redcap_data;
         }
-
-//        if($sql_redcap_data != $sqlOld){
-//            print_array("FOUND: ".$sql_redcap_data);
-//            $sqlNew['changed'] = true;
-//            $sqlNew['sql'] = $sql_redcap_data;
-//        }
         return $sqlNew;
     }
 
@@ -189,6 +179,19 @@ class HubUpdates{
         foreach ($update_list as $status => $statusData) {
             foreach ($statusData as $index => $variable) {
                 if ($status == self::CHANGED) {
+                    if($new[$variable]['field_type'] == "sql"){
+                        if($old[$variable]['field_type'] != "sql"){
+                            $old[$variable]['select_choices_or_calculations'] = $new[$variable]['select_choices_or_calculations'];
+                        }
+                        //Update SQL with new redcap_data tables and pids SQL
+                        $sql['sql'] = $new[$variable]['select_choices_or_calculations'];
+                        $sql['changed'] = false;
+                        $sql = self::changeSQLDataTable($old[$variable]['select_choices_or_calculations'], $sql);
+                        $sql = self::compareSQL($old[$variable]['select_choices_or_calculations'], $sql);
+                        if($sql['changed']){
+                            $new[$variable]['select_choices_or_calculations'] = $sql['sql'];
+                        }
+                    }
                     $save_data[$variable] = $new[$variable];
                 } else if ($status == self::ADDED) {
                     $next_field_name = self::getNextFieldName($variable, $new, $old);
@@ -446,13 +449,13 @@ class HubUpdates{
 
         if($new['field_type'] !== $old['field_type']){
             if($old['field_type'] == ""){
-                $color = "class='mb-2 text-light p-1 d-inline-block' style='background-color:#5d9451; font-size:12px;';";
+                $color = "class='mb-2 text-light p-1 d-inline-block' style='background-color:#5d9451 !important; font-size:12px;';";
                 $col .= "<div $color> " . $new['field_type'] . "</div>";
             }else if($new['field_type'] == ""){
-                $color = "class='mb-2 d-inline-block text-light p-1' style='background-color:#cb410b; font-size:12px; text-decoration:line-through;';";
+                $color = "class='mb-2 d-inline-block text-light p-1' style='background-color:#cb410b !important; font-size:12px; text-decoration:line-through;';";
                 $col .= "<small $color>" . $old['field_type'] . "</small>";
             }else{
-                $color = "class='mb-2 bg-warning p-1 d-inline-block' style='font-size:12px;';";
+                $color = "class='mb-2 bg-warning p-1 d-inline-block' style='font-size:12px;background-color:#ffc107 !important;';";
                 $col .= "<div $color>" . $new['field_type'] . "</div>";
                 $col .= "<small class='mb-2 p-1 d-inline-block' style='font-size:12px; text-decoration:line-through;'>" . $old['field_type'] . "</small>";
             }
@@ -463,7 +466,7 @@ class HubUpdates{
         if($new['text_validation_type_or_show_slider_number'] !== $old['text_validation_type_or_show_slider_number']){
             if($old['text_validation_type_or_show_slider_number'] == ""){
                 //New item
-                $color = "class='mb-2 text-light p-1 d-inline-block' style='background-color:#5d9451; font-size:12px;';";
+                $color = "class='mb-2 text-light p-1 d-inline-block' style='background-color:#5d9451 !important; font-size:12px;';";
                 $col .= "<div $color> (" . $new['text_validation_type_or_show_slider_number'];
                 if ($new['text_validation_min'] != "") {
                     $col .= ", Min:" . $new['text_validation_max'];
@@ -474,7 +477,7 @@ class HubUpdates{
                 $col .= ") </div>";
             }elseif($new['text_validation_type_or_show_slider_number'] == ""){
                 //removed
-                $color = "class='mb-2 d-inline-block text-light p-1' style='background-color:#cb410b; font-size:12px; text-decoration:line-through;';";
+                $color = "class='mb-2 d-inline-block text-light p-1' style='background-color:#cb410b !important; font-size:12px; text-decoration:line-through;';";
                 $col .= "<div $color> (" . $old['text_validation_type_or_show_slider_number'];
                 if ($old['text_validation_min'] != "") {
                     $col .= ", Min:" . $old['text_validation_max'];
@@ -484,7 +487,7 @@ class HubUpdates{
                 }
                 $col .= ") </div>";
             }else{
-                $color = "class='mb-2 bg-warning p-1 d-inline-block' style='font-size:12px;';";
+                $color = "class='mb-2 bg-warning p-1 d-inline-block' style='font-size:12px;background-color:#ffc107 !important;';";
                 $col .= "<div $color> (" . $new['text_validation_type_or_show_slider_number'];
                 if ($new['text_validation_min'] != "") {
                     $col .= ", Min:" . $new['text_validation_max'];
@@ -518,10 +521,10 @@ class HubUpdates{
 
         if($new['required_field'] !== $old['required_field']){
             if($old['required_field'] == ""){
-                $color = "class='mb-2 text-light p-1 ml-2 d-inline-block' style='background-color:#5d9451; font-size:12px;';";
+                $color = "class='mb-2 text-light p-1 ml-2 d-inline-block' style='background-color:#5d9451 !important; font-size:12px;';";
                 $col .= "<small $color> Required </small>";
             }elseif($new['required_field'] == ""){
-                $color = "class='mb-2 ml-2 d-inline-block text-light p-1' style='background-color:#cb410b; font-size:12px; text-decoration:line-through;';";
+                $color = "class='mb-2 ml-2 d-inline-block text-light p-1' style='background-color:#cb410b !important; font-size:12px; text-decoration:line-through;';";
                 $col .= "<small $color> Required </small>";
             }
         }else if($old['required_field'] != ""){
@@ -531,10 +534,10 @@ class HubUpdates{
 
         if ($new['identifier'] !== $old['identifier']) {
             if ($old['identifier'] == "") {
-                $color = "class='mb-2 text-light p-1 ml-2 d-inline-block' style='background-color:#5d9451; font-size:12px;';";
+                $color = "class='mb-2 text-light p-1 ml-2 d-inline-block' style='background-color:#5d9451 !important; font-size:12px;';";
                 $col .= "<small $color> Identifier </small>";
             } elseif ($new['identifier'] == "") {
-                $color = "class='mb-2 ml-2 d-inline-block text-light p-1' style='background-color:#cb410b; font-size:12px; text-decoration:line-through;';";
+                $color = "class='mb-2 ml-2 d-inline-block text-light p-1' style='background-color:#cb410b !important; font-size:12px; text-decoration:line-through;';";
                 $col .= "<small $color> Identifier </small>";
             }
         } else if ($old['identifier'] != "") {
@@ -544,13 +547,13 @@ class HubUpdates{
 
         if($new['field_annotation'] !== $old['field_annotation']){
             if($old['field_annotation'] == ""){
-                $color = "class='mb-2 text-light p-1 d-block' style='background-color:#5d9451; font-size:12px;';";
+                $color = "class='mb-2 text-light p-1 d-block' style='background-color:#5d9451 !important; font-size:12px;';";
                 $col .= "<small $color>Field Annotation: " . $new['field_annotation'] . "</small>";
             }elseif($new['field_annotation'] == ""){
-                $color = "class='mb-2 d-block text-light p-1' style='background-color:#cb410b; font-size:12px; text-decoration:line-through;';";
+                $color = "class='mb-2 d-block text-light p-1' style='background-color:#cb410b !important; font-size:12px; text-decoration:line-through;';";
                 $col .= "<small $color>Field Annotation: " . $old['field_annotation'] . "</small>";
             }else{
-                $color = "class='mb-2 bg-warning p-1 d-inline-block' style='font-size:12px;';";
+                $color = "class='mb-2 bg-warning p-1 d-inline-block' style='font-size:12px;background-color:#ffc107 !important;';";
                 $col .= "<div $color>" . $new['field_annotation'] . "</div>";
                 $col .= "<small class='mb-2 p-1 d-inline-block' style='font-size:12px; text-decoration:line-through;'>" . $old['field_annotation'] . "</small>";
             }
@@ -565,10 +568,10 @@ class HubUpdates{
                 $col .= '<th> Calculation </th>';
                 $col .= '</tr>';
                 $col .= '<tr>';
-                $col .= "<td class='bg-warning'>" . $new['select_choices_or_calculations'] . "</td>";
+                $col .= "<td class='bg-warning' style='background-color:#ffc107 !important;'>" . $new['select_choices_or_calculations'] . "</td>";
                 $col .= '</tr>';
                 $col .= '<tr>';
-                $col .= "<td style='background-color:#cb410b; text-decoration:line-through;'>" . $old['select_choices_or_calculations'] . "</td>";
+                $col .= "<td style='background-color:#cb410b !important; text-decoration:line-through;'>" . $old['select_choices_or_calculations'] . "</td>";
                 $col .= '</tr>';
                 $col .= '</table>';
             } elseif ($new['field_type'] == 'sql') {
@@ -587,15 +590,15 @@ class HubUpdates{
                         $col .= '<td>' . $new['field_type'] . '</td>';
                     }elseif($label !== $oldValue){
                         if($oldValue == ""){
-                            $col .= "<td class='text-light' style='background-color:#5d9451;'>" . $val ."</td>";
-                            $col .= "<td class='text-light' style='background-color:#5d9451;'>" . $label . "</td>";
+                            $col .= "<td class='text-light' style='background-color:#5d9451 !important;'>" . $val ."</td>";
+                            $col .= "<td class='text-light' style='background-color:#5d9451 !important;'>" . $label . "</td>";
                         }elseif($label == ""){
-                            $col .= "<td class='text-light' style='background-color:#cb410b; text-decoration:line-through;'>" . $val . "</td>";
-                            $col .= "<td class='text-light' style='background-color:#cb410b; text-decoration:line-through;'>" . $oldValue . "</td>";
+                            $col .= "<td class='text-light' style='background-color:#cb410b !important; text-decoration:line-through;'>" . $val . "</td>";
+                            $col .= "<td class='text-light' style='background-color:#cb410b !important; text-decoration:line-through;'>" . $oldValue . "</td>";
                         }elseif($label !== $oldValue){
-                            $col .= "<td class='bg-warning'>" . $val . "</td>";
-                            $col .= "<td class='bg-warning'>" . $label . "</td>";
-                            $col .= "<td class='text-light' style='background-color:#cb410b; text-decoration: line-through;'>" . $oldValue . "</td>";
+                            $col .= "<td class='bg-warning' style='background-color:#ffc107 !important;'>" . $val . "</td>";
+                            $col .= "<td class='bg-warning' style='background-color:#ffc107 !important;'>" . $label . "</td>";
+                            $col .= "<td class='text-light' style='background-color:#cb410b !important; text-decoration: line-through;'>" . $oldValue . "</td>";
                         }
                     } else {
                         $col .= "<td>" . $val . "</td>";

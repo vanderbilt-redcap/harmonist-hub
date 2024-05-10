@@ -18,13 +18,10 @@ foreach ($allUpdates as $constant => $project_data) {
     $printData[$constant]['gotoredcap'] = $gotoredcap;
     $printData[$constant]['pid'] = $pidsArray[$constant];
 }
-//$new="SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM [data-table:195] WHERE project_id = 195 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM [data-table:195] where project_id = 195 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value";
-//$old = "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 195 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data  where project_id = 195 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value";
-//$sql_different = HubUpdates::printSQLDifferences($old, $new);
-//print_array($sql_different);
 
-//$allUpdates['data'] = HubUpdates::compareDataDictionary($module, $pidsArray);
-//print_array($allUpdates['data']);
+//$checked_values = "RMANAGER-assoc_concept-changed-sql";
+//print_array($checked_values);
+//HubUpdates::updateDataDictionary($module, $pidsArray, $checked_values);
 
 $constant = "RMANAGER";
 $path = $module->framework->getModulePath() . "csv/" . $constant . ".csv";
@@ -92,7 +89,7 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
                                 if(sButton.name == "save_btn"){
                                     display_data += getIcon(status)+" <div style='display: inline;vertical-align: sub;'>";
                                 }
-                                display_data += printData[constant_name]['pid'] + " - " + printData[constant_name]['title'] + " => <strong>" + variable_name + "</strong> (<em>" + field_type + "</em><)/div>";
+                                display_data += printData[constant_name]['pid'] + " - " + printData[constant_name]['title'] + " => <strong>" + variable_name + "</strong> (<em>" + field_type + "</em>)</div>";
                                 if(sButton.name == "save_btn"){
                                     display_data += "</div>";
                                 }
@@ -151,7 +148,6 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
                         success_message = "U";
                     }
 
-                    console.log(url+"&checked_values="+checked_values+"&option="+option+"&redcap_csrf_token="+redcap_csrf_token)
                     $.ajax({
                        type: "POST",
                        url: url,
@@ -160,9 +156,7 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
                            alert(xhr.responseText);
                        },
                        success: function (result) {
-
                            var status = jQuery.parseJSON(result)['status'];
-                           // location.reload();
                            window.location = getMessageLetterUrl(window.location.href, success_message);
                        }
                     });
@@ -172,19 +166,25 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
         </script>
     </head>
     <body>
-    <?php if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){ ?>
+    <?php
+    if(!empty($allUpdates) && $allUpdates > 0)
+    {
+        $message = "";
+        if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')) {
+            $message = "The Data Dictionary has been successfully updated.";
+        }else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'R')) {
+            $message = "The variables have been successfully <strong>added</strong> to the resolved list.";
+        }else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'U')) {
+            $message = "Last Updates has been successfully updated.";
+        }else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'L')) {
+            $message = "The variables have been successfully <strong>removed</strong> from the resolved list.";
+        }
+        ?>
+        <?php if (array_key_exists('message', $_REQUEST)){ ?>
         <div class="container" style="margin-top: 20px">
-            <div class="alert alert-success col-md-12" id="success_message">The Data Dictionary has been successfully updated.</div>
+            <div class="alert alert-success col-md-12" id="success_message"><?=$message?></div>
         </div>
-    <?php } else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'R')){?>
-        <div class="container" style="margin-top: 20px">
-            <div class="alert alert-success col-md-12" id="success_message">The variables have been successfully added to the resolved list.</div>
-        </div>
-    <?php } else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'U')){?>
-        <div class="container" style="margin-top: 20px">
-            <div class="alert alert-success col-md-12" id="success_message">Last Updates has been successfully updated.</div>
-        </div>
-    <?php } ?>
+        <?php } ?>
         <h4 class="title">
             You have <strong><?=count($allUpdates)?></strong> projects to update.
         </h4>
@@ -198,7 +198,7 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
             <form method="POST" action="<?=$module->getUrl('hub-updates/resolved_list.php').'&redcap_csrf_token='.$module->getCSRFToken()?>" class="" id="resolved_list">
                 If you do not want to make changes to certain variables <mark style="background-color: #fffbce">mark them as resolved</mark> and the updates will omit them from now onwards.
                 <br><br>
-                <div style="float: left">You can always add them back by clicking here: </div>
+                <div style="float: left;padding-right: 5px;">You can always add them back by clicking here: </div>
                 <button type="submit" class="btn btn-resolved" style="display: block;" id="select_btn">See Resolved List</button>
             </form>
         </h4>
@@ -288,23 +288,21 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
             <?php } ?>
             </div>
         </div>
-        <!-- MODAL -->
-        <div id="confirmationForm" title="Confirmation" style="display:none;">
-            <form method="POST" action="" id="data_confirmation">
-                <div class="modal-body">
-                    <span id="fields_total"></span>
-                    <br>
-                    <br>
-                    <div id="import_confirmation"></div>
-                    <input type="hidden" id="option" name="option">
-                </div>
-                <div class="modal-footer" style="padding-top: 30px;">
-                    <button type="submit" style="color:white;" class="btn btn-default btn-success" id='btnConfirm'>Continue</button>
-                </div>
+    <?php } else {?>
+        <h4 class="title">
+             There are currently no projects that need to be updated.
+        </h4>
+        <?php
+        $resolved_list = HubUpdates::getResolvedList($module,'resolved');
+        if(!empty($resolved_list)){
+        ?>
+        <h4 class="title" style="padding-top:15px">
+            <form method="POST" action="<?=$module->getUrl('hub-updates/resolved_list.php').'&redcap_csrf_token='.$module->getCSRFToken()?>" class="" id="resolved_list">
+               <div style="float: left;padding-right: 5px;">You can check your resolved list clicking here: </div>
+                <button type="submit" class="btn btn-resolved" style="display: block;" id="select_btn">See Resolved List</button>
             </form>
-        </div>
-        <div id="dialogWarning" title="WARNING!" style="display:none;">
-            <p>No fields selected.</p>
-        </div>
+        </h4>
+        <?php } ?>
+    <?php } ?>
     </body>
 </html>

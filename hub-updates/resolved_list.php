@@ -39,19 +39,24 @@ $resolved_list = HubUpdates::getResolvedList($module,'resolved');
             }
 
             $(document).ready(function () {
-                $('#copy_data').submit(function (event) {
-                    var pid_array = [];
+                $('#remove_data').submit(function (event) {
+                    var removed_list = [];
                     $('.rowSelected').each(function() {
-                        pid_array.push($(this).attr('row'));
+                        removed_list.push($(this).attr('row'));
                     });
-                    var pid_list = pid_array.join(",");
-                    $("#pid_list").val(pid_list);
+                    if(removed_list != ""){
+                        var checked_values = removed_list.join(",");
+                        $("#checked_values").val(checked_values);
+                    }else{
+                        $("#dialogWarning").dialog({modal:true, width:300}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");
+                    }
                     return true;
                 });
             });
         </script>
     </head>
     <body>
+    <?php if(!empty($resolved_list)){ ?>
     <h6 class="container">
         Select the REDCap variables you want to remove from the resolved list and press the button at the end.
     </h6>
@@ -77,17 +82,26 @@ $resolved_list = HubUpdates::getResolvedList($module,'resolved');
                             <input value="<?=$id?>" id="<?=$id?>" onclick="selectData('<?= $id; ?>');" class='auto-submit' type="checkbox" name='tablefields[]'>
                         </td>
                         <td><?=$printProject;?></td>
+                        <td><a href="<?=$gotoredcap?>"target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;margin-top: 5px;">Go to REDCap</a></td>
                     </tr>
                 <?php
                 }
             }
             ?>
         </table>
-        <form method="POST" action="<?=$module->getUrl('index.php').'&redcap_csrf_token='.$module->getCSRFToken()?>" id="copy_data">
-            <input type="hidden" id="pid_list" name="pid_list">
-            <button type="submit" class="btn btn-primary btn-block float-right" id="copy_btn">Remove from Resolved</button>
+        <form method="POST" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=removed&redcap_csrf_token='.$module->getCSRFToken()?>" id="remove_data">
+            <input type="hidden" id="checked_values" name="checked_values">
+            <button type="submit" class="btn btn-primary btn-block float-right" id="remove_btn">Remove from Resolved List</button>
         </form>
     </div>
+    <div id="dialogWarning" title="WARNING!" style="display:none;">
+        <p>No fields selected.</p>
+    </div>
+    <?php } else {?>
+    <h6 class="container">
+        You have no variables in the resolved list.
+    </h6>
+    <?php } ?>
     </body>
     </html>
     <?php include APP_PATH_DOCROOT . 'ProjectGeneral/footer.php';?>

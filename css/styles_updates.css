@@ -14,9 +14,9 @@
     background-color:#ebebeb !important;
     font-weight: bold;
 }
-.changed{background-color:#ffc107;}
-.added{background-color:#5d9451;}
-.removed{background-color:#cb410b;}
+.changed{background-color:#ffc107 !important;}
+.added{background-color:#5d9451 !important;}
+.removed{background-color:#cb410b !important;}
 tr.rowSelected td{
     background-color: #e6f5ff !important;
 }
@@ -31,5 +31,7 @@ tr.rowSelected td{
 }
 .btn-resolved {
     background-color: #dcdcdc;
-    border-color: #adacac;
+    border-color: #adacac !important;
+    padding: 3px 10px !important;
+    line-height: 1em !important;
 }
