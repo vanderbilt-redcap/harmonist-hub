@@ -76,6 +76,7 @@ $resolved_list = HubUpdates::getResolvedList($module,'resolved');
                     $title = $Proj->getTitle();
                     $printProject = "#".$project_id." - ".$title." => <strong>".$variable['field_name']."</strong> (<em>".$variable['field_type']."</em>)";
                     $id = $constant."-".$variable['field_name']."-".$variable['field_status']."-".$variable['field_type'];
+                    #TODO: modal iframe window with that displays changes.
                     ?>
                     <tr onclick="javascript:selectData('<?= $id; ?>')" row="<?=$id?>" value="<?=$id?>">
                         <td>
