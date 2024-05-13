@@ -31,6 +31,9 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
 //print_array($new['variable_replacedby']);
 //print_array($old['variable_replacedby']);
 
+//$test['data'] = HubUpdates::compareDataDictionary($module, $pidsArray);
+//print_array($test['data']);
+
 
 ?>
 <!DOCTYPE html>

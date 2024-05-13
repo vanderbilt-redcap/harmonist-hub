@@ -26,6 +26,7 @@ class HubUpdates{
             foreach ($possiblyChanged as $key => $value) {
                 if ($old[$key] != $value) {
                     $hasValueChanged = false;
+                    $hasSQLChanged = false;
                     foreach ($value as $fieldType => $dataValue) {
                         if (trim($dataValue) != trim($old[$key][$fieldType])) {
                             //check if they have enetered the choices with a space between the '|' separator
@@ -46,6 +47,7 @@ class HubUpdates{
                                 $sql = self::compareSQL($old[$key][$fieldType], $sql);
                                 if($sql['changed']){
                                     $hasValueChanged = true;
+                                    $hasSQLChanged = true;
                                     $value[$fieldType] = $sql['sql'];
                                 }
 
@@ -55,6 +57,10 @@ class HubUpdates{
                         }
                     }
                     if($hasValueChanged){
+                        if($old[$key]['field_type'] == 'sql' && !$hasSQLChanged){
+                            #Add original SQL values as the new one has different PIDs and it detects them as changes
+                            $value['select_choices_or_calculations'] = $old[$key]['select_choices_or_calculations'];
+                        }
                         $changed[$key] = $value;
                     }
                 }
