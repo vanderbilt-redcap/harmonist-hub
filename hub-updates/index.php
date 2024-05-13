@@ -292,6 +292,12 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
         <h4 class="title">
              There are currently no projects that need to be updated.
         </h4>
+        <h4 class="title" style="padding-top:15px">
+            The data displayed shows the projects from your <strong><?=$settings['hub_name']?> Hub</strong> that have different values when compared against the administrator's version.<br>
+            <form method="POST" action="" class="" id="update_list" name="update_list">
+                The data only uploads once a day. To recalculate any new changes you do without using this tool <a href="#" onclick="$('#option').val('update');$('#data_confirmation').submit();" id="update_btn" name="update_btn" style="font-size: 16px;text-decoration: underline;">click here</a>
+            </form>
+        </h4>
         <?php
         $resolved_list = HubUpdates::getResolvedList($module,'resolved');
         if(!empty($resolved_list)){
@@ -304,5 +310,23 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
         </h4>
         <?php } ?>
     <?php } ?>
+    <!-- MODAL -->
+    <div id="confirmationForm" title="Confirmation" style="display:none;">
+        <form method="POST" action="" id="data_confirmation">
+            <div class="modal-body">
+                <span id="fields_total"></span>
+                <br>
+                <br>
+                <div id="import_confirmation"></div>
+                <input type="hidden" id="option" name="option">
+            </div>
+            <div class="modal-footer" style="padding-top: 30px;">
+                <button type="submit" style="color:white;" class="btn btn-default btn-success" id='btnConfirm'>Continue</button>
+            </div>
+        </form>
+    </div>
+    <div id="dialogWarning" title="WARNING!" style="display:none;">
+        <p>No fields selected.</p>
+    </div>
     </body>
 </html>
