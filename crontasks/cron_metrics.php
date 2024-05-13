@@ -87,7 +87,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $req_id = array_unique($req_id);
 
     $query = $this->framework->createQuery();
-    $query->add("SELECT record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['RMANAGER'])." WHERE field_name = ? AND project_id = ? AND value = ?", ["approval_y", $pidsArray['RMANAGER'], "9"]);
+    $query->add("SELECT record FROM ".getDataTable($pidsArray['RMANAGER'])." WHERE field_name = ? AND project_id = ? AND value = ?", ["approval_y", $pidsArray['RMANAGER'], "9"]);
     $query->add('and')->addInClause('record ', $req_id);
     $query->add('group by record');
     $q = $query->execute();
@@ -98,7 +98,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     }
 
     $query = $this->framework->createQuery();
-    $query->add("SELECT a.record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['COMMENTSVOTES'])." a INNER JOIN ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['COMMENTSVOTES'])." b on a.record=b.record and a.project_id=b.project_id WHERE a.field_name = ? AND a.project_id = ? ", ["request_id", $pidsArray['COMMENTSVOTES']]);
+    $query->add("SELECT a.record FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." a INNER JOIN ".getDataTable($pidsArray['COMMENTSVOTES'])." b on a.record=b.record and a.project_id=b.project_id WHERE a.field_name = ? AND a.project_id = ? ", ["request_id", $pidsArray['COMMENTSVOTES']]);
     $query->add('and')->addInClause('a.value ', $req_id);
     $query->add('group by a.record');
     $q = $query->execute();
@@ -111,7 +111,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $arrayMetrics[0]['comments'] = $total_comments;
 
     $query = $this->framework->createQuery();
-    $query->add("SELECT * FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["response_pi_level", $pidsArray['COMMENTSVOTES']]);
+    $query->add("SELECT * FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["response_pi_level", $pidsArray['COMMENTSVOTES']]);
     $query->add('and')->addInClause('record ', $comments_id);
     $query->add('group by record');
     $q = $query->execute();
@@ -128,7 +128,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $arrayMetrics[0]['comments_n'] = $number_comments_nonpi;
 
     $query = $this->framework->createQuery();
-    $query->add("SELECT * FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["pi_vote", $pidsArray['COMMENTSVOTES']]);
+    $query->add("SELECT * FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["pi_vote", $pidsArray['COMMENTSVOTES']]);
     $query->add('and')->addInClause('record ', $comments_id);
     $query->add('group by record');
     $q = $query->execute();
@@ -143,7 +143,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $arrayMetrics[0]['votes'] = $number_votes;
 
     $query = $this->framework->createQuery();
-    $query->add("SELECT * FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["vote_now", $pidsArray['COMMENTSVOTES']]);
+    $query->add("SELECT * FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["vote_now", $pidsArray['COMMENTSVOTES']]);
     $query->add('and')->addInClause('record ', $comments_id);
     $query->add('group by record');
     $q = $query->execute();
@@ -207,6 +207,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
             $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete'] = array(1 => "1");//checkbox
             $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete_ts'] = date('Y-m-d H:i:s');
             $results = \Records::saveData($pidsArray['RMANAGER'], 'array', $arrayRM, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+            \REDCap::logEvent("Metrics Cron", "detected_complete(1) = checked", NULL, $comment['request_id'], $event_id_RM, $pidsArray['RMANAGER']);
         }
     }
 
@@ -233,7 +234,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
 
     #USERS
     $query = $this->framework->createQuery();
-    $query->add("SELECT count(*) as total_registered_users FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['PEOPLE'])." WHERE field_name = ? AND project_id = ? AND value in (1,2,3)", ["harmonist_regperm", $pidsArray['PEOPLE']]);
+    $query->add("SELECT count(*) as total_registered_users FROM ".getDataTable($pidsArray['PEOPLE'])." WHERE field_name = ? AND project_id = ? AND value in (1,2,3)", ["harmonist_regperm", $pidsArray['PEOPLE']]);
     $q = $query->execute();
     $arrayMetrics[0]['users'] = $q->fetch_assoc()['total_registered_users'];
 
@@ -241,7 +242,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $arrayMetrics[0]['users_pi'] = $number_users_pi;
 
     $query = $this->framework->createQuery();
-    $query->add("SELECT count(*) as number_users_accesslink FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['PEOPLE'])." WHERE field_name = ? AND project_id = ? AND DATEDIFF(NOW(),value) between 0 AND 30", ["last_requested_token_d", $pidsArray['PEOPLE']]);
+    $query->add("SELECT count(*) as number_users_accesslink FROM ".getDataTable($pidsArray['PEOPLE'])." WHERE field_name = ? AND project_id = ? AND DATEDIFF(NOW(),value) between 0 AND 30", ["last_requested_token_d", $pidsArray['PEOPLE']]);
     $q = $query->execute();
     $arrayMetrics[0]['users_access'] = $q->fetch_assoc()['number_users_accesslink'];
 
