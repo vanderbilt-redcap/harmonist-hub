@@ -8,7 +8,7 @@ class HubUpdates{
     const ADDED = 'added';
     const REMOVED = 'removed';
 
-    public static function compareDataDictionary($module, $pidsArray)
+    public static function compareDataDictionary($module, $pidsArray, $option='')
     {
         $allItems = array();
         $constants_array = REDCapManagement::getProjectsContantsArray();
@@ -60,9 +60,9 @@ class HubUpdates{
                 }
             }
             $result = array();
-            $result = self::custom_array_merge($module, $constant, $result, $changed, self::CHANGED);
-            $result = self::custom_array_merge($module, $constant, $result, $added, self::ADDED);
-            $result = self::custom_array_merge($module, $constant, $result, $removed, self::REMOVED);
+            $result = self::custom_array_merge($module, $constant, $result, $changed, self::CHANGED, $option);
+            $result = self::custom_array_merge($module, $constant, $result, $added, self::ADDED, $option);
+            $result = self::custom_array_merge($module, $constant, $result, $removed, self::REMOVED, $option);
             if(!empty($result)){
                 $allItems[$constant] = $result;
             }
@@ -262,12 +262,13 @@ class HubUpdates{
         return $array_to_fill;
     }
 
-    public static function custom_array_merge($module, $constant, $result, $data, $type)
+    public static function custom_array_merge($module, $constant, $result, $data, $type, $option='')
     {
         if(!empty($data)) {
             $resolved_list = self::getResolvedList($module);
 
             $is_empty = true;
+            $total = 0;
             foreach ($data as $key => $value) {
                 $resolved_found = false;
                 foreach ($resolved_list[$constant] as $key_resolved => $value_resolved) {
@@ -275,18 +276,25 @@ class HubUpdates{
                         $resolved_found = true;
                     }
                 }
-                #if it's in the resolved list, do not show as an update
-                if(!$resolved_found){
+
+                #Save data only
+                #if it's NOT in the resolved list, option blank, show as an update
+                #if it's in the resoved list, option resolved, show updates
+                if(
+                    ($option == '' && !$resolved_found)
+                    ||
+                    ($option == 'resolved' && $resolved_found)
+                ){
                     $is_empty = false;
                     $result[$value['form_name']][$type][$key] = $value;
+                    $total++;
                 }
-
             }
             #make sure we have values to save before adding the total legend
-            if(!$is_empty){
+            if(!$is_empty && $option == ''){
                 if(!array_key_exists('TOTAL',$result))
                     $result["TOTAL"] = array();
-                $result["TOTAL"][$type] = count($data);
+                $result["TOTAL"][$type] = $total;
                 $result["TOTAL"]["total"] += $result["TOTAL"][$type];
             }
 

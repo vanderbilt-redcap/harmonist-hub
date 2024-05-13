@@ -9,7 +9,7 @@ $message = "";
 if($option == "save")
 {
     HubUpdates::updateDataDictionary($module, $pidsArray, $checked_values);
-}else{
+}else if($option == "resolved" || $option == "removed"){
     $hub_updates_resolved_list = $module->getProjectSetting('hub-updates-resolved-list');
     $checked_values_array = explode(",",$checked_values);
     if(!empty($hub_updates_resolved_list)) {
@@ -37,7 +37,6 @@ if($option == "save")
     }
     $module->setProjectSetting('hub-updates-resolved-list',$result);
 }
-
 //Save the hub-updates to refresh the data
 $allUpdates['data'] = HubUpdates::compareDataDictionary($module, $pidsArray);
 $today = date("Y-m-d");
