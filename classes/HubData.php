@@ -10,41 +10,38 @@ class HubData
     function __construct($module,$name,$token, $pidsArray) {
         $this->session_name = $name;
 		$this->pidsArray = $pidsArray;
+		$this->module = $module;
+		$this->token = $token;
 
-        self::setCurrentUser($module, $pidsArray['PEOPLE'], $token);
-        self::setPersonRegion($module, $pidsArray['REGIONS']);
+        $user = self::getCurrentUser();
+        $person_region = self::getPersonRegion();
     }
 
     public function getCurrentUser()
     {
-        return $_SESSION[$this->session_name]['current_user'];
-    }
-    public function setCurrentUser($module,$project_id,$token)
-    {
+        $project_id = $this->pidsArray['PEOPLE'];
         $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
-        if((empty($_SESSION[$this->session_name]['current_user']) || $_SESSION[$this->session_name]['last_logged_event']['current_user'] != $last_logged_event) && !empty($token)){
-            $_SESSION[$this->session_name]['current_user'] = $module->escape(\REDCap::getData($project_id, 'json-array', null,null,null,null,false,false,false,"[access_token] = '".$token."'")[0]);
+        if((empty($_SESSION[$this->session_name]['current_user']) || $_SESSION[$this->session_name]['last_logged_event']['current_user'] != $last_logged_event) && !empty($this->token)){
+            $_SESSION[$this->session_name]['current_user'] = $this->module->escape(\REDCap::getData($project_id, 'json-array', null,null,null,null,false,false,false,"[access_token] = '".$this->token."'")[0]);
             $_SESSION[$this->session_name]['last_logged_event']['current_user'] = $last_logged_event;
             ## Check if current user is an Admin
-            $_SESSION[$this->session_name]['is_admin'] = false;
+            $_SESSION[$this->session_name]['current_user']['is_admin'] = false;
             if($_SESSION[$this->session_name]['current_user']['harmonistadmin_y'] == '1'){
-                $_SESSION[$this->session_name]['is_admin'] = true;
+                $_SESSION[$this->session_name]['current_user']['is_admin'] = true;
             }
         }
+        return $_SESSION[$this->session_name]['current_user'];
     }
-    public function getIsAdmin()
-    {
-        return $_SESSION[$this->session_name]['is_admin'];
-    }
+
     public function getPersonRegion()
     {
-        return $_SESSION[$this->session_name]['person_region'];
-    }
-    public function setPersonRegion($module,$project_id)
-    {
-        if (empty($_SESSION[$this->session_name]['person_region'])) {
-            $_SESSION[$this->session_name]['person_region'] = $module->escape(\REDCap::getData($project_id, 'json-array', array('record_id' => $_SESSION[$this->session_name]['current_user']['person_region']))[0]);
+        $project_id = $this->pidsArray['REGIONS'];
+        $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
+        if (empty($_SESSION[$this->session_name]['person_region']) || ($_SESSION[$this->session_name]['last_logged_event']['person_region'] != $last_logged_event)) {
+            $_SESSION[$this->session_name]['person_region'] = $this->module->escape(\REDCap::getData($project_id, 'json-array', array('record_id' => $_SESSION[$this->session_name]['current_user']['person_region']))[0]);
+            $_SESSION[$this->session_name]['last_logged_event']['person_region'] = $last_logged_event;
         }
+        return $_SESSION[$this->session_name]['person_region'];
     }
     public function getAllRegions()
     {

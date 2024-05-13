@@ -312,7 +312,7 @@ function getRequestHeader($hubData, $vote_grid, $option, $type=""){
     $current_user = $hubData->getCurrentUser();
     $person_region = $hubData->getPersonRegion();
     $regions = $hubData->getAllRegions();
-    $isAdmin = $hubData->getIsAdmin();
+    $isAdmin = $current_user['is_admin'];
 
     $header_colgroup = '<colgroup>
                     <col>
@@ -574,8 +574,8 @@ function getPublicVotesHTML($vote,$small_screen_class){
  * @return string
  */
 function getRequestHTML($module, $hubData, $pidsArray, $req, $commentReq, $request_type_label, $option, $vote_visibility, $vote_grid, $req_type){
-    $isAdmin = $hubData->getIsAdmin();
     $current_user = $hubData->getCurrentUser();
+    $isAdmin = $current_user['is_admin'];
     $person_region = $hubData->getPersonRegion();
     $regions = $hubData->getAllRegions();
     $class = "nowrap";
