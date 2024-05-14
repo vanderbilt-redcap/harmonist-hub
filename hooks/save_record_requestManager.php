@@ -42,9 +42,13 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     }
 
     $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array');
+    error_log("Record Request #: ".$record);
     foreach ($regions as $region){
         $instance = $region['record_id'];
         //only if it's the first time we save the info
+        error_log( $region['region_name']." (".$region['region_code'].")");
+        error_log("Regions Instance #: ".$instance);
+        error_log(json_encode($requestData[$record]['repeat_instances']['dashboard_voting_status'][$instance]));
         if(empty($requestData[$record]['repeat_instances']['dashboard_voting_status'][$instance])) {
             $array_repeat_instances = array();
             $aux = array();
