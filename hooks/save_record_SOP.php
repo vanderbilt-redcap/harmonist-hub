@@ -43,8 +43,8 @@ if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" &
         $docId = "";
         while ($row = $q->fetch_assoc()) {
             $storedName = date("YmdsH")."_pid".$pidsArray['HARMONIST']."_".\Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
-            $output = file_get_contents($module->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
-            $filesize = file_put_contents($module->getSafePath(EDOC_PATH.$storedName,EDOC_PATH), $output);
+            $output = file_get_contents($this->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
+            $filesize = file_put_contents($this->getSafePath(EDOC_PATH.$storedName,EDOC_PATH), $output);
             $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
             $docId = db_insert_id();
 
