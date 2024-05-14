@@ -63,7 +63,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         }
         #If all votes complete we check the checkbox
         if($all_votes_completed){
-            if($request['detected_complete'][0] != "1") {
+            if($request['detected_complete'][1] != "1") {
                 $Proj = new \Project($pidsArray['RMANAGER']);
                 $event_id_RM = $Proj->firstEventId;
                 $arrayRM = array();
