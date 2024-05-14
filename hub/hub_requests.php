@@ -68,8 +68,8 @@ foreach ($requests as $req){
 
 <div class="container">
     <?php
-    foreach ($types_of_requests_data as $type => $requestData){
-        if(!empty($requestData) && $type != "open" || $type == "open"){
+    foreach (['open','pending','completed'] as $type){
+        if(!empty($types_of_requests_data[$type]) && $type != "open" || $type == "open"){
             $style = 'hub_requests_'.$type;
             ?>
             <div class="panel panel-default">
@@ -83,13 +83,13 @@ foreach ($requests as $req){
                     <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                         <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                             <?php
-                            if($requestData == ""){
+                            if($types_of_requests_data[$type] == ""){
                                 ?><td>No requests available.</td><?php
                             }else {
                                 echo $header;
                                 ?>
                                 <tbody><?php
-                                echo $requestData;
+                                echo $types_of_requests_data[$type];
                                 ?></tbody><?php
                             }
                             ?>
