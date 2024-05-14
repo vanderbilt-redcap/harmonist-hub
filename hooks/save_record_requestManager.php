@@ -12,6 +12,7 @@ $requestData = \REDCap::getData($project_id, 'array', array('request_id' => $rec
 $request = $requestData[$record][$event_id];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
+error_log($instrument."_complete: ".$request[$instrument.'_complete']);
 if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'request'){
     $data = \REDCap::getData($project_id, 'json-array',$record,array($instrument.'_complete',$instrument.'_timestamp'), null,false,false,false,true)[0];
 
