@@ -12,6 +12,8 @@ $requestData = \REDCap::getData($project_id, 'array', array('request_id' => $rec
 $request = $requestData[$record][$event_id];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
+error_log($instrument."_complete: ".$request[$instrument.'_complete']);
+error_log("mr_copy_ok: ". $request['mr_copy_ok'][1]);
 if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'request'){
     $data = \REDCap::getData($project_id, 'json-array',$record,array($instrument.'_complete',$instrument.'_timestamp'), null,false,false,false,true)[0];
 
@@ -42,9 +44,13 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     }
 
     $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array');
+    error_log("Record Request #: ".$record);
     foreach ($regions as $region){
         $instance = $region['record_id'];
         //only if it's the first time we save the info
+        error_log( $region['region_name']." (".$region['region_code'].")");
+        error_log("Regions Instance #: ".$instance);
+        error_log(json_encode($requestData[$record]['repeat_instances']['dashboard_voting_status'][$instance]));
         if(empty($requestData[$record]['repeat_instances']['dashboard_voting_status'][$instance])) {
             $array_repeat_instances = array();
             $aux = array();
@@ -54,7 +60,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
             $array_repeat_instances[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance] = $aux;
             $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
-            \REDCap::logEvent("Research Group Instances Create on Request Manager", null, null, $record, $event_id, $project_id);
+            \REDCap::logEvent("Create Research Group Instance\nRequest Manager", $region['region_name']." (".$region['region_code'].")", null, $record, $event_id, $project_id);
         }else{
             break;
         }
@@ -67,6 +73,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[concept_id] = '".$request['mr_assigned']."'");
     $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
     if (empty($concept)) {
+        error_log("EMPTY Concept");
         if($request['final_d'] != ""){
             $start_year = date("Y", strtotime($request['final_d']));
         }
@@ -99,7 +106,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
                 $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
-                $output = file_get_contents($module->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
+                $output = file_get_contents($this->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
                 $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
                 $docId = db_insert_id();
@@ -114,7 +121,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
                 $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
-                $output = file_get_contents($module->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
+                $output = file_get_contents($this->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
                 $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
                 $docId = db_insert_id();
@@ -151,8 +158,10 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         }
 
         $json = json_encode($arrayConcepts);
+        error_log($json);
         $results = \Records::saveData($pidsArray['HARMONIST'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     }else{
+        error_log("NOT EMPTY Concept");
         $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['HARMONIST'] . "&arm=1&id=" . $concept['record_id'];
 
         $wgroup_name = "<i>None</i>";
