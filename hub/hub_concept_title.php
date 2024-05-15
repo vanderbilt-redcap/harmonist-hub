@@ -262,7 +262,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     $project_status = $module->getChoiceLabels('project_status', $pidsArray['HARMONIST']);
                     $admin_status = $module->getChoiceLabels('admin_status', $pidsArray['HARMONIST']);
                     if($concept['adminupdate_d'] == "" && $concept['update_d'] == ""){
-                        echo '<tr><td colspan="3">No hub-updates available</td></tr>';
+                        echo '<tr><td colspan="3">No updates available</td></tr>';
                     }else if($concept['adminupdate_d'] != "" && $concept['update_d'] != ""){
                         $adminUpdateD = array();
                         foreach ($concept['adminupdate_d'] as $aindex => $adminupdate){
@@ -451,6 +451,17 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
         <div class="panel-heading">
             <h3 class="panel-title">
                 <a data-toggle="collapse" href="#collapse_publications">Abstracts & Publications</a>
+                <?php
+                if($isAdmin){
+                    $Proj = new \Project($pidsArray['HARMONIST']);
+                    $event_id = $Proj->firstEventId;
+                    $form = "outputs";
+                    $instances = \RepeatInstance::getRepeatFormInstanceList($record, $event_id, $form, $Proj);
+                    $new_instance = (int)(array_key_last($instances)) + 1;
+                    $output_link = APP_PATH_WEBROOT_ALL. 'DataEntry/index.php?pid='.$pidsArray['HARMONIST'].'&id='.$record.'&event_id='.$event_id.'&page=outputs&instance='.$new_instance;
+                    echo '<a href="'.$output_link.'" style="float: right;padding-right: 30px;color: #337ab7;cursor: pointer" target="_blank"><em class="fa fa-plus"></em> New Output</a>';
+                }
+                ?>
             </h3>
         </div>
 
@@ -468,12 +479,15 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
 
                     $header .= '<thead>'.
                         '<tr>'.
-                        '<th class="sorted_class" data-sorted="true" data-sorted-direction="descending">Year</th>'.
-                        '<th class="sorted_class" data-sorted="false"><span style="display:block">Journal /</span><span>Conference</span></th>'.
-                        '<th class="sorted_class" data-sorted="false">Title and Authors</th>'.
-                        '<th class="sorted_class" data-sorted="false">Available</th>'.
-                        '<th class="sorted_class" data-sorted="false">File</th></tr></thead>';
-                    echo $header;
+                        '<th class="sorted_class" data-sorted="true" style="width:5%;" data-sorted-direction="descending">Year</th>'.
+                        '<th class="sorted_class" data-sorted="false" style="width:20%;"><span style="display:block">Journal /</span><span>Conference</span></th>'.
+                        '<th class="sorted_class" data-sorted="false" style="width:40%;">Title and Authors</th>'.
+                        '<th class="sorted_class" data-sorted="false" style="width:20%;">Available</th>'.
+                        '<th class="sorted_class" data-sorted="false" style="width:10%;">File</th>';
+                    if($isAdmin){
+                        $header .= '<th class="sorted_class" style="width:5%;text-align: center;" data-sorted="false"><em class="fa fa-cog"></em></th>';
+                    }
+                    echo '</tr></thead>'.$header;
 
                     echo '<tbody>';
 
@@ -503,7 +517,15 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                         if($concept['output_file'][$index] != ""){
                             $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept['output_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                         }
-                        echo '<td>'.$file.'</td></tr>';
+                        echo '<td>'.$file.'</td>';
+
+                        if($isAdmin){
+                            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "", $index);
+                            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
+                            echo '<td><button class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button></td>';
+                        }
+
+                        echo '</tr>';
                     }
                     echo '</tbody>';
                 }else{
@@ -511,6 +533,24 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 }
                 ?>
             </table>
+        </div>
+    </div>
+    <!-- MODAL EDIT CONCEPT-->
+    <div class="modal fade" id="hub_edit_pub" tabindex="-1" role="dialog" aria-labelledby="Codes">
+        <div class="modal-dialog" role="document" style="width: 800px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Edit Publication</h4>
+                </div>
+                <div class="modal-body">
+                    <iframe class="commentsform" id="redcap-edit-frame" message="E" name="redcap-edit-frame" src="" style="border: none;height: 810px;width: 100%;"></iframe>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 
