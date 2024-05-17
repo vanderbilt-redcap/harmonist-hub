@@ -65,7 +65,7 @@ foreach ($region_vote_values as $votes_info){
 }
 if($all_votes_completed){
     if($request['detected_complete'][1] != "1") {
-        $recordRM[$request_id][$event_id_RM]["detected_complete"] = array(0 => "1");//checkbox
+        $recordRM[$request_id][$event_id_RM]["detected_complete"] = array(1 => "1");//checkbox
         $recordRM[$request_id][$event_id_RM]["detected_complete_ts"] = date('Y-m-d H:i:s');
         \REDCap::logEvent("Comments and Votes Hook", "detected_complete(1) = checked", NULL, $request_id, $event_id_RM, $pidsArray['RMANAGER']);
     }
