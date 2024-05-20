@@ -7,10 +7,10 @@ $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 
 $days_expiration = intval($settings['downloadreminder_dur']);
-$expire_number = $settings['retrievedata_expiration'] - $days_expiration;
+$expire_number = (int)$settings['retrievedata_expiration'] - $days_expiration;
 $extra_days = ' + ' . $expire_number . " days";
 $days_expiration2 = intval($settings['downloadreminder2_dur']);
-$expire_number2 = $settings['retrievedata_expiration'] - $days_expiration2;
+$expire_number2 = (int)$settings['retrievedata_expiration'] - $days_expiration2;
 $extra_days2 = ' + ' . $expire_number2 . " days";
 
 $days_expiration_delete = intval($settings['retrievedata_expiration']);

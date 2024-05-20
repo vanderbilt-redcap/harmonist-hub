@@ -11,10 +11,6 @@ ArrayFunctions::array_sort_by_column($request, 'due_d');
 $request_type = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
 $instance = $current_user['person_region'];
-if ($instance == 1) {
-    $instance = '';
-}
-
 $open_requests_values = array();
 $home_metrics_values = array();
 foreach ($request as $req){
@@ -61,7 +57,6 @@ if(count($requests_labels) > count($requests_colors)) {
         }
     }
 }
-
 
 if(array_key_exists('message', $_REQUEST)){
     if($_REQUEST['message'] == 'U') {

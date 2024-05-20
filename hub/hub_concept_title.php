@@ -493,7 +493,8 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
 
                     //Order by year
                     $output_year = $concept['output_year'];
-                    asort ($output_year);
+                    if(!empty($output_year) && is_array($output_year))
+                        asort ($output_year);
                     foreach ($output_year as $index =>$value){
 
                         echo '<tr><td>'.$concept['output_year'][$index].'</td>'.
