@@ -166,7 +166,7 @@ $html_pdf = "<html><body style='font-family:\"Calibri\";font-size:10pt;'>".$page
     ."</div></div>"
     ."</body></html>";
 
-$filename = $concept_id."_DataRequest_".date("Y-m-d_hi",time());
+$filename = $concept_id."_DataRequest_".date("Y-m-d_hi",time()).".pdf";
 
 //SAVE PDF ON DB
 $reportHash = $filename;
