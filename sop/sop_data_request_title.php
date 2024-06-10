@@ -223,8 +223,6 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                                     <div class="modal-body">
                                         <span>Are you sure you want to copy this data request?</span>
                                     </div>
-                                    <input type="hidden" id="assoc_concept" name="assoc_concept">
-                                    <input type="hidden" id="user" name="user">
                                     <div class="modal-footer">
                                         <?php
                                         $url = $module->getUrl('sop/sop_copy_data_request_AJAX.php?id='.$module->escape($sop['record_id'])."&NOAUTH");
