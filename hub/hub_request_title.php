@@ -414,9 +414,9 @@ if($request !="") {
                             krsort($comments);
 
                         $most_recent_file = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''");
-                        if(!empty($most_recent_file)) {
+                        if(is_array($most_recent_file) && !empty($most_recent_file)) {
                             foreach ($most_recent_file as $k => $v) {
-                                if ($v['responsecomplete_ts'] > $max) {
+                                if (array_key_exists('responsecomplete_ts',$v) && $v['responsecomplete_ts'] > $max) {
                                     $max = $v['responsecomplete_ts'];
                                     $newest_record = $v['record_id'];
                                 }
