@@ -424,11 +424,11 @@ function loadAjax_steps(data,url,loadAjax,step){
                             $('#' + key).html(jsonAjax[key]);
                             $('[preview=' + key+"]").html(jsonAjax[key]);
                             $('[preview=' + key+"_header]").html("File format notes:");
-                        }else if(key == 'dataformat_prefer' && jsonAjax[key] != "") {
+                        }else if(key.match("dataformat_prefer___") != null && jsonAjax[key] != "") {
                             update_preferred_format(key,jsonAjax[key]);
                         }else if(key == "dataformat_prefer_text" && jsonAjax[key] != "") {
                             $('[preview=' + key + "]").html("<strong>Preferred file format:<\/strong> <p></p>" + jsonAjax[key]);
-                        }else if(key == "sop_downloaders_dummy" && jsonAjax[key] != "" && jsonAjax[key][0] == "1"){
+                        }else if(key == "sop_downloaders_dummy___1" && jsonAjax[key] != "" && jsonAjax[key][0] == "1"){
                             $('#'+key).prop('checked',true);
                         }else if(key == "concept_id") {
                             $('[name = step_concept_id]').html(jsonAjax[key]+":");
@@ -493,11 +493,11 @@ function loadAjax_steps(data,url,loadAjax,step){
                             $('#setup_show_option_' + jsonAjax[key]).show();
                             $('#setup_show_all_option').show();
                             optradio = jsonAjax[key];
-                        }else if(key == 'dataformat_prefer' && jsonAjax[key] != "") {
+                        }else if(key.match("dataformat_prefer___") != null && jsonAjax[key] != "") {
                             update_preferred_format(key,jsonAjax[key]);
                         }else if(key == "dataformat_prefer_text" && jsonAjax[key] != ""){
                             $('[preview=' + key+"]").html("<strong>Preferred file format:<\/strong> <p><\/p>"+jsonAjax[key]);
-                        }else if(key == "sop_downloaders_dummy" && jsonAjax[key] != "" && jsonAjax[key][0] == "1"){
+                        }else if(key == "sop_downloaders_dummy___1" && jsonAjax[key] != "" && jsonAjax[key][0] == "1"){
                             $('#'+key).prop('checked',true);
                         }else if(key == "save_option"){
                             $('#save_option').val(jsonAjax[key]);
@@ -679,10 +679,8 @@ function update_table_fields(tablefields){
 }
 
 function  update_preferred_format(key,preferredFormat){
-    for (var row in preferredFormat) {
-        if(preferredFormat[row] == "1") {
-            $('#'+key+'_'+row).prop('checked',true);
-        }
+    if(preferredFormat == "1"){
+        $('#'+key).prop('checked',true);
     }
 }
 
