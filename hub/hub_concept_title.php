@@ -454,7 +454,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <?php
                 if($isAdmin){
                     $Proj = new \Project($pidsArray['HARMONIST']);
-                    $event_id = $Proj->firstEventId;
+                    $event_id = $module->escape($Proj->firstEventId);
                     $form = "outputs";
                     $instances = \RepeatInstance::getRepeatFormInstanceList($record, $event_id, $form, $Proj);
                     $new_instance = (int)(array_key_last($instances)) + 1;
