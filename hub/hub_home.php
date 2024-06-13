@@ -247,14 +247,14 @@ if(!empty($homepage)) {
                         }else{?>
                             <tbody>
                             <tr>
-                                <td><span style="padding-left:5px"><em>No requests available</em></span></td>
+                                <td><span style="padding-left:5px"><em>No active requests</em></span></td>
                             </tr>
                             </tbody>
                         <?php }
                     }else{?>
                         <tbody>
                         <tr>
-                            <td><span style="padding-left:5px"><em>No requests available</em></span></td>
+                            <td><span style="padding-left:5px"><em>No active requests</em></span></td>
                         </tr>
                         </tbody>
                     <?php }?>
@@ -326,6 +326,9 @@ if(!empty($homepage)) {
                                 break;
                             }
                         }
+                    }
+                    if($i == 0){
+                        ?><li class="list-group-item"><em>No activity in last 7 days.</em></li><?php
                     }
                 }else{?>
                     <li class="list-group-item"><em>No activity in last 7 days.</em></li>
