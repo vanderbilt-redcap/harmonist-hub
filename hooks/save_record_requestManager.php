@@ -210,7 +210,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         }
     }
 }else if($instrument == 'admin_review' && $request['mr_temporary'] != "") {
-    $arrayRM = array(array('record_id' => $record));
+    $arrayRM = array(array('request_id' => $record));
     $arrayRM[0]['mr_assigned'] = $request['mr_temporary'];
     $json = json_encode($arrayRM);
     $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
@@ -218,7 +218,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
 #We save the date for Recently Finalized Requests table
 if(($request['finalize_y'] != "" && ($request['request_type'] != '1' && $request['request_type'] != '5')) || ($request['finalize_y'] == "2" && ($request['request_type'] == '1' || $request['request_type'] == '5')) || ($request['mr_assigned'] != "" && $request['finalconcept_doc'] != "" && $request['finalconcept_pdf'] != "")) {
-    $arrayRM = array(array('record_id' => $record));
+    $arrayRM = array(array('request_id' => $record));
     $arrayRM[0]['workflowcomplete_d'] = date("Y-m-d");
     $json = json_encode($arrayRM);
     $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
