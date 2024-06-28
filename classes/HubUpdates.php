@@ -20,7 +20,18 @@ class HubUpdates{
 
             $removed = array_diff_key($old, $new);
             $added = array_diff_key($new, $old);
-
+            foreach ($added as $key => $value) {
+                foreach ($value as $fieldType => $dataValue) {
+                    if($fieldType == "select_choices_or_calculations" && strtolower($value['field_type']) == "sql" && $value['select_choices_or_calculations'] != ""){
+                        $sql['sql'] = $value[$fieldType];
+                        $sql['changed'] = false;
+                        $sql = self::changeSQLDataTable("", $sql);
+                        if($sql['changed']){
+                            $added[$key][$fieldType] = $sql['sql'];
+                        }
+                    }
+                }
+            }
             $possiblyChanged = array_intersect_key($new, $old);
             $changed = array();
             foreach ($possiblyChanged as $key => $value) {
@@ -50,7 +61,6 @@ class HubUpdates{
                                     $hasSQLChanged = true;
                                     $value[$fieldType] = $sql['sql'];
                                 }
-
                             }else{
                                 $hasValueChanged = true;
                             }
@@ -104,6 +114,9 @@ class HubUpdates{
             $sql_redcap_data = $sqlOld;
         }else if(str_contains($sqlNew['sql'], 'redcap_data')){
             $sql_redcap_data = $sqlNew['sql'];
+        }else if(empty($sqlOld)){
+            //A new SQL has been added, check if it needs to be readjusted
+            $sql_redcap_data = $sqlNew['sql'];
         }
         $sql_redcap_data_compare = $sql_redcap_data;
 
@@ -144,7 +157,7 @@ class HubUpdates{
         }
 
         if($sql_redcap_data != $sql_redcap_data_compare){
-            if(str_contains($sqlOld, 'redcap_data')){
+            if(str_contains($sqlOld, 'redcap_data') || empty($sqlOld)){
                 $sqlNew['changed'] = true;
             }
             $sqlNew['sql'] = $sql_redcap_data;
