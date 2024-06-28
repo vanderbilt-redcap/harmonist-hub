@@ -108,7 +108,7 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
                             option = "save";
                         }else if(sButton.name == "resolved_btn") {
                             title = "Are you sure you want to mark as resolved <strong>"+fields_total+"</strong> fields?<br>";
-                            title += "<em>*These fileds will not show up again on Hub Updates unless they are removed from the resolved list.</em>";
+                            title += "<em>*These fields will not show up again on Hub Updates unless they are removed from the resolved list.</em>";
                             dialog_background_color = "#fff3cd";
                             dialog_color = "#856404";
                             option = "resolved";
