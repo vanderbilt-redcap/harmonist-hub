@@ -14737,7 +14737,7 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
     },
 
     /**
-     * Sets radius of an object (and updates width accordingly)
+     * Sets radius of an object (and hub-updates width accordingly)
      * @return {fabric.Circle} thisArg
      */
     setRadius: function(value) {
@@ -22930,7 +22930,7 @@ fabric.Image.filters.BaseFilter = fabric.util.createClass(/** @lends fabric.Imag
     /**
      * Inserts a character where cursor is
      * @param {String} _char Characters to insert
-     * @param {Boolean} skipUpdate trigger rendering and updates at the end of text insert
+     * @param {Boolean} skipUpdate trigger rendering and hub-updates at the end of text insert
      * @param {Object} styleObject Style to be inserted for the new char
      */
     insertChar: function(_char, skipUpdate, styleObject) {

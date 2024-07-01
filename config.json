@@ -20,6 +20,12 @@
         "icon": "fas fa-database",
         "url": "index.php?NOAUTH",
         "target": "_blank"
+      },
+      {
+        "name": "Hub Updates",
+        "icon": "fas fa-refresh",
+        "url": "hub-updates/index.php",
+        "show-header-and-footer": true
       }
     ]
   },

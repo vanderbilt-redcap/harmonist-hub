@@ -169,7 +169,7 @@ foreach ($userPermission as $user){
 #Get Projects ID's
 $pidsArray = REDCapManagement::getPIDsArray($project_id);
 
-#We must clear the project cache so our updates are pulled from the DB.
+#We must clear the project cache so our hub-updates are pulled from the DB.
 $module->clearProjectCache();
 
 #Save instances in Homepage project
@@ -213,7 +213,7 @@ if($pidHome != ""){
 #Get Projects ID's
 $pidsArray = REDCapManagement::getPIDsArray($project_id);
 
-#We must clear the project cache so our updates are pulled from the DB.
+#We must clear the project cache so our hub-updates are pulled from the DB.
 $module->clearProjectCache();
 
 #Upload SQL fields to projects

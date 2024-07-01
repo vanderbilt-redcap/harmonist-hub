@@ -42,7 +42,7 @@ if($hub_projectname != '' && $hub_profile != ''){
             } else {
                 include_once("projects.php");
               /***
-                 * Installation updates check to update new/missing variables
+                 * Installation hub-updates check to update new/missing variables
                  * -Data Dictionary Variables
                  * -Repeating Forms
                  */
