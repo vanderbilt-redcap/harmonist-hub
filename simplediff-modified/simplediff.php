@@ -49,11 +49,11 @@ function printSQLDifferences($old, $new){
     foreach($sql_checked as $value){
         if(is_array($value)) {
             //There are differences
-            $print['old'] .= (!empty($value['old']) ? "<mark style='background-color:#ffcccc'>" . implode(' ', $value['old']) . "</mark> " : '');
-            $print['new'] .= (!empty($value['new']) ? "<mark style='background-color:#ffc107'>" . implode(' ', $value['new']) . "</mark> " : '');
+            $print['old'] .= (!empty($value['old']) ? "<mark style='background-color:#ffcccc'>" . filter_tags(implode(' ', $value['old'])) . "</mark> " : '');
+            $print['new'] .= (!empty($value['new']) ? "<mark style='background-color:#ffc107'>" . filter_tags(implode(' ', $value['new'])) . "</mark> " : '');
         }else{
-            $print['old'] .=  $value . ' ';
-            $print['new'] .=  $value . ' ';
+            $print['old'] .=  filter_tags($value) . ' ';
+            $print['new'] .=  filter_tags($value) . ' ';
         }
     }
     return $print;

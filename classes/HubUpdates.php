@@ -345,15 +345,15 @@ class HubUpdates{
            if ($new[$var] !== $old[$var]) {
                $color = "class='mb-2 bg-warning';";
 
-               $col = "<div $color id='bg-warning'>" . $new[$var] . "</div><div class='text-muted' style=' text-decoration: line-through;'>" . $old[$var] . "</div>";
+               $col = "<div $color id='bg-warning'>" . filter_tags($new[$var]) . "</div><div class='text-muted' style=' text-decoration: line-through;'>" . filter_tags($old[$var]) . "</div>";
            } else {
-               $col = "<div class='mb-2'>" . $new[$var] . "</div>";
+               $col = "<div class='mb-2'>" . filter_tags($new[$var]) . "</div>";
            }
            $col .= self::getFieldLabel($new, $old, self::CHANGED,'Show the field ONLY if: ','branching_logic');
        }else {
            $col = $new['field_name'];
            if ($new['branching_logic'] != "") {
-               $col .= "<small class='d-flex' style='font-size:12px;'>Show the field ONLY if: " . $new['branching_logic'] . "</small>";
+               $col .= "<small class='d-flex' style='font-size:12px;'>Show the field ONLY if: " . filter_tags($new['branching_logic']) . "</small>";
            }
        }
         return $col;
@@ -366,29 +366,29 @@ class HubUpdates{
             if ($new[$var] !== $old[$var]) {
                 if ($old == "") {
                     $color = "class='mb-2 text-light p-1' style='background-color:#5d9451; font-size:12px;';";
-                    $col .= "<div $color>$string " . $new[$var] . "</div>";
+                    $col .= "<div $color>$string " . filter_tags($new[$var]) . "</div>";
                 } else if ($new[$var] == "") {
                     $color = "class='mb-2 p-1 bg-warning' style='font-size:12px;';";
                     $col .= "<small class='mb-2 d-flex text-light p-1' style='background-color:#cb410b; font-size:12px; text-decoration:line-through;'>$string" . $old[$var] . "</small>";
                 } else {
                     $color = "class='mb-2 bg-warning p-1' style='font-size:12px;';";
-                    $col .= "<div $color>$string " . $new[$var] . "</div>";
-                    $col .= "<small class='mb-2 p-1 d-flex' style='font-size:12px; text-decoration:line-through;'>$string " . $old[$var] . "</small>";
+                    $col .= "<div $color>$string " . filter_tags($new[$var]). "</div>";
+                    $col .= "<small class='mb-2 p-1 d-flex' style='font-size:12px; text-decoration:line-through;'>$string " . filter_tags($old[$var]) . "</small>";
                 }
             } else if ($old[$var] != "") {
-                $col .= "<small class='d-flex mb-2'><div><i class='text-muted'>$string </i><i class='text-info'> " . $old[$var] . "</i></div></small>";
+                $col .= "<small class='d-flex mb-2'><div><i class='text-muted'>$string </i><i class='text-info'> " . filter_tags($old[$var]) . "</i></div></small>";
             }
         }else{
             $col = "";
 
             if ($new['section_header'] != "") {
-                $col .= "<div class='mb-2' style='font-size:12px;'>Section Header: " . $new['section_header'] . "</div>";
+                $col .= "<div class='mb-2' style='font-size:12px;'>Section Header: " . filter_tags($new['section_header']) . "</div>";
             }
 
             $col .= $new['field_label'];
 
             if ($new['field_note'] != "") {
-                $col .= "<small class='d-flex'>Field Note: " . $new['field_note'] . "</small>";
+                $col .= "<small class='d-flex'>Field Note: " . filter_tags($new['field_note']) . "</small>";
             }
         }
 
@@ -406,12 +406,12 @@ class HubUpdates{
             if ($value['text_validation_type_or_show_slider_number'] == 'int') $value['text_validation_type_or_show_slider_number'] = 'integer';
             elseif ($value['text_validation_type_or_show_slider_number'] == 'float') $value['text_validation_type_or_show_slider_number'] = 'number';
             elseif (in_array($value['text_validation_type_or_show_slider_number'], array('date', 'datetime', 'datetime_seconds'))) $value['text_validation_type_or_show_slider_number'] .= '_ymd';
-            $col .= " (" . $value['text_validation_type_or_show_slider_number'];
+            $col .= " (" . filter_tags($value['text_validation_type_or_show_slider_number']);
             if ($value['text_validation_min'] != "") {
-                $col .= ", Min:" . $value['text_validation_min'];
+                $col .= ", Min:" . filter_tags($value['text_validation_min']);
             }
             if ($value['text_validation_max'] != "") {
-                $col .= ", Max: " . $value['text_validation_max'];
+                $col .= ", Max: " . filter_tags($value['text_validation_max']);
             }
 
             $col .= ")";
@@ -426,7 +426,7 @@ class HubUpdates{
         }
 
         if ($value['field_annotation'] != "") {
-            $col .= "<br /> Field Annotation: " . $value['field_annotation'];
+            $col .= "<br /> Field Annotation: " . filter_tags($value['field_annotation']);
         }
 
         if ($value['select_choices_or_calculations'] != "" && $value['field_type'] != "descriptive") {
@@ -438,22 +438,22 @@ class HubUpdates{
                 $col .= '<th> Calculation </th>';
                 $col .= '</tr>';
                 $col .= '<tr>';
-                $col .= '<td>' . $value['select_choices_or_calculations'] . '</td>';
+                $col .= '<td>' . filter_tags($value['select_choices_or_calculations']) . '</td>';
                 $col .= '</tr>';
                 $col .= '</table>';
             } elseif ($value['field_type'] == 'sql') {
-                $col .= '<table border="0" cellpadding="2" cellspacing="0" class="ReportTableWithBorder"><tr><td>' . $value['select_choices_or_calculations'] . '</td></tr></table>';
+                $col .= '<table border="0" cellpadding="2" cellspacing="0" class="ReportTableWithBorder"><tr><td>' . filter_tags($value['select_choices_or_calculations']) . '</td></tr></table>';
             } else {
                 $col .= '<table border="0" cellpadding="2" cellspacing="0" class="ReportTableWithBorder">';
                 foreach ($choices as $val => $label) {
                     $col .= '<tr valign="top">';
                     if ($value['field_type'] == 'checkbox') {
-                        $col .= '<td>' . $val . '</td>';
+                        $col .= '<td>' . filter_tags($val) . '</td>';
                     } else {
-                        $col .= '<td>' . $val . '</td>';
+                        $col .= '<td>' . filter_tags($val) . '</td>';
                     }
 
-                    $col .= '<td>' . $label . '</td>';
+                    $col .= '<td>' . filter_tags($label) . '</td>';
                     $col .= '</tr>';
                 }
                 $col .= '</table>';
@@ -477,71 +477,71 @@ class HubUpdates{
         if($new['field_type'] !== $old['field_type']){
             if($old['field_type'] == ""){
                 $color = "class='mb-2 text-light p-1 d-inline-block' style='background-color:#5d9451 !important; font-size:12px;';";
-                $col .= "<div $color> " . $new['field_type'] . "</div>";
+                $col .= "<div $color> " . filter_tags($new['field_type']) . "</div>";
             }else if($new['field_type'] == ""){
                 $color = "class='mb-2 d-inline-block text-light p-1' style='background-color:#cb410b !important; font-size:12px; text-decoration:line-through;';";
-                $col .= "<small $color>" . $old['field_type'] . "</small>";
+                $col .= "<small $color>" . filter_tags($old['field_type']) . "</small>";
             }else{
                 $color = "class='mb-2 bg-warning p-1 d-inline-block' style='font-size:12px;background-color:#ffc107 !important;';";
-                $col .= "<div $color>" . $new['field_type'] . "</div>";
-                $col .= "<small class='mb-2 p-1 d-inline-block' style='font-size:12px; text-decoration:line-through;'>" . $old['field_type'] . "</small>";
+                $col .= "<div $color>" . filter_tags($new['field_type']) . "</div>";
+                $col .= "<small class='mb-2 p-1 d-inline-block' style='font-size:12px; text-decoration:line-through;'>" . filter_tags($old['field_type']) . "</small>";
             }
         } else if ($old['field_type'] != "") {
-            $col .= "<div class='d-inline-block mr-1 mb-2'>" . $old['field_type'] . "</div>";
+            $col .= "<div class='d-inline-block mr-1 mb-2'>" . filter_tags($old['field_type']) . "</div>";
         }
 
         if($new['text_validation_type_or_show_slider_number'] !== $old['text_validation_type_or_show_slider_number']){
             if($old['text_validation_type_or_show_slider_number'] == ""){
                 //New item
                 $color = "class='mb-2 text-light p-1 d-inline-block' style='background-color:#5d9451 !important; font-size:12px;';";
-                $col .= "<div $color> (" . $new['text_validation_type_or_show_slider_number'];
+                $col .= "<div $color> (" . filter_tags($new['text_validation_type_or_show_slider_number']);
                 if ($new['text_validation_min'] != "") {
-                    $col .= ", Min:" . $new['text_validation_max'];
+                    $col .= ", Min:" . filter_tags($new['text_validation_max']);
                 }
                 if ($new['text_validation_min'] != "") {
-                    $col .= ", Max: " . $new['text_validation_max'];
+                    $col .= ", Max: " . filter_tags($new['text_validation_max']);
                 }
                 $col .= ") </div>";
             }elseif($new['text_validation_type_or_show_slider_number'] == ""){
                 //removed
                 $color = "class='mb-2 d-inline-block text-light p-1' style='background-color:#cb410b !important; font-size:12px; text-decoration:line-through;';";
-                $col .= "<div $color> (" . $old['text_validation_type_or_show_slider_number'];
+                $col .= "<div $color> (" . filter_tags($old['text_validation_type_or_show_slider_number']);
                 if ($old['text_validation_min'] != "") {
-                    $col .= ", Min:" . $old['text_validation_max'];
+                    $col .= ", Min:" . filter_tags($old['text_validation_max']);
                 }
                 if ($old['text_validation_min'] != "") {
-                    $col .= ", Max: " . $old['text_validation_max'];
+                    $col .= ", Max: " . filter_tags($old['text_validation_max']);
                 }
                 $col .= ") </div>";
             }else{
                 $color = "class='mb-2 bg-warning p-1 d-inline-block' style='font-size:12px;background-color:#ffc107 !important;';";
-                $col .= "<div $color> (" . $new['text_validation_type_or_show_slider_number'];
+                $col .= "<div $color> (" . filter_tags($new['text_validation_type_or_show_slider_number']);
                 if ($new['text_validation_min'] != "") {
-                    $col .= ", Min:" . $new['text_validation_max'];
+                    $col .= ", Min:" . filter_tags($new['text_validation_max']);
                 }
                 if ($new['text_validation_min'] != "") {
-                    $col .= ", Max: " . $new['text_validation_max'];
+                    $col .= ", Max: " . filter_tags($new['text_validation_max']);
                 }
                 $col .= ") </div>";
 
-                $col .= "<div class='ml-1 d-inline-block' style='font-size:12px; text-decoration:line-through;'> (" . $old['text_validation_type_or_show_slider_number'];
+                $col .= "<div class='ml-1 d-inline-block' style='font-size:12px; text-decoration:line-through;'> (" . filter_tags($old['text_validation_type_or_show_slider_number']);
                 if ($old['text_validation_min'] != "") {
-                    $col .= ", Min:" . $old['text_validation_max'];
+                    $col .= ", Min:" . filter_tags($old['text_validation_max']);
                 }
                 if ($old['text_validation_min'] != "") {
-                    $col .= ", Max: " . $old['text_validation_max'];
+                    $col .= ", Max: " . filter_tags($old['text_validation_max']);
                 }
                 $col .= ") </div>";
             }
 
         } else if ($old['text_validation_type_or_show_slider_number'] != "") {
             $color = 'class="d-inline-block mr-1 mb-2" style="font-size:12px;"';
-            $col .= "<div $color> (" . $old['text_validation_type_or_show_slider_number'];
+            $col .= "<div $color> (" . filter_tags($old['text_validation_type_or_show_slider_number']);
             if ($old['text_validation_min'] != "") {
-                $col .= ", Min:" . $old['text_validation_max'];
+                $col .= ", Min:" . filter_tags($old['text_validation_max']);
             }
             if ($old['text_validation_min'] != "") {
-                $col .= ", Max: " . $old['text_validation_max'];
+                $col .= ", Max: " . filter_tags($old['text_validation_max']);
             }
             $col .= ") </div>";
         }
@@ -575,17 +575,17 @@ class HubUpdates{
         if($new['field_annotation'] !== $old['field_annotation']){
             if($old['field_annotation'] == ""){
                 $color = "class='mb-2 text-light p-1 d-block' style='background-color:#5d9451 !important; font-size:12px;';";
-                $col .= "<small $color>Field Annotation: " . $new['field_annotation'] . "</small>";
+                $col .= "<small $color>Field Annotation: " . filter_tags($new['field_annotation']) . "</small>";
             }elseif($new['field_annotation'] == ""){
                 $color = "class='mb-2 d-block text-light p-1' style='background-color:#cb410b !important; font-size:12px; text-decoration:line-through;';";
-                $col .= "<small $color>Field Annotation: " . $old['field_annotation'] . "</small>";
+                $col .= "<small $color>Field Annotation: " . filter_tags($old['field_annotation']) . "</small>";
             }else{
                 $color = "class='mb-2 bg-warning p-1 d-inline-block' style='font-size:12px;background-color:#ffc107 !important;';";
                 $col .= "<div $color>" . $new['field_annotation'] . "</div>";
-                $col .= "<small class='mb-2 p-1 d-inline-block' style='font-size:12px; text-decoration:line-through;'>" . $old['field_annotation'] . "</small>";
+                $col .= "<small class='mb-2 p-1 d-inline-block' style='font-size:12px; text-decoration:line-through;'>" . filter_tags($old['field_annotation']) . "</small>";
             }
         }else if($old['field_annotation'] != ""){
-            $col .= "<div class='d-inline-block mr-1 mb-2'>" . $old['field_annotation'] . "</div>";
+            $col .= "<div class='d-inline-block mr-1 mb-2'>" . filter_tags($old['field_annotation']) . "</div>";
         }
 
         if($new['select_choices_or_calculations'] !== $old['select_choices_or_calculations']){
@@ -595,10 +595,10 @@ class HubUpdates{
                 $col .= '<th> Calculation </th>';
                 $col .= '</tr>';
                 $col .= '<tr>';
-                $col .= "<td class='bg-warning' style='background-color:#ffc107 !important;'>" . $new['select_choices_or_calculations'] . "</td>";
+                $col .= "<td class='bg-warning' style='background-color:#ffc107 !important;'>" . filter_tags($new['select_choices_or_calculations']) . "</td>";
                 $col .= '</tr>';
                 $col .= '<tr>';
-                $col .= "<td style='background-color:#cb410b !important; text-decoration:line-through;'>" . $old['select_choices_or_calculations'] . "</td>";
+                $col .= "<td style='background-color:#cb410b !important; text-decoration:line-through;'>" . filter_tags($old['select_choices_or_calculations']) . "</td>";
                 $col .= '</tr>';
                 $col .= '</table>';
             } elseif ($new['field_type'] == 'sql') {
@@ -613,23 +613,23 @@ class HubUpdates{
                     $col .= '<tr valign="top">';
                     $oldValue = $oldChoices[$val];
                     if('field_type' == 'checkbox'){
-                        $col .= '<td>' . $val . '</td>';
-                        $col .= '<td>' . $new['field_type'] . '</td>';
+                        $col .= '<td>' . filter_tags($val) . '</td>';
+                        $col .= '<td>' . filter_tags($new['field_type']) . '</td>';
                     }elseif($label !== $oldValue){
                         if($oldValue == ""){
-                            $col .= "<td class='text-light' style='background-color:#5d9451 !important;'>" . $val ."</td>";
-                            $col .= "<td class='text-light' style='background-color:#5d9451 !important;'>" . $label . "</td>";
+                            $col .= "<td class='text-light' style='background-color:#5d9451 !important;'>" . filter_tags($val) ."</td>";
+                            $col .= "<td class='text-light' style='background-color:#5d9451 !important;'>" . filter_tags($label) . "</td>";
                         }elseif($label == ""){
-                            $col .= "<td class='text-light' style='background-color:#cb410b !important; text-decoration:line-through;'>" . $val . "</td>";
-                            $col .= "<td class='text-light' style='background-color:#cb410b !important; text-decoration:line-through;'>" . $oldValue . "</td>";
+                            $col .= "<td class='text-light' style='background-color:#cb410b !important; text-decoration:line-through;'>" . filter_tags($val) . "</td>";
+                            $col .= "<td class='text-light' style='background-color:#cb410b !important; text-decoration:line-through;'>" . filter_tags($oldValue) . "</td>";
                         }elseif($label !== $oldValue){
-                            $col .= "<td class='bg-warning' style='background-color:#ffc107 !important;'>" . $val . "</td>";
-                            $col .= "<td class='bg-warning' style='background-color:#ffc107 !important;'>" . $label . "</td>";
-                            $col .= "<td class='text-light' style='background-color:#cb410b !important; text-decoration: line-through;'>" . $oldValue . "</td>";
+                            $col .= "<td class='bg-warning' style='background-color:#ffc107 !important;'>" . filter_tags($val) . "</td>";
+                            $col .= "<td class='bg-warning' style='background-color:#ffc107 !important;'>" . filter_tags($label) . "</td>";
+                            $col .= "<td class='text-light' style='background-color:#cb410b !important; text-decoration: line-through;'>" . filter_tags($oldValue) . "</td>";
                         }
                     } else {
-                        $col .= "<td>" . $val . "</td>";
-                        $col .= "<td>" . $label . "</td>";
+                        $col .= "<td>" . filter_tags($val) . "</td>";
+                        $col .= "<td>" . filter_tags($label) . "</td>";
                     }
 
                 }
@@ -642,21 +642,21 @@ class HubUpdates{
                 $col .= '<th> Calculation </th>';
                 $col .= '</tr>';
                 $col .= '<tr>';
-                $col .= "<td>" . $old['select_choices_or_calculations'] . "</td>";
+                $col .= "<td>" . filter_tags($old['select_choices_or_calculations']) . "</td>";
                 $col .= '</tr>';
                 $col .= '</table>';
             }elseif($old['field_type'] == 'sql'){
-                $col .= '<table border="0" cellpadding="2" cellspacing="0" class="ReportTableWithBorder"><tr><td>' . $old['select_choices_or_calculations'] . '</td></tr></table>';
+                $col .= '<table border="0" cellpadding="2" cellspacing="0" class="ReportTableWithBorder"><tr><td>' . filter_tags($old['select_choices_or_calculations']) . '</td></tr></table>';
             }else{
                 $col .= '<table border="0" cellpadding="2" cellspacing="0" class="ReportTableWithBorder">';
                 foreach ($oldChoices as $val => $label) {
                     $col .= '<tr valign="top">';
                     if ($old['field_type'] == 'checkbox' && $old['select_choices_or_calculations'] != $new['select_choices_or_calculations']) {
-                        $col .= '<td>' . $val . '</td>';
-                        $col .= '<td>'.$label . $old['field_type'] . '</td>';
+                        $col .= '<td>' . filter_tags($val) . '</td>';
+                        $col .= '<td>'.filter_tags($label . $old['field_type']) . '</td>';
                     } else {
-                        $col .= "<td>" . $val . "</td>";
-                        $col .= "<td>" . $label . "</td>";
+                        $col .= "<td>" . filter_tags($val) . "</td>";
+                        $col .= "<td>" . filter_tags($label) . "</td>";
                     }
                 }
                 $col .= '</table>';
