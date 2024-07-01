@@ -12,6 +12,7 @@ $requestData = \REDCap::getData($project_id, 'array', array('request_id' => $rec
 $request = $requestData[$record][$event_id];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
+error_log($instrument."_complete: ".$request[$instrument.'_complete']);
 if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'request'){
     $data = \REDCap::getData($project_id, 'json-array',$record,array($instrument.'_complete',$instrument.'_timestamp'), null,false,false,false,true)[0];
 
@@ -42,9 +43,13 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     }
 
     $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array');
+    error_log("Record Request #: ".$record);
     foreach ($regions as $region){
         $instance = $region['record_id'];
         //only if it's the first time we save the info
+        error_log( $region['region_name']." (".$region['region_code'].")");
+        error_log("Regions Instance #: ".$instance);
+        error_log(json_encode($requestData[$record]['repeat_instances']['dashboard_voting_status'][$instance]));
         if(empty($requestData[$record]['repeat_instances']['dashboard_voting_status'][$instance])) {
             $array_repeat_instances = array();
             $aux = array();
@@ -54,6 +59,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
             $array_repeat_instances[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance] = $aux;
             $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+            \REDCap::logEvent("Create Research Group Instance\nRequest Manager", $region['region_name']." (".$region['region_code'].")", null, $record, $event_id, $project_id);
         }else{
             break;
         }
@@ -97,8 +103,8 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             $docId = "";
             while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
-                $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
-                $output = file_get_contents($module->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
+                $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . getRandomIdentifier(6);
+                $output = file_get_contents($this->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
                 $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
                 $docId = db_insert_id();
@@ -112,8 +118,8 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             $docId = "";
             while ($row = db_fetch_assoc($q)) {
                 $finalConcept_PDF = $row['doc_name'];
-                $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6);
-                $output = file_get_contents($module->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
+                $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . getRandomIdentifier(6);
+                $output = file_get_contents($this->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
                 $q = $this->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)",[$storedName,$row['doc_name'],$filesize,$row['file_extension'],$row['mime_type'],'0',$pidsArray['HARMONIST'],date('Y-m-d h:i:s')]);
                 $docId = db_insert_id();
@@ -137,7 +143,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $message = "<div>Dear Administrator,</div>" .
             "<div>A new concept sheet <b>" . $request['mr_assigned'] . "</b> has been created in the Hub.</div><br/>" .
             "<div><ul><li><b>Active:</b> Y</li><li><b>Last Update:</b> " . $last_update . "</li><li><b>Concept ID:</b> " . $request['mr_assigned'] . "</li><li><b>Concept Title:</b> " . $request['request_title'] . "</li>" .
-            "<li><b>Contact Link:</b> " . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $request['contactperson_id']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $request['final_d'] . "</li>" .
+            "<li><b>Contact Link:</b> " . getPeopleName($pidsArray['PEOPLE'], $request['contactperson_id']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $request['final_d'] . "</li>" .
             "<li><b>WG Link:</b> " . $wgroup_name . "</li><li><b>WG2 Link:</b> " . $wgroup2_name . "</li><li><b>Concept File:</b> " . $finalConcept_PDF . "</li><li><b>Concept Word:</b> " . $finalConcept_DOC . "</li></ul></div><br/>";
 
         $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['HARMONIST'] . "&arm=1&id=" . $concept['record_id'];
@@ -145,7 +151,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         if($settings['hub_email_new_conceptsheet'] != "") {
             $emails = explode(';', $settings['hub_email_new_conceptsheet']);
             foreach ($emails as $email) {
-                \Vanderbilt\HarmonistHubExternalModule\sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "New concept sheet " . $request['mr_assigned'] . " created in the Hub", $message, $concept_id,"New concept sheet created",$pidsArray['HARMONIST']);
+                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "New concept sheet " . $request['mr_assigned'] . " created in the Hub", $message, $concept_id,"New concept sheet created",$pidsArray['HARMONIST']);
             }
         }
 
@@ -192,19 +198,19 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             "<div><span style='color: red'>This concept already exists.</span></div><br/>" .
             "<div>Existing concept sheet data:</div><br/>" .
             "<div><ul><li><b>Active:</b> ".$concept['active_y']."</li><li><b>Last Update:</b> " . $concept['lastupdate_d'] . "</li><li><b>Concept ID:</b> " . $concept['concept_id'] . "</li><li><b>Concept Title:</b> " . $concept['concept_title'] . "</li>" .
-            "<li><b>Contact Link:</b> " . \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $concept['contact_link']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $concept['ec_approval_d'] . "</li>" .
+            "<li><b>Contact Link:</b> " . getPeopleName($pidsArray['PEOPLE'], $concept['contact_link']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $concept['ec_approval_d'] . "</li>" .
             "<li><b>WG Link:</b> " . $wgroup_name . "</li><li><b>WG2 Link:</b> " . $wgroup2_name . "</li><li><b>Concept File:</b> " . $finalConcept_PDF . "</li><li><b>Concept Word:</b> " . $finalConcept_DOC . "</li></ul></div><br/>".
             "<div>Click <a href='" . $link . "' target='_blank'>this link</a> to see the existing concept sheet.</div><br/>" ;
 
         if($settings['hub_email_new_conceptsheet'] != "") {
             $emails = explode(';', $settings['hub_email_new_conceptsheet']);
             foreach ($emails as $email) {
-                \Vanderbilt\HarmonistHubExternalModule\sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Failed to create concept sheet " . $concept['concept_id'] . " in the Hub", $message, $concept['record_id'],"New concept sheet FAILED",$pidsArray['HARMONIST']);
+                sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Failed to create concept sheet " . $concept['concept_id'] . " in the Hub", $message, $concept['record_id'],"New concept sheet FAILED",$pidsArray['HARMONIST']);
             }
         }
     }
 }else if($instrument == 'admin_review' && $request['mr_temporary'] != "") {
-    $arrayRM = array(array('record_id' => $record));
+    $arrayRM = array(array('request_id' => $record));
     $arrayRM[0]['mr_assigned'] = $request['mr_temporary'];
     $json = json_encode($arrayRM);
     $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
@@ -212,7 +218,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
 #We save the date for Recently Finalized Requests table
 if(($request['finalize_y'] != "" && ($request['request_type'] != '1' && $request['request_type'] != '5')) || ($request['finalize_y'] == "2" && ($request['request_type'] == '1' || $request['request_type'] == '5')) || ($request['mr_assigned'] != "" && $request['finalconcept_doc'] != "" && $request['finalconcept_pdf'] != "")) {
-    $arrayRM = array(array('record_id' => $record));
+    $arrayRM = array(array('request_id' => $record));
     $arrayRM[0]['workflowcomplete_d'] = date("Y-m-d");
     $json = json_encode($arrayRM);
     $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);

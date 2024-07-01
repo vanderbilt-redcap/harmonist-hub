@@ -104,33 +104,26 @@ class CopyJSON
         if($jsoncopy["jsoncopy_file"] != ""){
             $q = $module->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$jsoncopy["jsoncopy_file"]]);
             while ($row = $q->fetch_assoc()) {
-                $strJsonFileContents = json_decode(file_get_contents($module->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH)), true);
-                $last_array = json_decode($strJsonFileContents, true);
-                $array_data = call_user_func_array("self::createProject".strtoupper($type)."JSON",array($module, $pidsArray));
-                $new_array = json_decode($array_data['jsonArray'],true);
-                if($type == "0c"){
-                    $result_prev = ArrayFunctions::array_filter_empty(array_diff_assoc($last_array,$new_array));
-                    $result = ArrayFunctions::array_filter_empty(array_diff_assoc($new_array,$last_array));
-                }else{
-                    //multidimensional projects
-                    $result_prev = ArrayFunctions::array_filter_empty(ArrayFunctions::multi_array_diff($last_array,$new_array));
-                    $result = ArrayFunctions::array_filter_empty(ArrayFunctions::multi_array_diff($new_array,$last_array));
-                }
+                $path = $module->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH);
+                $output = file_get_contents($path);
+                $last_array = json_decode($output,true);
+                $new_array = call_user_func_array("self::createProject".strtoupper($type)."JSON",array($module, $pidsArray));
+                $result_prev = ArrayFunctions::array_diff_assoc_recursive($last_array,$new_array);
+                $result = ArrayFunctions::array_diff_assoc_recursive($new_array,$last_array);
             }
         }else{
-            $array_data = call_user_func_array("self::createProject".strtoupper($type)."JSON",array($module, $pidsArray));
-            $result = json_decode($array_data['jsonArray'],true);
+            $new_array = call_user_func_array("self::createProject".strtoupper($type)."JSON",array($module, $pidsArray));
+            $result = $new_array;
             $result_prev = "";
         }
-
         if(!empty($result_prev) || !empty($result)) {
             # Save the JSON
-            $record = self::saveJSONCopy($type, $array_data['jsonArray'], $module, $pidsArray['JSONCOPY'], $last_record);
+            $record = self::saveJSONCopy($type, $new_array, $module, $pidsArray['JSONCOPY'], $last_record);
 
             if ($last_record == "") {
                 $last_record = "<i>None</i>";
             }
-            if (!empty($record)) {
+            if (!empty($last_record)) {
                 $environment = "";
                 if (ENVIRONMENT == 'TEST') {
                     $environment = " " . ENVIRONMENT;
@@ -167,7 +160,7 @@ class CopyJSON
     public static function createProject0AJSON($module, $pidsArray){
         $dataFormat = $module->getChoiceLabels('data_format', $pidsArray['DATAMODEL']);
         $dataTablerecords = \REDCap::getData($pidsArray['DATAMODEL'], 'array');
-        $dataTable = ProjectData::getProjectInfoArrayRepeatingInstruments($dataTablerecords);
+        $dataTable = ProjectData::getProjectInfoArrayRepeatingInstruments($dataTablerecords, null, "json");
         foreach ($dataTable as $data) {
             $jsonVarArray['variables'] = array();
             foreach ($data['variable_order'] as $id => $value) {
@@ -210,7 +203,7 @@ class CopyJSON
             $jsonArray[trim($data['table_name'])] = $jsonVarArray;
         }
 
-        return array('jsonArray' => json_encode($jsonArray,JSON_FORCE_OBJECT));
+        return $jsonArray;
     }
 
     /**
@@ -243,7 +236,7 @@ class CopyJSON
             $jsonArray[$data['record_id']]=$jsonVarContentArray;
         }
 
-        return array('jsonArray' => json_encode($jsonArray,JSON_FORCE_OBJECT));
+        return $jsonArray;
     }
 
     /**
@@ -296,7 +289,7 @@ class CopyJSON
         $jsonArray['project_logo_50_20'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $dataTable['project_logo_50_20'],'pdf')));
         $jsonArray['sample_dataset'] = base64_encode(file_get_contents(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $dataTable['sample_dataset'],'pdf')));
 
-        return array('jsonArray' => json_encode($jsonArray,JSON_FORCE_OBJECT));
+        return $jsonArray;
     }
 
     /**

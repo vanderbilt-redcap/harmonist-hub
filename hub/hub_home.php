@@ -11,10 +11,6 @@ ArrayFunctions::array_sort_by_column($request, 'due_d');
 $request_type = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
 $instance = $current_user['person_region'];
-if ($instance == 1) {
-    $instance = '';
-}
-
 $open_requests_values = array();
 $home_metrics_values = array();
 foreach ($request as $req){
@@ -35,7 +31,7 @@ ArrayFunctions::array_sort_by_column($comments_sevenDaysYoung, 'responsecomplete
 $dealines = array();
 for($i = 1; $i<$number_of_deadlines+1; $i++){
     if(!empty($homepage['deadline_text'.$i]) || !empty($homepage['deadline_date'.$i])){
-        $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($homepage['deadline_date'.$i],'','float:right','0');
+        $array_dates = getNumberOfDaysLeftButtonHTML($homepage['deadline_date'.$i],'','float:right','0');
         $event['date'] = $homepage['deadline_date'.$i];
         $event['print'] = '<tr><td>'.$array_dates['text'].' '.$array_dates['button'].'</td><td>'.$homepage['deadline_text'.$i].'</td></tr>';
         array_push($dealines,$event);
@@ -61,7 +57,6 @@ if(count($requests_labels) > count($requests_colors)) {
         }
     }
 }
-
 
 if(array_key_exists('message', $_REQUEST)){
     if($_REQUEST['message'] == 'U') {
@@ -151,7 +146,7 @@ if(!empty($homepage)) {
 
                                #GRADIENT for the Badge
                                $total_colors = count($requests_values) - count(empty($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']) ? $request_type:$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']);
-                               $color = \Vanderbilt\HarmonistHubExternalModule\getGradientColor("777777","003D99",$total_colors,$i);
+                               $color = getGradientColor("777777","003D99",$total_colors,$i);
                                echo '<li class="list-group-item">
                                         <a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&type=1".'" title="concept sheets" class="home_openrequests_link">
                                         <span class="badge" style="background-color:'.$color.'">'.$open_req_value.'</span>
@@ -236,14 +231,13 @@ if(!empty($homepage)) {
                     <?php
 					$requests = $hubData->getAllRequests();
                     if(!empty($requests)) {
-                        $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                        ArrayFunctions::array_sort_by_column($regions, 'region_code');
+                        $commentDetails = $hubData->getCommentDetails();
 
-                        $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions, $hubData, $settings['vote_grid'], '1','home');
+                        $user_req_header = getRequestHeader($hubData, $settings['vote_grid'], '1','home');
                         $user_req_body = "";
                         $requests_counter = 0;
                         foreach ($requests as $req) {
-                            $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
+                            $user_req_body .= getHomeRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails, $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
                             if($user_req_body != ""){
                                 $requests_counter++;
                             }
@@ -253,14 +247,14 @@ if(!empty($homepage)) {
                         }else{?>
                             <tbody>
                             <tr>
-                                <td><span style="padding-left:5px"><em>No requests available</em></span></td>
+                                <td><span style="padding-left:5px"><em>No active requests</em></span></td>
                             </tr>
                             </tbody>
                         <?php }
                     }else{?>
                         <tbody>
                         <tr>
-                            <td><span style="padding-left:5px"><em>No requests available</em></span></td>
+                            <td><span style="padding-left:5px"><em>No active requests</em></span></td>
                         </tr>
                         </tbody>
                     <?php }?>
@@ -290,7 +284,7 @@ if(!empty($homepage)) {
 
                                 $requestComment = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']))[0];
 
-                                $time = \Vanderbilt\HarmonistHubExternalModule\getDateForHumans($comment['responsecomplete_ts']);
+                                $time = getDateForHumans($comment['responsecomplete_ts']);
 
                                 $title = substr($requestComment['request_title'], 0, 50) . '...';
 
@@ -332,6 +326,9 @@ if(!empty($homepage)) {
                                 break;
                             }
                         }
+                    }
+                    if($i == 0){
+                        ?><li class="list-group-item"><em>No activity in last 7 days.</em></li><?php
                     }
                 }else{?>
                     <li class="list-group-item"><em>No activity in last 7 days.</em></li>

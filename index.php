@@ -60,11 +60,10 @@ if($hub_projectname != '' && $hub_profile != ''){
                     <meta name="author" content="">
                     <meta http-equiv="Cache-control" content="public">
                     <meta name="theme-color" content="#fff">
-                    <link rel="icon" href="<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_favicon'],'favicon')?>">
+                    <link rel="icon" href="<?=getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_favicon'],'favicon')?>">
 
                     <?php include_once("head_scripts.php");?>
 
-                    <title><?= $settings['des_doc_title'] ?></title>
                     <script type='text/javascript'>
                         $(document).ready(function() {
                             Sortable.init();
@@ -130,11 +129,11 @@ if($hub_projectname != '' && $hub_profile != ''){
                 $token = "";
                 if(defined("USERID") && !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $option === 'dnd')  || (array_key_exists('option', $_REQUEST) && $option === 'iut') || (array_key_exists('option', $_REQUEST) && $option === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
                     $_SESSION['token'] = array();
-                    $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = \Vanderbilt\HarmonistHubExternalModule\getToken(USERID, $pidsArray['PEOPLE']);
+                    $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = getToken(USERID, $pidsArray['PEOPLE']);
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
-                }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])){
+                }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])){
                     $token = $_REQUEST['token'];
-                }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
+                }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
                 }
 
@@ -144,7 +143,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                     unset($_SESSION[$settings['hub_name'].$pidsArray['PROJECTS']]);
                 }
 
-                if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
+                if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
                     $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $_REQUEST['token'];
                 }
 
@@ -153,7 +152,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                 $current_user = $hubData->getCurrentUser();
                 $name = $current_user['firstname'].' '.$current_user['lastname'];
                 $person_region = $hubData->getPersonRegion();
-                $isAdmin = $hubData->getIsAdmin();
+                $isAdmin = $current_user['is_admin'];
 
                 if( array_key_exists('option', $_REQUEST) && $option === 'dfq'){
                     //No header
@@ -170,7 +169,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                         include('hub/hub_login.php');
                     }else if($current_user['active_y'] == "0"){
                         include('hub/hub_login.php');
-                    }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]) && \Vanderbilt\HarmonistHubExternalModule\isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])){
+                    }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]) && isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])){
                         if( !array_key_exists('option', $_REQUEST)){
                             include('hub/hub_home.php');
                         }

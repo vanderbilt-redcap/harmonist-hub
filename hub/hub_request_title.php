@@ -27,7 +27,7 @@ if($request !="") {
         $wg_name = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg2_name']),array('group_name'))[0]['group_name'];
     }
 
-    $array_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($request['due_d'], $request['region_response_status'][$current_user['person_region']], '', '1');
+    $array_dates = getNumberOfDaysLeftButtonHTML($request['due_d'], $request['region_response_status'][$current_user['person_region']], '', '1');
 
     $conference_info = "";
     if (!empty($request_type_label[$request['request_type']]) && ($request_type_label[$request['request_type']] == 'Other' || $request_type_label[$request['request_type']] == 'Abstract' || $request_type_label[$request['request_type']] == 'Poster')) {
@@ -400,30 +400,31 @@ if($request !="") {
 
                         for($i = 1; $i<7 ; $i++){
                             if(!empty($request['extra_file'.$i])){
-                                echo "<tr>".\Vanderbilt\HarmonistHubExternalModule\getFileRow($module,$request['extra_file'.$i], $request['contact_name'],"Original", $request_time,$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
+                                echo "<tr>".getFileRow($module,$request['extra_file'.$i], $request['contact_name'],"Original", $request_time,$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
                             }
                         }
 
                         if(!empty($request['request_file'])) {
-                            echo "<tr class='info'>" . \Vanderbilt\HarmonistHubExternalModule\getFileRow($module,$request['request_file'], $request['contact_name'], "Original", $request_time, $secret_key, $secret_iv, $current_user['record_id'], "");
+                            echo "<tr class='info'>" . getFileRow($module,$request['request_file'], $request['contact_name'], "Original", $request_time, $secret_key, $secret_iv, $current_user['record_id'], "");
                         }
 
                         $parameter = '[request_id] = "'.$request['request_id'].'"';
                         $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, $parameter, false);
-                        krsort($comments);
+                        if(!empty($comments))
+                            krsort($comments);
 
-                        $most_recent_file = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''")[0];
-                        foreach($most_recent_file as $k=>$v)
-                        {
-                            if($v['responsecomplete_ts']>$max)
-                            {
-                                $max = $v['responsecomplete_ts'];
-                                $newest_record = $v['record_id'];
+                        $most_recent_file = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''");
+                        if(is_array($most_recent_file) && !empty($most_recent_file)) {
+                            foreach ($most_recent_file as $k => $v) {
+                                if (array_key_exists('responsecomplete_ts',$v) && $v['responsecomplete_ts'] > $max) {
+                                    $max = $v['responsecomplete_ts'];
+                                    $newest_record = $v['record_id'];
+                                }
                             }
                         }
 
                         if(!empty($request['author_doc'])){
-                            echo "<tr class='author_doc'>".\Vanderbilt\HarmonistHubExternalModule\getFileRow($module,$request['author_doc'], $request['contact_name'], "Final", "",$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
+                            echo "<tr class='author_doc'>".getFileRow($module,$request['author_doc'], $request['contact_name'], "Final", "",$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
                         }
 
                         if(!empty($comments)){
@@ -455,19 +456,19 @@ if($request !="") {
 
                                     $gd_files = "";
                                     if(!empty($comment['revised_file'])){
-                                        echo "<tr class='".$revised_class."'>" . \Vanderbilt\HarmonistHubExternalModule\getFileRow($module,$comment['revised_file'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
+                                        echo "<tr class='".$revised_class."'>" . getFileRow($module,$comment['revised_file'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
                                         if(!empty($comment['comments'])){
                                             $gd_files .= "<div style='padding-top:10px'>";
                                         }
-                                        $gd_files .= \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['revised_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
+                                        $gd_files .= getFileLink($module, $pidsArray['PROJECTS'], $comment['revised_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
                                     }
                                     if(!empty($comment['extra_revfile1'])){
-                                        echo "<tr class='".$revised_class."'>" . \Vanderbilt\HarmonistHubExternalModule\getFileRow($module, $comment['extra_revfile1'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
-                                        $gd_files .= "<div style='padding-top:10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['extra_revfile1'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
+                                        echo "<tr class='".$revised_class."'>" . getFileRow($module, $comment['extra_revfile1'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
+                                        $gd_files .= "<div style='padding-top:10px'>".getFileLink($module, $pidsArray['PROJECTS'], $comment['extra_revfile1'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
                                     }
                                     if(!empty($comment['extra_revfile2'])){
-                                        echo "<tr class='".$revised_class."'>" . \Vanderbilt\HarmonistHubExternalModule\getFileRow($module, $comment['extra_revfile2'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
-                                        $gd_files .= "<div style='padding-top:10px'>".\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['extra_revfile2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
+                                        echo "<tr class='".$revised_class."'>" . getFileRow($module, $comment['extra_revfile2'], $name, $text, $comment_time,$secret_key,$secret_iv,$current_user['record_id'],"") . "</tr>";
+                                        $gd_files .= "<div style='padding-top:10px'>".getFileLink($module, $pidsArray['PROJECTS'], $comment['extra_revfile2'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")."</div>";
                                     }
 
                                     /*** GROUP DISCUSION ***/

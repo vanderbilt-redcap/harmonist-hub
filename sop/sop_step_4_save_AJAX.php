@@ -153,7 +153,7 @@ $second_page .= "<p><span style='font-size: 12pt'>".$requested_tables."</span></
 
 $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }a{text-decoration: none;}</style>';
 
-$img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'pdf');
+$img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'src');
 
 $html_pdf = "<html><body style='font-family:\"Calibri\";font-size:10pt;'>".$page_num
     ."<div class='footer'><span left: 0px;>".$concept_id."</span></div>"
@@ -166,7 +166,7 @@ $html_pdf = "<html><body style='font-family:\"Calibri\";font-size:10pt;'>".$page
     ."</div></div>"
     ."</body></html>";
 
-$filename = $concept_id."_DataRequest_".date("Y-m-d_hi",time());
+$filename = $concept_id."_DataRequest_".date("Y-m-d_hi",time()).".pdf";
 
 //SAVE PDF ON DB
 $reportHash = $filename;

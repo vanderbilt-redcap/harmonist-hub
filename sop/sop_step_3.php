@@ -218,7 +218,7 @@ if (!empty($people)) {
             <?php
             $dataformat_prefer = $module->escape($module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']));
             foreach($dataformat_prefer as $dataid => $dataformat){
-                echo '<div><input type="checkbox" class="" id="dataformat_prefer_'.$dataid.'" name="dataformat_prefer[]" value="'.$dataid.'" onkeyup="checkStep(3);"><span style="padding-left: 10px">'.$dataformat.'</span></div>';
+                echo '<div><input type="checkbox" class="" id="dataformat_prefer___'.$dataid.'" name="dataformat_prefer[]" value="'.$dataid.'" onkeyup="checkStep(3);"><span style="padding-left: 10px">'.$dataformat.'</span></div>';
             }
             ?>
                 </div>
@@ -266,7 +266,7 @@ if (!empty($people)) {
         </div>
         <div class="clearfix"></div>
         <div class="form-group">
-            <span style="padding-right: 10px;font-style: italic;">Not sure about Data Downloaders yet.</span><input type="checkbox" onclick="checkStep(3)"; name="sop_downloaders_dummy" id="sop_downloaders_dummy" style="width: 20px;height: 20px;vertical-align: -2px;">
+            <span style="padding-right: 10px;font-style: italic;">Not sure about Data Downloaders yet.</span><input type="checkbox" onclick="checkStep(3)"; name="sop_downloaders_dummy___1" id="sop_downloaders_dummy___1" style="width: 20px;height: 20px;vertical-align: -2px;">
         </div>
 
         <div class="form-group">

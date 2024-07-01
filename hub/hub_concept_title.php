@@ -452,18 +452,35 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
             <h3 class="panel-title">
                 <a data-toggle="collapse" href="#collapse_publications">Abstracts & Publications</a>
                 <?php
-                if($isAdmin){
-                    $Proj = new \Project($pidsArray['HARMONIST']);
-                    $event_id = $Proj->firstEventId;
-                    $form = "outputs";
-                    $instances = \RepeatInstance::getRepeatFormInstanceList($record, $event_id, $form, $Proj);
-                    $new_instance = (int)(array_key_last($instances)) + 1;
-                    $output_link = APP_PATH_WEBROOT_ALL. 'DataEntry/index.php?pid='.$pidsArray['HARMONIST'].'&id='.$record.'&event_id='.$event_id.'&page=outputs&instance='.$new_instance;
-                    echo '<a href="'.$output_link.'" style="float: right;padding-right: 30px;color: #337ab7;cursor: pointer" target="_blank"><em class="fa fa-plus"></em> New Output</a>';
+                $harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
+                if($isAdmin || $concept['contact_link'] == $current_user['record_id'] || $concept['contact2_link'] == $current_user['record_id'] || $harmonist_perm){
+                    $output_link = $module->getSurveyLinkNewInstance("outputs", $record, $pidsArray['HARMONIST']);
+                ?>
+                <a href="#" onclick="$('#hub_new_output').modal('show');" style="float: right;padding-right: 30px;color: #337ab7;cursor: pointer"><em class="fa fa-plus"></em> New Output</a>
+                <!-- MODAL NEW OUTPUT-->
+                <div class="modal fade" id="hub_new_output" tabindex="-1" role="dialog" aria-labelledby="Codes">
+                    <div class="modal-dialog" role="document" style="width: 900px">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title"><em class="fa fa-plus"></em> New Output</h4>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" value="0" id="comment_loaded">
+                                <iframe class="commentsform" id="redcap-new-output-frame" name="redcap-new-output-frame" src="<?=$output_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
                 }
                 ?>
             </h3>
         </div>
+
 
         <div id="collapse_publications" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="abstracts">
@@ -493,7 +510,8 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
 
                     //Order by year
                     $output_year = $concept['output_year'];
-                    asort ($output_year);
+                    if(!empty($output_year) && is_array($output_year))
+                        asort ($output_year);
                     foreach ($output_year as $index =>$value){
 
                         echo '<tr><td>'.$concept['output_year'][$index].'</td>'.

@@ -656,6 +656,7 @@ class AllCrons
                 $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete'] = array(1 => "1");//checkbox
                 $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete_ts'] = date('Y-m-d H:i:s');
                 $results = \Records::saveData($pidsArray['RMANAGER'], 'array', $arrayRM, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+                \REDCap::logEvent("Metrics AllCrons", "detected_complete(1) = checked", NULL, $comment['request_id'], $event_id_RM, $pidsArray['RMANAGER']);
             }
         }
 

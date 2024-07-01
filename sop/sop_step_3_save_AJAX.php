@@ -4,8 +4,6 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 
 $record = htmlentities($_REQUEST['id'],ENT_QUOTES);
 
-$dataformat_prefer = explode(',',htmlentities($_REQUEST['dataformat_prefer'],ENT_QUOTES));
-
 #checkboxes
 if(!isset($_REQUEST['sop_downloaders_dummy'])){
     $downDummy = "0";
@@ -22,7 +20,7 @@ $sop_notes = $module->escape(($_REQUEST['sop_notes'] == "") ? "<i>None</i>" : $_
 
 $arraySOP = array();
 $arraySOP[$record][$event_id]['sop_downloaders'] = htmlentities($_REQUEST['downloaders'],ENT_QUOTES);
-$arraySOP[$record][$event_id]['sop_downloaders_dummy'][1] = $downDummy;
+$arraySOP[$record][$event_id]['sop_downloaders_dummy___1'] = $downDummy;
 $arraySOP[$record][$event_id]['sop_inclusion'] = $sop_inclusion;
 $arraySOP[$record][$event_id]['sop_exclusion'] = $sop_exclusion;
 $arraySOP[$record][$event_id]['sop_notes'] = $sop_notes;
@@ -33,8 +31,16 @@ $arraySOP[$record][$event_id]['sop_creator2'] = htmlentities($_REQUEST['sop_crea
 $arraySOP[$record][$event_id]['sop_creator2_org'] = htmlentities($_REQUEST['sop_creator2_org'],ENT_QUOTES);
 $arraySOP[$record][$event_id]['sop_datacontact'] = htmlentities($_REQUEST['sop_datacontact'],ENT_QUOTES);
 $arraySOP[$record][$event_id]['sop_datacontact_org'] = htmlentities($_REQUEST['sop_datacontact_org'],ENT_QUOTES);
-$arraySOP[$record][$event_id]['dataformat_prefer'] = array(1 =>(htmlentities($_REQUEST['dataformat_prefer'],ENT_QUOTES) == "") ? array() : htmlentities($_REQUEST['dataformat_prefer'],ENT_QUOTES));//checkbox
 $arraySOP[$record][$event_id]['dataformat_notes'] = htmlentities($_REQUEST['dataformat_notes'],ENT_QUOTES);
+
+$dataformat_prefer_labels = $module->escape($module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']));
+foreach($dataformat_prefer_labels as $dataformat_index => $value){
+    $arraySOP[$record][$event_id]['dataformat_prefer___'.$dataformat_index] = "0";
+}
+$dataformat_prefer = explode(',',htmlentities($_REQUEST['dataformat_prefer'],ENT_QUOTES));
+foreach($dataformat_prefer as $dataformat){
+    $arraySOP[$record][$event_id]['dataformat_prefer___'.$dataformat] = "1";
+}
 
 $date = new \DateTime();
 $sop_updated_dt = $date->format('Y-m-d H:i:s');

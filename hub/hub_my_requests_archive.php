@@ -111,14 +111,13 @@ if($_REQUEST['type'] != ""){
             <?php
 			$requests = $hubData->getAllRequests();
             if(!empty($requests)) {
-                $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-                ArrayFunctions::array_sort_by_column($regions, 'region_code');
+                $commentDetails = $hubData->getCommentDetails();
 
-                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($regions, $hubData, $settings['vote_grid'], '1','archive');
+                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($hubData, $settings['vote_grid'], '1','archive');
 
                 $requests_counter = 0;
                 foreach ($requests as $req) {
-                    $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $hubData, $pidsArray, $req, $regions, $request_type_label, $current_user, 0, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
+                    $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails, $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
                     if($user_req_body != ""){
                         $requests_counter++;
                     }
