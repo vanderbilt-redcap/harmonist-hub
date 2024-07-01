@@ -369,7 +369,7 @@ class HubUpdates{
                     $col .= "<div $color>$string " . filter_tags($new[$var]) . "</div>";
                 } else if ($new[$var] == "") {
                     $color = "class='mb-2 p-1 bg-warning' style='font-size:12px;';";
-                    $col .= "<small class='mb-2 d-flex text-light p-1' style='background-color:#cb410b; font-size:12px; text-decoration:line-through;'>$string" . $old[$var] . "</small>";
+                    $col .= "<small class='mb-2 d-flex text-light p-1' style='background-color:#cb410b; font-size:12px; text-decoration:line-through;'>$string" . filter_tags($old[$var]) . "</small>";
                 } else {
                     $color = "class='mb-2 bg-warning p-1' style='font-size:12px;';";
                     $col .= "<div $color>$string " . filter_tags($new[$var]). "</div>";
@@ -581,7 +581,7 @@ class HubUpdates{
                 $col .= "<small $color>Field Annotation: " . filter_tags($old['field_annotation']) . "</small>";
             }else{
                 $color = "class='mb-2 bg-warning p-1 d-inline-block' style='font-size:12px;background-color:#ffc107 !important;';";
-                $col .= "<div $color>" . $new['field_annotation'] . "</div>";
+                $col .= "<div $color>" . filter_tags($new['field_annotation']) . "</div>";
                 $col .= "<small class='mb-2 p-1 d-inline-block' style='font-size:12px; text-decoration:line-through;'>" . filter_tags($old['field_annotation']) . "</small>";
             }
         }else if($old['field_annotation'] != ""){
