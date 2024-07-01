@@ -14,7 +14,7 @@ $module->setProjectSetting('hub-mapper',$project_id);
 #PID MAPPER
 $module->setPIDMapperProject($project_id);
 
-$projects_array = REDCapManagement::getProjectsContantsArray();
+$projects_array = REDCapManagement::getProjectsConstantsArray();
 $projects_titles_array = REDCapManagement::getProjectsTitlesArray();
 $projects_array_repeatable = REDCapManagement::getProjectsRepeatableArray();
 $projects_array_surveys = REDCapManagement::getProjectsSurveysArray();

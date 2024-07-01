@@ -4,7 +4,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 class REDCapManagement {
 
-    public static function getProjectsContantsArray(){
+    public static function getProjectsConstantsArray(){
         $projects_array = array(28=>'SETTINGS', 0=>'DATAMODEL',1=>'CODELIST',29=>'DATAMODELMETADATA',2=>'HARMONIST',3=>'RMANAGER',4=>'COMMENTSVOTES',5=>'SOP',6=>'SOPCOMMENTS',
             7=>'REGIONS',8=>'PEOPLE',9=>'GROUP', 10=>'FAQ',11=>'HOME',12=>'DATAUPLOAD',13=>'DATADOWNLOAD',
             14=>'JSONCOPY',15=>'METRICS',16=>'DATAAVAILABILITY',17=>'PROJECTSSTUDIES',18=>'DATATOOLMETRICS',19=>'DATATOOLUPLOADSECURITY',
@@ -26,7 +26,7 @@ class REDCapManagement {
         return $projects_array_title;
     }
 
-    public static function getSurveyContantsArray(){
+    public static function getSurveyConstantsArray(){
         $projects_array = array(
             31=>'CONCEPTLINK',
             32=>'REQUESTLINK',
@@ -42,7 +42,7 @@ class REDCapManagement {
     }
 
     public static function getProjectConstantsArrayWithoutDeactivatedProjects(){
-        $projects_array = self::getProjectsContantsArray();
+        $projects_array = self::getProjectsConstantsArray();
         $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 
         $deactivatedConstants = array();
@@ -71,7 +71,7 @@ class REDCapManagement {
     }
 
     public static function getPIDsArray($project_id){
-        $projects_array = array_merge(self::getProjectsContantsArray(),self::getSurveyContantsArray());
+        $projects_array = array_merge(self::getProjectsConstantsArray(),self::getSurveyConstantsArray());
         $pidsArray = array();
         foreach ($projects_array as $constant){
             $pid = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='".$constant."'")[0]['project_id'];
