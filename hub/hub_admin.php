@@ -334,9 +334,9 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                 '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . htmlspecialchars($region,ENT_QUOTES) . '</div>' .
                                 '<div style="padding-top:5px;">Completed on: ' . $req['workflowcomplete_d'] . '</div></td>' .
                                 '<td><a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id'] . '" target="_blank">' . htmlspecialchars($req['request_title'],ENT_QUOTES) . '</a></td>' .
-                                '<td><div>' . htmlspecialchars($finalize_review,ENT_QUOTES) . '</div></td>' .
-                                '<td><div>' . htmlspecialchars($request_docs,ENT_QUOTES) . '</div></td>' .
-                                '<td><div>' . htmlspecialchars($assign_mr,ENT_QUOTES) . '</div></td>' .
+                                '<td><div>' . filter_tags($finalize_review) . '</div></td>' .
+                                '<td><div>' . filter_tags($request_docs) . '</div></td>' .
+                                '<td><div>' . filter_tags($assign_mr) . '</div></td>' .
                                 '</tr>';
                         }
                     }
