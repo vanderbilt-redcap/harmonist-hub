@@ -11,7 +11,7 @@ class HubUpdates{
     public static function compareDataDictionary($module, $pidsArray, $option='')
     {
         $allItems = array();
-        $constants_array = REDCapManagement::getProjectsContantsArray();
+        $constants_array = REDCapManagement::getProjectsConstantsArray();
 //        $constants_array = array(0=>"RMANAGER");
         foreach ($constants_array as $constant){
             $path = $module->framework->getModulePath()."csv/".$constant.".csv";
@@ -180,7 +180,7 @@ class HubUpdates{
             array_push($update_list[$hub_updates[0]][$hub_updates[2]], $hub_updates[1]);
         }
 
-        $constants_array = REDCapManagement::getProjectsContantsArray();
+        $constants_array = REDCapManagement::getProjectsConstantsArray();
         foreach ($constants_array as $constant) {
             if(array_key_exists($constant, $update_list)) {
                 $path = $module->framework->getModulePath() . "csv/" . $constant . ".csv";
