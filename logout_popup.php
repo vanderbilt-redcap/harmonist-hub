@@ -44,30 +44,30 @@ if($settings['session_timeout_countdown'] != ""){
     var lastActiveTime = new Date();
 
     $(document).ready(function() {
-        this.lastActiveTime = new Date();
+        lastActiveTime = new Date();
         window.addEventListener("click", () => {
-            this.lastActiveTime = new Date();
+            lastActiveTime = new Date();
         });
         window.addEventListener("mousemove", () => {
-            this.lastActiveTime = new Date();
+            lastActiveTime = new Date();
         });
         window.addEventListener("keypress", () => {
-            this.lastActiveTime = new Date();
+            lastActiveTime = new Date();
         });
         window.addEventListener("scroll", () => {
-            this.lastActiveTime = new Date();
+            lastActiveTime = new Date();
         });
         idleTimer_k = window.setInterval(CheckIdleTime, 10000);
     });
 
     function CheckIdleTime() {
         //If user refreshes page but does not move mouse
-        if(this.lastActiveTime == undefined){
-            this.lastActiveTime = new Date();
+        if(lastActiveTime == undefined){
+            lastActiveTime = new Date();
         }
         //returns idle time every 10 seconds
         dateNowTime = new Date().getTime();
-        lastActiveTime = new Date(this.lastActiveTime).getTime();
+        lastActiveTime = new Date(lastActiveTime).getTime();
         remTime = Math.floor((dateNowTime-lastActiveTime)/ 1000);
 
         // converting from milliseconds to seconds
@@ -98,7 +98,7 @@ if($settings['session_timeout_countdown'] != ""){
     function updateTimeStay(){
         $('#modal-log-out').modal('hide');
         $('#modal-log-out').removeClass('in');
-        this.lastActiveTime = new Date();
+        lastActiveTime = new Date();
         lastActiveTime = new Date(this.lastActiveTime).getTime();
         dateNowTime = new Date().getTime();
         remTime = Math.floor((dateNowTime-lastActiveTime)/ 1000);
