@@ -98,8 +98,7 @@ if($settings['session_timeout_countdown'] != ""){
     function updateTimeStay(){
         $('#modal-log-out').modal('hide');
         $('#modal-log-out').removeClass('in');
-        lastActiveTime = new Date();
-        lastActiveTime = new Date(this.lastActiveTime).getTime();
+        lastActiveTime = new Date().getTime();
         dateNowTime = new Date().getTime();
         remTime = Math.floor((dateNowTime-lastActiveTime)/ 1000);
         timeleftcounter = timeleft;
