@@ -38,50 +38,48 @@ if($settings['session_timeout_countdown'] != ""){
     var timeleftcounter = timeleft;
     var showPopup = <?=json_encode($timer)?>;
     var urlLogOut = <?=json_encode($module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&sout')?>;
+    var idleTimer_k = 0;
+    var remTime = 0;
+    var dateNowTime = new Date().getTime();
+    var lastActiveTime = new Date();
 
     $(document).ready(function() {
-        this.lastActiveTime = new Date();
+        lastActiveTime = new Date();
         window.addEventListener("click", () => {
-            this.lastActiveTime = new Date();
+            lastActiveTime = new Date();
         });
         window.addEventListener("mousemove", () => {
-            this.lastActiveTime = new Date();
+            lastActiveTime = new Date();
         });
         window.addEventListener("keypress", () => {
-            this.lastActiveTime = new Date();
+            lastActiveTime = new Date();
         });
         window.addEventListener("scroll", () => {
-            this.lastActiveTime = new Date();
+            lastActiveTime = new Date();
         });
-        var idleTimer_k = window.setInterval(CheckIdleTime, 10000);
+        idleTimer_k = window.setInterval(CheckIdleTime, 10000);
     });
 
     function CheckIdleTime() {
         //If user refreshes page but does not move mouse
-        if(this.lastActiveTime == undefined){
-            this.lastActiveTime = new Date();
+        if(lastActiveTime == undefined){
+            lastActiveTime = new Date();
         }
         //returns idle time every 10 seconds
-        var dateNowTime = new Date().getTime();
-        var lastActiveTime = new Date(this.lastActiveTime).getTime();
-        var remTime = Math.floor((dateNowTime-lastActiveTime)/ 1000);
+        dateNowTime = new Date().getTime();
+        lastActiveTime = new Date(lastActiveTime).getTime();
+        remTime = Math.floor((dateNowTime-lastActiveTime)/ 1000);
 
         // converting from milliseconds to seconds
         if(remTime >= showPopup && !$('#modal-log-out').hasClass('in')){
             $('#modal-log-out').modal('show');
             var downloadTimer = setInterval(function(){
                 $( "#btnStayLoggedIn" ).click(function() {
-                    $('#modal-log-out').modal('hide');
-                    $('#modal-log-out').removeClass('in');
-                    this.lastActiveTime = new Date();
-                    timeleftcounter = timeleft;
+                    updateTimeStay()
                     clearInterval(downloadTimer);
                 });
                 $('#modal-log-out').on('hidden.bs.modal', function () {
-                    $('#modal-log-out').modal('hide');
-                    $('#modal-log-out').removeClass('in');
-                    this.lastActiveTime = new Date();
-                    timeleftcounter = timeleft;
+                    updateTimeStay()
                     clearInterval(downloadTimer);
                 })
                 if(timeleftcounter <= 0 && $('#modal-log-out').hasClass('in')){
@@ -95,5 +93,14 @@ if($settings['session_timeout_countdown'] != ""){
                 timeleftcounter -= 1;
             }, 1000);
         }
+    }
+
+    function updateTimeStay(){
+        $('#modal-log-out').modal('hide');
+        $('#modal-log-out').removeClass('in');
+        lastActiveTime = new Date().getTime();
+        dateNowTime = new Date().getTime();
+        remTime = Math.floor((dateNowTime-lastActiveTime)/ 1000);
+        timeleftcounter = timeleft;
     }
 </script>

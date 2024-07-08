@@ -17,72 +17,82 @@ class HubUpdates{
             $path = $module->framework->getModulePath()."csv/".$constant.".csv";
             $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
             $new = $module->dataDictionaryCSVToMetadataArray($path);
-
-            $removed = array_diff_key($old, $new);
-            $added = array_diff_key($new, $old);
-            foreach ($added as $key => $value) {
-                foreach ($value as $fieldType => $dataValue) {
-                    if($fieldType == "select_choices_or_calculations" && strtolower($value['field_type']) == "sql" && $value['select_choices_or_calculations'] != ""){
-                        $sql['sql'] = $value[$fieldType];
-                        $sql['changed'] = false;
-                        $sql = self::changeSQLDataTable("", $sql);
-                        if($sql['changed']){
-                            $added[$key][$fieldType] = $sql['sql'];
-                        }
-                    }
-                }
-            }
-            $possiblyChanged = array_intersect_key($new, $old);
+            $possiblyChanged = array();
+            $removed = array();
+            $added = array();
             $changed = array();
-            foreach ($possiblyChanged as $key => $value) {
-                if ($old[$key] != $value) {
-                    $hasValueChanged = false;
-                    $hasSQLChanged = false;
+
+            if(is_array($old) && is_array($new)){
+                $removed = array_diff_key($old, $new);
+                $added = array_diff_key($new, $old);
+                $possiblyChanged = array_intersect_key($new, $old);
+            }
+
+            if(!empty($added)) {
+                foreach ($added as $key => $value) {
                     foreach ($value as $fieldType => $dataValue) {
-                        if (trim($dataValue) != trim($old[$key][$fieldType])) {
-                            //check if they have enetered the choices with a space between the '|' separator
-                            if($fieldType == "select_choices_or_calculations" && strtolower($value['field_type']) != "sql"){
-                                $choicesOld = self::parseArray($old[$key][$fieldType]);
-                                $choices = self::parseArray($value[$fieldType]);
-                                $possiblyChangedChoicesValues = array_diff($choicesOld, $choices);
-                                $possiblyChangedChoicesKey = array_diff_key($choicesOld, $choices);
-
-                                if(!empty($possiblyChangedChoicesValues) && !empty($possiblyChangedChoicesKey)){
-                                    $hasValueChanged = true;
-                                }
-
-                            }else if($fieldType == "select_choices_or_calculations" && strtolower($value['field_type']) == "sql") {
-                                $sql['sql'] = $possiblyChanged[$key][$fieldType];
-                                $sql['changed'] = false;
-                                $sql = self::changeSQLDataTable($old[$key][$fieldType], $sql);
-                                $sql = self::compareSQL($old[$key][$fieldType], $sql);
-                                if($sql['changed']){
-                                    $hasValueChanged = true;
-                                    $hasSQLChanged = true;
-                                    $value[$fieldType] = $sql['sql'];
-                                }
-                            }else{
-                                $hasValueChanged = true;
+                        if ($fieldType == "select_choices_or_calculations" && strtolower($value['field_type']) == "sql" && $value['select_choices_or_calculations'] != "") {
+                            $sql['sql'] = $value[$fieldType];
+                            $sql['changed'] = false;
+                            $sql = self::changeSQLDataTable("", $sql);
+                            if ($sql['changed']) {
+                                $added[$key][$fieldType] = $sql['sql'];
                             }
                         }
                     }
-                    if($hasValueChanged){
-                        if($old[$key]['field_type'] == 'sql' && !$hasSQLChanged){
-                            #Add original SQL values as the new one has different PIDs and it detects them as changes
-                            $value['select_choices_or_calculations'] = $old[$key]['select_choices_or_calculations'];
-                        }
-                        $changed[$key] = $value;
-                    }
                 }
             }
-            $result = array();
-            $result = self::custom_array_merge($module, $constant, $result, $changed, self::CHANGED, $option);
-            $result = self::custom_array_merge($module, $constant, $result, $added, self::ADDED, $option);
-            $result = self::custom_array_merge($module, $constant, $result, $removed, self::REMOVED, $option);
-            if(!empty($result)){
-                $allItems[$constant] = $result;
+            if(!empty($possiblyChanged)) {
+                foreach ($possiblyChanged as $key => $value) {
+                    if ($old[$key] != $value) {
+                        $hasValueChanged = false;
+                        $hasSQLChanged = false;
+                        foreach ($value as $fieldType => $dataValue) {
+                            if (trim($dataValue) != trim($old[$key][$fieldType])) {
+                                //check if they have enetered the choices with a space between the '|' separator
+                                if($fieldType == "select_choices_or_calculations" && strtolower($value['field_type']) != "sql"){
+                                    $choicesOld = self::parseArray($old[$key][$fieldType]);
+                                    $choices = self::parseArray($value[$fieldType]);
+                                    $possiblyChangedChoicesValues = array_diff($choicesOld, $choices);
+                                    $possiblyChangedChoicesKey = array_diff_key($choicesOld, $choices);
+
+                                    if(!empty($possiblyChangedChoicesValues) && !empty($possiblyChangedChoicesKey)){
+                                        $hasValueChanged = true;
+                                    }
+
+                                }else if($fieldType == "select_choices_or_calculations" && strtolower($value['field_type']) == "sql") {
+                                    $sql['sql'] = $possiblyChanged[$key][$fieldType];
+                                    $sql['changed'] = false;
+                                    $sql = self::changeSQLDataTable($old[$key][$fieldType], $sql);
+                                    $sql = self::compareSQL($old[$key][$fieldType], $sql);
+                                    if($sql['changed']){
+                                        $hasValueChanged = true;
+                                        $hasSQLChanged = true;
+                                        $value[$fieldType] = $sql['sql'];
+                                    }
+                                }else{
+                                    $hasValueChanged = true;
+                                }
+                            }
+                        }
+                        if($hasValueChanged){
+                            if($old[$key]['field_type'] == 'sql' && !$hasSQLChanged){
+                                #Add original SQL values as the new one has different PIDs and it detects them as changes
+                                $value['select_choices_or_calculations'] = $old[$key]['select_choices_or_calculations'];
+                            }
+                            $changed[$key] = $value;
+                        }
+                    }
+                }
+                $result = array();
+                $result = self::custom_array_merge($module, $constant, $result, $changed, self::CHANGED, $option);
+                $result = self::custom_array_merge($module, $constant, $result, $added, self::ADDED, $option);
+                $result = self::custom_array_merge($module, $constant, $result, $removed, self::REMOVED, $option);
+                if(!empty($result)){
+                    $allItems[$constant] = $result;
+                }
             }
-        };
+        }
 
         return $allItems;
     }
@@ -290,9 +300,11 @@ class HubUpdates{
             $total = 0;
             foreach ($data as $key => $value) {
                 $resolved_found = false;
-                foreach ($resolved_list[$constant] as $key_resolved => $value_resolved) {
-                    if($value_resolved['field_name'] == $key){
-                        $resolved_found = true;
+                if(!empty($resolved_list) && is_array($resolved_list)) {
+                    foreach ($resolved_list[$constant] as $key_resolved => $value_resolved) {
+                        if ($value_resolved['field_name'] == $key) {
+                            $resolved_found = true;
+                        }
                     }
                 }
 
