@@ -219,7 +219,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             }
 
                             echo '<tr>' .
-                                '<td><div><strong><span class="fa fa-user fa-square  ' . htmlspecialchars($abstracts_publications_badge_text[$req['request_type']],ENT_QUOTES) . '"></span> ' . htmlspecialchars($request_type_label[$req['request_type']],ENT_QUOTES) . '</strong> (' . $req_type . ')</div>' .
+                                '<td><div><strong><span class="fa fa-user fa-square  ' . htmlspecialchars($abstracts_publications_badge_text[$req['request_type']],ENT_QUOTES) . '"></span> ' . htmlspecialchars($request_type_label[$req['request_type']],ENT_QUOTES) . '</strong> (' . filter_tags($req_type) . ')</div>' .
                                 '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . $region . '</div>' .
                                 '<div style="padding-top:5px;">Due on: ' . filter_tags($array_dates['text']) . '</div></td>' .
                                 '<td><a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id'] . '" target="_blank">' . htmlspecialchars($req['request_title'],ENT_QUOTES) . '</a></td>' .
@@ -330,7 +330,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             }
 
                             echo '<tr>' .
-                                '<td><div><strong><span class="fa fa-user fa-square  ' . htmlspecialchars($abstracts_publications_badge_text[$req['request_type']],ENT_QUOTES) . '"></span> ' . htmlspecialchars($request_type_label[$req['request_type']],ENT_QUOTES) . '</strong> (' . htmlspecialchars($req_type,ENT_QUOTES) . ')</div>' .
+                                '<td><div><strong><span class="fa fa-user fa-square  ' . htmlspecialchars($abstracts_publications_badge_text[$req['request_type']],ENT_QUOTES) . '"></span> ' . htmlspecialchars($request_type_label[$req['request_type']],ENT_QUOTES) . '</strong> (' . filter_tags($req_type) . ')</div>' .
                                 '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . htmlspecialchars($region,ENT_QUOTES) . '</div>' .
                                 '<div style="padding-top:5px;">Completed on: ' . $req['workflowcomplete_d'] . '</div></td>' .
                                 '<td><a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id'] . '" target="_blank">' . htmlspecialchars($req['request_title'],ENT_QUOTES) . '</a></td>' .
