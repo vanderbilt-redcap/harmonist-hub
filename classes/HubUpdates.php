@@ -26,6 +26,8 @@ class HubUpdates{
                 $removed = array_diff_key($old, $new);
                 $added = array_diff_key($new, $old);
                 $possiblyChanged = array_intersect_key($new, $old);
+            }else{
+                error_log("IeDEA warning PID: ".$pidsArray[$constant]." constant: ".$constant);
             }
 
             if(!empty($added)) {
