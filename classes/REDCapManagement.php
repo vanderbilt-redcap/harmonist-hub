@@ -534,8 +534,7 @@ class REDCapManagement {
                     11 => "finalization_of_request",
                     12 => "final_docs_request_survey",
                     13 => "tracking_number_assignment_survey",
-                    14 => "tracking_number_assignment_survey",
-                    15 => "finalization_of_request"
+                    14 => "tracking_number_assignment_survey"
                 ),
                 "form-name-event" => array
                 (
@@ -545,16 +544,15 @@ class REDCapManagement {
                     2 => "",
                     0 => "",
                     1 => "",
-                    6 => "",
                     7 => "",
+                    6 => "",
                     8 => "",
                     9 => "",
                     10 => "",
                     11 => "",
                     12 => "",
                     13 => "",
-                    14 => "",
-                    15 => ""
+                    14 => ""
                 ),
                 "email-from" => array
                 (
@@ -572,8 +570,7 @@ class REDCapManagement {
                     11 => "noreply@fakemail.com, ".$hub_projectname." Hub",
                     12 => "noreply@fakemail.com, ".$hub_projectname." Hub",
                     13 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                    14 => "noreply@fakemail.com, ".$hub_projectname." Hub",
-                    15 => "noreply@fakemail.com, ".$hub_projectname." Hub"
+                    14 => "noreply@fakemail.com, ".$hub_projectname." Hub"
                 ),
                 "email-to" => array
                 (
@@ -583,7 +580,7 @@ class REDCapManagement {
                     3 => "noreply@fakemail.com",
                     4 => "noreply@fakemail.com",
                     5 => "noreply@fakemail.com",
-                    6 => "[contact_email]",
+                    6 => "noreply@fakemail.com",
                     7 => "noreply@fakemail.com",
                     8 => "noreply@fakemail.com",
                     9 => "noreply@fakemail.com",
@@ -591,8 +588,7 @@ class REDCapManagement {
                     11 => "[contact_email]",
                     12 => "noreply@fakemail.com",
                     13 => "[contact_email]",
-                    14 => "noreply@fakemail.com",
-                    15 => "noreply@fakemail.com"
+                    14 => "noreply@fakemail.com"
                 ),
                 "email-cc" => array
                 (
@@ -610,8 +606,7 @@ class REDCapManagement {
                     11 => "",
                     12 => "",
                     13 => "",
-                    14 => "",
-                    15 => ""
+                    14 => ""
                 ),
                 "email-bcc" => array
                 (
@@ -629,8 +624,7 @@ class REDCapManagement {
                     11 => "",
                     12 => "",
                     13 => "",
-                    14 => "",
-                    15 => ""
+                    14 => ""
                 ),
                 "email-subject" => array
                 (
@@ -640,16 +634,15 @@ class REDCapManagement {
                     3 => $hub_projectname." Request #[request_id] posted: [request_type], [contact_name]",
                     4 => $hub_projectname." Request #[request_id] deactivated: [request_type], [contact_name]",
                     5 => $hub_projectname." Request #[request_id] rejected: [request_type], [contact_name]",
-                    6 => "Admin question about ".$hub_projectname." Request #[request_id] ([request_type])",
+                    6 => "New ".$hub_projectname."  Hub Request #[request_id]: [request_type], [request_title]",
                     7 => $hub_projectname." Request #[request_id] voting complete: [request_type], [contact_name]",
                     8 => $hub_projectname." Request #[request_id] voting incomplete: [request_type], [contact_name]",
                     9 => $hub_projectname." Request #[request_id] approved by [EXECUTIVE COMMITTEE NAME]: [request_type], [contact_name]",
-                    10 => $hub_projectname." Request #[request_id] voting incomplete: [request_type], [contact_name]",
+                    10 => "[insert site name] vote needed: [request_type], [contact_name] (#[request_id])",
                     11 => $hub_projectname." Request #[request_id] post-approval final steps: [request_type], [contact_name]",
                     12 => "New [request_type] needs MR: Request #[request_id], [contact_name]",
                     13 => "New ".$hub_projectname." Concept approved: [mr_assigned], [contact_name]",
-                    14 => "New ".$hub_projectname." Concept: [mr_assigned], [contact_name]",
-                    15 => $hub_projectname." Request #[request_id] approved by [EXECUTIVE COMMITTEE NAME]: [request_type], [contact_name]"
+                    14 => "New ".$hub_projectname." Concept: [mr_assigned], [contact_name]"
                 ),
                 "email-text" => array
                 (
@@ -722,18 +715,23 @@ class REDCapManagement {
 <h2>Reference Links</h2>
 <p><strong>1. Link to <span style="color: #e74c3c;">review/edit submission #[request_id]</span>:</strong>&nbsp;<br />[__SURVEYLINK_request]</p>
 <p><strong>2. Link to Hub Admin <span style="color: #16a085;">approval page</span>:</strong><br />[__SURVEYLINK_admin_review]</p>',
-                    6 => '<h2>Question about '.$hub_projectname.' Request</h2>
-<p>Your request has been approved by <strong>[reviewer_id]</strong> and will now be displayed on the '.$hub_projectname.' Hub.</p>
-<p><strong><span style="color: #e74c3c;">Due Date Assigned</span>:</strong>&nbsp;[due_d]</p>
-<p><strong>Request Tracking ID:</strong>&nbsp; [request_id]</p>
-<p><strong>Review Type:</strong>&nbsp; [request_type]</p>
-<p><strong>Contact Person:</strong>&nbsp; [contact_name], [contact_email]</p>
-<p><strong>Request Title:</strong>&nbsp; [request_title]</p>
-<p><strong>Description:</strong>&nbsp; [request_description]</p>
-<p><strong>Public Admin Notes:</strong>&nbsp; [admin_internal_notes]</p>
-<p><span style="color: #000000;"><strong>Link to review/edit submission #[request_id]:</strong> </span>[__SURVEYLINK_request]</p>
-<p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php')."&NOAUTH".'">'.$hub_projectname.' Hub system</a>. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>',
+                    6 => '<h2>New Request for Review</h2>
+<p class="MsoNormal">Dear '.$hub_projectname.' Investigators,</p>
+<p class="MsoNormal">A new '.$hub_projectname.' Hub requested has been posted for your review. Please use the link below to review, comment, and vote on this request.</p>
+<p class="MsoNormal">Thank you!</p>
+<p class="MsoNormal">'.$hub_projectname.' Hub Admins</p>
+<p class="MsoNormal"></p>
+<p><strong><span style="color: #e74c3c;">Due Date Assigned</span>:</strong> [due_d]</p>
+<p><strong>Request Tracking ID:</strong> [request_id]</p>
+<p><strong>Review Type:</strong> [request_type]</p>
+<p><strong>Contact Person:</strong> [contact_name], [contact_email]</p>
+<p><strong>Request Title:</strong> [request_title]</p>
+<p><strong>Message from [contact_name]:</strong></p>
+<p>[request_description]</p>
+<p></p>
+<p><strong>Link to review request: </strong><a href="https://redcap.vumc.org/external_modules/?prefix=harmonist-hub&amp;page=index&amp;pid=___project_id_new&amp;NOAUTH&amp;option=hub&amp;record=[request_id]">https://redcap.vumc.org/external_modules/?prefix=harmonist-hub&amp;page=index&amp;pid=___project_id_new&amp;NOAUTH&amp;option=hub&amp;record=[request_id]</a></p>
+<p></p>
+<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the '.$hub_projectname.' Hub system. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>',
                     7 => '<h2>Voting Complete</h2>
 <p>The following request has received all regional votes. Please take action below to finalize the request or respond to votes and comments.</p>
 <p><strong><span style="color: #e74c3c;">Due Date Assigned</span>:</strong>&nbsp;[due_d]</p>
@@ -784,24 +782,20 @@ class REDCapManagement {
 <hr />
 <p><em>Additional review notes (optional):</em></p>
 <p>[custom_note]</p>',
-                    10 => '<h2>Voting Incomplete</h2>
-<p>The following request is due today but has not received all votes.&nbsp;</p>
-<p><strong><span style="color: #e74c3c;">Due Date Assigned</span>:</strong>&nbsp;[due_d]</p>
-<p><strong>Request Tracking ID:</strong>&nbsp; [request_id]</p>
-<p><strong>Review Type:</strong>&nbsp; [request_type]</p>
-<p><strong>Contact Person:</strong>&nbsp; [contact_name], [contact_email]</p>
-<p><strong>Request Title:</strong>&nbsp; [request_title]</p>
-<h2>Summary of Votes</h2>
-<p><strong>[REGION 1]:</strong>&nbsp; [vote_ap]</p>
-<p><strong>[REGION 2]:</strong>&nbsp; [vote_ca]</p>
-<p><strong>[REGION 3]:</strong>&nbsp; [vote_cn]</p>
-<p><strong>[REGION 4]:</strong>&nbsp; [vote_ea]</p>
-<p><strong>[REGION 5]:</strong>&nbsp; [vote_na]</p>
-<p><strong>[REGION 6]:</strong>&nbsp; [vote_sa]</p>
-<p><strong>[REGION 7]:</strong>&nbsp; [vote_wa]</p>
+                    10 => '<h2>Vote Due: [insert site name]</h2>
+<p><em>*you can duplicate this alert for each site you would like to send a reminder e-mail to, delete this message after updating.</em></p>
+<p>The following request is due <strong>in 1 day</strong> but has not received your site vote.</p>
+<p><strong><span style="color: #e74c3c;">Due Date Assigned</span>:</strong> [due_d]</p>
+<p><strong>Request Tracking ID:</strong> [request_id]</p>
+<p><strong>Review Type:</strong> [request_type]</p>
+<p><strong>Contact Person:</strong> [contact_name], [contact_email]</p>
+<p><strong>Request Title:</strong> [request_title]</p>
+<p><strong>[insert site name] Vote Status:</strong> [region_vote_status][X] <em>*you will need to find the record ID for the site you wish to send this e-mail, and adjust the X to that number, delete this message after updating.</em></p>
+<p>&nbsp;</p>
 <h2>Actions</h2>
-<p><strong>1. Link to <span style="color: #31708f;">Visit Request page</span>:</strong><br /><a href="'.$module->getUrl('index.php').'&option=hub&amp;record=[request_id]'.'">'.$module->getUrl('index.php?NOAUTH&option=hub&amp;record=[request_id]').'</a></p>
-<p><strong>2. Link to <span style="color: #16a085;">Finalize Request page</span>:</strong><br />[__SURVEYLINK_finalization_of_request]</p>',
+<p><strong>1. Review and <span style="color: #31708f;">Vote on Request</span>:</strong><br><a href="https://redcap.vumc.org/external_modules/?prefix=harmonist-hub&page=index&pid=___project_id_new&NOAUTH&option=hub&record=[request_id]">https://redcap.vumc.org/external_modules/?prefix=harmonist-hub&page=index&pid=___project_id_new&NOAUTH&option=hub&record=[request_id]</a></p>
+<p></p>
+<p>This email has been automatically generated by the '.$hub_projectname.' Hub system. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact harmonist@vumc.org.</p>',
                     11 => '<h2>Final Documents Requested</h2>
 <p>Dear [contact_name],</p>
 <p>We are pleased to confirm approval of your '.$hub_projectname.' concept,&nbsp;<strong>[request_title]</strong>. The '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME] approval date is <strong>[final_d]</strong>.</p>
@@ -860,33 +854,7 @@ class REDCapManagement {
 <p>The finalized concept sheet PDF is attached (if available). Project hub-updates will be tracked on the <a href="'.$module->getUrl('index.php').'&NOAUTH'.'">'.$hub_projectname.' Hub</a>. Please archive the document or distribute for review in your regions.</p>
 <p>&nbsp;</p>
 <p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php').'&NOAUTH'.'">'.$hub_projectname.' Hub system</a>. If you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>',
-                    15 => '<h2>'.$hub_projectname.' Request Approved</h2>
-<p>Dear [contact_name],</p>
-<p>We are pleased to confirm approval of your '.$hub_projectname.' concept,&nbsp;<strong>[request_title]</strong>. The '.$hub_projectname.' [EXECUTIVE COMMITTEE NAME] approval date is <strong>[final_d]</strong>.</p>
-<p><strong>Next Steps</strong></p>
-<ol>
-<li style="padding-bottom: 5px;">Please check the '.$hub_projectname.' Hub for <a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub?record=[request_id]'.'">any feedback or changes requested by the [EXECUTIVE COMMITTEE NAME]</a> and incorporate them into the final version or respond directly to the region/investigator if this is not feasible.</li>
-<li style="padding-bottom: 5px;">Contact&nbsp;[HUB ADMIN CONTACT]&nbsp; (cc\'d) or&nbsp;[HUB ADMIN CONTACT2]&nbsp;with any general questions.</li>
-<li style="padding-bottom: 5px;">Follow these final documents instructions for your submission type:</li>
-<ol>
-<li>For <strong>Abstracts</strong>: Upload your <u>submitted</u> abstract at the link below. We will contact you at a later date to find out if the abstract was accepted.</li>
-<li>&nbsp;</li>
-<li>&nbsp;</li>
-<li>&nbsp;</li>
-</ol>
-</ol>
-<p>[__SURVEYLINK_final_docs_request_survey]</p>
-<p>&nbsp;</p>
-<p><em>If you do not have the final version available, you will receive a reminder email to upload your documents at a later date.</em></p>
-<p>Thank you for your leadership of '.$hub_projectname.'&rsquo;s research.</p>
-<p>&nbsp;</p>
-<hr />
-<p><em>Additional review notes (if needed):</em></p>
-<p>[custom_note]</p>
-<hr />
-<p>&nbsp;</p>
-<p><span style="color: #999999; font-size: 11px;">This email has been automatically generated by the <a href="'.$module->getUrl('index.php').'&NOAUTH'.'">'.$hub_projectname.' Hub system</a>. If someone incorrectly submitted this request on your behalf or if you believe you received this email in error, please contact <a href="mailto:harmonist@vumc.org">harmonist@vumc.org</a>.</span></p>'
-                ),
+                    ),
                 "email-attachment-variable" => array
                 (
                     0 => "",
@@ -903,8 +871,7 @@ class REDCapManagement {
                     11 => "",
                     12 => "[author_doc]",
                     13 => "",
-                    14 => "[finalconcept_pdf]",
-                    15 => ""
+                    14 => "[finalconcept_pdf]"
                 ),
                 "email-repetitive" => array
                 (
@@ -922,8 +889,7 @@ class REDCapManagement {
                     11 => 0,
                     12 => 0,
                     13 => 0,
-                    14 => 0,
-                    15 => 0
+                    14 => 0
                 ),
                 "email-deleted" => array
                 (
@@ -941,8 +907,7 @@ class REDCapManagement {
                     11 => 0,
                     12 => 0,
                     13 => 0,
-                    14 => 0,
-                    15 => 0
+                    14 => 0
                 ),
                 "email-deactivate" => array
                 (
@@ -960,8 +925,7 @@ class REDCapManagement {
                     11 => 1,
                     12 => 1,
                     13 => 1,
-                    14 => 1,
-                    15 => 1
+                    14 => 1
                 ),
                 "email-condition" => array
                 (
@@ -971,7 +935,7 @@ class REDCapManagement {
                     3 => "[approval_y]=1",
                     4 => "[approval_y]=9",
                     5 => "[approval_y]=0",
-                    6 => "[approval_y]=8",
+                    6 => "[approval_y]=1 and [admin_noemail] <> '1'",
                     7 => "[approval_y] = '1'",
                     8 => "([due_d] <> \"\") and ([finalize_y] = \"\") and ([approval_y] = 1)",
                     9 => "[finalize_y]=1 and [request_type]<>1 and [request_type]<>5 and [finalize_noemail]<>'1'",
@@ -979,8 +943,7 @@ class REDCapManagement {
                     11 => "[finalize_y]=1 and ([request_type]=1 or [request_type]=5) and [finalize_noemail]<>'1'",
                     12 => "[author_doc]<>\"\" and [finaldocs_noemail] <> '1'",
                     13 => "[mr_assigned] <> \"\" and [mr_noemail(1)] <> '1'",
-                    14 => "[mr_assigned] <> \"\" and [mr_noemail(2)] <> '1'",
-                    15 => "[finalize_y]=1 and ([request_type]<>1 and [request_type]<>5) and [finalize_noemail]<>'1'"
+                    14 => "[mr_assigned] <> \"\" and [mr_noemail(2)] <> '1'"
                 ),
                 "email-incomplete" => array
                 (
@@ -998,8 +961,7 @@ class REDCapManagement {
                     11 => 0,
                     12 => 0,
                     13 => 0,
-                    14 => 0,
-                    15 => 0
+                    14 => 0
                 ),
                 "cron-send-email-on" => array
                 (
@@ -1012,12 +974,12 @@ class REDCapManagement {
                     3 => "now",
                     4 => "now",
                     5 => "now",
-                    10 => "now",
+                    6 => "now",
+                    10 => "calc",
                     11 => "calc",
                     12 => "calc",
                     13 => "now",
-                    14 => "now",
-                    15 => "now"
+                    14 => "now"
                 ),
                 "cron-send-email-on-field" => array
                 (
@@ -1030,12 +992,12 @@ class REDCapManagement {
                     3 => "",
                     4 => "",
                     5 => "",
-                    10 => "",
+                    6 => "",
+                    10 => "([region_vote_status][10] = \"\") and (datediff([due_d], \"today\", \"d\", \"ymd\", true) = -1) and ([due_d] <> \"\") and ([finalize_y] = \"\")",
                     11 => "[finalize_y]=1 and ([request_type]=1 or [request_type]=5) and [finalize_noemail]<>'1'",
                     12 => "[author_doc]<>\"\" and [finaldocs_noemail] <> '1'",
                     13 => "",
-                    14 => "",
-                    15 => ""
+                    14 => ""
                 ),
                 "cron-repeat-for" => array
                 (
@@ -1048,12 +1010,12 @@ class REDCapManagement {
                     3 => 0,
                     4 => 0,
                     5 => 0,
+                    6 => 0,
                     10 => 0,
                     11 => 7,
                     12 => 7,
                     13 => 0,
-                    14 => 0,
-                    15 => 0
+                    14 => 0
                 ),
                 "cron-queue-expiration-date" => array
                 (
@@ -1066,12 +1028,12 @@ class REDCapManagement {
                     3 => "never",
                     4 => "never",
                     5 => "never",
-                    10 => "never",
+                    6 => "never",
+                    10 => "cond",
                     11 => "cond",
                     12 => "cond",
                     13 => "never",
-                    14 => "never",
-                    15 => "never"
+                    14 => "never"
                 ),
                 "cron-queue-expiration-date-field" => array
                 (
@@ -1084,12 +1046,12 @@ class REDCapManagement {
                     3 => "",
                     4 => "",
                     5 => "",
-                    10 => "",
+                    6 => "",
+                    10 => "[finalize_y] <> \"\" or [approval_y] = 9 or [approval_y] = 0",
                     11 => "[author_doc] <> '' or [mr_assigned] <> \"\"",
                     12 => "[mr_assigned] <> \"\"",
                     13 => "",
-                    14 => "",
-                    15 => ""
+                    14 => ""
                 ),
                 "alert-id" => array
                 (
@@ -1108,7 +1070,6 @@ class REDCapManagement {
                     12 => 12,
                     13 => 13,
                     14 => 14,
-                    15 => 15,
                     16 => 16,
                     17 => 17,
                     18 => 18,
@@ -1121,15 +1082,15 @@ class REDCapManagement {
                     3 => "To Admin: request posted to Hub",
                     4 => "To Admin: request deactivated (not posted to Hub)",
                     5 => "To Admin: request rejected (not posted to Hub)",
+                    6 => "To Consortium: New request for review",
                     7 => "To Admins: notify voting complete",
                     8 => "To Admins: alert voting incomplete by due_d",
                     9 => "To Admin: non-concept approved by EC",
-                    10 => "To Admin: alert voting incomplete by due_d TEST2",
+                    10 => "To Site: alert voting incomplete by due date",
                     11 => "To Author: concept or fast-track approved by EC",
                     12 => "To Tracking Number Team: Assign Tracking Number",
                     13 => "To Author and Admins: Tracking Number Assigned",
-                    14 => "To PMs: notification of new concept",
-                    15 => "To Author: non-concept approved by EC",
+                    14 => "To PMs: notification of new concept"
                 )
             )
         );
