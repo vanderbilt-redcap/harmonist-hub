@@ -109,10 +109,10 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                         </colgroup>
                         <thead>
                         <tr>
-                            <th class="sorted_class" style="width: 100px" data-sorted="true" data-sorted-direction="descending">Data Request Details</th>
-                            <th class="sorted_class" style="width: 200px">Created On</th>
-                            <th class="sorted_class" style="width: 200px">Updated On</th>
-                            <th class="sorting_disabled" data-sortable="false" style="width: 90px">Actions</th>
+                            <th class="sorted_class" data-sorted="true" data-sorted-direction="descending">Data Request Details</th>
+                            <th class="sorted_class">Created On</th>
+                            <th class="sorted_class">Updated On</th>
+                            <th class="sorting_disabled" data-sortable="false">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
