@@ -85,7 +85,6 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $arrayConcepts[0]['contact_link'] = $request['contactperson_id'];
         $arrayConcepts[0]['start_year'] = $start_year;
         $arrayConcepts[0]['ec_approval_d'] = $request['final_d'];
-        $arrayConcepts[0]['wg_yn'] = $request['wg_y'];
         $arrayConcepts[0]['wg_link'] = $request['wg_name'];
         $arrayConcepts[0]['wg2_link'] = $request['wg2_name'];
         $arrayConcepts[0]['wg3_link'] = $request['wg3_name'];
