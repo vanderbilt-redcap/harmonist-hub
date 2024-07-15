@@ -10,8 +10,10 @@ class ProjectData
         $array = array();
         $found = array();
         $index=0;
-        foreach ($filterLogic as $filterkey => $filtervalue){
-            array_push($found, false);
+        if(is_array($filterLogic) && $filterLogic != null) {
+            foreach ($filterLogic as $filterkey => $filtervalue) {
+                array_push($found, false);
+            }
         }
         foreach ($records as $record=>$record_array) {
             $count = 0;
