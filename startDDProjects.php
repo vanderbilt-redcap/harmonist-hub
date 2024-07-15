@@ -97,6 +97,9 @@ foreach ($projects_array as $index=>$name){
         $module->enableModule($project_id_new,"vanderbilt_emailTrigger");
         $othermodule = ExternalModules::getModuleInstance("vanderbilt_emailTrigger");
         foreach ($projects_array_module_emailalerts[$index] as $setting_name => $setting_value){
+            if($setting_name == "email-text"){
+                $setting_value = str_replace("___project_id_new", $project_id_new, $setting_value);
+            }
             $othermodule->setProjectSetting($setting_name, $setting_value, $project_id_new);
         }
     }
