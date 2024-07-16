@@ -153,9 +153,9 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "New concept sheet " . $request['mr_assigned'] . " created in the Hub", $message, $concept_id,"New concept sheet created",$pidsArray['HARMONIST']);
             }
         }
+        error_log("**RESULTS");
         $json = json_encode($arrayConcepts);
         $results = \Records::saveData($pidsArray['HARMONIST'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-        error_log("**RESULTS");
         error_log(json_encode($results));
     }else{
         $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['HARMONIST'] . "&arm=1&id=" . $concept['record_id'];
