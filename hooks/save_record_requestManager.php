@@ -155,6 +155,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         }
         $json = json_encode($arrayConcepts);
         $results = \Records::saveData($pidsArray['HARMONIST'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        error_log("**RESULTS");
         error_log(json_encode($results));
     }else{
         $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['HARMONIST'] . "&arm=1&id=" . $concept['record_id'];
