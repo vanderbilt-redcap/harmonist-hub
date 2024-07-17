@@ -10,6 +10,8 @@ concept_title,concept_sheet,,notes,"Concept Title",,,,,,,,y,,,,,
 revised_y,concept_sheet,,checkbox,"Concept Sheet has been revised","1,",,,,,,,,,,,,
 concept_tags,concept_sheet,,checkbox,"<div style=""padding-left:30px"">Concept Tags<span style=""font-weight:lighter; font-style:italic""> (Optional)</span></div>","1, A | 2, B | 3, C",,,,,,,,,,,,
 concept_file,concept_sheet,,file,"Concept Sheet Document",,,,,,,,,,,,,
+concept_word,concept_sheet,,file,"Concept Sheet Word File (DOC)
+<div style=""font-weight:lighter;font-style:italic"">(Used for file archiving only)</div>",,,,,,,,,,,,,
 datasop_file,concept_sheet,,file,"Data Request Document (or other Associated File)",,,,,,,,,,,,,
 contact_txt,concept_sheet,,descriptive,"<div style=""color:white; text-align:center; border: 1px #3498db; background-color: #2980b9;""><h3 style=""margin:0px; padding:10px"">Contact Person</h3></div>",,,,,,,,,,,,,
 contact_note,concept_sheet,,descriptive,"The person(s) listed here will receive the quarterly ""request for status update"" emails. This person is the most suited to receive these emails and may or may not be the actual concept lead. Concept lead(s) and other co-investigators should be listed on the next form.",,,,,,,,,,,,,
@@ -30,7 +32,7 @@ person_role,participants,,dropdown,"Role in Project","1, Concept Lead (or co-Lea
 person_link,participants,,sql,"Person (SQL link to Persons Project)","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
 notiedeaperson,participants,,checkbox,,"1, The person I want to add is not in the people list in REDCap.",,,,,,,,LV,,,,
 person_other,participants,,text,"<div style=""padding-left:30px; color:#333333"">Other (non-Consortia) Contact
-<span style=""font-weight:lighter; font-style:italic"">(For Consortium members, please <a href=""https://redcap.vanderbilt.edu/redcap_v7.2.2/DataEntry/record_home.php?pid=59097"">add them to the Persons Project</a> instead and they will then appear in the dropdown list.)</span></div>",,,,,,,"[notiedeaperson(1)] = '1'",,,,,,
+<span style=""font-weight:lighter; font-style:italic"">(For Consortium members, please <a href=""https://redcap.vumc.org/redcap_v7.2.2/DataEntry/record_home.php?pid=59097"">add them to the Persons Project</a> instead and they will then appear in the dropdown list.)</span></div>",,,,,,,"[notiedeaperson(1)] = '1'",,,,,,
 adminupdate_d,admin_update,,text,"Date of update",,,date_ymd,,,,,,,,,,
 admin_status,admin_update,,dropdown,Status,"1, Not approved | 2, Approved | 3, In development | 4, Submitted to journal | 5, Published",,,,,,,,,,,,
 admin_update,admin_update,,notes,"Admin update on project:",,,,,,,,,LV,,,,
