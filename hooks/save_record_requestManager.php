@@ -12,7 +12,6 @@ $requestData = \REDCap::getData($project_id, 'array', array('request_id' => $rec
 $request = $requestData[$record][$event_id];
 
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
-error_log($instrument."_complete: ".$request[$instrument.'_complete']);
 if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'request'){
     $data = \REDCap::getData($project_id, 'json-array',$record,array($instrument.'_complete',$instrument.'_timestamp'), null,false,false,false,true)[0];
 
@@ -43,13 +42,9 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     }
 
     $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array');
-    error_log("Record Request #: ".$record);
     foreach ($regions as $region){
         $instance = $region['record_id'];
         //only if it's the first time we save the info
-        error_log( $region['region_name']." (".$region['region_code'].")");
-        error_log("Regions Instance #: ".$instance);
-        error_log(json_encode($requestData[$record]['repeat_instances']['dashboard_voting_status'][$instance]));
         if(empty($requestData[$record]['repeat_instances']['dashboard_voting_status'][$instance])) {
             $array_repeat_instances = array();
             $aux = array();
@@ -68,7 +63,6 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $results = \Records::saveData($project_id, 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 }else if($instrument == 'tracking_number_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
     $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', array('record_id' => '1'))[0];
-
     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[concept_id] = '".$request['mr_assigned']."'");
     $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
     if (empty($concept)) {
@@ -153,10 +147,9 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "New concept sheet " . $request['mr_assigned'] . " created in the Hub", $message, $concept_id,"New concept sheet created",$pidsArray['HARMONIST']);
             }
         }
+
         $json = json_encode($arrayConcepts);
         $results = \Records::saveData($pidsArray['HARMONIST'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-        error_log($results);
-        error_log($json);
     }else{
         $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['HARMONIST'] . "&arm=1&id=" . $concept['record_id'];
 
