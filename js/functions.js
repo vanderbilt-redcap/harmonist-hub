@@ -457,19 +457,18 @@ function loadAjax_steps(data,url,loadAjax,step){
                         else if(key == "sop_due_d" || key == "sop_hubuser" || key == "sop_due_d_preview") {
                             $('#' + key).val(jsonAjax[key]);
                             $('[preview=' + key+"]").html(jsonAjax[key]);
-                        }else if(key == "sop_inclusion" || key == "sop_exclusion") {
-                            $('#' + key).html(jsonAjax[key]);
-                            $('[preview=' + key+"]").html(jsonAjax[key]);
-                        }else if(key == "sop_notes") {
-                            $('#' + key).html(jsonAjax[key]);
-                            $('[preview=' + key+"]").html(jsonAjax[key]);
-                            $('[preview=' + key+"_header]").html("General notes: &nbsp;");
+                        }else if(key == "sop_inclusion" || key == "sop_exclusion" || key == "sop_notes" || key == "dataformat_notes") {
+                            tinymce.get(key).setContent(jsonAjax[key]);
+                            tinymce.get(key).setContent(tinymce.get(key).getContent({ format: 'text' }));
+                            $('[name=' + key + ']').val(jsonAjax[key]);
+                            $('[preview=' + key+"]").html(tinymce.get(key).getContent());
+                            if(key == "sop_notes"){
+                                $('[preview=' + key + "_header]").html("General notes: &nbsp;");
+                            }else if(key == "dataformat_notes") {
+                                $('[preview=' + key+"_header]").html("File format notes:");
+                            }
                         }else if(key == 'sop_downloaders' && jsonAjax[key] != "") {
                             update_downloaders_list(jsonAjax[key]);
-                        }else if(key == 'dataformat_notes' && jsonAjax[key] != "") {
-                            $('#' + key).html(jsonAjax[key]);
-                            $('[preview=' + key+"]").html(jsonAjax[key]);
-                            $('[preview=' + key+"_header]").html("File format notes:");
                         }else if(key.match("dataformat_prefer___") != null && jsonAjax[key] != "") {
                             update_preferred_format(key,jsonAjax[key]);
                         }else if(key == "dataformat_prefer_text" && jsonAjax[key] != "") {
