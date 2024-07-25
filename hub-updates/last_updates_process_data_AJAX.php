@@ -25,9 +25,9 @@ if($option == "save")
     if($option == "resolved")
     {
         if(!empty($hub_updates_resolved_list)) {
-            $result = $checked_values;
-        }else{
             $result = trim(implode("," ,array_unique(array_merge($hub_updates_resolved_list, $checked_values_array))),",");
+        }else{
+            $result = $checked_values;
         }
 
         #Update dates on checked values
