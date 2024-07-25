@@ -5,6 +5,13 @@ include_once(__DIR__ . "/../classes/HubUpdates.php");
 
 $checked_values = $_REQUEST['checked_values'];
 $option = $_REQUEST['option'];
+
+$page_to_return = "index";
+if($option == "dates"){
+    $checked_values = $_REQUEST['checked_values_dates'];
+    $option = "resolved";
+    $page_to_return = "resolved_list";
+}
 $message = "";
 if($option == "save")
 {
@@ -17,7 +24,45 @@ if($option == "save")
 
         if($option == "resolved")
         {
-            $result = implode("," ,array_unique(array_merge($hub_updates_resolved_list, $checked_values_array)));
+            $result = trim(implode("," ,array_unique(array_merge($hub_updates_resolved_list, $checked_values_array))),",");
+
+            #Update dates on checked values
+            $hub_updates_resolved_list_last_updated = $module->getProjectSetting('hub-updates-resolved-list-last-updated');
+            $hub_updates_dates = [];
+            foreach ($checked_values_array as $resolved_checked) {
+                $hub_updates_resolved = explode("-", $resolved_checked);
+                $constant = $hub_updates_resolved[0];
+                $var_name = $hub_updates_resolved[1];
+                if(!array_key_exists($constant, $hub_updates_dates)){
+                    $hub_updates_dates[$constant] = [];
+                }
+                $hub_updates_dates[$constant][$var_name]['date'] = date("F d Y H:i:s");
+                if (defined('USERID')) {
+                    $hub_updates_dates[$constant][$var_name]['user'] = USERID;
+                }
+            }
+            #Merged updated checked values with old data (not updated)
+            if(is_array($hub_updates_resolved_list_last_updated) && !empty($hub_updates_resolved_list_last_updated)){
+                foreach ($hub_updates_resolved_list_last_updated as $constant => $fieldData){
+                    $field_found = false;
+                    foreach ($fieldData as $field_name => $data){
+                        foreach ($hub_updates_dates[$constant] as $field_name_checked => $data_checked){
+                            if($field_name == $field_name_checked){
+                                $field_found = true;
+                            }
+                        }
+                        if(!$field_found){
+                            if(!array_key_exists($constant, $hub_updates_dates)){
+                                $hub_updates_dates[$constant] = [];
+                            }
+                            $hub_updates_dates[$constant][$field_name] = $hub_updates_resolved_list_last_updated[$constant][$field_name];
+                        }
+                    }
+                }
+            }
+
+            $module->setProjectSetting('hub-updates-resolved-list-last-updated', $hub_updates_dates);
+            $message = "&message=R";
         }
         else if($option == "removed")
         {
@@ -29,7 +74,7 @@ if($option == "save")
                     }
                 }
             }
-            $result = implode(",", $hub_updates_resolved_list_final);
+            $result = trim(implode(",", $hub_updates_resolved_list_final),",");
             $message = "&message=L";
         }
     }else if($option == "resolved"){
@@ -45,11 +90,11 @@ $total_updates = count($allUpdates['data']);
 $allUpdates['total_updates'] = $total_updates;
 $module->setProjectSetting('hub-updates', $allUpdates);
 
-if(isset($checked_values) &&$option != "removed") {
+if(isset($checked_values) && $option != "removed" && $_REQUEST['option'] != "dates") {
     echo json_encode(array(
         'status' => 'success'
     ));
 }else{
-    header("location:".$module->getUrl('hub-updates/index.php').$message);
+    header("location:".$module->getUrl('hub-updates/'.$page_to_return.'.php').$message);
 }
 ?>
