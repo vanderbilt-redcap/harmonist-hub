@@ -60,6 +60,9 @@ if($option == "save")
                             $hub_updates_dates[$constant] = [];
                         }
                         $hub_updates_dates[$constant][$field_name] = $hub_updates_resolved_list_last_updated[$constant][$field_name];
+                        if($hub_updates_dates[$constant][$field_name]['date'] === ""){
+                            $hub_updates_dates[$constant][$field_name]['date'] = date("F d Y H:i:s");
+                        }
                     }
                 }
             }
