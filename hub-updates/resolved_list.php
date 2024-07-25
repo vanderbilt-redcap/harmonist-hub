@@ -220,7 +220,6 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                 }
             }
             if($updated_resolved_date){
-                print_array("UPDATE");
                 $module->setProjectSetting('hub-updates-resolved-list-last-updated', $hub_updates_resolved_list_last_updated);
             }
             ?>
