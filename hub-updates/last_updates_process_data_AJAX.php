@@ -47,9 +47,9 @@ if($option == "save")
         }
         #Merged updated checked values with old data (not updated)
         if(is_array($hub_updates_resolved_list_last_updated) && !empty($hub_updates_resolved_list_last_updated)){
-            foreach ($hub_updates_resolved_list_last_updated as $constant => $fieldData){
+            foreach ($hub_updates_resolved_list_last_updated as $constant => $field_data){
                 $field_found = false;
-                foreach ($fieldData as $field_name => $data){
+                foreach ($field_data as $field_name => $data){
                     foreach ($hub_updates_dates[$constant] as $field_name_checked => $data_checked){
                         if($field_name == $field_name_checked){
                             $field_found = true;
