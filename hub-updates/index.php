@@ -18,23 +18,6 @@ foreach ($allUpdates as $constant => $project_data) {
     $printData[$constant]['gotoredcap'] = $gotoredcap;
     $printData[$constant]['pid'] = $pidsArray[$constant];
 }
-
-//$checked_values = "RMANAGER-assoc_concept-changed-sql";
-//print_array($checked_values);
-//HubUpdates::updateDataDictionary($module, $pidsArray, $checked_values);
-
-$constant = "RMANAGER";
-$path = $module->framework->getModulePath() . "csv/" . $constant . ".csv";
-$new = $module->dataDictionaryCSVToMetadataArray($path);
-$old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
-//print_array($allUpdates[$constant]['request']['changed']['assoc_concept']);
-//print_array($new['variable_replacedby']);
-//print_array($old['variable_replacedby']);
-
-//$test['data'] = HubUpdates::compareDataDictionary($module, $pidsArray);
-//print_array($test['data']);
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -226,6 +209,9 @@ $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
                             <span style="cursor: pointer;font-size: 14px;font-weight: normal;color: black;" onclick="checkAllText('<?= $constant ?>');">Select All</span>
                         </span>
                         <a href="<?=$printData[$constant]['gotoredcap']?>"target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;margin-top: 5px;">Go to REDCap</a>
+                        <span class="hub-update-last-updated">
+                            <?php echo "Updated on ".HubUpdates::getTemplateLastUpdatedDate($module, $constant);?>
+                        </span>
                     </h3>
                 </div>
                 <div id="collapse<?=$constant?>" class="table-responsive panel-collapse collapse" aria-expanded="true">

@@ -5,11 +5,11 @@ include_once(__DIR__ ."/../projects.php");
 include_once(__DIR__ . "/../classes/HubUpdates.php");
 
 $resolved_list = HubUpdates::getResolvedList($module,'resolved');
-
+$hub_updates_resolved_list_last_updated = empty($module->getProjectSetting('hub-updates-resolved-list-last-updated')) ? array() : $module->getProjectSetting('hub-updates-resolved-list-last-updated');
 $allUpdates['data'] = HubUpdates::compareDataDictionary($module, $pidsArray, 'resolved');
-//print_array($allUpdates['data']);
 
 $oldValues = [];
+$updated_resolved_date = false;
 foreach ($allUpdates['data']  as $constant => $project_data) {
     $oldValues[$constant] = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
 
@@ -55,16 +55,22 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
             }
 
             $(document).ready(function () {
-                $('#remove_data').submit(function (event) {
+                $('#remove_data, #update_data').submit(function (event) {
+                    var formId = $(this).attr('id');
                     var removed_list = [];
                     $('.rowSelected').each(function() {
                         removed_list.push($(this).attr('row'));
                     });
                     if(removed_list != ""){
                         var checked_values = removed_list.join(",");
-                        $("#checked_values").val(checked_values);
+                        var checked_values_id = "checked_values";
+                        if(formId == "update_data"){
+                            checked_values_id = "checked_values_dates";
+                        }
+                        $("#"+checked_values_id).val(checked_values);
                     }else{
                         $("#dialogWarning").dialog({modal:true, width:300}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");
+                        return false;
                     }
                     return true;
                 });
@@ -72,10 +78,24 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
         </script>
     </head>
     <body>
+    <div class="backTo">
+        <a href="<?=$module->getUrl('hub-updates/index.php')?>">< Back to Hub Updates</a>
+    </div>
+    <br><br>
     <?php if(!empty($resolved_list)){ ?>
     <h4 class="title">
         Select the REDCap variables you want to remove from the resolved list and press the button at the end.
     </h4>
+    <?php $message = "";
+        if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'R')) {
+            $message = "The variables dates have been successfull been successfully updated.";
+        }
+    ?>
+    <?php if (array_key_exists('message', $_REQUEST)){ ?>
+        <div class="container" style="margin-top: 20px">
+            <div class="alert alert-success col-md-12" id="success_message"><?=$message?></div>
+        </div>
+    <?php } ?>
     <br><br>
     <h4 class="title">
         You have selected <span id="pid_total" class="badge dataRequests">0</span> variables
@@ -96,6 +116,15 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                     $title = $Proj->getTitle();
                     $printProject = "#".$project_id." - ".$title." => <strong>".$variable['field_name']."</strong> (<em>".$variable['field_type']."</em>)";
                     $id = $constant."-".$variable['field_name']."-".$variable['field_status']."-".$variable['field_type'];
+
+                    #If there's old data without dates, we add them
+                    if(is_array($hub_updates_resolved_list_last_updated) &&
+                        (empty($hub_updates_resolved_list_last_updated) ||
+                            ((array_key_exists($constant, $hub_updates_resolved_list_last_updated) && !array_key_exists($variable['field_name'], $hub_updates_resolved_list_last_updated[$constant]))
+                                || !array_key_exists($constant, $hub_updates_resolved_list_last_updated)))){
+                        $updated_resolved_date = true;
+                        $hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'] = date("F d Y H:i:s");
+                    }
                     ?>
                     <div>
                         <h3 class="panel-title">
@@ -104,11 +133,24 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                                     <td onclick="javascript:selectData('<?= $id; ?>')" style="width: 5%;">
                                         <input value="<?=$id?>" id="<?=$id?>" onclick="selectData('<?= $id; ?>');" class='auto-submit' type="checkbox" name='tablefields[]'>
                                     </td>
-                                    <td onclick="javascript:selectData('<?= $id; ?>')"><?=$printProject;?></td>
+                                    <td onclick="javascript:selectData('<?= $id; ?>')">
+                                        <?=$printProject;?>
+                                    </td>
                                     <td>
                                         <a data-toggle="collapse" href="#collapse<?=$id?>" class="resolved-view-changes">
                                             <strong>View Changes</strong>
                                         </a>
+                                        <?php
+                                        if(is_array($hub_updates_resolved_list_last_updated)){
+                                            $user = "";
+                                            if(array_key_exists('user', $hub_updates_resolved_list_last_updated[$constant][$variable['field_name']])){
+                                                $user = " by ".$hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['user'];
+                                            }
+                                            ?>
+                                        <span class="hub-update-last-updated">
+                                            <?php echo "Resolved on ".$hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'].$user." ".HubUpdates::getTemplateLastUpdatedDate($module, $constant,$hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date']);?>
+                                        </span>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                             </table>
@@ -177,10 +219,17 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                 <?php
                 }
             }
+            if($updated_resolved_date){
+                $module->setProjectSetting('hub-updates-resolved-list-last-updated', $hub_updates_resolved_list_last_updated);
+            }
             ?>
         <form method="POST" style="width: 20%;float:right" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=removed&redcap_csrf_token='.$module->getCSRFToken()?>" id="remove_data">
             <input type="hidden" id="checked_values" name="checked_values">
             <button type="submit" class="btn btn-primary btn-block float-right" id="remove_btn">Remove from Resolved List</button>
+        </form>
+        <form method="POST" style="width: 15%;float:right;margin-right: 5px;" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=dates&redcap_csrf_token='.$module->getCSRFToken()?>" id="update_data">
+            <input type="hidden" id="checked_values_dates" name="checked_values_dates">
+            <button type="submit" class="btn btn-secondary btn-block float-right" id="remove_btn">Update Resolved Date</button>
         </form>
     </div>
     <div id="dialogWarning" title="WARNING!" style="display:none;">

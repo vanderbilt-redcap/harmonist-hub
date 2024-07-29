@@ -12,7 +12,6 @@ class HubUpdates{
     {
         $allItems = array();
         $constants_array = REDCapManagement::getProjectsConstantsArray();
-//        $constants_array = array(0=>"RMANAGER");
         foreach ($constants_array as $constant){
             $path = $module->framework->getModulePath()."csv/".$constant.".csv";
             $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
@@ -199,12 +198,12 @@ class HubUpdates{
                 $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
                 $new = $module->dataDictionaryCSVToMetadataArray($path);
 
-                self::saveFieldData($update_list[$constant], $old, $new, $pidsArray[$constant]);
+                self::saveFieldData($update_list[$constant], $old, $new, $pidsArray[$constant], $constant, $pidsArray['PROJECTS']);
             }
         }
     }
 
-    public static function saveFieldData($update_list, $old, $new, $project_id)
+    public static function saveFieldData($update_list, $old, $new, $project_id, $constant, $project_id_map)
     {
         $save_data = $old;
         foreach ($update_list as $status => $statusData) {
@@ -224,17 +223,28 @@ class HubUpdates{
                         }
                     }
                     $save_data[$variable] = $new[$variable];
+
+                    #Log Data
+                    $newChanges = json_encode(array_diff_assoc($new[$variable], $old[$variable]),JSON_PRETTY_PRINT);
+                    $oldChanges = json_encode(array_diff_assoc($old[$variable], $new[$variable]),JSON_PRETTY_PRINT);
+                    \REDCap::logEvent("Hub Updates: CHANGED [".$variable."] on ".$constant." (PID #".$project_id.")", "*OLD:\n".$oldChanges."\n\n*NEW:\n".$newChanges, null,null,null,$project_id_map);
                 } else if ($status == self::ADDED) {
                     $next_field_name = self::getNextFieldName($variable, $new, $old);
                     $save_data_aux = [];
+                    $data = "";
                     foreach($save_data as $varname => $value){
                         if($varname == $next_field_name){
                             $save_data_aux[$variable] = $new[$variable];
+                            #Log Data
+                            $data = json_encode($save_data_aux[$variable],JSON_PRETTY_PRINT);
                         }
                         $save_data_aux[$varname] = $save_data[$varname];
                     }
                     $save_data = $save_data_aux;
+
+                    \REDCap::logEvent("Hub Updates: ADDED [".$variable."]  on  ".$constant." (PID #".$project_id.")", $data, null,null,null,$project_id_map);
                 } else if ($status == self::REMOVED) {
+                    \REDCap::logEvent("Hub Updates: REMOVED [".$variable."]  on  ".$constant." (PID #".$project_id.")", json_encode($save_data[$variable],JSON_PRETTY_PRINT), null,null,null,$project_id_map);
                     unset($save_data[$variable]);
                 }
             }
@@ -677,6 +687,22 @@ class HubUpdates{
             }
         }
         return $col;
+    }
+
+    public static function getTemplateLastUpdatedDate($module, $constant, $resolved_date = null){
+        $dateTemplateLastUpdated = date("F d Y H:i:s", filemtime($module->framework->getModulePath()."csv/".$constant.".csv"));
+        if($resolved_date != null){
+            if(strtotime($dateTemplateLastUpdated) > strtotime($resolved_date)) {
+                #Files has been updated
+                return "<span class='hub-update-last-updated-recent-date-badge badge' style='margin-left: 10px'>NEW CHANGES</span>";
+            }
+        }else{
+            if(strtotime($dateTemplateLastUpdated) < strtotime('-30 days')) {
+                #If past 30 days show in red
+                return "<span class='hub-update-last-updated-past-date'>".$dateTemplateLastUpdated."</span>";
+            }
+            return $dateTemplateLastUpdated;
+        }
     }
 }
 ?>
