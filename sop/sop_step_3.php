@@ -34,7 +34,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             branding: false,
             elementpath: false, // Hide this, since it oddly renders below the textarea.
             plugins: ['autolink lists link image charmap hr anchor pagebreak searchreplace code fullscreen insertdatetime media nonbreaking table directionality textcolor colorpicker imagetools'],
-            toolbar1: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | link unlink | charmap',
+            toolbar1: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | link unlink',
             toolbar2: 'outdent indent | removeformat | subscript superscript | bullist numlist | forecolor backcolor | searchreplace code'});
         tinymce.init({selector:'#sop_exclusion',
             height: 200,
@@ -42,7 +42,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             branding: false,
             elementpath: false, // Hide this, since it oddly renders below the textarea.
             plugins: ['autolink lists link image charmap hr anchor pagebreak searchreplace code fullscreen insertdatetime media nonbreaking table directionality textcolor colorpicker imagetools'],
-            toolbar1: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | link unlink | charmap',
+            toolbar1: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | link unlink',
             toolbar2: 'outdent indent | removeformat | subscript superscript | bullist numlist | forecolor backcolor | searchreplace code'});
         tinymce.init({selector:'#sop_notes',
             height: 200,
@@ -50,7 +50,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             branding: false,
             elementpath: false, // Hide this, since it oddly renders below the textarea.
             plugins: ['autolink lists link image charmap hr anchor pagebreak searchreplace code fullscreen insertdatetime media nonbreaking table directionality textcolor colorpicker imagetools'],
-            toolbar1: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | link unlink | charmap',
+            toolbar1: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | link unlink',
             toolbar2: 'outdent indent | removeformat | subscript superscript | bullist numlist | forecolor backcolor | searchreplace code'});
         tinymce.init({selector:'#dataformat_notes',
             height: 200,
@@ -58,7 +58,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             branding: false,
             elementpath: false, // Hide this, since it oddly renders below the textarea.
             plugins: ['autolink lists link image charmap hr anchor pagebreak searchreplace code fullscreen insertdatetime media nonbreaking table directionality textcolor colorpicker imagetools'],
-            toolbar1: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | link unlink | charmap',
+            toolbar1: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | link unlink',
             toolbar2: 'outdent indent | removeformat | subscript superscript | bullist numlist | forecolor backcolor | searchreplace code'});
     });
 </script>

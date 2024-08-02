@@ -161,7 +161,7 @@ class ProjectData
 
     public static function replaceSymbolsForPDF($sopData){
         $specialCharacters = ["&ge;", "&le;" ];
-        $specialCharactersReplacements = [">=","<="];
+        $specialCharactersReplacements = ["&gt;=","&lt;="];
         $dataChanged = $sopData;
 
         foreach($sopData as $index => $sop){
