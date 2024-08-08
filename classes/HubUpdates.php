@@ -346,20 +346,27 @@ class HubUpdates{
         return $result;
     }
 
-    public static function getIcon($status)
+    public static function getIcon($status, $option = null)
     {
         $icon = "fa-pencil-alt";
+        $iconPDF = "#";
         $color = "";
         if($status == self::CHANGED){
             $icon = "fa-pencil-alt";
+            $iconPDF = "#";
         }else if($status == self::ADDED){
             $icon = "fa-plus";
+            $iconPDF = "+";
         }else if($status == self::REMOVED){
             $icon = "fa-minus";
+            $iconPDF = "-";
             $color = "style='color:#fff'";
         }
 
         $icon_legend = '<a href="#" data-toggle="tooltip" title="'.$status.'" data-placement="top" class="custom-tooltip" style="vertical-align: -2px;"><span class="label '.$status.'" title="'.$status.'"><i class="fas '.$icon.'" aria-hidden="true"></i></span></a>';
+        if($option == "pdf"){
+            $icon_legend = '<span class="label '.$status.' labeltext">'.$iconPDF.'</span>';
+        }
         return $icon_legend;
     }
 

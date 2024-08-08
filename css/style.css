@@ -67,6 +67,9 @@
 .label-default {
      background-color: #8c8c8c;
  }
+.label-primary {
+    background-color: #337ab7;
+}
 .label-default_dark {
     background-color: #777;
 }

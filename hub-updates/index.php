@@ -203,11 +203,15 @@ foreach ($allUpdates as $constant => $project_data) {
                         <a data-toggle="collapse" href="#collapse<?=$constant?>" id="<?='table_'.$constant?>" class="label label-as-badge-square ">
                             <strong><?php echo "<span class='table_name'>".$printData[$constant]['title']."</span>"; ?></strong>
                         </a>
+                        <span onclick="<?=$module->getUrl('hub-updates/generate_pdf.php').'&constant='.$constant?>" class="badge label-primary" style="font-size: 14px;padding:.2em .6em .2em;">
+                                <i class="fa fa-arrow-down"></i> <i class="fa fa-solid fa-file-pdf"></i>
+                        </span>
                         <span class="badge dataRequests" id="counter_<?=$constant;?>"></span>
                         <span style="padding-left:10px">
                             <input type="checkbox" id="ckb_<?= $constant; ?>" name="<?= "chkAll_" . $constant ?>" onclick="checkAll('<?= $constant ?>');" style="cursor: pointer;">
                             <span style="cursor: pointer;font-size: 14px;font-weight: normal;color: black;" onclick="checkAllText('<?= $constant ?>');">Select All</span>
                         </span>
+
                         <a href="<?=$printData[$constant]['gotoredcap']?>"target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;margin-top: 5px;">Go to REDCap</a>
                         <span class="hub-update-last-updated">
                             <?php echo "Updated on ".HubUpdates::getTemplateLastUpdatedDate($module, $constant);?>
