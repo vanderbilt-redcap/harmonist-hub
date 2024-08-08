@@ -49,3 +49,6 @@ tr.rowSelected td{
     padding: 3px 10px !important;
     line-height: 1em !important;
 }
+.badge a:hover{
+    font-size: 12px;
+}

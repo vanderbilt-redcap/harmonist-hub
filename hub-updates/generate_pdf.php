@@ -17,7 +17,6 @@ $printData[$constant]['title'] = $Proj->getTitle();
 $printData[$constant]['gotoredcap'] = $gotoredcap;
 $printData[$constant]['pid'] = $pidsArray[$constant];
 
-
 $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }a{text-decoration: none;}</style>';
 $page_styles = '<style>
 .mainPDF{
@@ -218,7 +217,7 @@ $options->setChroot(EDOC_PATH);
 $dompdf->setOptions($options);
 ob_start();
 $dompdf->render();
-//#Download option
+#Download option
 $dompdf->stream($filename);
 $filesize = file_put_contents(EDOC_PATH.$storedName, ob_get_contents());
 ?>

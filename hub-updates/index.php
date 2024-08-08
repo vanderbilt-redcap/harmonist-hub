@@ -203,9 +203,11 @@ foreach ($allUpdates as $constant => $project_data) {
                         <a data-toggle="collapse" href="#collapse<?=$constant?>" id="<?='table_'.$constant?>" class="label label-as-badge-square ">
                             <strong><?php echo "<span class='table_name'>".$printData[$constant]['title']."</span>"; ?></strong>
                         </a>
-                        <span onclick="<?=$module->getUrl('hub-updates/generate_pdf.php').'&constant='.$constant?>" class="badge label-primary" style="font-size: 14px;padding:.2em .6em .2em;">
+                        <form method="POST" action="<?=$module->getUrl('hub-updates/generate_pdf.php').'&constant='.$constant?>" id="download_pdf" class="badge label-primary" style="cursor:pointer;font-size: 12px;padding:.2em .6em .2em;">
+                            <a onclick="this.closest('form').submit();return false;">
                                 <i class="fa fa-arrow-down"></i> <i class="fa fa-solid fa-file-pdf"></i>
-                        </span>
+                            </a>
+                        </form>
                         <span class="badge dataRequests" id="counter_<?=$constant;?>"></span>
                         <span style="padding-left:10px">
                             <input type="checkbox" id="ckb_<?= $constant; ?>" name="<?= "chkAll_" . $constant ?>" onclick="checkAll('<?= $constant ?>');" style="cursor: pointer;">
