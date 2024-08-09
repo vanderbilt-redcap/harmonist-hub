@@ -375,10 +375,10 @@ class HubUpdates{
        if($status == self::CHANGED) {
            if ($new[$var] !== $old[$var]) {
                $color = "class='mb-2 bg-warning';";
-
-               $col = "<div $color id='bg-warning'>" . filter_tags($new[$var]) . "</div><div class='text-muted' style=' text-decoration: line-through;'>" . filter_tags($old[$var]) . "</div>";
+               $col = '<div $color id="bg-warning">' . self::checkTagsExistAndAreClosed($new[$var]) . '</div>';
+               $col .= '<div class="text-muted" style="text-decoration: line-through;">' . self::checkTagsExistAndAreClosed($old[$var]) . '</div>';
            } else {
-               $col = "<div class='mb-2'>" . filter_tags($new[$var]) . "</div>";
+               $col = "<div class='mb-2'>" . self::checkTagsExistAndAreClosed($old[$var]) . "</div>";
            }
            $col .= self::getFieldLabel($new, $old, self::CHANGED,'Show the field ONLY if: ','branching_logic');
        }else {
@@ -710,6 +710,50 @@ class HubUpdates{
             }
             return $dateTemplateLastUpdated;
         }
+    }
+
+    public static function getPrintData($module, $pidsArray, $constantArray){
+        $printData = [];
+        $oldValues = [];
+        foreach ($constantArray as $constant => $project_data) {
+            $oldValues[$constant] = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
+
+            $Proj = $module->getProject($pidsArray[$constant]);
+            $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=" . $pidsArray[$constant], ENT_QUOTES);
+            $printData[$constant]['title'] = $Proj->getTitle();
+            $printData[$constant]['gotoredcap'] = $gotoredcap;
+            $printData[$constant]['pid'] = $pidsArray[$constant];
+        }
+
+        return [$printData,$oldValues];
+    }
+
+    /**
+     * Function that checks if the html has all tags closed. This is made so user can see the issues and the PDF can be printed.
+     * NOT: return as text
+     * YES: return as html
+     * @param $html
+     * @return string
+     */
+    public static function checkTagsExistAndAreClosed($html) {
+        preg_match_all('#<([a-zA-Z0-9]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
+        $openedtags = $result[1];
+        preg_match_all('#</([a-zA-Z0-9]+)>#iU', $html, $result);
+        $closedtags = $result[1];
+        $len_opened = count($openedtags);
+
+        $tagsClosed = true;
+        foreach ($openedtags as $index => $tagO){
+            if(!in_array($tagO,$closedtags)){
+                $tagsClosed = false;
+            }
+        }
+
+        if($tagsClosed){
+            return filter_tags($html);
+        }
+
+        return htmlspecialchars($html,ENT_QUOTES);
     }
 }
 ?>

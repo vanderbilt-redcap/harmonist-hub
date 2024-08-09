@@ -3,19 +3,20 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../projects.php");
 include_once(__DIR__ . "/../classes/HubUpdates.php");
 
-$constant = $_REQUEST['constant'];
-$allUpdates = $module->getProjectSetting('hub-updates')['data'];
-$project_data = $allUpdates[$constant];
-$printData = [];
-$oldValues = [];
+$constantReq = $_REQUEST['constant'];
+$allUpdatesAll = $module->getProjectSetting('hub-updates')['data'];
 
-$oldValues[$constant] = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
+$constant_array = [$constantReq => ""];
+if($constantReq == "ALL") {
+    $constant_array = $allUpdatesAll;
+    $allUpdates = $allUpdatesAll;
+}else{
+    $allUpdates[$constantReq] = $allUpdatesAll[$constantReq];
+}
 
-$Proj = $module->getProject($pidsArray[$constant]);
-$gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=" . $pidsArray[$constant], ENT_QUOTES);
-$printData[$constant]['title'] = $Proj->getTitle();
-$printData[$constant]['gotoredcap'] = $gotoredcap;
-$printData[$constant]['pid'] = $pidsArray[$constant];
+$printDataAll = HubUpdates::getPrintData($module, $pidsArray, $constant_array);
+$printData = $printDataAll[0];
+$oldValues = $printDataAll[1];
 
 $page_num = '<style>.footer .page-number:after { content: counter(page); } .footer { position: fixed; bottom: 0px;color:grey }a{text-decoration: none;}</style>';
 $page_styles = '<style>
@@ -134,75 +135,83 @@ tr.rowSelected td{
 }
 
 </style>';
-
+error_log(".........".$constantReq);
 $html_pdf = '<!DOCTYPE html>
 <html lang="en">
     <head>
         '.$page_styles. '
     </head>
     <body style="font-family:\'Calibri\';font-size:10pt;">'.$page_num.'
-    <div class="footer"><span class="page-number">Page </span></div>
-    <div class="container-fluid p-y-1">
-    <div style="padding-top: 5px;text-align: center;padding-bottom: 25px;">
-        <div><h2><strong>'.$printData[$constant]["title"].'</strong></h2></div>
-        <div><span style="font-style: italic">Updated on '.HubUpdates::getTemplateLastUpdatedDate($module, $constant).'</span></div>
-    </div>
-    <div>
-        <table class="table sortable-theme-bootstrap" data-sortable>
-            <tr>
-                <td colspan="5" style="text-align: left !important;">
-                    <span>'.HubUpdates::getIcon(HubUpdates::CHANGED, 'pdf').' <span style="">'.ucfirst(HubUpdates::CHANGED).' ('.($allUpdates[$constant]['TOTAL'][HubUpdates::CHANGED] ?? 0).')</span></span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span>'.HubUpdates::getIcon(HubUpdates::ADDED, 'pdf').' <span style="">'.ucfirst(HubUpdates::ADDED).' ('.($allUpdates[$constant]['TOTAL'][HubUpdates::ADDED] ?? 0).')</span></span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span>'.HubUpdates::getIcon(HubUpdates::REMOVED, 'pdf').' <span style="">'.ucfirst(HubUpdates::REMOVED).' ('.($allUpdates[$constant]['TOTAL'][HubUpdates::REMOVED] ?? 0).')</span></span>
-                </td>
-            </tr>
-            <tr class="section-header">
-                <th>Status</th>
-                <th>Variable / Field Name</th>
-                <th>Field Label <br><em>Field Note</em></th>
-                <th>Field Attributes<br>(Field Type, Validation, Choices, Calculations, etc.)</th>
-            </tr>';
-
-            foreach ($project_data as $instrument => $instrumentData){
-                if($instrument != "TOTAL"){
-
-                $html_pdf .= '<tr>
-                    <td colspan="5" class="instrument-header" style="text-align: left !important;">*<u>Instrument</u>: <em><strong>'.ucwords(str_replace("_", " ", $instrument)).'</em></strong></td>
+    <div class="footer"><span class="page-number">Page </span></div>';
+    $pages = 0;
+    foreach ($allUpdates as $constant => $project_data) {
+        $pages++;
+        $page_break = "";
+        if($pages > 1){
+            $page_break = 'style="page-break-before: always;"';
+        }
+        $html_pdf .= '<div class="container-fluid p-y-1" >
+        <div style="padding-top: 5px;text-align: center;padding-bottom: 25px;" '.$page_break.'>
+            <div><h2><strong>' . $printData[$constant]["title"] . '</strong></h2></div>
+            <div><span style="font-style: italic">Updated on ' . HubUpdates::getTemplateLastUpdatedDate($module, $constant) . '</span></div>
+        </div>
+        <div>
+            <table class="table sortable-theme-bootstrap" data-sortable>
+                <tr>
+                    <td colspan="5" style="text-align: left !important;">
+                        <span>' . HubUpdates::getIcon(HubUpdates::CHANGED, 'pdf') . ' <span style="">' . ucfirst(HubUpdates::CHANGED) . ' (' . ($allUpdates[$constant]['TOTAL'][HubUpdates::CHANGED] ?? 0) . ')</span></span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span>' . HubUpdates::getIcon(HubUpdates::ADDED, 'pdf') . ' <span style="">' . ucfirst(HubUpdates::ADDED) . ' (' . ($allUpdates[$constant]['TOTAL'][HubUpdates::ADDED] ?? 0) . ')</span></span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span>' . HubUpdates::getIcon(HubUpdates::REMOVED, 'pdf') . ' <span style="">' . ucfirst(HubUpdates::REMOVED) . ' (' . ($allUpdates[$constant]['TOTAL'][HubUpdates::REMOVED] ?? 0) . ')</span></span>
+                    </td>
+                </tr>
+                <tr class="section-header">
+                    <th>Status</th>
+                    <th>Variable / Field Name</th>
+                    <th>Field Label <br><em>Field Note</em></th>
+                    <th>Field Attributes<br>(Field Type, Validation, Choices, Calculations, etc.)</th>
                 </tr>';
-                foreach ($instrumentData as $status => $typeData){
-                        foreach ($typeData as $variable => $data){
+        foreach ($project_data as $instrument => $instrumentData) {
+            if ($instrument != "TOTAL") {
+                $html_pdf .= '<tr>
+                        <td colspan="5" class="instrument-header" style="text-align: left !important;">*<u>Instrument</u>: <em><strong>' . ucwords(str_replace("_", " ", $instrument)) . '</em></strong></td>
+                    </tr>';
+                foreach ($instrumentData as $status => $typeData) {
+                    foreach ($typeData as $variable => $data) {
+                        $html_pdf .= '<tr>
+                                    <td>' . HubUpdates::getIcon($status, "pdf") . '</td>
+                                    <td>' . HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_name') . '</td>
+                                    <td>';
 
-                            $html_pdf .= '<tr>
-                                <td>'.HubUpdates::getIcon($status, "pdf").'</td>
-                                <td>'.HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_name').'</td>
-                                <td>';
-
-                            if($status == HubUpdates::CHANGED) {
-                                $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, 'Section Header:', 'section_header');
-                                $col .= HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_label');
-                                $col .= HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', 'field_note');
-                            }else{
-                                $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', '');
-                            }
-                            $html_pdf .= $col;
-
-                            $html_pdf .= '</td><td class="col-sm-4">';
-                            if($status == HubUpdates::CHANGED){
-                                $html_pdf .= HubUpdates::getFieldAttributesChanged($data,$oldValues[$constant][$variable]);
-                            }else{
-                                $html_pdf .= HubUpdates::getFieldAttributes($data);
-                            }
-                           $html_pdf .= '</td></tr>';
+                        if ($status == HubUpdates::CHANGED) {
+                            $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, 'Section Header:', 'section_header');
+                            $col .= HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_label');
+                            $col .= HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', 'field_note');
+                        } else {
+                            $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', '');
                         }
+                        $html_pdf .= $col;
+
+                        $html_pdf .= '</td><td class="col-sm-4">';
+                        if ($status == HubUpdates::CHANGED) {
+                            $html_pdf .= HubUpdates::getFieldAttributesChanged($data, $oldValues[$constant][$variable]);
+                        } else {
+                            $html_pdf .= HubUpdates::getFieldAttributes($data);
+                        }
+                        $html_pdf .= '</td></tr>';
                     }
                 }
             }
-      $html_pdf .= '</table></div>';
-$html_pdf .= '</div></div></html>';
+        }
+        $html_pdf .= '</table></div></div>';
+    }
+$html_pdf .= '</html>';
 //echo $html_pdf;
 
-
-$filename = $printData[$constant]["title"]."_Hub_Updates_".date("Y-m-d_h-i",time());
+if($constant == "ALL"){
+    $filename = "All_Projects_Hub_Updates_".date("Y-m-d_h-i",time());
+}else{
+    $filename = $printData[$constant]["title"]."_Hub_Updates_".date("Y-m-d_h-i",time());
+}
 
 //SAVE PDF ON DB
 $reportHash = $filename;

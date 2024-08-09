@@ -52,3 +52,14 @@ tr.rowSelected td{
 .badge a:hover{
     font-size: 12px;
 }
+.download-pdf-all{
+    float: left;
+    margin-top: 14px;
+    color: #337ab7;
+    font-size: 15px;
+    cursor: pointer;
+}
+.download-pdf-all a:hover{
+    font-size: 15px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

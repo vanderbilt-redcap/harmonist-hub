@@ -7,17 +7,10 @@ $allUpdates = $module->getProjectSetting('hub-updates')['data'];
 #Sanitize text title and descrition for pages
 $hub_name = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', ('hub_name'))[0];
 
-$printData = [];
-$oldValues = [];
-foreach ($allUpdates as $constant => $project_data) {
-    $oldValues[$constant] = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
+$printDataAll = HubUpdates::getPrintData($module, $pidsArray, $allUpdates);
+$printData = $printDataAll[0];
+$oldValues = $printDataAll[1];
 
-    $Proj = $module->getProject($pidsArray[$constant]);
-    $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=" . $pidsArray[$constant], ENT_QUOTES);
-    $printData[$constant]['title'] = $Proj->getTitle();
-    $printData[$constant]['gotoredcap'] = $gotoredcap;
-    $printData[$constant]['pid'] = $pidsArray[$constant];
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -189,6 +182,11 @@ foreach ($allUpdates as $constant => $project_data) {
             </form>
         </h4>
         <div class="container-fluid p-y-1" style="margin-top:60px">
+            <form method="POST" action="<?=$module->getUrl('hub-updates/generate_pdf.php').'&constant=ALL'?>" id="download_pdf_all" class="download-pdf-all">
+                <a onclick="this.closest('form').submit();return false;">
+                    <i class="fa fa-arrow-down"></i> <i class="fa fa-solid fa-file-pdf"></i> Download All
+                </a>
+            </form>
             <form method="POST" action="" id="save_data">
                 <button type="submit" onclick="$('#option').val('save');" class="btn btn-primary float-right btnClassConfirm" id="save_btn" name="save_btn">Save Changes</button>
                 <button type="submit" onclick="$('#option').val('resolved');" class="btn btn-warning float-right btnClassConfirm" id="resolved_btn" name="resolved_btn" style="margin-right:10px">Mark as Resolved</button>
