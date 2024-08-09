@@ -284,7 +284,7 @@ foreach ($allUpdates as $constant => $project_data) {
         <h4 class="title" style="padding-top:15px">
             The data displayed shows the projects from your <strong><?=$settings['hub_name']?> Hub</strong> that have different values when compared against the administrator's version.<br>
             <form method="POST" action="" class="" id="update_list" name="update_list">
-                The data only uploads once a day. To recalculate any new changes you do without using this tool <a href="#" onclick="$('#option').val('update');$('#data_confirmation').submit();" id="update_btn" name="update_btn" style="font-size: 16px;text-decoration: underline;">click here</a>
+                The data only uploads once a day. To recalculate any new changes you do without using this tool <a href="#" onclick="$('#option').val('update');$('#data_confirmation').submit();" id="update_btn" name="update_btn" style="font-size: 18px;text-decoration: underline;">click here</a>.
             </form>
         </h4>
         <?php
