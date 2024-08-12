@@ -109,7 +109,7 @@ $oldValues = $printDataAll[1];
                     var redcap_csrf_token = <?=json_encode($module->getCSRFToken())?>;
                     var option = $('#option').val();
                     var success_message = "";
-                    url = <?=json_encode($module->getUrl('hub-updates/last_updates_process_data_AJAX.php'))?>;
+                    var url = <?=json_encode($module->getUrl('hub-updates/last_updates_process_data_AJAX.php'))?>;
 
                     var checked_values = [];
                     if(option != "update"){
@@ -142,6 +142,19 @@ $oldValues = $printDataAll[1];
                     return false;
                 });
             });
+
+            function changeFormUrlPDF(id){
+                if(id == "btnDownloadPDF"){
+                    var checked_values = [];
+                    $("input[name='tablefields[]']:checked").each(function() {
+                        checked_values.push($(this).val());
+                    });
+                    $('#data_confirmation').attr('action','<?=$module->getUrl('hub-updates/generate_pdf.php').'&constant=PDF&checked_values='?>'+checked_values);
+                }else{
+                    $('#data_confirmation').attr('action','');
+                    $('#data_confirmation').submit();
+                }
+            }
         </script>
     </head>
     <body>
@@ -314,7 +327,8 @@ $oldValues = $printDataAll[1];
                 <input type="hidden" id="option" name="option">
             </div>
             <div class="modal-footer" style="padding-top: 30px;">
-                <button type="submit" style="color:white;" class="btn btn-default btn-success" id='btnConfirm'>Continue</button>
+                <a onclick="changeFormUrlPDF(this.id);this.closest('form').submit();return false;" style="color:white;" class="btn btn-default btn-primary" id='btnDownloadPDF'><em class="fa fa-solid fa-file-pdf"></em> Download PDF</a>
+                <a onclick="changeFormUrlPDF(this.id);" style="color:white;" class="btn btn-default btn-success" id='btnConfirm' name="btnConfirm">Continue</a>
             </div>
         </form>
     </div>

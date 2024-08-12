@@ -176,7 +176,7 @@ class HubUpdates{
         return $sqlNew;
     }
 
-    public static function updateDataDictionary($module, $pidsArray, $checked_values)
+    public static function getListOfChanges($checked_values)
     {
         $hub_updates_list = explode(",", $checked_values);
         $update_list = [];
@@ -190,7 +190,12 @@ class HubUpdates{
             }
             array_push($update_list[$hub_updates[0]][$hub_updates[2]], $hub_updates[1]);
         }
+        return $update_list;
+    }
 
+    public static function updateDataDictionary($module, $pidsArray, $checked_values)
+    {
+        $update_list = self::getListOfChanges($checked_values);
         $constants_array = REDCapManagement::getProjectsConstantsArray();
         foreach ($constants_array as $constant) {
             if(array_key_exists($constant, $update_list)) {

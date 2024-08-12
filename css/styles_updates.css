@@ -38,6 +38,9 @@ tr.rowSelected td{
     background-color: #dcdcdc;
     border-color:#adacac;
 }
+a.btn:hover{
+    font-size: 14px !important;
+}
 .btn-resolved:hover {
     color: #000;
     background-color: #adacac;
