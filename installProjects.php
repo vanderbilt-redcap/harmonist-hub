@@ -4,10 +4,12 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
-if(APP_PATH_WEBROOT[0] == '/'){
-    $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
+if(!defined(APP_PATH_WEBROOT_ALL)) {
+    if (APP_PATH_WEBROOT[0] == '/') {
+        $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
+    }
+    define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
 }
-define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
