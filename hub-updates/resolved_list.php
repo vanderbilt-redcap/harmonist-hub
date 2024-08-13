@@ -75,6 +75,14 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                     return true;
                 });
             });
+            function changeFormUrlPDF(id){
+                var url = '<?=$module->getUrl('hub-updates/generate_pdf.php')?>';
+                var not_checked_values = [];
+                $("input[name='tablefields[]']:not(:checked)").each(function() {
+                    not_checked_values.push($(this).val());
+                });
+                $('#download_pdf_all_resolved').attr('action',url+"&constant=PDF&checked_values="+not_checked_values+"&option=resolvedAll");
+            }
         </script>
     </head>
     <body>
@@ -105,6 +113,11 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
             <span style="padding-left: 5px"><?=HubUpdates::getIcon(HubUpdates::CHANGED)." <span style='vertical-align: sub'>".ucfirst(HubUpdates::CHANGED)?></span></span>
             <span style="padding-left: 5px"><?=HubUpdates::getIcon(HubUpdates::ADDED)." <span style='vertical-align: sub'>".ucfirst(HubUpdates::ADDED)?></span></span>
             <span style="padding-left: 5px"><?=HubUpdates::getIcon(HubUpdates::REMOVED)." <span style='vertical-align: sub'>".ucfirst(HubUpdates::REMOVED)?></span></span>
+            <form method="POST" action="" id="download_pdf_all_resolved" class="download-pdf-all-resolved">
+                <a onclick="changeFormUrlPDF(this.id);this.closest('form').submit();return false;">
+                    <i class="fa fa-arrow-down"></i> <i class="fa fa-solid fa-file-pdf"></i> Download All
+                </a>
+            </form>
         </div>
             <?php
             foreach ($resolved_list as $constant => $variablesData) {

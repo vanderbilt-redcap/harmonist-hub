@@ -6,7 +6,12 @@ include_once(__DIR__ . "/../classes/HubUpdates.php");
 $constantReq = $_REQUEST['constant'];
 $option = $_REQUEST['option'];
 $filerepo = $_REQUEST['filerepo'];
-$allUpdatesAll = $module->getProjectSetting('hub-updates')['data'];
+if($option == "resolvedAll"){
+    $allUpdatesAll = HubUpdates::compareDataDictionary($module, $pidsArray, 'resolved');
+}else{
+    $allUpdatesAll = $module->getProjectSetting('hub-updates')['data'];
+}
+
 $allUpdates = [];
 
 $constant_array = [$constantReq => ""];
@@ -243,6 +248,8 @@ if($constantReq == "ALL"){
 }else if($constantReq == "PDF"){
     if($option == "resolved"){
         $filename = "Hub_Updates_Resolved_Changes_".date("Y-m-d_h-i",time());
+    }else if($option == "resolvedAll"){
+        $filename = "All_Projects_Resolved_Hub_Updates_".date("Y-m-d_h-i",time());
     }else{
         $filename = "Hub_Updates_Save_Changes_".date("Y-m-d_h-i",time());
     }

@@ -62,7 +62,13 @@ a.btn:hover{
     font-size: 15px;
     cursor: pointer;
 }
-.download-pdf-all a:hover{
+.download-pdf-all a:hover,.download-pdf-all-resolved a:hover{
     font-size: 15px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.download-pdf-all-resolved {
+    float: right;
+    color: #337ab7;
+    font-size: 15px;
+    cursor: pointer;
 }
