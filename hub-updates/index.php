@@ -141,13 +141,36 @@ $oldValues = $printDataAll[1];
             });
 
             function changeFormUrlPDF(id){
-                if(id == "btnDownloadPDF"){
+                $('update_text').text('');
+                $('#update_text').hide();
+
+                if(id == "btnDownloadPDF" || id == "btnUploadPDF"){
+                    var url = <?=json_encode($module->getUrl('hub-updates/generate_pdf.php'))?>;
+                    var option = $('#option').val();
+
                     var checked_values = [];
                     $("input[name='tablefields[]']:checked").each(function() {
                         checked_values.push($(this).val());
                     });
-                    var option = $('#option').val();
-                    $('#data_confirmation').attr('action','<?=$module->getUrl('hub-updates/generate_pdf.php').'&constant=PDF&checked_values='?>'+checked_values+"&option="+option);
+
+                    if(id == "btnUploadPDF"){
+                        var redcap_csrf_token = <?=json_encode($module->getCSRFToken())?>;
+                        var filerepo = "true";
+                        $('#data_confirmation').attr('action','');
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            data: "&constant=PDF&checked_values="+checked_values+"&option="+option+"&filerepo="+filerepo+"&redcap_csrf_token="+redcap_csrf_token,
+                            error: function (xhr, status, error) {
+                                alert(xhr.responseText);
+                            },
+                            success: function (result) {
+                                $('#update_text').show();
+                            }
+                        });
+                    }else{
+                        $('#data_confirmation').attr('action',url+"&constant=PDF&checked_values="+checked_values+"&option="+option+"&redcap_csrf_token="+redcap_csrf_token);
+                    }
                 }else{
                     $('#data_confirmation').attr('action','');
                     $('#data_confirmation').submit();
@@ -318,6 +341,7 @@ $oldValues = $printDataAll[1];
     <div id="confirmationForm" title="Confirmation" style="display:none;">
         <form method="POST" action="" id="data_confirmation">
             <div class="modal-body">
+                <div class="alert alert-success col-md-12" style="display: none" id="update_text">File Added to the repository.</div>
                 <span id="fields_total"></span>
                 <br>
                 <br>
@@ -325,7 +349,8 @@ $oldValues = $printDataAll[1];
                 <input type="hidden" id="option" name="option">
             </div>
             <div class="modal-footer" style="padding-top: 30px;">
-                <a onclick="changeFormUrlPDF(this.id);this.closest('form').submit();return false;" style="color:white;" class="btn btn-default btn-primary" id='btnDownloadPDF'><em class="fa fa-solid fa-file-pdf"></em> Download PDF</a>
+                <a onclick="changeFormUrlPDF(this.id);return false;" style="color:white;" class="btn btn-default btn-primary" id='btnUploadPDF'><em class="fa fa-solid fa-upload"></em> File Repository</a>
+                <a onclick="changeFormUrlPDF(this.id);this.closest('form').submit();return false;" style="color:white;" class="btn btn-default btn-primary" id='btnDownloadPDF'><em class="fa fa-solid fa-file-pdf"></em> Download</a>
                 <a onclick="changeFormUrlPDF(this.id);" style="color:white;" class="btn btn-default btn-success" id='btnConfirm' name="btnConfirm">Continue</a>
             </div>
         </form>

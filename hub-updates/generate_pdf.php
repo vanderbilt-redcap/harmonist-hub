@@ -5,6 +5,7 @@ include_once(__DIR__ . "/../classes/HubUpdates.php");
 
 $constantReq = $_REQUEST['constant'];
 $option = $_REQUEST['option'];
+$filerepo = $_REQUEST['filerepo'];
 $allUpdatesAll = $module->getProjectSetting('hub-updates')['data'];
 $allUpdates = [];
 
@@ -262,7 +263,22 @@ $options->setChroot(EDOC_PATH);
 $dompdf->setOptions($options);
 ob_start();
 $dompdf->render();
-#Download option
-$dompdf->stream($filename);
-$filesize = file_put_contents(EDOC_PATH.$storedName, ob_get_contents());
+
+if($filerepo == "true"){
+    #Generate PDF format to Save in DB
+    $output = $dompdf->output();
+    $filesize = file_put_contents($filePath, $output);
+
+    #Save document on DB
+    $docId = \REDCap::storeFile($filePath, $pidsArray['PROJECTS'], $filename);
+    unlink($filePath);
+
+    #Save document in File Repository
+    \REDCap::addFileToRepository($docId, $pidsArray['PROJECTS']);
+    json_encode("success");
+}else{
+    #Download option
+    $dompdf->stream($filename);
+    $filesize = file_put_contents($filePath, ob_get_contents());
+}
 ?>
