@@ -4,6 +4,7 @@ include_once(__DIR__ ."/../projects.php");
 include_once(__DIR__ . "/../classes/HubUpdates.php");
 
 $constantReq = $_REQUEST['constant'];
+$option = $_REQUEST['option'];
 $allUpdatesAll = $module->getProjectSetting('hub-updates')['data'];
 $allUpdates = [];
 
@@ -239,7 +240,11 @@ $html_pdf .= '</html>';
 if($constantReq == "ALL"){
     $filename = "All_Projects_Hub_Updates_".date("Y-m-d_h-i",time());
 }else if($constantReq == "PDF"){
-    $filename = "Hub_Updates_Save_Changes_".date("Y-m-d_h-i",time());
+    if($option == "resolved"){
+        $filename = "Hub_Updates_Resolved_Changes_".date("Y-m-d_h-i",time());
+    }else{
+        $filename = "Hub_Updates_Save_Changes_".date("Y-m-d_h-i",time());
+    }
 }else{
     $filename = $printData[$constant]["title"]."_Hub_Updates_".date("Y-m-d_h-i",time());
 }

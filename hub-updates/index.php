@@ -65,13 +65,10 @@ $oldValues = $printDataAll[1];
                                 var field_type = data[3];
 
                                 display_data += "<div>";
-                                if(sButton.name == "save_btn"){
-                                    display_data += getIcon(status)+" <div style='display: inline;vertical-align: sub;'>";
-                                }
+                                display_data += getIcon(status)+" <div style='display: inline;vertical-align: sub;'>";
                                 display_data += printData[constant_name]['pid'] + " - " + printData[constant_name]['title'] + " => <strong>" + variable_name + "</strong> (<em>" + field_type + "</em>)</div>";
-                                if(sButton.name == "save_btn"){
-                                    display_data += "</div>";
-                                }
+                                display_data += "</div>";
+
                                 fields_total += 1;
 
                             });
@@ -149,7 +146,8 @@ $oldValues = $printDataAll[1];
                     $("input[name='tablefields[]']:checked").each(function() {
                         checked_values.push($(this).val());
                     });
-                    $('#data_confirmation').attr('action','<?=$module->getUrl('hub-updates/generate_pdf.php').'&constant=PDF&checked_values='?>'+checked_values);
+                    var option = $('#option').val();
+                    $('#data_confirmation').attr('action','<?=$module->getUrl('hub-updates/generate_pdf.php').'&constant=PDF&checked_values='?>'+checked_values+"&option="+option);
                 }else{
                     $('#data_confirmation').attr('action','');
                     $('#data_confirmation').submit();
