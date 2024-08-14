@@ -349,9 +349,9 @@ $oldValues = $printDataAll[1];
                 <input type="hidden" id="option" name="option">
             </div>
             <div class="modal-footer" style="padding-top: 30px;">
-                <a onclick="changeFormUrlPDF(this.id);return false;" style="color:white;" class="btn btn-default btn-primary" id='btnUploadPDF'><em class="fa fa-solid fa-upload"></em> File Repository</a>
-                <a onclick="changeFormUrlPDF(this.id);this.closest('form').submit();return false;" style="color:white;" class="btn btn-default btn-primary" id='btnDownloadPDF'><em class="fa fa-solid fa-file-pdf"></em> Download</a>
-                <a onclick="changeFormUrlPDF(this.id);" style="color:white;" class="btn btn-default btn-success" id='btnConfirm' name="btnConfirm">Continue</a>
+                <a onclick="changeFormUrlPDF(this.id);return false;" style="color:white;" class="btn btn-primary" id='btnUploadPDF'><em class="fa fa-solid fa-upload"></em> File Repository</a>
+                <a onclick="changeFormUrlPDF(this.id);this.closest('form').submit();return false;" style="color:white;" class="btn btn-primary" id='btnDownloadPDF'><em class="fa fa-solid fa-file-pdf"></em> Download</a>
+                <a onclick="changeFormUrlPDF(this.id);" style="color:white;" class="btn btn-success" id='btnConfirm' name="btnConfirm">Continue</a>
             </div>
         </form>
     </div>

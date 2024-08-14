@@ -6,14 +6,14 @@ include_once(__DIR__ . "/../classes/HubUpdates.php");
 $constantReq = $_REQUEST['constant'];
 $option = $_REQUEST['option'];
 $filerepo = $_REQUEST['filerepo'];
-if($option == "resolvedAll"){
+
+if($option == "resolved" && array_key_exists('all',$_REQUEST)){
     $allUpdatesAll = HubUpdates::compareDataDictionary($module, $pidsArray, 'resolved');
 }else{
     $allUpdatesAll = $module->getProjectSetting('hub-updates')['data'];
 }
 
 $allUpdates = [];
-
 $constant_array = [$constantReq => ""];
 if($constantReq == "PDF") {
     $checked_values = $_REQUEST['checked_values'];
@@ -168,7 +168,33 @@ tr.rowSelected td{
     padding: 3px 10px !important;
     line-height: 1em !important;
 }
-
+.hub-update-last-updated{
+    font-size: 13px;
+    font-style: italic;
+    padding-right: 30px;
+    float: right;
+    margin-top: 5px;
+}
+.hub-update-last-updated-past-date{
+    color:#e74c3c !important;
+}
+.hub-update-last-updated-recent-date-badge{
+    color:#fff !important;
+    background-color: #5cb85c !important;
+}
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border-radius: 10px;
+}
 </style>';
 
 $html_pdf = '<!DOCTYPE html>

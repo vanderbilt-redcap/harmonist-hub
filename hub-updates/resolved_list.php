@@ -77,11 +77,30 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
             });
             function changeFormUrlPDF(id){
                 var url = '<?=$module->getUrl('hub-updates/generate_pdf.php')?>';
-                var not_checked_values = [];
-                $("input[name='tablefields[]']:not(:checked)").each(function() {
-                    not_checked_values.push($(this).val());
+                var form_option = "download_pdf_all_resolved";
+
+                var checked_values = [];
+                $("input[name='tablefields[]']:checked").each(function() {
+                    checked_values.push($(this).val());
                 });
-                $('#download_pdf_all_resolved').attr('action',url+"&constant=PDF&checked_values="+not_checked_values+"&option=resolvedAll");
+
+                if(id == "download_PDF_sel"){
+                    form_option = "download_PDF_selected";
+                }else{
+                    //Not checked values
+                    $("input[name='tablefields[]']:not(:checked)").each(function() {
+                        checked_values.push($(this).val());
+                    });
+                }
+                if((id == "download_PDF_sel" && checked_values != "") || id != "download_PDF_sel" ){
+                    $('#'+form_option).attr('action',url+"&constant=PDF&checked_values="+checked_values+"&option=resolved&all");
+                    if(id == "download_PDF_sel"){
+                        $("#"+form_option).submit();
+                    }
+                }else{
+                    $("#dialogWarning").dialog({modal:true, width:300}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");
+                }
+                return false;
             }
         </script>
     </head>
@@ -236,13 +255,18 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                 $module->setProjectSetting('hub-updates-resolved-list-last-updated', $hub_updates_resolved_list_last_updated);
             }
             ?>
-        <form method="POST" style="width: 20%;float:right" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=removed&redcap_csrf_token='.$module->getCSRFToken()?>" id="remove_data">
+        <form method="POST" style="float:right" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=removed&redcap_csrf_token='.$module->getCSRFToken()?>" id="remove_data">
             <input type="hidden" id="checked_values" name="checked_values">
             <button type="submit" class="btn btn-primary btn-block float-right" id="remove_btn">Remove from Resolved List</button>
         </form>
-        <form method="POST" style="width: 15%;float:right;margin-right: 5px;" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=dates&redcap_csrf_token='.$module->getCSRFToken()?>" id="update_data">
+        <form method="POST" style="float:right;margin-right: 5px;" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=dates&redcap_csrf_token='.$module->getCSRFToken()?>" id="update_data">
             <input type="hidden" id="checked_values_dates" name="checked_values_dates">
             <button type="submit" class="btn btn-secondary btn-block float-right" id="remove_btn">Update Resolved Date</button>
+        </form>
+        <form method="POST" style="float:right;margin-right: 5px;" action="" id="download_PDF_selected">
+            <a onclick="changeFormUrlPDF(this.id);" id="download_PDF_sel" class="btn btn-secondary">
+                Download PDF
+            </a>
         </form>
     </div>
     <div id="dialogWarning" title="WARNING!" style="display:none;">

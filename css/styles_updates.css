@@ -72,3 +72,17 @@ a.btn:hover{
     font-size: 15px;
     cursor: pointer;
 }
+.hub-update-last-updated{
+    font-size: 13px;
+    font-style: italic;
+    padding-right: 30px;
+    float: right;
+    margin-top: 5px;
+}
+.hub-update-last-updated-past-date{
+    color:#e74c3c !important;
+}
+.hub-update-last-updated-recent-date-badge{
+    color:#fff !important;
+    background-color: #5cb85c !important;
+}
