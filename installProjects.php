@@ -4,7 +4,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
-if(!defined(APP_PATH_WEBROOT_ALL)) {
+if(!defined('APP_PATH_WEBROOT_ALL')) {
     if (APP_PATH_WEBROOT[0] == '/') {
         $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
     }
