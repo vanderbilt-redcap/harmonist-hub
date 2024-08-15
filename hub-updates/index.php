@@ -46,6 +46,8 @@ $oldValues = $printDataAll[1];
                     var dialog_background_color = "";
                     var dialog_color = "";
 
+                    $('#update_text').hide();
+
                     var checked_values = [];
                     $("input[name='tablefields[]']:checked").each(function() {
                         checked_values.push($(this).val());

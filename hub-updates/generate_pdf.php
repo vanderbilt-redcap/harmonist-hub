@@ -8,6 +8,7 @@ $option = $_REQUEST['option'];
 $filerepo = $_REQUEST['filerepo'];
 
 if($option == "resolved" && array_key_exists('all',$_REQUEST)){
+    $hub_updates_resolved_list_last_updated = empty($module->getProjectSetting('hub-updates-resolved-list-last-updated')) ? array() : $module->getProjectSetting('hub-updates-resolved-list-last-updated');
     $allUpdatesAll = HubUpdates::compareDataDictionary($module, $pidsArray, 'resolved');
 }else{
     $allUpdatesAll = $module->getProjectSetting('hub-updates')['data'];
@@ -230,8 +231,10 @@ $html_pdf = '<!DOCTYPE html>
                     <th style="width: 100%;">Status</th>
                     <th style="width: 100%;">Variable / Field Name</th>
                     <th style="width: 100%;">Field Label <br><em>Field Note</em></th>
-                    <th style="width: 100%;">Field Attributes<br>(Field Type, Validation, Choices, Calculations, etc.)</th>
-                </tr>';
+                    <th style="width: 100%;">Field Attributes<br>(Field Type, Validation, Choices, Calculations, etc.)</th>';
+                    if($option == 'resolved' && array_key_exists('all',$_REQUEST))
+                        $html_pdf .= '<th style="width: 100%;">Resolved On</th>';
+                $html_pdf .= '</tr>';
         foreach ($project_data as $instrument => $instrumentData) {
             if ($instrument != "TOTAL") {
                 $html_pdf .= '<tr>
@@ -259,7 +262,15 @@ $html_pdf = '<!DOCTYPE html>
                         } else {
                             $html_pdf .= HubUpdates::getFieldAttributes($data);
                         }
-                        $html_pdf .= '</td></tr>';
+                        $html_pdf .= '</td>';
+                        if($option == 'resolved' && array_key_exists('all',$_REQUEST)) {
+                            $user = "";
+                            if (array_key_exists('user', $hub_updates_resolved_list_last_updated[$constant][$variable])) {
+                                $user = " by " . $hub_updates_resolved_list_last_updated[$constant][$variable]['user'];
+                            }
+                            $html_pdf .= '<td>' . $hub_updates_resolved_list_last_updated[$constant][$variable]['date'] . $user . '</td>';
+                        }
+                        '</tr>';
                     }
                 }
             }
