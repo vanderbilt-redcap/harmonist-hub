@@ -68,7 +68,7 @@
      background-color: #8c8c8c;
  }
 .label-primary {
-    background-color: #337ab7;
+    background-color: #337ab7 !important;
 }
 .label-default_dark {
     background-color: #777;

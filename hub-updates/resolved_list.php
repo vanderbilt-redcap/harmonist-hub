@@ -34,27 +34,26 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
         <link type='text/css' href='<?=$module->getUrl('css/styles_updates.css')?>' rel='stylesheet' media='screen' />
         <link type='text/css' href='<?=$module->getUrl('css/style.css')?>' rel='stylesheet' media='screen' />
         <link type='text/css' href='<?=$module->getUrl('bootstrap-3.3.7/css/bootstrap.min.css')?>' rel='stylesheet' media='screen' />
+        <link type='text/css' href='<?=$module->getUrl('css/jquery.dataTables.min.css')?>' rel='stylesheet' media='screen' />
+
+        <script type="text/javascript" src="<?=$module->getUrl('js/jquery.dataTables.min.js')?>"></script>
+
         <script>
-            function selectData(pid){
-                var checked = $('#'+pid).is(':checked');
-                if (!checked) {
-                    $('#' + pid).prop("checked", true);
-                    $('[row="' + pid + '"]').addClass('rowSelected');
-                } else {
-                    $('#' + pid).prop("checked", false);
-                    $('[row="' + pid + '"]').removeClass('rowSelected');
-                }
-
-                //Update Projects Counter
-                var count = $('.rowSelected').length;
-                if(count>0){
-                    $("#pid_total").text(count);
-                }else{
-                    $("#pid_total").text("0");
-                }
-            }
-
             $(document).ready(function () {
+                $('#selectDataTableHubUpdates').dataTable({
+                    "bPaginate": false,
+                    "bLengthChange": false,
+                    "bSort": false,
+                    "bFilter": true,
+                    "bInfo": false,
+                    "fnDrawCallback": function(oSettings) {
+                        $('#selectAllDiv').insertAfter($('#selectDataTableHubUpdates_wrapper'));
+                        $('#legend').insertAfter($('#selectDataTableHubUpdates_filter'));
+                        $('#pdf').insertAfter($('#selectDataTableHubUpdates_filter'));
+                        $('#selectDataTableHubUpdates_filter').attr("style","padding-right:10px");
+                    }
+                });
+
                 $('#remove_data, #update_data').submit(function (event) {
                     var formId = $(this).attr('id');
                     var removed_list = [];
@@ -75,6 +74,26 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                     return true;
                 });
             });
+
+            function selectData(pid){
+                var checked = $('#'+pid).is(':checked');
+                if (!checked) {
+                    $('#' + pid).prop("checked", true);
+                    $('[row="' + pid + '"]').addClass('rowSelected');
+                } else {
+                    $('#' + pid).prop("checked", false);
+                    $('[row="' + pid + '"]').removeClass('rowSelected');
+                }
+
+                //Update Projects Counter
+                var count = $('.rowSelected').length;
+                if(count>0){
+                    $("#pid_total").text(count);
+                }else{
+                    $("#pid_total").text("0");
+                }
+            }
+
             function changeFormUrlPDF(id){
                 var url = '<?=$module->getUrl('hub-updates/generate_pdf.php')?>';
                 var form_option = "download_pdf_all_resolved";
@@ -128,39 +147,51 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
         You have selected <span id="pid_total" class="badge dataRequests">0</span> variables
     </h4>
     <div class="container-fluid p-y-1" style="margin-top:40px">
-        <div style="padding-bottom: 10px">
-            <span style="padding-left: 5px"><?=HubUpdates::getIcon(HubUpdates::CHANGED)." <span style='vertical-align: sub'>".ucfirst(HubUpdates::CHANGED)?></span></span>
-            <span style="padding-left: 5px"><?=HubUpdates::getIcon(HubUpdates::ADDED)." <span style='vertical-align: sub'>".ucfirst(HubUpdates::ADDED)?></span></span>
-            <span style="padding-left: 5px"><?=HubUpdates::getIcon(HubUpdates::REMOVED)." <span style='vertical-align: sub'>".ucfirst(HubUpdates::REMOVED)?></span></span>
+        <div style="float:left;padding-left: 5px;" id="legend">
+                <span style="padding-left: 5px"><?=HubUpdates::getIcon(HubUpdates::CHANGED)." <span style='vertical-align: sub'>".ucfirst(HubUpdates::CHANGED)?></span></span>
+                <span style="padding-left: 5px"><?=HubUpdates::getIcon(HubUpdates::ADDED)." <span style='vertical-align: sub'>".ucfirst(HubUpdates::ADDED)?></span></span>
+                <span style="padding-left: 5px"><?=HubUpdates::getIcon(HubUpdates::REMOVED)." <span style='vertical-align: sub'>".ucfirst(HubUpdates::REMOVED)?></span></span>
+        </div>
+        <div id="pdf" class="badge label-primary" style="margin-right:15px;float:right;">
             <form method="POST" action="" id="download_pdf_all_resolved" class="download-pdf-all-resolved">
                 <a onclick="changeFormUrlPDF(this.id);this.closest('form').submit();return false;">
-                    <i class="fa fa-arrow-down"></i> <i class="fa fa-solid fa-file-pdf"></i> Download All
+                    <i class="fa fa-arrow-down"></i> <i class="fa fa-solid fa-file-pdf"></i>
                 </a>
             </form>
         </div>
-            <?php
-            foreach ($resolved_list as $constant => $variablesData) {
-                foreach ($variablesData as $index => $variable) {
-                    $project_id = (int)$pidsArray[$constant];
-                    $variable = $module->escape($variable);
-                    $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=" . $pidsArray[$constant], ENT_QUOTES);
-                    $Proj = $module->getProject($pidsArray[$constant]);
-                    $title = $Proj->getTitle();
-                    $printProject = "#".$project_id." - ".$title." => <strong>".$variable['field_name']."</strong> (<em>".$variable['field_type']."</em>)";
-                    $id = $constant."-".$variable['field_name']."-".$variable['field_status']."-".$variable['field_type'];
+        <div id="selectAllDiv" style="float: right"></div>
+        <table id="selectDataTableHubUpdates" style="padding-bottom: 10px;">
+            <thead>
+            <tr>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+        <?php
+        foreach ($resolved_list as $constant => $variablesData) {
+            foreach ($variablesData as $index => $variable) {
+                $project_id = (int)$pidsArray[$constant];
+                $variable = $module->escape($variable);
+                $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=" . $pidsArray[$constant], ENT_QUOTES);
+                $Proj = $module->getProject($pidsArray[$constant]);
+                $title = $Proj->getTitle();
+                $printProject = "#".$project_id." - ".$title." => <strong>".$variable['field_name']."</strong> (<em>".$variable['field_type']."</em>)";
+                $id = $constant."-".$variable['field_name']."-".$variable['field_status']."-".$variable['field_type'];
 
-                    #If there's old data without dates, we add them
-                    if(is_array($hub_updates_resolved_list_last_updated) &&
-                        (empty($hub_updates_resolved_list_last_updated) ||
-                            ((array_key_exists($constant, $hub_updates_resolved_list_last_updated) && !array_key_exists($variable['field_name'], $hub_updates_resolved_list_last_updated[$constant]))
-                                || !array_key_exists($constant, $hub_updates_resolved_list_last_updated)))){
-                        $updated_resolved_date = true;
-                        $hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'] = date("F d Y H:i:s");
-                    }
-                    ?>
+                #If there's old data without dates, we add them
+                if(is_array($hub_updates_resolved_list_last_updated) &&
+                    (empty($hub_updates_resolved_list_last_updated) ||
+                        ((array_key_exists($constant, $hub_updates_resolved_list_last_updated) && !array_key_exists($variable['field_name'], $hub_updates_resolved_list_last_updated[$constant]))
+                            || !array_key_exists($constant, $hub_updates_resolved_list_last_updated)))){
+                    $updated_resolved_date = true;
+                    $hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'] = date("F d Y H:i:s");
+                }
+                ?>
+            <tr>
+                <td style="padding-bottom: 0;padding-top: 0;">
                     <div>
                         <h3 class="panel-title">
-                            <table class="table table-striped table-hover resolved-heading" style="margin-bottom:5px; border: 1px solid #dee2e6;font-size: 13px;" data-sortable>
+                            <table class="table table-striped table-hover resolved-heading" style="margin-bottom:5px; border: 1px solid #dee2e6;font-size: 13px;">
                                 <tr row="<?=$id?>" value="<?=$id?>">
                                     <td onclick="javascript:selectData('<?= $id; ?>')" style="width: 5%;">
                                         <input value="<?=$id?>" id="<?=$id?>" onclick="selectData('<?= $id; ?>');" class='auto-submit' type="checkbox" name='tablefields[]'>
@@ -248,26 +279,33 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                             } ?>
                         </table>
                     </div>
-                <?php
-                }
+                </td>
+            </tr>
+            <?php
             }
-            if($updated_resolved_date){
-                $module->setProjectSetting('hub-updates-resolved-list-last-updated', $hub_updates_resolved_list_last_updated);
-            }
-            ?>
-        <form method="POST" style="float:right" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=removed&redcap_csrf_token='.$module->getCSRFToken()?>" id="remove_data">
-            <input type="hidden" id="checked_values" name="checked_values">
-            <button type="submit" class="btn btn-primary btn-block float-right" id="remove_btn">Remove from Resolved List</button>
-        </form>
-        <form method="POST" style="float:right;margin-right: 5px;" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=dates&redcap_csrf_token='.$module->getCSRFToken()?>" id="update_data">
-            <input type="hidden" id="checked_values_dates" name="checked_values_dates">
-            <button type="submit" class="btn btn-secondary btn-block float-right" id="remove_btn">Update Resolved Date</button>
-        </form>
-        <form method="POST" style="float:right;margin-right: 5px;" action="" id="download_PDF_selected">
-            <a onclick="changeFormUrlPDF(this.id);" id="download_PDF_sel" class="btn btn-secondary">
-                Download PDF
-            </a>
-        </form>
+        }
+        if($updated_resolved_date){
+            $module->setProjectSetting('hub-updates-resolved-list-last-updated', $hub_updates_resolved_list_last_updated);
+        }
+        ?>
+
+            </tbody>
+        </table>
+        <div style="padding-right: 10px;">
+            <form method="POST" style="float:right" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=removed&redcap_csrf_token='.$module->getCSRFToken()?>" id="remove_data">
+                <input type="hidden" id="checked_values" name="checked_values">
+                <button type="submit" class="btn btn-primary btn-block float-right" id="remove_btn">Remove from Resolved List</button>
+            </form>
+            <form method="POST" style="float:right;margin-right: 5px;" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=dates&redcap_csrf_token='.$module->getCSRFToken()?>" id="update_data">
+                <input type="hidden" id="checked_values_dates" name="checked_values_dates">
+                <button type="submit" class="btn btn-secondary btn-block float-right" id="remove_btn">Update Resolved Date</button>
+            </form>
+            <form method="POST" style="float:right;margin-right: 5px;" action="" id="download_PDF_selected">
+                <a onclick="changeFormUrlPDF(this.id);" id="download_PDF_sel" class="btn btn-secondary">
+                    Download PDF
+                </a>
+            </form>
+        </div>
     </div>
     <div id="dialogWarning" title="WARNING!" style="display:none;">
         <p>No fields selected.</p>

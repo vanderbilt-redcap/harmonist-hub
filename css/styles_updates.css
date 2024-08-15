@@ -68,9 +68,9 @@ a.btn:hover{
 }
 .download-pdf-all-resolved {
     float: right;
-    color: #337ab7;
     font-size: 15px;
     cursor: pointer;
+    padding:.2em .6em .2em;
 }
 .hub-update-last-updated{
     font-size: 13px;
@@ -85,4 +85,20 @@ a.btn:hover{
 .hub-update-last-updated-recent-date-badge{
     color:#fff !important;
     background-color: #5cb85c !important;
+}
+#selectDataTableHubUpdates tr.odd td {
+    background-color: #ffffff !important;
+}
+#selectDataTableHubUpdates tr.even td {
+    background-color: #ffffff !important;
+}
+#selectDataTableHubUpdates tr.rowSelected{
+    background-color: #e6f5ff !important;
+}
+#selectDataTableHubUpdates tr.rowSelected td{
+    background-color: #e6f5ff !important;
+}
+#selectDataTableHubUpdates.no-footer, #selectDataTableHubUpdates thead th, #selectDataTableHubUpdates thead td {
+    border-bottom: none;
+    padding-top: 0px;
 }
