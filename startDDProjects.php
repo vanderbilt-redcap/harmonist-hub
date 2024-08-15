@@ -192,9 +192,9 @@ if($pidHome != ""){
     $aux['links_sectionorder'] = '1';
     $aux['links_sectionicon'] = '1';
     $aux['links_text1'] = 'Create EC request';
-    $aux['links_link1'] = 'https://redcap.vumc.org/surveys/?s='.$RequestLinkPid;
+    $aux['links_link1'] = APP_PATH_WEBROOT_FULL.'surveys/?s='.$RequestLinkPid;
     $aux['links_text2'] = 'Add Hub user';
-    $aux['links_link2'] = 'https://redcap.vumc.org/surveys/?s='.$surveyPersonInfoPid;
+    $aux['links_link2'] = APP_PATH_WEBROOT_FULL.'surveys/?s='.$surveyPersonInfoPid;
 
     $array_repeat_instances[1]['repeat_instances'][$event_id]['quick_links_section'][1] = $aux;
     $results = \REDCap::saveData($pidHome, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
