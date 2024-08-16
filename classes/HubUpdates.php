@@ -8,7 +8,7 @@ class HubUpdates{
     const ADDED = 'added';
     const REMOVED = 'removed';
 
-    public static function compareDataDictionary($module, $pidsArray, $option='')
+    public static function compareDataDictionary($module, $pidsArray, $option=''): array
     {
         $allItems = array();
         $constants_array = REDCapManagement::getProjectsConstantsArray();
@@ -98,7 +98,7 @@ class HubUpdates{
         return $allItems;
     }
 
-    public static function compareSQL($sqlOld, $sqlNew)
+    public static function compareSQL($sqlOld, $sqlNew): array
     {
         foreach (['/project_id\s=\s(\d+)/','/project_id=(\d+)/','/\[data-table:(.*?)\]/'] as $pattern) {
             preg_match_all($pattern, $sqlOld, $matchOld);
@@ -119,7 +119,7 @@ class HubUpdates{
         return $sqlNew;
     }
 
-    public static function changeSQLDataTable($sqlOld, $sqlNew)
+    public static function changeSQLDataTable($sqlOld, $sqlNew): array
     {
         if(str_contains($sqlOld, 'redcap_data')){
             $sql_redcap_data = $sqlOld;
@@ -176,7 +176,7 @@ class HubUpdates{
         return $sqlNew;
     }
 
-    public static function getListOfChanges($checked_values)
+    public static function getListOfChanges($checked_values): array
     {
         $hub_updates_list = explode(",", $checked_values);
         $update_list = [];
@@ -193,7 +193,7 @@ class HubUpdates{
         return $update_list;
     }
 
-    public static function updateDataDictionary($module, $pidsArray, $checked_values)
+    public static function updateDataDictionary($module, $pidsArray, $checked_values): void
     {
         $update_list = self::getListOfChanges($checked_values);
         $constants_array = REDCapManagement::getProjectsConstantsArray();
@@ -208,7 +208,7 @@ class HubUpdates{
         }
     }
 
-    public static function saveFieldData($update_list, $old, $new, $project_id, $constant, $project_id_map)
+    public static function saveFieldData($update_list, $old, $new, $project_id, $constant, $project_id_map): void
     {
         $save_data = $old;
         foreach ($update_list as $status => $statusData) {
@@ -258,7 +258,7 @@ class HubUpdates{
         $sql_errors = \MetaData::save_metadata($save_data, false, false, $project_id);
     }
 
-    public static function getNextFieldName($variable, $new, $old)
+    public static function getNextFieldName($variable, $new, $old): array
     {
         $new_var_list = array_keys($new);
         $new_var_list_index = array_search($variable,$new_var_list);
@@ -272,7 +272,7 @@ class HubUpdates{
         return $next_field_name;
     }
 
-    public static function getResolvedList($module, $status='')
+    public static function getResolvedList($module, $status=''): array
     {
         $hub_updates_resolved_list = $module->getProjectSetting('hub-updates-resolved-list');
         $hub_updates_resolved_list = explode(",",$hub_updates_resolved_list);
@@ -294,7 +294,7 @@ class HubUpdates{
         return $resolved_list;
     }
 
-    public static function parseArray($choices)
+    public static function parseArray($choices): array
     {
         $array_to_fill = array();
 
@@ -308,7 +308,7 @@ class HubUpdates{
         return $array_to_fill;
     }
 
-    public static function custom_array_merge($module, $constant, $result, $data, $type, $option='')
+    public static function custom_array_merge($module, $constant, $result, $data, $type, $option=''): array
     {
         if(!empty($data)) {
             $resolved_list = self::getResolvedList($module);
@@ -351,7 +351,7 @@ class HubUpdates{
         return $result;
     }
 
-    public static function getIcon($status, $option = null)
+    public static function getIcon($status, $option = null): string
     {
         $icon = "fa-pencil-alt";
         $iconPDF = "#";
@@ -375,7 +375,8 @@ class HubUpdates{
         return $icon_legend;
     }
 
-    public static function getFieldName($new, $old, $status, $var){
+    public static function getFieldName($new, $old, $status, $var): string
+    {
 
        if($status == self::CHANGED) {
            if ($new[$var] !== $old[$var]) {
@@ -395,8 +396,8 @@ class HubUpdates{
         return $col;
 
     }
-    public static function getFieldLabel($new, $old, $status, $string, $var){
-
+    public static function getFieldLabel($new, $old, $status, $string, $var): string
+    {
         if($status == self::CHANGED) {
             $col = "";
             if ($new[$var] !== $old[$var]) {
@@ -427,12 +428,10 @@ class HubUpdates{
                 $col .= "<small class='d-flex'>Field Note: " . filter_tags($new['field_note']) . "</small>";
             }
         }
-
-
         return $col;
-
     }
-    public static function getFieldAttributes($value){
+    public static function getFieldAttributes($value): string
+    {
         $col = "";
         global $lang;
         $choices = self::parseArray($value['select_choices_or_calculations']);
@@ -495,15 +494,12 @@ class HubUpdates{
                 $col .= '</table>';
             }
         }
-
         return $col;
     }
 
-    public static function getFieldAttributesChanged($new, $old)
+    public static function getFieldAttributesChanged($new, $old): string
     {
-
         $col = "";
-
         $choices = self::parseArray($new['select_choices_or_calculations']);
         $oldChoices = self::parseArray($old['select_choices_or_calculations']);
 
@@ -701,7 +697,8 @@ class HubUpdates{
         return $col;
     }
 
-    public static function getTemplateLastUpdatedDate($module, $constant, $resolved_date = null){
+    public static function getTemplateLastUpdatedDate($module, $constant, $resolved_date = null): string
+    {
         $dateTemplateLastUpdated = date("F d Y H:i:s", filemtime($module->framework->getModulePath()."csv/".$constant.".csv"));
         if($resolved_date != null){
             if(strtotime($dateTemplateLastUpdated) > strtotime($resolved_date)) {
@@ -715,9 +712,11 @@ class HubUpdates{
             }
             return $dateTemplateLastUpdated;
         }
+        return "";
     }
 
-    public static function getPrintData($module, $pidsArray, $constantArray){
+    public static function getPrintData($module, $pidsArray, $constantArray): array
+    {
         $printData = [];
         $oldValues = [];
         foreach ($constantArray as $constant => $project_data) {
@@ -740,7 +739,8 @@ class HubUpdates{
      * @param $html
      * @return string
      */
-    public static function checkTagsExistAndAreClosed($html) {
+    public static function checkTagsExistAndAreClosed($html): string
+    {
         preg_match_all('#<([a-zA-Z0-9]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
         $openedtags = $result[1];
         preg_match_all('#</([a-zA-Z0-9]+)>#iU', $html, $result);
