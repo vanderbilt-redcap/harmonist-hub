@@ -110,7 +110,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             $q = $this->query("SELECT doc_name,stored_name,doc_size,file_extension,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$request['finalconcept_doc']]);
             $docId = "";
             while ($row = db_fetch_assoc($q)) {
-                $finalConcept_PDF = $row['doc_name'];
+                $finalConcept_DOC = $row['doc_name'];
                 $storedName = date("YmdsH") . "_pid" . $pidsArray['HARMONIST'] . "_" . getRandomIdentifier(6);
                 $output = file_get_contents($this->getSafePath(EDOC_PATH.$row['stored_name'],EDOC_PATH));
                 $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
