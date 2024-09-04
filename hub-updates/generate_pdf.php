@@ -295,7 +295,7 @@ if($constantReq == "ALL"){
 }
 
 //SAVE PDF ON DB
-$reportHash = $filename;
+$reportHash = $filename.".pdf";
 $storedName = md5($reportHash);
 $filePath = EDOC_PATH.$storedName;
 
