@@ -6,21 +6,21 @@ producedby_region,output_record,,radio,"Is this output produced by one or more r
 lead_region,output_record,,sql,"Lead Region","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=2127 GROUP BY a.record  ORDER BY value",,,,,,"[producedby_region] = '1'",,,,,,
 output_presentformat,output_record,,radio,"Abstract Presentation Format","1, Poster presentation | 2, Oral presentation | 9, Other | 0, Not applicable",,,,,,"[output_type] = '2'",,,,,,
 output_pmid,output_record,,text,"PMID
-<span style=""font-weight:lighter; font-style:italic"">(e.g., 32010735, 31852025)</span>",,,,,,,"[output_type] = '1'",,,,,,
+<span style=""font-weight:lighter; font-style:italic"">(e.g., 33876268, 8 character number)
+Use the Get PMID button to automatically populate the data in this form from PubMed after inputting the PMID.</span>",,,,,,,"[output_type] = '1'",,,,,,
+output_pmcid,output_record,,text,"PMCID
+<span style=""font-weight:lighter; font-style:italic"">(e.g., PMC5463912, PMC4048591)</span>",,"Note: Do not enter PMIDs, only PMCIDs",,,,,"[output_type] = '1'",,,,,,
 output_title,output_record,,notes,Title,,,,,,,,,,,,,
 output_authors,output_record,,notes,"Author List
 <div style=""font-weight:lighter; font-style:italic""> Use PubMed format:
-Duda SN, Vansell HJ, McGowan CC</div>",,,,,,,,,,,,,
+(e.g., Duda SN, Vansell HJ, McGowan CC)</div>",,,,,,,,,,,,,
 output_venue,output_record,,text,"Journal / Conference Name
 <span style=""font-weight:lighter; font-style:italic"">(e.g., JAIDS, JIAS, CROI, IWHOD)</span>",,,,,,,,,,,,,
 output_year,output_record,,text,"Publication / Conference Year
 <span style=""font-weight:lighter; font-style:italic"">(e.g., 2018. 2019)</span>",,,integer,2000,2050,,,y,,,,,
 output_citation,output_record,,notes,"Citation
 <div style=""font-weight:lighter; font-style:italic"">Use PubMed format: 
-J Int AIDS Soc. 2018 Feb; 21(S1):e25044
-(Can copy this line directly from PubMed webpage.)</div>",,,,,,,"[output_type] = '1' or [output_type] = '5'",,,,,,
-output_pmcid,output_record,,text,"PMCID
-<span style=""font-weight:lighter; font-style:italic"">(e.g., PMC5463912, PMC4048591)</span>",,"Note: Do not enter PMIDs, only PMCIDs",,,,,"[output_type] = '1'",,,,,,
+(e.g., J Int AIDS Soc. 2018 Feb; 21(S1):e25044)</div>",,,,,,,"[output_type] = '1' or [output_type] = '5'",,,,,,
 output_file,output_record,,file,"File
 <span style=""font-weight:lighter; font-style:italic"">(optional)</span>",,,,,,,,,,,,,
 output_url,output_record,,text,"Web link (URL) to resource

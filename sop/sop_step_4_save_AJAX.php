@@ -7,7 +7,7 @@ $Proj = new \Project($pidsArray['SOP']);
 $event_id = $Proj->firstEventId;
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
-$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = ProjectData::replaceSymbolsForPDF(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0]);
 
 $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null);
 foreach ($regions as $region){

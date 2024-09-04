@@ -38,6 +38,9 @@ tr.rowSelected td{
     background-color: #dcdcdc;
     border-color:#adacac;
 }
+a.btn:hover{
+    font-size: 14px !important;
+}
 .btn-resolved:hover {
     color: #000;
     background-color: #adacac;
@@ -48,4 +51,54 @@ tr.rowSelected td{
     border-color: #adacac !important;
     padding: 3px 10px !important;
     line-height: 1em !important;
+}
+.badge a:hover{
+    font-size: 12px;
+}
+.download-pdf-all{
+    float: left;
+    margin-top: 14px;
+    color: #337ab7;
+    font-size: 15px;
+    cursor: pointer;
+}
+.download-pdf-all a:hover,.download-pdf-all-resolved a:hover{
+    font-size: 15px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.download-pdf-all-resolved {
+    float: right;
+    font-size: 15px;
+    cursor: pointer;
+    padding:.2em .6em .2em;
+}
+.hub-update-last-updated{
+    font-size: 13px;
+    font-style: italic;
+    padding-right: 30px;
+    float: right;
+    margin-top: 5px;
+}
+.hub-update-last-updated-past-date{
+    color:#e74c3c !important;
+}
+.hub-update-last-updated-recent-date-badge{
+    color:#fff !important;
+    background-color: #5cb85c !important;
+}
+#selectDataTableHubUpdates tr.odd td {
+    background-color: #ffffff !important;
+}
+#selectDataTableHubUpdates tr.even td {
+    background-color: #ffffff !important;
+}
+#selectDataTableHubUpdates tr.rowSelected{
+    background-color: #e6f5ff !important;
+}
+#selectDataTableHubUpdates tr.rowSelected td{
+    background-color: #e6f5ff !important;
+}
+#selectDataTableHubUpdates.no-footer, #selectDataTableHubUpdates thead th, #selectDataTableHubUpdates thead td {
+    border-bottom: none;
+    padding-top: 0px;
 }

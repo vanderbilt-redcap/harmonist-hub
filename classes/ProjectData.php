@@ -158,5 +158,21 @@ class ProjectData
         }
         return $values;
     }
+
+    public static function replaceSymbolsForPDF($sopData){
+        $specialCharacters = ["&ge;", "&le;" ];
+        $specialCharactersReplacements = ["&gt;=","&lt;="];
+        $dataChanged = $sopData;
+
+        foreach($sopData as $index => $sop){
+            if(!is_array($sop)) {
+                #Only check data text no checkboxes, etc.
+                foreach ($specialCharacters as $specialChar => $replacementData) {
+                    $dataChanged[$index] = str_replace($specialCharacters, $specialCharactersReplacements, $dataChanged[$index]);
+                }
+            }
+        }
+        return $dataChanged;
+    }
 }
 ?>
