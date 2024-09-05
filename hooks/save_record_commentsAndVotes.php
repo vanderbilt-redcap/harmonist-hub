@@ -27,6 +27,10 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     }
 
     $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
+    if(ProjectData::checkAndAddAnyMissingRegion($RecordSetRM, $comment['request_id'], $pidsArray)){
+        #There's a missing region in the request, refresh data after adding it
+        $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
+    }
     $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
     if(!empty($request)){
         $all_votes_completed = true;

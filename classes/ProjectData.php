@@ -174,5 +174,29 @@ class ProjectData
         }
         return $dataChanged;
     }
+
+    public static function checkAndAddAnyMissingRegion($requestData, $record, $pidsArray){
+        $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array');
+        $Proj = new \Project($pidsArray['RMANAGER']);
+        $event_id = $Proj->firstEventId;
+        $votes_array = $requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'];
+        $found_missing_region = false;
+        foreach ($regions as $region){
+            $instance = $region['record_id'];
+            if(is_array($votes_array) && !array_key_exists($instance, $votes_array)) {
+                $array_repeat_instances = array();
+                $aux = array();
+                $aux['region_response_status'] = '0';
+                $aux['responding_region'] = $region['record_id'];
+                $aux['dashboard_voting_status_complete'] = '1';
+
+                $array_repeat_instances[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance] = $aux;
+                $results = \REDCap::saveData($pidsArray['RMANAGER'], 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+                $found_missing_region = true;
+                \REDCap::logEvent("Create Research Group Instance\nRequest Manager", $region['region_name']." (".$region['region_code'].")", null, $record, $event_id, $pidsArray['RMANAGER']);
+            }
+        }
+        return $found_missing_region;
+    }
 }
 ?>
