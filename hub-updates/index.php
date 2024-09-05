@@ -182,7 +182,7 @@ $oldValues = $printDataAll[1];
     </head>
     <body>
     <?php
-    if(!empty($allUpdates) && $allUpdates > 0)
+    if(!empty($allUpdates))
     {
         $message = "";
         if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')) {
@@ -203,12 +203,18 @@ $oldValues = $printDataAll[1];
         <h4 class="title">
             You have <strong><?=count($allUpdates)?></strong> projects to update.
         </h4>
+    <?php } else { ?>
+        <h4 class="title">
+            There are currently no projects that need to be updated.
+        </h4>
+    <?php }?>
         <h4 class="title" style="padding-top:15px">
             The data displayed shows the projects from your <strong><?=$settings['hub_name']?> Hub</strong> that have different values when compared against the administrator's version.<br>
             <form method="POST" action="" class="" id="update_list" name="update_list">
                 The data only uploads once a day. To recalculate any new changes you do without using this tool <a href="#" onclick="$('#option').val('update');$('#data_confirmation').submit();" id="update_btn" name="update_btn" style="font-size: 16px;text-decoration: underline;">click here</a>
             </form>
         </h4>
+    <?php if(!empty($allUpdates)) { ?>
         <h4 class="title" style="padding-top:15px">
             <form method="POST" action="<?=$module->getUrl('hub-updates/resolved_list.php').'&redcap_csrf_token='.$module->getCSRFToken()?>" class="" id="resolved_list">
                 If you do not want to make changes to certain variables <mark style="background-color: #fffbce">mark them as resolved</mark> and the updates will omit them from now onwards.
@@ -317,16 +323,7 @@ $oldValues = $printDataAll[1];
             <?php } ?>
             </div>
         </div>
-    <?php } else {?>
-        <h4 class="title">
-             There are currently no projects that need to be updated.
-        </h4>
-        <h4 class="title" style="padding-top:15px">
-            The data displayed shows the projects from your <strong><?=$settings['hub_name']?> Hub</strong> that have different values when compared against the administrator's version.<br>
-            <form method="POST" action="" class="" id="update_list" name="update_list">
-                The data only uploads once a day. To recalculate any new changes you do without using this tool <a href="#" onclick="$('#option').val('update');$('#data_confirmation').submit();" id="update_btn" name="update_btn" style="font-size: 18px;text-decoration: underline;">click here</a>.
-            </form>
-        </h4>
+    <?php } else { ?>
         <?php
         $resolved_list = HubUpdates::getResolvedList($module,'resolved');
         if(!empty($resolved_list)){
