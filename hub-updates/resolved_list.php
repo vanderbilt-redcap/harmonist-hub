@@ -222,7 +222,7 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                 <td style="padding-bottom: 0;padding-top: 0;">
                     <div>
                         <h3 class="panel-title">
-                            <table class="table table-striped table-hover resolved-heading" style="margin-bottom:5px; border: 1px solid #dee2e6;font-size: 13px;">
+                            <table class="table table-striped table-hover resolved-heading" style="margin-bottom:5px; border: 1px solid #dee2e6;font-size: 13px;" data-sortable>
                                 <tr row="<?=$id?>" value="<?=$id?>" name="chkAll_parent_resolved">
                                     <td onclick="javascript:selectData('<?= $id; ?>')" style="width: 5%;">
                                         <input value="<?=$id?>" id="<?=$id?>" onclick="selectData('<?= $id; ?>');" class='auto-submit' type="checkbox" name="chkAll_resolved" nameCheck='tablefields[]'>
@@ -237,13 +237,22 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                                         <?php
                                         if(is_array($hub_updates_resolved_list_last_updated)){
                                             $user = "";
-                                            if(array_key_exists('user', $hub_updates_resolved_list_last_updated[$constant][$variable['field_name']])){
+                                            if(is_array($hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]) && array_key_exists('user', $hub_updates_resolved_list_last_updated[$constant][$variable['field_name']])){
                                                 $user = " by ".$hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['user'];
                                             }
+                                            $resolved_date = "";
+                                            if(isset($hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'])){
+                                                $resolved_date = "Resolved on ".$hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'];
+                                            }
                                             ?>
-                                        <span class="hub-update-last-updated">
-                                            <?php echo "Resolved on ".$hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'].$user." ".HubUpdates::getTemplateLastUpdatedDate($module, $constant,$hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date']);?>
-                                        </span>
+                                            <span class="hub-update-last-updated">
+                                                <?php
+                                                echo $resolved_date.$user;
+                                                if(isset($hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'])) {
+                                                    echo " " . HubUpdates::getTemplateLastUpdatedDate($module, $constant, $hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date']);
+                                                }
+                                                ?>
+                                            </span>
                                         <?php } ?>
                                     </td>
                                 </tr>
@@ -269,7 +278,6 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                                     </tr>
                                     ";
                                     ?>
-
                                     <?php foreach ($instrumentData as $status => $typeData){
                                         foreach ($typeData as $variableChanges => $data){
                                             if($variableChanges == $variable['field_name']){
@@ -315,11 +323,7 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
             <?php
             }
         }
-        if($updated_resolved_date){
-            $module->setProjectSetting('hub-updates-resolved-list-last-updated', $hub_updates_resolved_list_last_updated);
-        }
         ?>
-
             </tbody>
         </table>
         <div style="padding-right: 10px;">
