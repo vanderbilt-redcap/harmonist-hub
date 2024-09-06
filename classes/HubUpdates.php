@@ -203,16 +203,18 @@ class HubUpdates{
                 $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
                 $new = $module->dataDictionaryCSVToMetadataArray($path);
 
-                self::saveFieldData($update_list[$constant], $old, $new, $pidsArray[$constant], $constant, $pidsArray['PROJECTS']);
+                self::saveFieldData($update_list[$constant], $old, $new, $pidsArray[$constant], $constant, $pidsArray[$constant]);
             }
         }
     }
 
     public static function saveFieldData($update_list, $old, $new, $project_id, $constant, $project_id_map): void
     {
+        error_log(json_encode($update_list,JSON_PRETTY_PRINT));
         $save_data = $old;
         foreach ($update_list as $status => $statusData) {
             foreach ($statusData as $index => $variable) {
+                error_log($variable);
                 if ($status == self::CHANGED) {
                     if($new[$variable]['field_type'] == "sql"){
                         if($old[$variable]['field_type'] != "sql"){
@@ -237,16 +239,22 @@ class HubUpdates{
                     $next_field_name = self::getNextFieldName($variable, $new, $old);
                     $save_data_aux = [];
                     $data = "";
+                    $var_found = false;
                     foreach($save_data as $varname => $value){
                         if($varname == $next_field_name){
                             $save_data_aux[$variable] = $new[$variable];
                             #Log Data
                             $data = json_encode($save_data_aux[$variable],JSON_PRETTY_PRINT);
+                            $var_found = true;
                         }
                         $save_data_aux[$varname] = $save_data[$varname];
                     }
+                    if(!$var_found && is_array($new[$variable]) && !empty($new[$variable]) && empty($old[$variable])){
+                        $save_data_aux[$variable] = $new[$variable];
+                        #Log Data
+                        $data = json_encode($save_data_aux[$variable],JSON_PRETTY_PRINT);
+                    }
                     $save_data = $save_data_aux;
-
                     \REDCap::logEvent("Hub Updates: ADDED [".$variable."]  on  ".$constant." (PID #".$project_id.")", $data, null,null,null,$project_id_map);
                 } else if ($status == self::REMOVED) {
                     \REDCap::logEvent("Hub Updates: REMOVED [".$variable."]  on  ".$constant." (PID #".$project_id.")", json_encode($save_data[$variable],JSON_PRETTY_PRINT), null,null,null,$project_id_map);
@@ -258,7 +266,7 @@ class HubUpdates{
         $sql_errors = \MetaData::save_metadata($save_data, false, false, $project_id);
     }
 
-    public static function getNextFieldName($variable, $new, $old): array
+    public static function getNextFieldName($variable, $new, $old): string
     {
         $new_var_list = array_keys($new);
         $new_var_list_index = array_search($variable,$new_var_list);
