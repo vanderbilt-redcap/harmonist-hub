@@ -7,17 +7,10 @@ $allUpdates = $module->getProjectSetting('hub-updates')['data'];
 #Sanitize text title and descrition for pages
 $hub_name = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', ('hub_name'))[0];
 
-$printData = [];
-$oldValues = [];
-foreach ($allUpdates as $constant => $project_data) {
-    $oldValues[$constant] = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
+$printDataAll = HubUpdates::getPrintData($module, $pidsArray, $allUpdates);
+$printData = $printDataAll[0];
+$oldValues = $printDataAll[1];
 
-    $Proj = $module->getProject($pidsArray[$constant]);
-    $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=" . $pidsArray[$constant], ENT_QUOTES);
-    $printData[$constant]['title'] = $Proj->getTitle();
-    $printData[$constant]['gotoredcap'] = $gotoredcap;
-    $printData[$constant]['pid'] = $pidsArray[$constant];
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,6 +46,8 @@ foreach ($allUpdates as $constant => $project_data) {
                     var dialog_background_color = "";
                     var dialog_color = "";
 
+                    $('#update_text').hide();
+
                     var checked_values = [];
                     $("input[name='tablefields[]']:checked").each(function() {
                         checked_values.push($(this).val());
@@ -72,13 +67,10 @@ foreach ($allUpdates as $constant => $project_data) {
                                 var field_type = data[3];
 
                                 display_data += "<div>";
-                                if(sButton.name == "save_btn"){
-                                    display_data += getIcon(status)+" <div style='display: inline;vertical-align: sub;'>";
-                                }
+                                display_data += getIcon(status)+" <div style='display: inline;vertical-align: sub;'>";
                                 display_data += printData[constant_name]['pid'] + " - " + printData[constant_name]['title'] + " => <strong>" + variable_name + "</strong> (<em>" + field_type + "</em>)</div>";
-                                if(sButton.name == "save_btn"){
-                                    display_data += "</div>";
-                                }
+                                display_data += "</div>";
+
                                 fields_total += 1;
 
                             });
@@ -116,7 +108,7 @@ foreach ($allUpdates as $constant => $project_data) {
                     var redcap_csrf_token = <?=json_encode($module->getCSRFToken())?>;
                     var option = $('#option').val();
                     var success_message = "";
-                    url = <?=json_encode($module->getUrl('hub-updates/last_updates_process_data_AJAX.php'))?>;
+                    var url = <?=json_encode($module->getUrl('hub-updates/last_updates_process_data_AJAX.php'))?>;
 
                     var checked_values = [];
                     if(option != "update"){
@@ -149,6 +141,43 @@ foreach ($allUpdates as $constant => $project_data) {
                     return false;
                 });
             });
+
+            function changeFormUrlPDF(id){
+                $('update_text').text('');
+                $('#update_text').hide();
+
+                if(id == "btnDownloadPDF" || id == "btnUploadPDF"){
+                    var url = <?=json_encode($module->getUrl('hub-updates/generate_pdf.php'))?>;
+                    var option = $('#option').val();
+
+                    var checked_values = [];
+                    $("input[name='tablefields[]']:checked").each(function() {
+                        checked_values.push($(this).val());
+                    });
+
+                    if(id == "btnUploadPDF"){
+                        var redcap_csrf_token = <?=json_encode($module->getCSRFToken())?>;
+                        var filerepo = "true";
+                        $('#data_confirmation').attr('action','');
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            data: "&constant=PDF&checked_values="+checked_values+"&option="+option+"&filerepo="+filerepo+"&redcap_csrf_token="+redcap_csrf_token,
+                            error: function (xhr, status, error) {
+                                alert(xhr.responseText);
+                            },
+                            success: function (result) {
+                                $('#update_text').show();
+                            }
+                        });
+                    }else{
+                        $('#data_confirmation').attr('action',url+"&constant=PDF&checked_values="+checked_values+"&option="+option+"&redcap_csrf_token="+redcap_csrf_token);
+                    }
+                }else{
+                    $('#data_confirmation').attr('action','');
+                    $('#data_confirmation').submit();
+                }
+            }
         </script>
     </head>
     <body>
@@ -195,6 +224,11 @@ foreach ($allUpdates as $constant => $project_data) {
             </form>
         </h4>
         <div class="container-fluid p-y-1" style="margin-top:60px">
+            <form method="POST" action="<?=$module->getUrl('hub-updates/generate_pdf.php').'&constant=ALL'?>" id="download_pdf_all" class="download-pdf-all">
+                <a onclick="this.closest('form').submit();return false;">
+                    <i class="fa fa-arrow-down"></i> <i class="fa fa-solid fa-file-pdf"></i> Download All
+                </a>
+            </form>
             <form method="POST" action="" id="save_data">
                 <button type="submit" onclick="$('#option').val('save');" class="btn btn-primary float-right btnClassConfirm" id="save_btn" name="save_btn">Save Changes</button>
                 <button type="submit" onclick="$('#option').val('resolved');" class="btn btn-warning float-right btnClassConfirm" id="resolved_btn" name="resolved_btn" style="margin-right:10px">Mark as Resolved</button>
@@ -209,11 +243,17 @@ foreach ($allUpdates as $constant => $project_data) {
                         <a data-toggle="collapse" href="#collapse<?=$constant?>" id="<?='table_'.$constant?>" class="label label-as-badge-square ">
                             <strong><?php echo "<span class='table_name'>".$printData[$constant]['title']."</span>"; ?></strong>
                         </a>
+                        <form method="POST" action="<?=$module->getUrl('hub-updates/generate_pdf.php').'&constant='.$constant?>" id="download_pdf" class="badge label-primary" style="cursor:pointer;font-size: 12px;padding:.2em .6em .2em;">
+                            <a onclick="this.closest('form').submit();return false;">
+                                <i class="fa fa-arrow-down"></i> <i class="fa fa-solid fa-file-pdf"></i>
+                            </a>
+                        </form>
                         <span class="badge dataRequests" id="counter_<?=$constant;?>"></span>
                         <span style="padding-left:10px">
                             <input type="checkbox" id="ckb_<?= $constant; ?>" name="<?= "chkAll_" . $constant ?>" onclick="checkAll('<?= $constant ?>');" style="cursor: pointer;">
                             <span style="cursor: pointer;font-size: 14px;font-weight: normal;color: black;" onclick="checkAllText('<?= $constant ?>');">Select All</span>
                         </span>
+
                         <a href="<?=$printData[$constant]['gotoredcap']?>"target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;margin-top: 5px;">Go to REDCap</a>
                         <span class="hub-update-last-updated">
                             <?php echo "Updated on ".HubUpdates::getTemplateLastUpdatedDate($module, $constant);?>
@@ -300,6 +340,7 @@ foreach ($allUpdates as $constant => $project_data) {
     <div id="confirmationForm" title="Confirmation" style="display:none;">
         <form method="POST" action="" id="data_confirmation">
             <div class="modal-body">
+                <div class="alert alert-success col-md-12" style="display: none" id="update_text">File Added to the repository.</div>
                 <span id="fields_total"></span>
                 <br>
                 <br>
@@ -307,7 +348,9 @@ foreach ($allUpdates as $constant => $project_data) {
                 <input type="hidden" id="option" name="option">
             </div>
             <div class="modal-footer" style="padding-top: 30px;">
-                <button type="submit" style="color:white;" class="btn btn-default btn-success" id='btnConfirm'>Continue</button>
+                <a onclick="changeFormUrlPDF(this.id);return false;" style="color:white;" class="btn btn-primary" id='btnUploadPDF'><em class="fa fa-solid fa-upload"></em> File Repository</a>
+                <a onclick="changeFormUrlPDF(this.id);this.closest('form').submit();return false;" style="color:white;" class="btn btn-primary" id='btnDownloadPDF'><em class="fa fa-solid fa-file-pdf"></em> Download</a>
+                <a onclick="changeFormUrlPDF(this.id);" style="color:white;" class="btn btn-success" id='btnConfirm' name="btnConfirm">Continue</a>
             </div>
         </form>
     </div>

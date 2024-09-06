@@ -67,6 +67,9 @@
 .label-default {
      background-color: #8c8c8c;
  }
+.label-primary {
+    background-color: #337ab7 !important;
+}
 .label-default_dark {
     background-color: #777;
 }
@@ -1557,23 +1560,6 @@ table[data-sortable] th[data-sorted]:after{
 
 .custom-checkbox .custom-control-input:disabled:indeterminate ~ .custom-control-label::before {
     background-color: rgba(0, 123, 255, 0.5);
-}
-
-/*** HUB UPDATES ***/
-.hub-update-last-updated{
-    font-size: 13px;
-    font-style: italic;
-    padding-right: 30px;
-    float: right;
-    margin-top: 5px;
-}
-
-.hub-update-last-updated-past-date{
-    color:#e74c3c !important;
-}
-.hub-update-last-updated-recent-date-badge{
-    color:#fff !important;
-    background-color: #5cb85c !important;
 }
 
 /*** CALENDAR ***/

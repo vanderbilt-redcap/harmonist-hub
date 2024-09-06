@@ -3,6 +3,11 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
+if(APP_PATH_WEBROOT[0] == '/'){
+    $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
+}
+define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
+
 $project_id = (int)$_REQUEST['pid'];
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
@@ -192,9 +197,9 @@ if($pidHome != ""){
     $aux['links_sectionorder'] = '1';
     $aux['links_sectionicon'] = '1';
     $aux['links_text1'] = 'Create EC request';
-    $aux['links_link1'] = 'https://redcap.vumc.org/surveys/?s='.$RequestLinkPid;
+    $aux['links_link1'] = APP_PATH_WEBROOT_FULL.'surveys/?s='.$RequestLinkPid;
     $aux['links_text2'] = 'Add Hub user';
-    $aux['links_link2'] = 'https://redcap.vumc.org/surveys/?s='.$surveyPersonInfoPid;
+    $aux['links_link2'] = APP_PATH_WEBROOT_FULL.'surveys/?s='.$surveyPersonInfoPid;
 
     $array_repeat_instances[1]['repeat_instances'][$event_id]['quick_links_section'][1] = $aux;
     $results = \REDCap::saveData($pidHome, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
@@ -282,22 +287,22 @@ $projects_array_sql = array(
             'label' => ""
         ),
         'wg_name' => array (
-            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:".$pidsArray['GROUP']."] record left join [data-table:".$pidsArray['GROUP']."] active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:".$pidsArray['GROUP']."] group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:".$pidsArray['GROUP']."] group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY record.value",
+            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:".$pidsArray['GROUP']."] record left join [data-table:".$pidsArray['GROUP']."] active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:".$pidsArray['GROUP']."] group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:".$pidsArray['GROUP']."] group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY group_name.value",
             'autocomplete' => '0',
             'label' => ""
         ),
         'wg2_name' => array (
-            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:".$pidsArray['GROUP']."] record left join [data-table:".$pidsArray['GROUP']."] active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:".$pidsArray['GROUP']."] group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:".$pidsArray['GROUP']."] group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY record.value",
+            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:".$pidsArray['GROUP']."] record left join [data-table:".$pidsArray['GROUP']."] active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:".$pidsArray['GROUP']."] group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:".$pidsArray['GROUP']."] group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY group_name.value",
             'autocomplete' => '0',
             'label' => ""
         ),
         'wg3_name' => array (
-            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:".$pidsArray['GROUP']."] record left join [data-table:".$pidsArray['GROUP']."] active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:".$pidsArray['GROUP']."] group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:".$pidsArray['GROUP']."] group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY record.value",
+            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:".$pidsArray['GROUP']."] record left join [data-table:".$pidsArray['GROUP']."] active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:".$pidsArray['GROUP']."] group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:".$pidsArray['GROUP']."] group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY group_name.value",
             'autocomplete' => '0',
             'label' => ""
         ),
         'wg4_name' => array (
-            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:".$pidsArray['GROUP']."] record left join [data-table:".$pidsArray['GROUP']."] active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:".$pidsArray['GROUP']."] group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:".$pidsArray['GROUP']."] group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY record.value",
+            'query' => "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:".$pidsArray['GROUP']."] record left join [data-table:".$pidsArray['GROUP']."] active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:".$pidsArray['GROUP']."] group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:".$pidsArray['GROUP']."] group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY group_name.value",
             'autocomplete' => '0',
             'label' => ""
         ),
