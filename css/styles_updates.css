@@ -2,6 +2,9 @@
     font-weight: normal;
     padding-left: 15px;
 }
+.title, .title a{
+    font-size: 18px;
+}
 .panel-heading{
     background-color: #D7D7D7;
     border-color: #ddd;
