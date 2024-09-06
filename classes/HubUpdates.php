@@ -247,6 +247,7 @@ class HubUpdates{
                         }
                         $save_data_aux[$varname] = $save_data[$varname];
                     }
+                    #If variable not found, its in a new instrument
                     if(!$var_found && is_array($new[$variable]) && !empty($new[$variable]) && empty($old[$variable])){
                         $save_data_aux[$variable] = $new[$variable];
                         #Log Data
