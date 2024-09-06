@@ -44,7 +44,6 @@ a.btn:hover{
 .btn-secondary:hover{
     color: #fff;
     font-size: 14px;
-    font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
 .btn-resolved:hover {
     color: #000;
