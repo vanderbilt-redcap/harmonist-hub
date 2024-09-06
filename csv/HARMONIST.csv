@@ -27,12 +27,17 @@ wg2_link,concept_sheet,,sql,"Secondary Working Group<span style=""font-weight:li
 wg3_link,concept_sheet,,sql,"Third Working Group<span style=""font-weight:lighter; font-style:italic"">","SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=2129 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
 wg4_link,concept_sheet,,sql,"Fourth Working Group<span style=""font-weight:lighter; font-style:italic"">","SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=2129 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
 lead_region,concept_sheet,,sql,"Research Group of Concept Leader","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=2127 GROUP BY a.record  ORDER BY value",,,,,,,,,,,,
-people_txt,participants,,descriptive,"<div style=""color:white; text-align:center; border: 1px #3498db; background-color: #2980b9;""><h3 style=""margin:0px; padding:10px"">Key Participant</h3></div>",,,,,,,,,,,,,
+people_txt,participants,,descriptive,"<div style=""color:white; text-align:center; border: 1px #3498db; background-color: #2980b9;""><h3 style=""margin:0px; padding:10px"">Key Participant or Author</h3></div>",,,,,,,,,,,,,
 person_role,participants,,dropdown,"Role in Project","1, Concept Lead (or co-Lead) | 2, Senior Author | 3, Statistician | 4, Data Manager | 5, Investigator/Regional Representative | 6, Other",,,,,,,,,,,,
-person_link,participants,,sql,"Person (SQL link to Persons Project)","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
-notiedeaperson,participants,,checkbox,,"1, The person I want to add is not in the people list in REDCap.",,,,,,,,LV,,,,
+person_link,participants,,sql,"Person (SQL link to Persons Project)","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,,,,,
+notiedeaperson,participants,,checkbox,,"1, The person I want to add is not in the Hub Users list.",,,,,,,,LV,,,," @HIDDEN"
 person_other,participants,,text,"<div style=""padding-left:30px; color:#333333"">Other (non-Consortia) Contact
 <span style=""font-weight:lighter; font-style:italic"">(For Consortium members, please <a href=""https://redcap.vumc.org/redcap_v7.2.2/DataEntry/record_home.php?pid=59097"">add them to the Persons Project</a> instead and they will then appear in the dropdown list.)</span></div>",,,,,,,"[notiedeaperson(1)] = '1'",,,,,,
+nothubuser,participants,,checkbox,,"1, The person I want to add is not in the Hub Users list.",,,,,,,,LV,,,,
+participant_firstname,participants,,text,"First Name",,,,,,,"[nothubuser] = '1'",,,,,,
+participant_lastname,participants,,text,"Last Name",,,,,,,"[nothubuser] = '1'",,,,,,
+participant_email,participants,,text,"Email Address",,,email,,,,"[nothubuser] = '1'",,,,,,
+participant_note,participants,,text,"Note about participant",,,,,,,,,,,,,
 adminupdate_d,admin_update,,text,"Date of update",,,date_ymd,,,,,,,,,,
 admin_status,admin_update,,dropdown,Status,"1, Not approved | 2, Approved | 3, In development | 4, Submitted to journal | 5, Published",,,,,,,,,,,,
 admin_update,admin_update,,notes,"Admin update on project:",,,,,,,,,LV,,,,
@@ -70,3 +75,11 @@ output_file,outputs,,file,"File
 <span style=""font-weight:lighter; font-style:italic"">(optional)</span>",,,,,,,,,,,,,
 output_url,outputs,,text,"Web link (URL) to resource
 <span style=""font-weight:lighter; font-style:italic"">(optional)</span>",,,,,,,,,,,,,
+dochidden_y,linked_documents,,checkbox,"Hide File on Concept page","1,",,,,,,,,,,,," @HIDDEN-SURVEY"
+docupload_dt,linked_documents,,text,"Upload Datetime",,,datetime_ymd,,,,,,,,,," @READONLY-SURVEY @NOW-SERVER"
+doc_title,linked_documents,,text,"Short Title
+<div style=""font-weight:lighter;font-style:italic"">Provide a <u>short</u> title for the document. This will be the clickable download link on the Hub interface.</div>",,,,,,,,,LV,,,,
+doc_description,linked_documents,,notes,"Description
+<div style=""font-weight:lighter;font-style:italic"">(optional) Provide a brief description of the document. This text will be displayed on the Hub interface.</div>",,,,,,,,,LV,,,,
+doc_file,linked_documents,,file,"File Upload
+<div style=""font-weight:lighter;font-style:italic"">Use a ZIP to combine multiple files</div>",,,,,,,,,LV,,,,
