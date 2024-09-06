@@ -21,29 +21,29 @@
     margin-top: 3px;
 }
 .instrument-header{
-    background-color:#f5f5f5 !important;
+    background-color:#f5f5f5;
     font-size: 15px;
 }
 .section-header th{
-    background-color:#ebebeb !important;
+    background-color:#ebebeb;
     font-weight: bold;
 }
-.changed{background-color:#ffc107 !important;}
-.added{background-color:#5d9451 !important;}
-.removed{background-color:#cb410b !important;}
+.changed{background-color:#ffc107;}
+.added{background-color:#5d9451;}
+.removed{background-color:#cb410b;}
 tr.rowSelected td{
-    background-color: #e6f5ff !important;
+    background-color: #e6f5ff;
 }
 .resolved{
     background-color: #dcdcdc;
     border-color:#adacac;
 }
 a.btn:hover{
-    font-size: 14px !important;
+    font-size: 14px;
 }
 .btn-secondary:hover{
-    color: #fff !important;
-    font-size: 14px !important;
+    color: #fff;
+    font-size: 14px;
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
 .btn-resolved:hover {
@@ -53,9 +53,9 @@ a.btn:hover{
 }
 .btn-resolved {
     background-color: #dcdcdc;
-    border-color: #adacac !important;
-    padding: 3px 10px !important;
-    line-height: 1em !important;
+    border-color: #adacac;
+    padding: 3px 10px;
+    line-height: 1em;
 }
 .badge a:hover{
     font-size: 12px;
@@ -89,7 +89,7 @@ a.btn:hover{
 }
 .hub-update-last-updated-recent-date-badge{
     color:#fff !important;
-    background-color: #5cb85c !important;
+    background-color: #5cb85c;
 }
 #selectDataTableHubUpdates tr.odd td {
     background-color: #ffffff !important;
