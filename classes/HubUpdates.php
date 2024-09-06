@@ -210,11 +210,9 @@ class HubUpdates{
 
     public static function saveFieldData($update_list, $old, $new, $project_id, $constant, $project_id_map): void
     {
-        error_log(json_encode($update_list,JSON_PRETTY_PRINT));
         $save_data = $old;
         foreach ($update_list as $status => $statusData) {
             foreach ($statusData as $index => $variable) {
-                error_log($variable);
                 if ($status == self::CHANGED) {
                     if($new[$variable]['field_type'] == "sql"){
                         if($old[$variable]['field_type'] != "sql"){
