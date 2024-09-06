@@ -258,7 +258,7 @@ class HubUpdates{
         $sql_errors = \MetaData::save_metadata($save_data, false, false, $project_id);
     }
 
-    public static function getNextFieldName($variable, $new, $old): array
+    public static function getNextFieldName($variable, $new, $old): string
     {
         $new_var_list = array_keys($new);
         $new_var_list_index = array_search($variable,$new_var_list);
