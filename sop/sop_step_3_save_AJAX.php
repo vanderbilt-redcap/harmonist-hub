@@ -17,6 +17,7 @@ $event_id = $Proj->firstEventId;
 $sop_inclusion = $module->escape(($_REQUEST['sop_inclusion'] == "") ? "<i>None</i>" : $_REQUEST['sop_inclusion']);
 $sop_exclusion = $module->escape(($_REQUEST['sop_exclusion'] == "") ? "<i>None</i>" : $_REQUEST['sop_exclusion']);
 $sop_notes = $module->escape(($_REQUEST['sop_notes'] == "") ? "<i>None</i>" : $_REQUEST['sop_notes']);
+$dataformat_notes = ($_REQUEST['dataformat_notes'] == "") ? "<i>None</i>" : $_REQUEST['dataformat_notes'];
 
 $arraySOP = array();
 $arraySOP[$record][$event_id]['sop_downloaders'] = htmlentities($_REQUEST['downloaders'],ENT_QUOTES);
@@ -24,6 +25,8 @@ $arraySOP[$record][$event_id]['sop_downloaders_dummy___1'] = $downDummy;
 $arraySOP[$record][$event_id]['sop_inclusion'] = $sop_inclusion;
 $arraySOP[$record][$event_id]['sop_exclusion'] = $sop_exclusion;
 $arraySOP[$record][$event_id]['sop_notes'] = $sop_notes;
+$arraySOP[$record][$event_id]['dataformat_notes'] = $sop_notes;
+$arraySOP[$record][$event_id]['dataformat_notes'] = $dataformat_notes;
 $arraySOP[$record][$event_id]['sop_due_d'] = htmlentities($_REQUEST['sop_due_d'],ENT_QUOTES);
 $arraySOP[$record][$event_id]['sop_creator'] = htmlentities($_REQUEST['sop_creator'],ENT_QUOTES);
 $arraySOP[$record][$event_id]['sop_creator_org'] = htmlentities($_REQUEST['sop_creator_org'],ENT_QUOTES);
@@ -37,9 +40,12 @@ $dataformat_prefer_labels = $module->escape($module->getChoiceLabels('dataformat
 foreach($dataformat_prefer_labels as $dataformat_index => $value){
     $arraySOP[$record][$event_id]['dataformat_prefer___'.$dataformat_index] = "0";
 }
-$dataformat_prefer = explode(',',htmlentities($_REQUEST['dataformat_prefer'],ENT_QUOTES));
-foreach($dataformat_prefer as $dataformat){
-    $arraySOP[$record][$event_id]['dataformat_prefer___'.$dataformat] = "1";
+$dataformat_prefer = "";
+if(!empty($_REQUEST['dataformat_prefer'])){
+    $dataformat_prefer = explode(',',htmlentities($_REQUEST['dataformat_prefer'],ENT_QUOTES));
+    foreach ($dataformat_prefer as $dataformat) {
+        $arraySOP[$record][$event_id]['dataformat_prefer___' . $dataformat] = "1";
+    }
 }
 
 $date = new \DateTime();
@@ -54,6 +60,7 @@ $data['sop_version_date'] = "Data Request Version: ".date('d F Y');
 $data['sop_inclusion'] = filter_tags($sop_inclusion);
 $data['sop_exclusion'] = filter_tags($sop_exclusion);
 $data['sop_notes'] = filter_tags($sop_notes);
+$data['dataformat_notes'] = filter_tags($dataformat_notes);
 
 $date = new \DateTime(htmlentities($_REQUEST['sop_due_d']));
 $data['sop_due_d_preview'] = $date->format('d F Y');

@@ -340,7 +340,7 @@ $oldValues = $printDataAll[1];
     <div id="confirmationForm" title="Confirmation" style="display:none;">
         <form method="POST" action="" id="data_confirmation">
             <div class="modal-body">
-                <div class="alert alert-success col-md-12" style="display: none" id="update_text">File Added to the repository.</div>
+                <div class="alert alert-success col-md-12" style="display: none" id="update_text">File added to the REDCap File Repository.</div>
                 <span id="fields_total"></span>
                 <br>
                 <br>
