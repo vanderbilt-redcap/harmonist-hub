@@ -5,7 +5,7 @@ $option = htmlentities($_GET['option'],ENT_QUOTES);
 $record = htmlentities($_GET['record'],ENT_QUOTES);
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $record));
-$request = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,'')[0]);
+$request = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],'')[0]);
 if($request !="") {
     $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
     $region_response_status = $module->getChoiceLabels('region_response_status', $pidsArray['RMANAGER']);
@@ -39,7 +39,7 @@ if($request !="") {
     $concept = "<em>None</em>";
     if (!empty($request['assoc_concept'])) {
         $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $request['assoc_concept']));
-        $concept_sheet = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
+        $concept_sheet = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,$pidsArray['HARMONIST'])[0]['concept_id'];
         $concept = '<a href="i'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $request['assoc_concept'] . '" target="_blank">' . $concept_sheet . '</a>';
     }else if($request['mr_temporary'] != ""){
         $concept = $request['mr_temporary'];
@@ -50,7 +50,7 @@ if($request !="") {
         $userid = $current_user['record_id'];
 
         $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
-        $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0]['follow_activity'];
+        $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'])[0]['follow_activity'];
         $array_userid = explode(',', $follow_activity);
         $arrayMRmanager = array(array('record_id' => $request_id));
 

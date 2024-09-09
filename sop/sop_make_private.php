@@ -13,7 +13,7 @@ $results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite',
 \Records::addRecordToRecordListCache($pidsArray['SOP'], $record,1);
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record));
-$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
 $date = new \DateTime();
 $completion_time = $date->format('Y-m-d H:i:s');

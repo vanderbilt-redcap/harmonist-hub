@@ -6,7 +6,7 @@ class ProjectData
 {
     public $default_value;
 
-    public static function getProjectInfoArrayRepeatingInstruments($records,$filterLogic=null,$option=null){
+    public static function getProjectInfoArrayRepeatingInstruments($records,$project_id,$filterLogic=null,$option=null){
         $array = array();
         $found = array();
         $index=0;
@@ -42,7 +42,9 @@ class ProjectData
                                             $count++;
                                         }
                                     }
-
+                                    if(ProjectData::isCheckbox($field_name,$project_id) && $value[1] !== ""){
+                                        $array[$index][$field_name][$instance] = $value[1];
+                                    }
                                 }
                                 $count++;
                             }
@@ -173,6 +175,38 @@ class ProjectData
             }
         }
         return $dataChanged;
+    }
+
+    public static function isCheckbox($field_name,$project_id)
+    {
+        $Proj = new \Project($project_id);
+        // If field is invalid, return false
+        if (!isset($Proj->metadata[$field_name])) return false;
+        // Array to translate back-end field type to front-end (some are different, e.g. "textarea"=>"notes")
+        $fieldTypeTranslator = array('textarea'=>'notes', 'select'=>'dropdown');
+        // Get field type
+        $fieldType = $Proj->metadata[$field_name]['element_type'];
+        // Translate field type, if needed
+        if (isset($fieldTypeTranslator[$fieldType])) {
+            $fieldType = $fieldTypeTranslator[$fieldType];
+        }
+        unset ($Proj);
+        if($fieldType == "checkbox"){
+            return true;
+        }
+        return false;
+    }
+
+    public static function formatBytes($bytes, $precision = 2) {
+        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+
+        $bytes /= (1 << (10 * $pow));
+
+        return "<span style='font-style:italic;font-size:11px;'>(".round($bytes, $precision) ." ". $units[$pow].")</span>";
     }
 }
 ?>

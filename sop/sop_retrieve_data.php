@@ -66,12 +66,12 @@ foreach ($request_DU as $down){
         foreach ($array_downloads_by_concept as $concept_id => $concept_table) {
             foreach ($concept_table as $sop_id => $AllDataUp) {
                 $RecordSetTable = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $concept_id));
-                $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0];
+                $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable,$pidsArray['HARMONIST'])[0];
                 $concept_sheet = $concept['concept_id'];
                 $concept_title = $concept['concept_title'];
 
                 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $sop_id));
-                $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+                $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
                 $array_userid = explode(',', $sop['sop_downloaders']);
 
                 $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('firstname','lastname','email'))[0];
@@ -101,7 +101,7 @@ foreach ($request_DU as $down){
                         $contact_person = "<a href='mailto:" . $person_info['email'] . "'>" . $person_info['firstname'] . " " . $person_info['lastname'] . "</a>";
 
                         $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $data_up['data_upload_region']));
-                        $region_code = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegion)[0]['region_code'];
+                        $region_code = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegion,$pidsArray['REGIONS'])[0]['region_code'];
 
                         $file_pdf = ($data_up['data_upload_pdf'] == "") ? "" : \Vanderbilt\HarmonistHubExternalModule\getFileLink($module,  $pidsArray['PROJECTS'], $data_up['data_upload_pdf'], '1','',$secret_key,$secret_iv,$current_user['record_id'],"");
 

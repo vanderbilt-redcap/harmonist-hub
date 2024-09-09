@@ -6,7 +6,7 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 
 
 $RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
-$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
+$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps,$pidsArray['HARMONIST']);
 $multireg_pub = array();
 $multireg_con = array();
 $multireg_abs = array();

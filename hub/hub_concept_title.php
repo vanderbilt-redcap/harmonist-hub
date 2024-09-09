@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
 $RecordSetTable = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $record));
-$concept = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable)[0]);
+$concept = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable,$pidsArray['HARMONIST'])[0]);
 $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
 if(!empty($concept)) {
@@ -67,7 +67,7 @@ if(!empty($concept)) {
     if (!empty($concept["status"]) && in_array('1', $concept["status"]) && !empty($concept["pdf_file"])) {
         #SOP Files from Builder SOP project
         $RecordSop = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $concept['record_id']));
-        $pdf_file = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSop,'')[0]["pdf_file"];
+        $pdf_file = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSop,$pidsArray['SOP'],'')[0]["pdf_file"];
         $q = $module->query("SELECT doc_name,stored_name,file_extension FROM redcap_edocs_metadata WHERE doc_id = ?",[$pdf_file]);
         $row_datasop_file = $q->fetch_assoc();
     }
@@ -85,7 +85,6 @@ $revised = "";
 if($concept['revised_y'][0] == '1'){
     $revised = '<span class="label label-as-badge badge-revised">Revised</span>';
 }
-
 ?>
 
 <script>
@@ -205,7 +204,7 @@ if($concept['revised_y'][0] == '1'){
                 if(!empty($concept['participants_complete'])) {
                     foreach ($concept['participants_complete'] as $id => $participant) {
                         $RecordSetParticipant = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $concept['person_link'][$id]));
-                        $participant_info = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetParticipant)[0]);
+                        $participant_info = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetParticipant,$pidsArray['PEOPLE'])[0]);
                         if (!empty($participant_info)) {
                             #get the label from the drop down menu
                             echo '<div><a href="mailto:' . $participant_info['email'] . '">' . $participant_info['firstname'] . ' ' . $participant_info['lastname'] . '</a> (' . htmlspecialchars($module->getChoiceLabels('person_role', $pidsArray['HARMONIST'])[$concept['person_role'][$id]],ENT_QUOTES). ')</div>';
@@ -359,7 +358,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
             $q = $module->query("SELECT record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['HARMONIST'])." WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$record,$pidsArray['HARMONIST']]);
 
             $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_visibility] = 2 and [sop_concept_id] = ".$record);
-            $data_requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+            $data_requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
 
             ArrayFunctions::array_sort_by_column($data_requests,'sop_updated_dt',SORT_DESC);
             if(!empty($data_requests) || $q->num_rows > 0) {
@@ -369,7 +368,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 }
                 while ($row = db_fetch_assoc($q)){
                     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$row['record']);
-                    $data_requests_old = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+                    $data_requests_old = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
                     if(empty($data_requests_old)){
                         echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$row['record'],"1");
                     }
@@ -540,7 +539,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                         if($isAdmin){
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "", $index);
                             $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
-                            echo '<td><button class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button></td>';
+                            echo '<td><button class="btn btn-default open-codesModal" onclick="$(\'#edit_title\').html(\'Edit Publication\');editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button></td>';
                         }
 
                         echo '</tr>';
@@ -559,7 +558,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Edit Publication</h4>
+                    <h4 class="modal-title" id="edit_title">Edit Publication</h4>
                 </div>
                 <div class="modal-body">
                     <iframe class="commentsform" id="redcap-edit-frame" message="E" name="redcap-edit-frame" src="" style="border: none;height: 810px;width: 100%;"></iframe>
@@ -569,6 +568,94 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default" style="margin-bottom: 40px">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" href="#collapse_publications">Linked Documents</a>
+                <?php
+                $harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
+                if($isAdmin || $concept['contact_link'] == $current_user['record_id'] || $concept['contact2_link'] == $current_user['record_id'] || $harmonist_perm){
+                    $linked_doc_link = $module->getSurveyLinkNewInstance("linked_documents", $record, $pidsArray['HARMONIST']);
+                    ?>
+                    <a href="#" onclick="$('#hub_new_linked_doc').modal('show');" style="float: right;padding-right: 30px;color: #337ab7;cursor: pointer"><em class="fa fa-plus"></em> New File</a>
+                    <!-- MODAL NEW OUTPUT-->
+                    <div class="modal fade" id="hub_new_linked_doc" tabindex="-1" role="dialog" aria-labelledby="Codes">
+                        <div class="modal-dialog" role="document" style="width: 900px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title"><em class="fa fa-plus"></em> New File</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" value="0" id="comment_loaded">
+                                    <iframe class="commentsform" id="redcap-new-output-frame" name="redcap-new-output-frame" src="<?=$linked_doc_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+            </h3>
+        </div>
+
+        <div id="collapse_publications" class="table-responsive panel-collapse collapse in" aria-expanded="true">
+            <table class="table table_requests sortable-theme-bootstrap" data-sortable id="abstracts">
+                <?php
+                if(!empty($concept['output_type'])){
+                    $header = '<colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        </colgroup>';
+
+                    $header .= '<thead>'.
+                        '<tr>'.
+                        '<th class="sorted_class" data-sorted="true" style="width:5%;" data-sorted-direction="descending">Upload Date</th>'.
+                        '<th class="sorted_class" data-sorted="false" style="width:20%;"><span style="display:block">File Title</th>'.
+                        '<th class="sorted_class" data-sorted="false" style="width:40%;">Description</th>'.
+                        '<th class="sorted_class" data-sorted="false" style="width:20%;">File</th>';
+                    if($isAdmin){
+                        $header .= '<th class="sorted_class" style="width:5%;text-align: center;" data-sorted="false"><em class="fa fa-cog"></em></th>';
+                    }
+                    echo '</tr></thead>'.$header;
+
+                    echo '<tbody>';
+                    foreach ($concept['dochidden_y'] as $linked_doc_instance => $doc_hidden_value){
+                        if($doc_hidden_value !== "1"){
+                            echo '<tr>';
+                            echo '<td width="15%">'.$concept['docupload_dt'][$linked_doc_instance].'</td>';
+                            echo '<td width="25%">'.$concept['doc_title'][$linked_doc_instance].'</td>';
+                            echo '<td width="50%">'.$concept['doc_description'][$linked_doc_instance].'</td>';
+
+                            $file ='';
+                            if($concept['doc_file'][$linked_doc_instance] != ""){
+                                $file = getFileLink($module, $pidsArray['PROJECTS'], $concept['doc_file'][$linked_doc_instance],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                            }
+                            echo '<td width="5%">'.$file.'</td>';
+
+                            if($isAdmin){
+                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "linked_documents", "", $linked_doc_instance);
+                                $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
+                                echo '<td><button class="btn btn-default open-codesModal" onclick="$(\'#edit_title\').html(\'Edit Linked Document\');editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button></td>';
+                            }
+                            echo '</tr>';
+                        }
+                    }
+                    echo '</tbody>';
+                }else{
+                    echo "<tr><td><em>No Linked Documents available</em></td></tr>";
+                }
+                ?>
+            </table>
         </div>
     </div>
 
@@ -583,7 +670,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
             <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                 <?php
                 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null);
-                $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y' => "1",'assoc_concept' => $concept['record_id']));
+                $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],array('approval_y' => "1",'assoc_concept' => $concept['record_id']));
                 if(!empty($request)){
                     echo \Vanderbilt\HarmonistHubExternalModule\getArchiveHeader('Status');
                     ?>

@@ -5,7 +5,7 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 $record_id = $_REQUEST['record_id'];
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
-$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
 $ProjSOP = new \Project($pidsArray['SOP']);
 $event_id_sop = $ProjSOP->firstEventId;

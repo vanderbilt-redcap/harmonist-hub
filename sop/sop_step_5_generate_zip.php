@@ -6,7 +6,7 @@ require_once APP_PATH_DOCROOT.'Classes/Files.php';
 $record_id = htmlentities($_REQUEST['record'],ENT_QUOTES);
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
-$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
 $dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module, $pidsArray['DATAMODEL']);
 $tableHtml = "";
@@ -17,7 +17,7 @@ if(!empty($dataTable)) {
 }
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
-$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
 $concept_id = $concept['concept_id'];
 $concept_title = $concept['concept_title'];
 

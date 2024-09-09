@@ -7,7 +7,7 @@ $Proj = new \Project($pidsArray['SOP']);
 $event_id = $Proj->firstEventId;
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
-$sop = ProjectData::replaceSymbolsForPDF(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0]);
+$sop = ProjectData::replaceSymbolsForPDF(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0]);
 
 $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null);
 foreach ($regions as $region){
@@ -61,7 +61,7 @@ if(!empty($tablefields)){
 }
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
-$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
 $concept_id = $concept['concept_id'];
 $concept_title = $concept['concept_title'];
 
@@ -78,7 +78,7 @@ $sop_datacontact_name  = $people['firstname'].' '.$people['lastname'];
 $sop_datacontact_email = $people['email'];
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
-$data = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$data = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
 $date = new \DateTime($sop['sop_due_d']);
 $sop_due_d = $date->format('d F Y');

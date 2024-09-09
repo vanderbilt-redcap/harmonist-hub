@@ -12,7 +12,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                 <option value="">Select option</option>
                 <?php
                 $RecordSetConceptsActive = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[active_y] = 'Y'");
-                $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive);
+                $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive,$pidsArray['HARMONIST']);
                 ArrayFunctions::array_sort_by_column($concepts, 'concept_id');
                 if (!empty($concepts)) {
                     $concepts = $module->escape($concepts);
@@ -44,14 +44,14 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
         <div style="float:left;padding-left:10px;width:50%;display:none" id="setup_show_option_2">
                 <?php
                 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 && [sop_status] = 2");
-                $sop_templates = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+                $sop_templates = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
                 if (!empty($sop_templates)) {?>
                     <select class="form-control" name="selectSOP_2" id="selectSOP_2" onchange="checkStep(1);checkConcept();">
                         <option value="">Select template</option>
                         <?php
                         foreach ($sop_templates as $template){
                             $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $template['sop_concept_id']));
-                            $concept_id = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id']);
+                            $concept_id = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id']);
                             $template = $module->escape($template);
                             echo "<option value='".$template['record_id']."' concept='".$template['sop_concept_id']."' concept_id='".$concept_id."'>".$template['sop_name']."</option>";
                         }?>
@@ -66,7 +66,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
         <div style="float:left;padding-left:10px;width:50%;display:none" id="setup_show_option_3">
                 <?php
                 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 && [sop_status] = 0");
-                $sop_drafts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+                $sop_drafts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
                 if (!empty($sop_drafts)) {?>
                     <select class="form-control" name="selectSOP_3" id="selectSOP_3" onchange="checkStep(1);checkConcept();">
                         <option value="">Select draft</option>
@@ -75,7 +75,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                         if($isAdmin || $harmonist_perm || $draft['sop_hubuser'] == $current_user['record_id'] || $draft['sop_creator'] == $current_user['record_id'] || $draft['sop_creator2'] == $current_user['record_id'] || $draft['sop_datacontact'] == $current_user['record_id'] ){
                             $draft = $module->escape($draft);
                             $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $draft['sop_concept_id']));
-                            $concept_id = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id']);
+                            $concept_id = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id']);
                             echo "<option value='" . $draft['record_id'] . "' concept='" . $draft['sop_concept_id'] . "' concept_id='" . $concept_id . "'>" . $draft['sop_name'] . "</option>";
                         }
                     }?>

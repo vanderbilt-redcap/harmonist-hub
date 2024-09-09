@@ -21,11 +21,11 @@ $s3 = new S3Client([
 
 if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $request_DU['data_assoc_request']));
-    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
     $array_userid = explode(',', $sop['sop_downloaders']);
     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
     $RecordSetCurrentUser = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('access_token' => $token));
-    $current_user = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetCurrentUser)[0];
+    $current_user = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetCurrentUser,$pidsArray['PEOPLE'])[0];
     if ($request_DU['data_upload_person'] == $current_user['record_id'] || ($key = array_search($current_user['record_id'], $array_userid)) !== false) {
         try {
             #Get the object
@@ -62,7 +62,7 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
 
             #EMAIL NOTIFICATION
             $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $request_DU['data_assoc_concept']));
-            $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+            $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
             $concept_id = $concepts['concept_id'];
 
             $peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $request_DU['data_upload_person']))[0];
@@ -76,7 +76,7 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
             $expire_date = date('Y-m-d', strtotime($date_time . $extra_days));
 
             $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $request_DU['data_assoc_request']));
-            $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+            $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
             #to uploader user
             $subject = "Your " . $settings['hub_name'] . " " . $concept_id . " dataset was downloaded";

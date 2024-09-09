@@ -4,7 +4,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 $record_id = htmlentities($_REQUEST['record'],ENT_QUOTES);
 if($record_id != ""){
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
-    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 }
 
 $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;

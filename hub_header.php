@@ -6,7 +6,7 @@ $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,
     ["requestopen_ts","approval_y","finalize_y","region_response_status","request_id","contact_region",
         "assoc_concept","mr_temporary","contact_email","request_title","request_type","finalconcept_doc", "finalconcept_pdf",
         "author_doc","workflowcomplete_d","contact_name"]);
-$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y'=>1));
+$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],array('approval_y'=>1));
 
 $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $request_response_person = $module->getChoiceLabels('response_person', $pidsArray['RMANAGER']);
@@ -14,7 +14,7 @@ $numberOfOpenRequest = $module->escape(\Vanderbilt\HarmonistHubExternalModule\nu
 
 $request_admin = "";
 if($isAdmin) {
-    $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+    $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER']);
     ArrayFunctions::array_sort_by_column($request_admin, 'requestopen_ts');
     $numberOfAdminRequest = $module->escape(\Vanderbilt\HarmonistHubExternalModule\numberOfAdminRequest($request_admin));
 }

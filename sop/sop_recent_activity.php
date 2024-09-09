@@ -141,7 +141,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $recent_activity['sop_id']));
-                            $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+                            $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
                             $sop_concept_id = $sop['sop_concept_id'];
                             $sop_name = $sop['sop_name'];
                             $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $sop_concept_id);

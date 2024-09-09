@@ -9,7 +9,7 @@ $save_option = htmlentities($_REQUEST['save_option'],ENT_QUOTES);
 $sop_hubuser = htmlentities($_REQUEST['sop_hubuser'],ENT_QUOTES);
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $selectConcept));
-$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
 $contact_link = $concepts['contact_link'];
 $concept_id = $concepts['concept_id'];
 $concept_title = $concepts['concept_title'];
@@ -37,7 +37,7 @@ if($option == "1" && $save_option == ""){
     $arraySOP[$record][$event_id]['sop_updated_dt'] = $sop_created_dt;
 
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 AND [sop_status] = 0 AND [sop_hubuser] = '".$sop_hubuser."'");
-    $sop_drafts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+    $sop_drafts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
     if (!empty($sop_drafts)) {
         $data_select = '<select class="form-control" name="selectSOP_3" id="selectSOP_3" onchange="checkStep(1);checkConcept();">
             <option value="">Select draft</option>';
@@ -45,7 +45,7 @@ if($option == "1" && $save_option == ""){
         foreach ($sop_drafts as $draft){
             if($draft['sop_active'] == '1') {
                 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $draft['sop_concept_id']));
-                $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+                $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id'];
                 if($draft['record_id'] == $record){
                     $data_select .=  "<option value='" . $draft['record_id'] . "' concept='" . $draft['sop_concept_id'] . "' concept_id='" . $concept_id . "' selected>" . $draft['sop_name'] . "</option>";
                 }else{
@@ -59,7 +59,7 @@ if($option == "1" && $save_option == ""){
 }else if($option == "2"){
     #LOAD TEMPLATE
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record));
-    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
     $Proj = new \Project($pidsArray['SOP']);
     $event_id = $Proj->firstEventId;
@@ -97,10 +97,10 @@ if($option == "1" && $save_option == ""){
         $save_option = $record;
     }
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record));
-    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
-    $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+    $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id'];
     if($selectConcept != ""){
         //UPDATE SOP
         $Proj = new \Project($pidsArray['SOP']);
@@ -145,7 +145,7 @@ if($data['dataformat_prefer'] != ""){
 $sop_concept_id = $data['sop_concept_id'];
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $data['sop_concept_id']));
-$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
 $data['sop_concept_id'] = $concept['concept_id'];
 $data['sop_concept_title'] = $concept['concept_title'];
 

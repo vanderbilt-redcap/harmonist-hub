@@ -5,7 +5,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
-$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
+$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps,$pidsArray['HARMONIST']);
 
 $extra_outputs = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'json-array', null);
 if(!empty($extra_outputs)) {

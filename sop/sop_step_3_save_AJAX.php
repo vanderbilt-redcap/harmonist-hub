@@ -55,7 +55,7 @@ $results = \Records::saveData($pidsArray['SOP'], 'array', $arraySOP,'overwrite',
 \Records::addRecordToRecordListCache($pidsArray['SOP'], $record,1);
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record));
-$data = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$data = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 $data['sop_version_date'] = "Data Request Version: ".date('d F Y');
 $data['sop_inclusion'] = filter_tags($sop_inclusion);
 $data['sop_exclusion'] = filter_tags($sop_exclusion);
@@ -68,7 +68,7 @@ $data['sop_due_d_preview'] = $date->format('d F Y');
 $data['selectConcept'] = $data['sop_concept_id'];
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $data['sop_concept_id']));
-$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
 $data['sop_concept_id'] = $concept['concept_id'];
 $data['sop_concept_title'] = $concept['concept_title'];
 

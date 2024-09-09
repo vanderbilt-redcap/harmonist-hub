@@ -109,9 +109,9 @@ function getFileLink($module, $project_id, $edoc, $option, $outer="",$secret_key
 
             if($option == ''){
                 $icon = getFaIconFile($row['file_extension']);
-                $file_row = $icon."<a href='".$file_url."' target='_blank'>".$module->escape($row['doc_name'])."</a>";
+                $file_row = $icon."<a href='".$file_url."' target='_blank'>".$module->escape($row['doc_name']).ProjectData::formatBytes($row['doc_size'])."</a>";
             }else{
-                $file_row = "<a href='".$file_url."' target='_blank' title='".$module->escape($row['doc_name'])."'>".getFaIconFile($row['file_extension'])."</a>";
+                $file_row = "<a href='".$file_url."' target='_blank' title='".$module->escape($row['doc_name'])."'>".getFaIconFile($row['file_extension']).ProjectData::formatBytes($row['doc_size'])."</a>";
             }
         }
     }
@@ -251,7 +251,7 @@ function getTableVariableJsonName($project_id,$data,$varName,$jsonArray){
         if($data != ""){
             $variable = explode(":",$data);
             $dataTableDataModelRecords = \REDCap::getData($project_id, 'array',array('record_id' => $variable[0]));
-            $tableData = ProjectData::getProjectInfoArrayRepeatingInstruments($dataTableDataModelRecords);
+            $tableData = ProjectData::getProjectInfoArrayRepeatingInstruments($dataTableDataModelRecords,$project_id);
             $jsonArray[$varName] = $tableData[0]['table_name'].":".$tableData[0]['variable_name'][$variable[1]];
         }
     }
@@ -1175,7 +1175,7 @@ function getDataCallConceptsRow($module, $pidsArray, $sop, $isAdmin, $current_us
     $data =  "<tr>";
     $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', 'float:right', '3');
 
-    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('email','firstname','lastname'))[0];
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('email','firstname','lastname','person_region'))[0];
     $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
 
     $contact_person = "<em>Unknown</em>";
@@ -1218,7 +1218,7 @@ function getDataCallConceptsRow($module, $pidsArray, $sop, $isAdmin, $current_us
 
     if($option == "1"){
         $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $concept_record));
-        $data_sopfile = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['datasop_file'];
+        $data_sopfile = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,$pidsArray['HARMONIST'])[0]['datasop_file'];
 
         $details = "<div><em>Historic (pre-Hub) Data Request";
         if($data_sopfile != ""){
@@ -1389,7 +1389,7 @@ function getTablesInfo($module, $pidDataModel){
 function generateTableArray($module, $pidDataModel, $dataTable){
     $dataFormat = $module->getChoiceLabels('data_format', $pidDataModel);
     $RecordSetTable = \REDCap::getData($pidDataModel, 'array', null);
-    $recordsTable = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable);
+    $recordsTable = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable,$pidDataModel);
     $dataTable['data_format_label'] = $dataFormat;
     foreach( $recordsTable as $data ){
         #we sort the variables by value and keep key
@@ -1727,12 +1727,12 @@ function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata
             array_push(${"years_label_regional_pubs_".$type}, $year);
 
             $RecordSetExtraOutputsSingleReg = \REDCap::getData($pidExtraOutputs, 'array', null, null, null, null, false, false, false, "[output_year] = '" . $year . "' AND [output_type] = '" . $output_type . "' AND [producedby_region] = '1'");
-            array_push($regionalmrdata['r'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputsSingleReg)));
+            array_push($regionalmrdata['r'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputsSingleReg,$pidExtraOutputs)));
             $RecordSetExtraOutMultipleReg = \REDCap::getData($pidExtraOutputs, 'array', null, null, null, null, false, false, false, "[output_year] = '" . $year . "' AND [output_type] = '" . $output_type . "' AND [producedby_region] = '2'");
-            array_push($regionalmrdata['mrw'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg)));
-            ${"outputs_mrw_" . $type} = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg);
+            array_push($regionalmrdata['mrw'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg,$pidExtraOutputs)));
+            ${"outputs_mrw_" . $type} = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutMultipleReg,$pidExtraOutputs);
             $RecordSetExtraOutputs = \REDCap::getData($pidExtraOutputs, 'array', null, null, null, null, false, false, false, "[output_year] = '" . $year . "' AND [output_type] = '" . $output_type . "'");
-            array_push($regionalmrdata['outputsAll'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputs)));
+            array_push($regionalmrdata['outputsAll'], count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetExtraOutputs,$pidExtraOutputs)));
 
             $regionalmrdata['mr'][$year] = 0;
             foreach ($conceptsData as $concepts) {

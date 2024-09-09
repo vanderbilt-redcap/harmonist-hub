@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 $wg_type = $_REQUEST['type'];
 $concepts_table = "";
 $RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
-$concepts = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps));
+$concepts = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps,$pidsArray['HARMONIST']));
 if (!empty($concepts)) {
     $concepts_table .= '<table class="table table_requests sortable-theme-bootstrap concepts-table" data-sortable id="sortable_table">'.
         '<colgroup>'.
@@ -48,7 +48,7 @@ if (!empty($concepts)) {
         #Only check if they are final
         $row = "";
         $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $concept['record_id']));
-        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
         if(!empty($sop["status"]) && in_array('1',$sop["status"]) && !empty($sop["pdf_file"])) {
             #SOP Files from Builder SOP project
             $edoc_data = $sop["pdf_file"];

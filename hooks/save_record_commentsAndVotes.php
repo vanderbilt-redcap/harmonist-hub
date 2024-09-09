@@ -27,7 +27,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     }
 
     $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
-    $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
+    $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'])[0];
     if(!empty($request)){
         $all_votes_completed = true;
         foreach ($request['responding_region'] as $instanceId => $resp_region){
