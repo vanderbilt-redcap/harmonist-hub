@@ -148,7 +148,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             <table class="table table_requests sortable-theme-bootstrap admin-table" data-sortable>
                 <?php
                 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,null,null,null,false,false,false,"[approval_y] = '1' AND [detected_complete(1)] = '1'");
-                $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+                $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER']);
                 ArrayFunctions::array_sort_by_column($requests,"due_d");
                 $any_request_found = false;
                 if($requests != "") {
@@ -259,7 +259,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                 <?php
                 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,null,null,null,false,false,false,"[finalize_y] = '1' AND [approval_y] = '1'");
-                $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+                $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER']);
                 ArrayFunctions::array_sort_by_column($requests,"due_d");
                 $any_request_found = false;
                 if($requests != "") {

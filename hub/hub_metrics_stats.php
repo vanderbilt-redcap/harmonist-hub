@@ -13,13 +13,13 @@ foreach ($wg_array as $wg){
 }
 
 $RecordSetConceptsALL = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
-$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsALL,'');
+$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsALL,$pidsArray['HARMONIST'],'');
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[active_y] = 'Y'");
-$active_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts));
+$active_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST']));
 $RecordSetConceptsIC = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[active_y] = 'N' AND [concept_outcome] = '1'");
-$inactive_complete_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsIC));
+$inactive_complete_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsIC,$pidsArray['HARMONIST']));
 $RecordSetConceptsID = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[active_y] = 'N' AND [concept_outcome] = '2'");
-$inactive_discontinued_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsID));
+$inactive_discontinued_concepts = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsID,$pidsArray['HARMONIST']));
 
 $array_wg = array();
 foreach ($wg_link as $wg){
@@ -54,7 +54,7 @@ $conceptsleadregion_labels = array();
 $requests_array_region = array();
 foreach ($regions as $region){
     $RecordSetConceptsLead = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[lead_region] = '".$region['record_id']."'");
-    $lead_region = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsLead);
+    $lead_region = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsLead,$pidsArray['HARMONIST']);
     array_push($conceptsleadregion_values,count($lead_region));
     array_push($conceptsleadregion_labels,$region['region_code']);
     $requests_array_region[$region['record_id']] = 0;
@@ -89,7 +89,7 @@ $conceptswg_labels[''] = 'No WG';
 
 $concept_type = array(1=>'manuscripts',2=>'abstracts');
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
-$conceptsData = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,'');
+$conceptsData = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'],'');
 $regionalmrdata = array();
 foreach ($concept_type as $output_type=>$type){
     ${"regionalmrdata_".$type} = \Vanderbilt\HarmonistHubExternalModule\getRegionalAndMR($pidsArray['EXTRAOUTPUTS'], $conceptsData,$type, $regionalmrdata,$settings['oldestyear_rmr_'.$type],$output_type);
@@ -140,7 +140,7 @@ foreach ($conceptsData as $concepts){
     }
 }
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_final_d] <> ''");
-$sopData = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+$sopData = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
 foreach ($sopData as $sop){
     $sop_year = date("Y",strtotime($sop['sop_final_d']));
     foreach ($concept_years as $year=>$c_year){
@@ -165,7 +165,7 @@ foreach ($concept_years as $year => $concept){
 #Requests
  **/
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,null,null,null,false,false,false,"[approval_y] = '1'");
-$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER']);
 ArrayFunctions::array_sort_by_column($request, 'due_d');
 
 $instance = $current_user['person_region'];

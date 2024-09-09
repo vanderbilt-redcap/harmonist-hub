@@ -10,7 +10,7 @@ $days_expiration = intval($settings['uploadnotification_dur']);
 $extra_days = ' + ' . $days_expiration. " days";
 foreach ($request_DU as $upload) {
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $upload['data_assoc_request']));
-    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
     $message = AllCrons::runCronDataUploadNotification(
         $this,

@@ -63,7 +63,7 @@ class HubData
 		$last_logged_event = \Project::getLastLoggedEvent($project_id, true);
 		if (empty($_SESSION[$this->session_name]['requests']) || ($_SESSION[$this->session_name]['last_logged_event']['requests'] != $last_logged_event)) {
 			$RecordSetRM = \REDCap::getData($project_id, 'array', null);
-			$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM, array('approval_y' => 1));
+			$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM, $project_id, array('approval_y' => 1));
 			ArrayFunctions::array_sort_by_column($requests, 'due_d');
 			$_SESSION[$this->session_name]['requests'] = $requests;
 			$_SESSION[$this->session_name]['last_logged_event']['requests'] = $last_logged_event;

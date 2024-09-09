@@ -2,11 +2,11 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 
 $RecordSetHome = \REDCap::getData($pidsArray['HOME'], 'array', null);
-$homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
+$homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome,$pidsArray['HOME'])[0];
 $homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', $pidsArray['HOME']);
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array');
-$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,array('approval_y' => '1'));
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],array('approval_y' => '1'));
 ArrayFunctions::array_sort_by_column($request, 'due_d');
 $request_type = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
@@ -339,7 +339,7 @@ if(!empty($homepage)) {
     <div class="col-sm-3">
         <?php
         $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
-        $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
+        $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'],array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
         $open_data_calls = 0;
         if(!empty($request_dataCall)) {
             foreach ($request_dataCall as $sop) {

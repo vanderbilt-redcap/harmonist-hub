@@ -13,7 +13,7 @@ if(array_key_exists('isAdmin', $_REQUEST) && ($_REQUEST['isAdmin'] == '1')){
 $today = strtotime(date("Y-m-d"));
 if(strtotime($settings['publications_lastupdate']) < $today || $settings['publications_lastupdate'] == "" || $isAdmin) {
     $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array');
-    $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,"[output_year] <> ''");
+    $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,$pidsArray['HARMONIST'],"[output_year] <> ''");
 
     $extra_outputs = \REDCap::getData($pidsArray['EXTRAOUTPUTS'], 'json-array', null);
     ArrayFunctions::array_sort_by_column($extra_outputs, 'output_year', SORT_DESC);

@@ -7,7 +7,7 @@ $option = $_REQUEST['option'];
 $request_id = $_REQUEST['record'];
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
-$follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0]['follow_activity'];
+$follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'])[0]['follow_activity'];
 $array_userid = explode(',',$follow_activity);
 
 $Proj = new \Project($pidsArray['RMANAGER']);

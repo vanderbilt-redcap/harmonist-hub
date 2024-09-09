@@ -5,10 +5,10 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 $record_id = (int)$_REQUEST['id'];
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
-$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+$sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
-$concept_title = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_title'];
+$concept_title = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_title'];
 
 $date = new \DateTime();
 $sop_created_dt = $date->format('Y-m-d H:i:s');

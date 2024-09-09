@@ -20,7 +20,7 @@ $sections_donuts_title = array(0=>'requests', 1=>'comments',2=>'users by region'
  **/
 #REQUESTS
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,null,null,null,false,false,false,"[approval_y] = 1");
-$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER']);
 ArrayFunctions::array_sort_by_column($request, 'due_d');
 
 $instance = $current_user['person_region'];
@@ -145,7 +145,7 @@ $fileActivity_colors = $module->escape(array(0 => "#5cb85c",1 => "#337ab7",2 => 
 #Statistics Data & Data Call timeline
  **/
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = '1'");
-$request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP);
+$request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
 
 #DATA CALL TIMELINE
 $current_year = date('Y');

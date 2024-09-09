@@ -4,7 +4,7 @@ require_once dirname(dirname(__FILE__))."/projects.php";
 $request_id = htmlentities($_REQUEST['request_id'],ENT_QUOTES);
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
-$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
+$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'])[0];
 
 $Proj = new \Project($pidsArray['RMANAGER']);
 $event_id_RM = $Proj->firstEventId;
@@ -45,11 +45,11 @@ foreach ($region_vote_values as $votes_info){
             $comments[$comments_id][$event_id_comments]['responsecomplete_ts'] = $timestamp;
 
             $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $_REQUEST['region']));
-            $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegion)[0];
+            $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegion,$pidsArray['REGIONS'])[0];
             $comments[$comments_id][$event_id_comments]['response_regioncode'] = $regions['region_code'];
 
             $RecordSetRegionComment = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $region));
-            $regions_comment = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegionComment)[0];
+            $regions_comment = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegionComment,$pidsArray['REGIONS'])[0];
             $comment = "Vote submitted for region (" . $regions_comment['region_code'] . ") by Admin";
             $comments[$comments_id][$event_id_comments]['comments'] = $comment;
             $comments[$comments_id][$event_id_comments]['comments_and_votes_complete'] = "2";

@@ -10,7 +10,7 @@ $concept_sheet = '';
 $concept_title = '';
 if(!empty($assoc_concept)){
     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $assoc_concept));
-    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
     $concept_sheet = $concept['concept_id'];
     $concept_title = $concept['concept_title'];
 }

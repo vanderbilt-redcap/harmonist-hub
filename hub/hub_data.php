@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 
 $RecordSetHome = \REDCap::getData($pidsArray['HOME'], 'array', null);
-$homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome)[0];
+$homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome,$pidsArray['HOME'])[0];
 $homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', $pidsArray['HOME']);
 $expire_date = date('Y-m-d', strtotime(date('Y-m-d') ."-".$settings['recentdataactivity_dur']." days"));
 
@@ -29,7 +29,7 @@ $TBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'json-array', null
 $region_tbl_percent = \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentRegions($TBLCenter, $person_region['region_code'], $settings['pastlastreview_dur']);
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
-$request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
+$request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'],array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
 $open_data_calls = 0;
 if(!empty($request_dataCall)) {
     foreach ($request_dataCall as $sop) {
@@ -268,7 +268,7 @@ if($settings['deactivate_datadown___1'] != "1"){
                                 $name = htmlspecialchars(trim($people['firstname'] . ' ' . $people['lastname']),ENT_QUOTES);
 
                                 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $recent_activity['sop_id']));
-                                $sop = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0]);
+                                $sop = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0]);
                                 $sop_concept_id = $sop['sop_concept_id'];
                                 $sop_name = $sop['sop_name'];
                                 $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $sop_concept_id, "");

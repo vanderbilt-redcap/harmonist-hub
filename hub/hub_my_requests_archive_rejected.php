@@ -66,7 +66,7 @@ $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANA
         <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
             <?php
             $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array',null,null,null,null,false,false,false,"[approval_y] != 1");
-            $request_reject = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM);
+            $request_reject = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER']);
             $commentDetails = $hubData->getCommentDetails();
             if(!empty($request_reject)) {
                 $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");

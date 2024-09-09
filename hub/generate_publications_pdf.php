@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(dirname(__FILE__))."/projects.php";
 
 $RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
-$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps);
+$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps,$pidsArray['HARMONIST']);
 ArrayFunctions::array_sort_by_column($concepts, 'concept_id',SORT_DESC);
 
 $years = array();

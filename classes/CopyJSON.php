@@ -38,7 +38,7 @@ class CopyJSON
         $dataModelPID = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='DATAMODEL'")[0]['project_id'];
 
         $RecordSetDataModel = \REDCap::getData($dataModelPID, 'array');
-        $dataTable = getProjectInfoArrayRepeatingInstruments($RecordSetDataModel);
+        $dataTable = getProjectInfoArrayRepeatingInstruments($RecordSetDataModel, $dataModelPID);
         $dataFormat = $module->getChoiceLabels('data_format', $dataModelPID);
 
         foreach ($dataTable as $data) {
@@ -160,7 +160,7 @@ class CopyJSON
     public static function createProject0AJSON($module, $pidsArray){
         $dataFormat = $module->getChoiceLabels('data_format', $pidsArray['DATAMODEL']);
         $dataTablerecords = \REDCap::getData($pidsArray['DATAMODEL'], 'array');
-        $dataTable = ProjectData::getProjectInfoArrayRepeatingInstruments($dataTablerecords, null, "json");
+        $dataTable = ProjectData::getProjectInfoArrayRepeatingInstruments($dataTablerecords, $pidsArray['DATAMODEL'], null, "json");
         foreach ($dataTable as $data) {
             $jsonVarArray['variables'] = array();
             foreach ($data['variable_order'] as $id => $value) {

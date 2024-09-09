@@ -65,7 +65,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 <?php
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
-$request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
+$request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'],array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
 ArrayFunctions::array_sort_by_column($request_dataCall,'sop_due_d');
 $open_data_calls = "";
 $completed_data_calls = "";

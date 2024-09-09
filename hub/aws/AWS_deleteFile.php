@@ -47,7 +47,7 @@ try {
 
         #EMAIL NOTIFICATION
         $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $request_DU['data_assoc_concept']));
-        $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+        $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
         $concept_id = $concepts['concept_id'];
         $concept_title = $concepts['concept_title'];
 
@@ -60,7 +60,7 @@ try {
         $date_time = $date->format("Y-m-d H:i");
 
         $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $request_DU['data_assoc_request']));
-        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
         $delete_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $user))[0];
         $delete_user_fullname = $delete_user['firstname'] . " " . $delete_user['lastname'];
@@ -124,7 +124,7 @@ try {
             $region_code_uploader = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $person['person_region']),array('region_code'))[0]['region_code'];
 
             $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $request_DU['data_assoc_concept']));
-            $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+            $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id'];
 
             $subject = "Notification of ".$settings['hub_name']." " . $concept_id . " dataset deletion";
             foreach ($downloadersOrdered as $down) {

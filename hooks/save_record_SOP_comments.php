@@ -32,7 +32,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     \Records::addRecordToRecordListCache($project_id, $record,1);
 
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $comment['sop_id']));
-    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
     if(!empty($sop)){
         if($sop['follow_activity'] != ''){
             $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array')[0];

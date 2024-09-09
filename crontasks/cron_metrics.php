@@ -18,39 +18,39 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $arrayMetrics[0]['concepts'] = $total_concepts;
 
     $RecordSetConceptsActive = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[active_y] = 'Y'");
-    $number_concepts_active = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive));
+    $number_concepts_active = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive,$pidsArray['HARMONIST']));
     $arrayMetrics[0]['concepts_a'] = $number_concepts_active;
 
     $RecordSetConceptsCompleted = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[concept_outcome] = 1");
-    $number_concepts_completed = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsCompleted));
+    $number_concepts_completed = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsCompleted,$pidsArray['HARMONIST']));
     $arrayMetrics[0]['concepts_c'] = $number_concepts_completed;
 
     $RecordSetConceptsDiscontinued = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[concept_outcome] = 2");
-    $number_concepts_discontinued = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsDiscontinued));
+    $number_concepts_discontinued = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsDiscontinued,$pidsArray['HARMONIST']));
     $arrayMetrics[0]['concepts_d'] = $number_concepts_discontinued;
 
     /***REQUESTS***/
     $RecordSetRequests = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] != 9");
-    $total_requests = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequests));
+    $total_requests = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequests,$pidsArray['RMANAGER']));
     $arrayMetrics[0]['requests'] = $total_requests;
 
     $RecordSetRequestsApproved = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 1");
-    $number_requests_approved = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsApproved));
+    $number_requests_approved = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsApproved,$pidsArray['RMANAGER']));
     $arrayMetrics[0]['requests_a'] = $number_requests_approved;
 
     $RecordSetRequestsRejected = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 0");
-    $number_requests_rejected = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsRejected));
+    $number_requests_rejected = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsRejected,$pidsArray['RMANAGER']));
     $arrayMetrics[0]['requests_r'] = $number_requests_rejected;
 
     $RecordSetRequestsDeactivated = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 9");
-    $number_requests_deactivated = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsDeactivated));
+    $number_requests_deactivated = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsDeactivated,$pidsArray['RMANAGER']));
     $arrayMetrics[0]['requests_d'] = $number_requests_deactivated;
 
 
     $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null, null, null, null, false, false, false, "[showregion_y] = 1");
 
     #PUBLICATIONS AND ABSTRACTS;
-    $publications = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts);
+    $publications = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST']);
 
     $number_publications = 0;
     $number_publications_year = 0;
@@ -167,7 +167,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
     $arrayMetrics[0]['revisions'] = $revisions;
 
     $RecordRequests = \REDCap::getData($pidsArray['RMANAGER'], 'array');
-    $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordRequests, array('approval_y' => '1'));
+    $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordRequests,$pidsArray['RMANAGER'], array('approval_y' => '1'));
 
     $number_votes_completed_before_duedate = 0;
     $number_votes_completed_after_duedate = 0;
@@ -199,7 +199,7 @@ if($pidsArray['METRICS'] != "" && $pidsArray['PEOPLE'] != "" && $RecordSetUsers 
 
     foreach ($completed_requests_by_all_regions as $completed) {
         $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $completed));
-        $recordRMComplete = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
+        $recordRMComplete = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'])[0];
         if ($recordRMComplete['detected_complete'][1] != "1") {
             $Proj = new \Project($pidsArray['RMANAGER']);
             $event_id_RM = $Proj->firstEventId;

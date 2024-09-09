@@ -118,7 +118,7 @@ class AllCrons
                 $region_code_uploader = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),array('region_code'))[0]['region_code'];
 
                 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-                $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+                $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id'];
 
                 $date = new \DateTime($upload['responsecomplete_ts']);
                 $date->modify("+1 hours");
@@ -207,7 +207,7 @@ class AllCrons
                 $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
                 if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
                     $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array',  array('record_id' => $req['assoc_concept']));
-                    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
+                    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,$pidsArray['HARMONIST'])[0];
                     $concept_sheet = $concept['concept_id'];
                     $concept_title = $concept['concept_title'];
                     $email_req .= ", ".$concept_sheet;
@@ -253,7 +253,7 @@ class AllCrons
                 $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
                 if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
                     $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $req['assoc_concept']));
-                    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
+                    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,$pidsArray['HARMONIST'])[0];
                     $concept_sheet = $concept['concept_id'];
                     $concept_title = $concept['concept_title'];
                     $email_req .= ", ".$concept_sheet;
@@ -279,7 +279,7 @@ class AllCrons
 
         $isEmpty = true;
         $RecordSetRegions = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-        $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegions);
+        $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegions,$pidsArray['SOP']);
         foreach ($sops as $sop){
             if((!array_key_exists('sop_closed_y',$sop) || $sop['sop_closed_y'][0] == "") && $sop['sop_due_d'] != ""){
                 $message['active_data_calls'] = $message['active_data_calls'] + 1;
@@ -296,7 +296,7 @@ class AllCrons
                         $date_color_text = "color:#e74c3c";
                     }
                     $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $sop['sop_concept_id']));
-                    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0];
+                    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,$pidsArray['HARMONIST'])[0];
                     $concept_sheet = $concept['concept_id'];
                     $concept_title = $concept['concept_title'];
 
@@ -392,7 +392,7 @@ class AllCrons
 
 				#EMAIL NOTIFICATION
 				$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-				$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0];
+				$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
 				$concept_id = $concepts['concept_id'];
 				$concept_title = $concepts['concept_title'];
 
@@ -428,7 +428,7 @@ class AllCrons
 					ArrayFunctions::array_sort_by_column($downloadersOrdered, 'name');
 
 					$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-					$concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts)[0]['concept_id'];
+					$concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id'];
 
 					$subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
 					foreach ($downloadersOrdered as $down) {
@@ -468,38 +468,38 @@ class AllCrons
         $arrayMetrics[0]['concepts'] = $total_concepts;
 
         $RecordSetConceptsActive = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[active_y] = 'Y'");
-        $number_concepts_active = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive));
+        $number_concepts_active = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive,$pidsArray['HARMONIST']));
         $arrayMetrics[0]['concepts_a'] = $number_concepts_active;
 
         $RecordSetConceptsCompleted = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[concept_outcome] = 1");
-        $number_concepts_completed = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsCompleted));
+        $number_concepts_completed = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsCompleted,$pidsArray['HARMONIST']));
         $arrayMetrics[0]['concepts_c'] = $number_concepts_completed;
 
         $RecordSetConceptsDiscontinued = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[concept_outcome] = 2");
-        $number_concepts_discontinued = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsDiscontinued));
+        $number_concepts_discontinued = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsDiscontinued,$pidsArray['HARMONIST']));
         $arrayMetrics[0]['concepts_d'] = $number_concepts_discontinued;
 
         /***REQUESTS***/
         $RecordSetRequests = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] != 9");
-        $total_requests = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequests));
+        $total_requests = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequests,$pidsArray['RMANAGER']));
         $arrayMetrics[0]['requests'] = $total_requests;
 
         $RecordSetRequestsApproved = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 1");
-        $number_requests_approved = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsApproved));
+        $number_requests_approved = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsApproved,$pidsArray['RMANAGER']));
         $arrayMetrics[0]['requests_a'] = $number_requests_approved;
 
         $RecordSetRequestsRejected = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 0");
-        $number_requests_rejected = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsRejected));
+        $number_requests_rejected = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsRejected,$pidsArray['RMANAGER']));
         $arrayMetrics[0]['requests_r'] = $number_requests_rejected;
 
         $RecordSetRequestsDeactivated = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 9");
-        $number_requests_deactivated = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsDeactivated));
+        $number_requests_deactivated = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsDeactivated,$pidsArray['RMANAGER']));
         $arrayMetrics[0]['requests_d'] = $number_requests_deactivated;
 
         $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null, null, null, null, false, false, false, "[showregion_y] = 1");
 
         #PUBLICATIONS AND ABSTRACTS;
-        $publications = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts);
+        $publications = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST']);
 
         $number_publications = 0;
         $number_publications_year = 0;
@@ -616,7 +616,7 @@ class AllCrons
         $arrayMetrics[0]['revisions'] = $revisions;
 
         $RecordRequests = \REDCap::getData($pidsArray['RMANAGER'], 'array');
-        $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordRequests, array('approval_y' => '1'));
+        $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordRequests, $pidsArray['RMANAGER'], array('approval_y' => '1'));
 
         $number_votes_completed_before_duedate = 0;
         $number_votes_completed_after_duedate = 0;
@@ -648,7 +648,7 @@ class AllCrons
 
         foreach ($completed_requests_by_all_regions as $completed) {
             $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $completed));
-            $recordRMComplete = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM)[0];
+            $recordRMComplete = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM, $pidsArray['RMANAGER'])[0];
             if ($recordRMComplete['detected_complete'][1] != "1") {
                 $Proj = new \Project($pidsArray['RMANAGER']);
                 $event_id_RM = $Proj->firstEventId;
@@ -856,10 +856,10 @@ class AllCrons
     {
         #Email Data
         $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $uploadData[0]['data_assoc_concept']));
-        $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets)[0]['concept_id'];
+        $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets, $pidsArray['HARMONIST'])[0]['concept_id'];
 
         $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $uploadData[0]['data_assoc_request']));
-        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP, $pidsArray['SOP'])[0];
 
         $uploader_name = getPeopleName($pidsArray['PEOPLE'], $uploadData[0]['data_upload_person'], "");
 
@@ -872,7 +872,7 @@ class AllCrons
             $recordpdf = $record;
 
             $RecordSetUpload = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record));
-            $upload = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetUpload)[0];
+            $upload = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetUpload, $pidsArray['SOP'])[0];
 
             $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recordpdf;
             $message = "<div>Dear administrator,</div><br/>" .

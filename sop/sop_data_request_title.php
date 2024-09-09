@@ -6,7 +6,7 @@ use PhpParser\Lexer\TokenEmulator\EnumTokenEmulator;
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
 
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record));
-$sop = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0]);
+$sop = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0]);
 
 if($sop !="") {
     $sop_status = $module->getChoiceLabels('sop_status', $pidsArray['SOP']);
@@ -54,7 +54,7 @@ if($sop !="") {
         $recordSaveDU = array();
 
         $RecordSetFollowAct = \REDCap::getData($pidsArray['SOP'], 'json-array', array('record_id' => $record_id));
-        $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetFollowAct)[0]['follow_activity'];
+        $follow_activity = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetFollowAct,$pidsArray['SOP'])[0]['follow_activity'];
         $array_userid = explode(',', $follow_activity);
 
         #UNFOLLOW

@@ -10,7 +10,7 @@ $regions = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array',
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
 $RecordSetRequest = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
-$request = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequest)[0]);
+$request = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequest,$pidsArray['RMANAGER'])[0]);
 
 $region_vote_icon_view = $module->escape(array("1" => "fa fa-check", "0" => "fa fa-times", "9" => "fa fa-ban"));
 $region_vote_icon_text = $module->escape(array("1" => "text-approved", "0" => "text-error", "9" => "text-default"));

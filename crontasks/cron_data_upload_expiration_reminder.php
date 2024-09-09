@@ -18,7 +18,7 @@ $extra_days_delete = ' + ' . $days_expiration_delete . " days";
 
 foreach ($request_DU as $upload) {
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $upload['data_assoc_request']));
-    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP)[0];
+    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
     $message = AllCrons::runCronDataUploadExpirationReminder(
         $this,
