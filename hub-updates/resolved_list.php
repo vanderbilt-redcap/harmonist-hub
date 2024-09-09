@@ -129,29 +129,21 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
 
             function changeFormUrlPDF(id){
                 var url = '<?=$module->getUrl('hub-updates/generate_pdf.php')?>';
-                var form_option = "download_pdf_all_resolved";
+                var form_option = "download_PDF_selected";
 
                 var checked_values = [];
-                $("input[name='tablefields[]']:checked").each(function() {
+                $("input[namecheck='tablefields[]']:checked").each(function() {
                     checked_values.push($(this).val());
                 });
 
-                if(id == "download_PDF_sel"){
-                    form_option = "download_PDF_selected";
-                }else{
-                    //Not checked values
-                    $("input[name='tablefields[]']:not(:checked)").each(function() {
+                if(checked_values == ""){
+                    //Not checked values. Submit ALL
+                    $("input[namecheck='tablefields[]']:not(:checked)").each(function() {
                         checked_values.push($(this).val());
                     });
                 }
-                if((id == "download_PDF_sel" && checked_values != "") || id != "download_PDF_sel" ){
-                    $('#'+form_option).attr('action',url+"&constant=PDF&checked_values="+checked_values+"&option=resolved&all");
-                    if(id == "download_PDF_sel"){
-                        $("#"+form_option).submit();
-                    }
-                }else{
-                    $("#dialogWarning").dialog({modal:true, width:300}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");
-                }
+                $('#'+form_option).attr('action',url+"&constant=PDF&checked_values="+checked_values+"&option=resolved&all");
+                $("#"+form_option).submit();
                 return false;
             }
         </script>
