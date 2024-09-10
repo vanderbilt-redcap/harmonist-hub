@@ -81,15 +81,8 @@ foreach ($projects_array as $index=>$name){
         $pidHome = $project_id_new;
     }
     #Add Repeatable projects
-    foreach($projects_array_repeatable[$index] as $repeat_event){
-        if($repeat_event['status'] == 1){
-            $q = $module->query("SELECT b.event_id FROM  redcap_events_arms a LEFT JOIN redcap_events_metadata b ON(a.arm_id = b.arm_id) where a.project_id = ?",[$project_id_new]);
-            while ($row = $q->fetch_assoc()) {
-                $event_id = $row['event_id'];
-                $module->query("INSERT INTO redcap_events_repeat (event_id, form_name, custom_repeat_form_label) VALUES (?, ?, ?)",[$event_id,$repeat_event['instrument'],$repeat_event['params']]);
-            }
-        }
-    }
+    REDCapManagement::addRepeatableInstrument($module, $projects_array_repeatable[$index], $project_id_new);
+
     #Enable External Modules in projects
     if($projects_array_hooks[$index] == '1') {
         #enable current module to activate hooks

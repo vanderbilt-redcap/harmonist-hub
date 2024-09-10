@@ -203,13 +203,16 @@ class HubUpdates{
                 $old = \REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
                 $new = $module->dataDictionaryCSVToMetadataArray($path);
 
-                self::saveFieldData($update_list[$constant], $old, $new, $pidsArray[$constant], $constant, $pidsArray[$constant]);
+                self::saveFieldData($module, $update_list[$constant], $old, $new, $pidsArray[$constant], $constant, $pidsArray[$constant]);
             }
         }
     }
 
-    public static function saveFieldData($update_list, $old, $new, $project_id, $constant, $project_id_map): void
+    public static function saveFieldData($module, $update_list, $old, $new, $project_id, $constant, $project_id_map): void
     {
+        $projects_array = REDCapManagement::getProjectsConstantsArray();
+        $projects_array_repeatable = REDCapManagement::getProjectsRepeatableArray();
+        $projects_array_surveys = REDCapManagement::getProjectsSurveysArray();
         $save_data = $old;
         foreach ($update_list as $status => $statusData) {
             foreach ($statusData as $index => $variable) {
@@ -252,6 +255,12 @@ class HubUpdates{
                         $save_data_aux[$variable] = $new[$variable];
                         #Log Data
                         $data = json_encode($save_data_aux[$variable],JSON_PRETTY_PRINT);
+
+                        #Add Repeatable Instrument and Surveys if any
+                        $index = array_search($constant, $projects_array);
+                        REDCapManagement::addRepeatableInstrument($module, $projects_array_repeatable[$index], $project_id);
+                        REDCapManagement::createSurveys($module, $projects_array_surveys, $index, $project_id);
+                        \REDCap::logEvent("Hub Updates: ADDED New Istrument ".$save_data_aux[$variable]['form_name']."  on  ".$constant." (PID #".$project_id.")", $save_data_aux[$variable]['form_name'], null,null,null,$project_id_map);
                     }
                     $save_data = $save_data_aux;
                     \REDCap::logEvent("Hub Updates: ADDED [".$variable."]  on  ".$constant." (PID #".$project_id.")", $data, null,null,null,$project_id_map);
