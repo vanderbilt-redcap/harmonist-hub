@@ -91,7 +91,8 @@ class REDCapManagement {
                 0=>array('status'=>1,'instrument'=>'participants','params'=>'[person_role], [person_link]'),
                 1=>array('status'=>1,'instrument'=>'admin_update','params'=>'[adminupdate_d]'),
                 2=>array('status'=>1,'instrument'=>'project_update_survey','params'=>'[update_d]'),
-                3=>array('status'=>1,'instrument'=>'outputs','params'=>'[output_year], [output_type], [output_venue]')
+                3=>array('status'=>1,'instrument'=>'outputs','params'=>'[output_year], [output_type], [output_venue]'),
+                4=>array('status'=>1,'instrument'=>'linked_documents','params'=>'')
             ),
             3=>array(0=>array('status'=>1,'instrument'=>'dashboard_voting_status','params'=>'[responding_region]')),
             4=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),
@@ -135,7 +136,8 @@ class REDCapManagement {
                 1=>'participants',
                 2=>'admin_update',
                 3=>'quarterly_update_survey',
-                4=>'outputs'
+                4=>'outputs',
+                5=>'linked_documents'
             ),
             3=>array(
                 0=>'request',
@@ -1095,5 +1097,42 @@ class REDCapManagement {
             )
         );
         return $projects_array_module_emailalerts;
+    }
+
+    public static function addRepeatableInstrument($module, $projects_array_repeatable, $project_id_new): void
+    {
+        foreach($projects_array_repeatable as $repeat_event){
+            if($repeat_event['status'] == 1){
+                $q = $module->query("SELECT b.event_id FROM redcap_events_arms a LEFT JOIN redcap_events_metadata b ON(a.arm_id = b.arm_id) where a.project_id = ?",[$project_id_new]);
+                while ($row = $q->fetch_assoc()) {
+                    $event_id = $row['event_id'];
+                    $q_repeat_data = $module->query("SELECT event_id, form_name, custom_repeat_form_label FROM redcap_events_repeat WHERE event_id = ? AND form_name=?",[$event_id,$repeat_event['instrument']]);
+                    if(empty($q_repeat_data->fetch_assoc())){
+                        $module->query("INSERT INTO redcap_events_repeat (event_id, form_name, custom_repeat_form_label) VALUES (?, ?, ?)",[$event_id,$repeat_event['instrument'],$repeat_event['params']]);
+                    }
+                }
+            }
+        }
+    }
+
+    public static function createSurveys($module, $projects_array_surveys, $index, $project_id_new): void
+    {
+        if(array_key_exists($index,$projects_array_surveys)){
+            $module->query("UPDATE redcap_projects SET surveys_enabled = ? WHERE project_id = ?",["1",$project_id_new]);
+            foreach ($projects_array_surveys[$index] as $survey){
+                $formName = ucwords(str_replace("_"," ",$survey));
+                $q = $module->query("SELECT project_id,form_name,survey_enabled FROM redcap_surveys WHERE project_id = ? AND form_name = ?",[$project_id_new,$survey]);
+                $row = $q->fetch_assoc();
+                if(empty($row)){
+                    $module->query("INSERT INTO redcap_surveys (project_id,form_name,survey_enabled,save_and_return,save_and_return_code_bypass,edit_completed_response,title) VALUES (?,?,?,?,?,?,?)",[$project_id_new,$survey,1,1,1,1,$formName]);
+
+                    $surveyId = db_insert_id();
+                    $hash = $module->generateUniqueRandomSurveyHash();
+                    $Proj = new \Project($project_id_new);
+                    $event_id = $Proj->firstEventId;
+                    $module->query("INSERT INTO redcap_surveys_participants (survey_id,hash,event_id) VALUES (?,?,?)",[$surveyId,$hash,$event_id]);
+                }
+            }
+        }
     }
 }
