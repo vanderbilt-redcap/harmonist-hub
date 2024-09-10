@@ -109,9 +109,9 @@ function getFileLink($module, $project_id, $edoc, $option, $outer="",$secret_key
 
             if($option == ''){
                 $icon = getFaIconFile($row['file_extension']);
-                $file_row = $icon."<a href='".$file_url."' target='_blank'>".$module->escape($row['doc_name']).ProjectData::formatBytes($row['doc_size'])."</a>";
+                $file_row = $icon."<a href='".$file_url."' target='_blank'>".$module->escape($row['doc_name'])." ".ProjectData::formatBytes($row['doc_size'])."</a>";
             }else{
-                $file_row = "<a href='".$file_url."' target='_blank' title='".$module->escape($row['doc_name'])."'>".getFaIconFile($row['file_extension']).ProjectData::formatBytes($row['doc_size'])."</a>";
+                $file_row = "<a href='".$file_url."' target='_blank' title='".$module->escape($row['doc_name'])."'>".getFaIconFile($row['file_extension'])." ".ProjectData::formatBytes($row['doc_size'])."</a>";
             }
         }
     }

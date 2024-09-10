@@ -22,12 +22,12 @@ $oldValues = $printDataAll[1];
         <meta name="author" content="">
         <meta http-equiv="Cache-control" content="public">
         <meta name="theme-color" content="#fff">
-        <link type='text/css' href='<?=$module->getUrl('css/styles_updates.css')?>' rel='stylesheet' media='screen' />
         <script type="text/javascript" src="<?=$module->getUrl('js/functions.js')?>"></script>
         <link type='text/css' href='<?=$module->getUrl('css/sortable-theme-bootstrap.css')?>' rel='stylesheet' media='screen' />
         <link type='text/css' href='<?=$module->getUrl('bootstrap-3.3.7/css/bootstrap.min.css')?>' rel='stylesheet' media='screen' />
         <link type='text/css' href='<?=$module->getUrl('css/style.css')?>' rel='stylesheet' media='screen' />
         <link type='text/css' href='<?=$module->getUrl('css/tabs-steps-menu.css')?>' rel='stylesheet' media='screen' />
+        <link type='text/css' href='<?=$module->getUrl('css/styles_updates.css')?>' rel='stylesheet' media='screen' />
         <script>
             $(document).ready(function () {
                 var printData = <?=json_encode($printData)?>;
@@ -348,9 +348,9 @@ $oldValues = $printDataAll[1];
                 <input type="hidden" id="option" name="option">
             </div>
             <div class="modal-footer" style="padding-top: 30px;">
-                <a onclick="changeFormUrlPDF(this.id);return false;" style="color:white;" class="btn btn-primary" id='btnUploadPDF'><em class="fa fa-solid fa-upload"></em> File Repository</a>
-                <a onclick="changeFormUrlPDF(this.id);this.closest('form').submit();return false;" style="color:white;" class="btn btn-primary" id='btnDownloadPDF'><em class="fa fa-solid fa-file-pdf"></em> Download</a>
-                <a onclick="changeFormUrlPDF(this.id);" style="color:white;" class="btn btn-success" id='btnConfirm' name="btnConfirm">Continue</a>
+                <a onclick="changeFormUrlPDF(this.id);return false;" class="btn btn-primary" id='btnUploadPDF'><em class="fa fa-solid fa-upload"></em> File Repository</a>
+                <a onclick="changeFormUrlPDF(this.id);this.closest('form').submit();return false;" class="btn btn-primary" id='btnDownloadPDF'><em class="fa fa-solid fa-file-pdf"></em> Download</a>
+                <a onclick="changeFormUrlPDF(this.id);" class="btn btn-success" id='btnConfirm' name="btnConfirm">Continue</a>
             </div>
         </form>
     </div>
