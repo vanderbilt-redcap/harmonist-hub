@@ -1,8 +1,9 @@
 /**RESET REDCAP LINK STYLES **/
-A:link { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;; font-size: 13px; color: #000066; text-decoration: none; text-align:left; }
-A:visited { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;; font-size: 13px; color: #000066; text-decoration: none; text-align:left; }
-A:active { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;; font-size: 13px; color: #000066; text-decoration: none; text-align:left; }
-A:hover { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;; font-size: 13px;color: #F00000;text-decoration: underline;text-align:left;}
+A.btn, A.btn:hover{ font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; color: #ffffff; text-decoration: none; text-align:left; }
+A:link { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; color: #000066; text-decoration: none; text-align:left; }
+A:visited { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; color: #000066; text-decoration: none; text-align:left; }
+A:active { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; color: #000066; text-decoration: none; text-align:left; }
+A:hover { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px;color: #F00000;text-decoration: underline;text-align:left;}
 /****/
 
 .title{
@@ -47,9 +48,6 @@ tr.rowSelected td{
 .resolved{
     background-color: #dcdcdc;
     border-color:#adacac;
-}
-a.btn:hover{
-    font-size: 14px;
 }
 .btn-secondary:hover{
     color: #fff;
