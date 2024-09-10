@@ -257,7 +257,7 @@ class HubUpdates{
                         $data = json_encode($save_data_aux[$variable],JSON_PRETTY_PRINT);
 
                         #Add Repeatable Instrument and Surveys if any
-                        $index = $key = array_search($constant, $projects_array);
+                        $index = array_search($constant, $projects_array);
                         REDCapManagement::addRepeatableInstrument($module, $projects_array_repeatable[$index], $project_id);
                         REDCapManagement::createSurveys($module, $projects_array_surveys, $index, $project_id);
                         \REDCap::logEvent("Hub Updates: ADDED New Istrument ".$save_data_aux[$variable]['form_name']."  on  ".$constant." (PID #".$project_id.")", $save_data_aux[$variable]['form_name'], null,null,null,$project_id_map);
