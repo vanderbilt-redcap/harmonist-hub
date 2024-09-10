@@ -94,11 +94,10 @@ class ProjectData
         $default_value = array();
         if(is_array($data_dictionary_settings) && !empty($data_dictionary_settings)) {
             foreach ($data_dictionary_settings as $row) {
-                if ($row['field_annotation'] != "" && strpos($row['field_annotation'], "@DEFAULT") !== false) {
-                    $text = trim(explode("@DEFAULT=", $row['field_annotation'])[1], '\'"');;
+                if ($row['field_annotation'] !== "" && strpos($row['field_annotation'], "@DEFAULT") !== false) {
+                    $text = trim(explode("@DEFAULT=", $row['field_annotation'])[1], '\'"');
                     $default_value[$project_id][$row['field_name']] = $text;
                 }
-
             }
         }
         $this->default_value = $default_value;
