@@ -203,7 +203,7 @@ $html_pdf = '<!DOCTYPE html>
     <head>
         '.$page_styles. '
     </head>
-    <body style="font-family:\'Calibri\';font-size:10pt;">'.$page_num.'
+    <body style="font-family:\'Calibri\';font-size:10pt;width:100%;">'.$page_num.'
     <div class="footer"><span class="page-number">Page </span></div>';
     $pages = 0;
     foreach ($allUpdates as $constant => $project_data) {
