@@ -244,19 +244,19 @@ $html_pdf = '<!DOCTYPE html>
                     foreach ($typeData as $variable => $data) {
                         $html_pdf .= '<tr>
                                     <td>' . HubUpdates::getIcon($status, "pdf") . '</td>
-                                    <td>' . HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_name') . '</td>
+                                    <td>' . HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_name', 'pdf') . '</td>
                                     <td>';
 
                         if ($status == HubUpdates::CHANGED) {
-                            $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, 'Section Header:', 'section_header');
+                            $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, 'Section Header:', 'section_header', 'pdf');
                             $col .= HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_label');
-                            $col .= HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', 'field_note');
+                            $col .= HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', 'field_note', 'pdf');
                         } else {
-                            $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', '');
+                            $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', '', 'pdf');
                         }
                         $html_pdf .= $col;
 
-                        $html_pdf .= '</td><td class="col-sm-4">';
+                        $html_pdf .= '</td><td>';
                         if ($status == HubUpdates::CHANGED) {
                             $html_pdf .= HubUpdates::getFieldAttributesChanged($data, $oldValues[$constant][$variable]);
                         } else {
