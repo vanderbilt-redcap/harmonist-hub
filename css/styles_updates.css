@@ -1,9 +1,10 @@
 /**RESET REDCAP LINK STYLES **/
-A.btn, A.btn:hover{ font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; color: #ffffff; text-decoration: none; text-align:left; }
-A:link { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; color: #000066; text-decoration: none; text-align:left; }
-A:visited { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; color: #000066; text-decoration: none; text-align:left; }
-A:active { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; color: #000066; text-decoration: none; text-align:left; }
-A:hover { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px;color: #F00000;text-decoration: underline;text-align:left;}
+A.btn, A.btn:hover{ font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #ffffff; text-decoration: none; text-align:left; }
+A:link { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #000066; text-decoration: none; text-align:left; }
+A:visited { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #000066; text-decoration: none; text-align:left; }
+A:active { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #000066; text-decoration: none; text-align:left; }
+A:hover { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px;color: #F00000;text-decoration: underline;text-align:left;}
+A.btn:hover {outline: 1px solid #4ca2ff;}
 /****/
 
 .title{
