@@ -385,7 +385,7 @@ function checkStep(step){
             $('#save_continue_'+step).prop('disabled', true);
         }
     }else if(step == '3'){
-        if($('#sop_datacontact').val() != "Select Name" && $('#sop_due_d').val() !== "" && $('#sop_due_d').val() !== "0" && $('#sop_due_d').val().length == 10 && (($('#sortable2 > li:visible').length !== "" && ($('#sortable2 > li:visible').length > 0 || $( "#sortable2" ).sortable( "toArray" ).length > 0)) || $("#sop_downloaders_dummy").is(':checked'))){
+        if($('#sop_datacontact').val() != "Select Name" && $('#sop_due_d').val() !== "" && $('#sop_due_d').val() !== "0" && $('#sop_due_d').val().length == 10 && (($('#sortable2 > li:visible').length !== "" && ($('#sortable2 > li:visible').length > 0 || $( "#sortable2" ).sortable( "toArray" ).length > 0)) || $("#sop_downloaders_dummy___1").is(':checked'))){
             $('#save_continue_'+step).prop('disabled', false);
         }else{
             $('#save_continue_'+step).prop('disabled', true);
