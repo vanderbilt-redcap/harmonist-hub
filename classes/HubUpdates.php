@@ -391,31 +391,35 @@ class HubUpdates{
         return $icon_legend;
     }
 
-    public static function getFieldName($new, $old, $status, $var): string
+    public static function getFieldName($new, $old, $status, $var, $option = ""): string
     {
-
        if($status == self::CHANGED) {
            if ($new[$var] !== $old[$var]) {
                $color = "class='mb-2 bg-warning';";
-               $col = '<div $color id="bg-warning">' . self::checkTagsExistAndAreClosed($new[$var]) . '</div>';
+               $col = '<div $color id="bg-warning">' . self::checkTagsExistAndAreClosed($new[$var],) . '</div>';
                $col .= '<div class="text-muted" style="text-decoration: line-through;">' . self::checkTagsExistAndAreClosed($old[$var]) . '</div>';
            } else {
                $col = "<div class='mb-2'>" . self::checkTagsExistAndAreClosed($old[$var]) . "</div>";
            }
-           $col .= self::getFieldLabel($new, $old, self::CHANGED,'Show the field ONLY if: ','branching_logic');
+           $col .= self::getFieldLabel($new, $old, self::CHANGED,'Show the field ONLY if: ','branching_logic', $option);
        }else {
-           $col = $new['field_name'];
+           $col = self::checkTextLengthAndSplit($option, $new['field_name']);
+
            if ($new['branching_logic'] != "") {
                $col .= "<small class='d-flex' style='font-size:12px;'>Show the field ONLY if: " . filter_tags($new['branching_logic']) . "</small>";
            }
        }
-        return $col;
+       return $col;
 
     }
-    public static function getFieldLabel($new, $old, $status, $string, $var): string
+    public static function getFieldLabel($new, $old, $status, $string, $var, $option = ''): string
     {
         if($status == self::CHANGED) {
             $col = "";
+            if($option == "pdf"){
+                $col .= "<div style='width: 70%'>";
+            }
+
             if ($new[$var] !== $old[$var]) {
                 if ($old == "") {
                     $color = "class='mb-2 text-light p-1' style='background-color:#5d9451; font-size:12px;';";
@@ -438,7 +442,12 @@ class HubUpdates{
                 $col .= "<div class='mb-2' style='font-size:12px;'>Section Header: " . filter_tags($new['section_header']) . "</div>";
             }
 
-            $col .= $new['field_label'];
+            if($option == "pdf"){
+                $col .= strip_tags($new['field_label']);
+            }else{
+                $col .= $new['field_label'];
+            }
+
 
             if ($new['field_note'] != "") {
                 $col .= "<small class='d-flex'>Field Note: " . filter_tags($new['field_note']) . "</small>";
@@ -764,17 +773,27 @@ class HubUpdates{
         $len_opened = count($openedtags);
 
         $tagsClosed = true;
-        foreach ($openedtags as $index => $tagO){
-            if(!in_array($tagO,$closedtags)){
+        foreach ($openedtags as $index => $tagO) {
+            if (!in_array($tagO, $closedtags)) {
                 $tagsClosed = false;
             }
         }
 
-        if($tagsClosed){
+        if ($tagsClosed) {
             return filter_tags($html);
         }
 
         return htmlspecialchars($html,ENT_QUOTES);
+    }
+
+    public static function checkTextLengthAndSplit($option, $text){
+        if($option == "pdf" && strlen($text) > 15){
+            $field_name_length = strlen($text);
+            $field_name_part1 = substr($text, 0, 15);
+            $field_name_part2 = substr($text, 15, $field_name_length);
+            $text = $field_name_part1."<br>".$field_name_part2;
+        }
+        return $text;
     }
 }
 ?>

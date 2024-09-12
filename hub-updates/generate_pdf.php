@@ -203,7 +203,7 @@ $html_pdf = '<!DOCTYPE html>
     <head>
         '.$page_styles. '
     </head>
-    <body style="font-family:\'Calibri\';font-size:10pt;">'.$page_num.'
+    <body style="font-family:\'Calibri\';font-size:10pt;width:100%;">'.$page_num.'
     <div class="footer"><span class="page-number">Page </span></div>';
     $pages = 0;
     foreach ($allUpdates as $constant => $project_data) {
@@ -244,19 +244,19 @@ $html_pdf = '<!DOCTYPE html>
                     foreach ($typeData as $variable => $data) {
                         $html_pdf .= '<tr>
                                     <td>' . HubUpdates::getIcon($status, "pdf") . '</td>
-                                    <td>' . HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_name') . '</td>
+                                    <td>' . HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_name', 'pdf') . '</td>
                                     <td>';
 
                         if ($status == HubUpdates::CHANGED) {
-                            $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, 'Section Header:', 'section_header');
+                            $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, 'Section Header:', 'section_header', 'pdf');
                             $col .= HubUpdates::getFieldName($data, $oldValues[$constant][$variable], $status, 'field_label');
-                            $col .= HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', 'field_note');
+                            $col .= HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', 'field_note', 'pdf');
                         } else {
-                            $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', '');
+                            $col = HubUpdates::getFieldLabel($data, $oldValues[$constant][$variable], $status, '', '', 'pdf');
                         }
                         $html_pdf .= $col;
 
-                        $html_pdf .= '</td><td class="col-sm-4">';
+                        $html_pdf .= '</td><td>';
                         if ($status == HubUpdates::CHANGED) {
                             $html_pdf .= HubUpdates::getFieldAttributesChanged($data, $oldValues[$constant][$variable]);
                         } else {
