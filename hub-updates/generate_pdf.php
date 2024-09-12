@@ -265,7 +265,7 @@ $html_pdf = '<!DOCTYPE html>
                         $html_pdf .= '</td>';
                         if($option == 'resolved' && array_key_exists('all',$_REQUEST)) {
                             $user = "";
-                            if (array_key_exists('user', $hub_updates_resolved_list_last_updated[$constant][$variable])) {
+                            if (is_array($hub_updates_resolved_list_last_updated[$constant][$variable]) && array_key_exists('user', $hub_updates_resolved_list_last_updated[$constant][$variable])) {
                                 $user = " by " . $hub_updates_resolved_list_last_updated[$constant][$variable]['user'];
                             }
                             $html_pdf .= '<td>' . $hub_updates_resolved_list_last_updated[$constant][$variable]['date'] . $user . '</td>';
