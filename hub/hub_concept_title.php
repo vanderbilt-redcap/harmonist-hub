@@ -608,7 +608,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
         <div id="collapse_publications" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="abstracts">
                 <?php
-                if(!empty($concept['output_type'])){
+                if(!empty($concept['doc_title'])){
                     $header = '<colgroup>
                         <col>
                         <col>
