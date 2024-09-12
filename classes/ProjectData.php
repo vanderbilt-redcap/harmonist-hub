@@ -207,5 +207,30 @@ class ProjectData
 
         return "<span style='font-style:italic;font-size:11px;'>(".round($bytes, $precision) ." ". $units[$pow].")</span>";
     }
+
+    public static function createSurveyTheme($module){
+        $theme_attr_json_default = json_encode(array(
+            'theme_text_buttons'=>'#000000', 'theme_bg_page'=>'#1A1A1A',
+            'theme_text_title'=>'#000000', 'theme_bg_title'=>'#FFFFFF',
+            'theme_text_sectionheader'=>'#000000', 'theme_bg_sectionheader'=>'#BCCFE8',
+            'theme_text_question'=>'#000000', 'theme_bg_question'=>'#F3F3F3'
+        ));
+        $theme_name = "";
+
+//        $sql = "insert into redcap_surveys_themes (theme_name, ui_id,
+//        theme_bg_page, theme_text_buttons, theme_text_title, theme_bg_title,
+//        theme_text_question, theme_bg_question, theme_text_sectionheader, theme_bg_sectionheader)
+//        values ('".db_escape($theme_name)."', (select ui_id from redcap_user_information where username = '".db_escape(USERID)."' limit 1),
+//        " . checkNull($theme_bg_page) . ", " . checkNull($theme_text_buttons) . ",
+//        " . checkNull($theme_text_title) . ", " . checkNull($theme_bg_title) . ", " . checkNull($theme_text_question) . ",
+//        " . checkNull($theme_bg_question) . ", " . checkNull($theme_text_sectionheader) . ", " . checkNull($theme_bg_sectionheader) .
+//            ")";
+
+    }
+
+    public static function getTheme($module, $project_id){
+        // Get main attributes
+        $sql = "UPDATE redcap_surveys SET theme = ? WHERE project_id = ? AND survey_id = ?";
+    }
 }
 ?>

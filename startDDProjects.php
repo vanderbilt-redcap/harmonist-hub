@@ -151,6 +151,9 @@ foreach ($projects_array as $index=>$name){
                 $record++;
             }
         }
+
+        //Add the themes
+        ProjectData::createSurveyTheme($module);
     }
 }
 
