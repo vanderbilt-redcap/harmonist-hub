@@ -253,7 +253,6 @@ class ProjectData
             array_push($surveys_without_theme, $row_survey['form_name']);
             $module->query("UPDATE redcap_surveys SET theme = ? WHERE survey_id = ?",[$theme_id, $row_survey['survey_id']]);
         }
-        $data = "";
         if(!empty($surveys_without_theme)){
             $data = json_encode($surveys_without_theme,JSON_PRETTY_PRINT);
             \REDCap::logEvent("Hub Updates: ".self::HUB_SURVEY_THEME_NAME." (".$theme_id.")  added on  ".$constant." (PID #".$pidsArray[$constant].")", $data, null,null,null,$pidsArray[$constant]);
