@@ -210,13 +210,55 @@ class ProjectData
     }
 
     public static function createSurveyTheme($module){
-        $q = $module->query("INSERT INTO redcap_surveys_themes 
-            (theme_name, ui_id,theme_bg_page, theme_text_buttons, theme_text_title, theme_bg_title,
-        theme_text_question, theme_bg_question, theme_text_sectionheader, theme_bg_sectionheader) VALUES(?,?,?,?,?,?,?,?,?,?)",
-            [self::HUB_SURVEY_THEME_NAME,null,"eaeaea","000000","000000","ffffff",
-                "000000","ffffff","000000","c2e4fc"]);
-        $theme_id = db_insert_id();
+        $q = $module->query("SELECT theme_id FROM redcap_surveys_themes WHERE theme_name = ?", [self::HUB_SURVEY_THEME_NAME]);
+        if($row = $q->fetch_assoc()){
+            return $row['theme_id'];
+        }else {
+            $q = $module->query("INSERT INTO redcap_surveys_themes 
+                                (theme_name, ui_id,theme_bg_page, theme_text_buttons, theme_text_title, theme_bg_title,
+                                theme_text_question, theme_bg_question, theme_text_sectionheader, theme_bg_sectionheader) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                                [self::HUB_SURVEY_THEME_NAME, null, "eaeaea", "000000", "000000", "ffffff",
+                                    "000000", "ffffff", "000000", "c2e4fc"]);
+            $theme_id = db_insert_id();
+        }
         return $theme_id;
+    }
+
+    public static function checkIfThemeExists($module, $pidsArray){
+        $q = $module->query("SELECT theme_id FROM redcap_surveys_themes WHERE theme_name = ?", [self::HUB_SURVEY_THEME_NAME]);
+        if($row = $q->fetch_assoc()){
+           if($row['theme_id'] !== ""){
+               foreach ($pidsArray as $constant => $project_id) {
+                   $q_survey = $module->query("SELECT survey_id, form_name FROM redcap_surveys WHERE project_id = ? AND (theme <> ? OR theme is NULL)", [$project_id, $row['theme_id']]);
+                   if($row_survey = $q_survey->fetch_assoc()){
+                       return false;
+                   }
+               }
+               return true;
+           }
+        }
+        return false;
+    }
+
+    public static function updateThemeOnSurveys($module, $constant, $pidsArray, $theme_id=""){
+        if($theme_id === "") {
+            $q = $module->query("SELECT theme_id FROM redcap_surveys_themes WHERE theme_name = ?", [self::HUB_SURVEY_THEME_NAME]);
+            if ($row = $q->fetch_assoc()) {
+                $theme_id = $row['theme_id'];
+            }
+        }
+        $surveys_without_theme = [];
+        $q_survey = $module->query("SELECT survey_id, form_name FROM redcap_surveys WHERE project_id = ? AND (theme <> ? OR theme is NULL)", [$pidsArray[$constant],$theme_id]);
+        while($row_survey = $q_survey->fetch_assoc()){
+            array_push($surveys_without_theme, $row_survey['form_name']);
+            $module->query("UPDATE redcap_surveys SET theme = ? WHERE survey_id = ?",[$theme_id, $row_survey['survey_id']]);
+        }
+        $data = "";
+        if(!empty($surveys_without_theme)){
+            $data = json_encode($surveys_without_theme,JSON_PRETTY_PRINT);
+            \REDCap::logEvent("Hub Updates: ".self::HUB_SURVEY_THEME_NAME." (".$theme_id.")  added on  ".$constant." (PID #".$pidsArray[$constant].")", $data, null,null,null,$pidsArray[$constant]);
+            \REDCap::logEvent("Hub Updates: ".self::HUB_SURVEY_THEME_NAME." (".$theme_id.") added on  ".$constant." (PID #".$pidsArray[$constant].")", $data, null,null,null,$pidsArray['PROJECTS']);
+        }
     }
 }
 ?>
