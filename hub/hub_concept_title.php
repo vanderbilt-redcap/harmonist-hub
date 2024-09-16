@@ -452,7 +452,8 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <a data-toggle="collapse" href="#collapse_publications">Abstracts & Publications</a>
                 <?php
                 $harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
-                if($isAdmin || $concept['contact_link'] == $current_user['record_id'] || $concept['contact2_link'] == $current_user['record_id'] || $harmonist_perm){
+                $can_edit_pub = UserEditConditions::canUserEditPublication($isAdmin, $current_user['record_id'], $concept['contact_link'], $concept['contact_link'], $harmonist_perm);
+                if($can_edit_pub){
                     $output_link = $module->getSurveyLinkNewInstance("outputs", $record, $pidsArray['HARMONIST']);
                 ?>
                 <a href="#" onclick="$('#hub_new_output').modal('show');" style="float: right;padding-right: 30px;color: #337ab7;cursor: pointer"><em class="fa fa-plus"></em> New Output</a>
@@ -536,7 +537,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                         }
                         echo '<td>'.$file.'</td>';
 
-                        if($isAdmin){
+                        if($can_edit_pub){
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "", $index);
                             $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
                             echo '<td><button class="btn btn-default open-codesModal" onclick="$(\'#edit_title\').html(\'Edit Publication\');editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button></td>';
@@ -577,7 +578,8 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <a data-toggle="collapse" href="#collapse_publications">Linked Documents</a>
                 <?php
                 $harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
-                if($isAdmin || $concept['contact_link'] == $current_user['record_id'] || $concept['contact2_link'] == $current_user['record_id'] || $harmonist_perm){
+                $can_edit_linked_doc = UserEditConditions::canUserEditPublication($isAdmin, $current_user['record_id'], $concept['contact_link'], $concept['contact_link'], $harmonist_perm);
+                if($can_edit_linked_doc){
                     $linked_doc_link = $module->getSurveyLinkNewInstance("linked_documents", $record, $pidsArray['HARMONIST']);
                     ?>
                     <a href="#" onclick="$('#hub_new_linked_doc').modal('show');" style="float: right;padding-right: 30px;color: #337ab7;cursor: pointer"><em class="fa fa-plus"></em> New File</a>
@@ -642,7 +644,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                             }
                             echo '<td width="5%">'.$file.'</td>';
 
-                            if($isAdmin){
+                            if($can_edit_linked_doc){
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "linked_documents", "", $linked_doc_instance);
                                 $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
                                 echo '<td><button class="btn btn-default open-codesModal" onclick="$(\'#edit_title\').html(\'Edit Linked Document\');editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button></td>';
