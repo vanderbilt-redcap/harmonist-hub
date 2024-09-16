@@ -452,7 +452,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <a data-toggle="collapse" href="#collapse_publications">Abstracts & Publications</a>
                 <?php
                 $harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
-                $can_edit_pub = UserEditConditions::canUserEditPublication($isAdmin, $current_user['record_id'], $concept['contact_link'], $concept['contact_link'], $harmonist_perm);
+                $can_edit_pub = UserEditConditions::canUserEditData($isAdmin, $current_user['record_id'], $concept['contact_link'], $concept['contact_link'], $harmonist_perm);
                 if($can_edit_pub){
                     $output_link = $module->getSurveyLinkNewInstance("outputs", $record, $pidsArray['HARMONIST']);
                 ?>
@@ -578,7 +578,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                 <a data-toggle="collapse" href="#collapse_publications">Linked Documents</a>
                 <?php
                 $harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
-                $can_edit_linked_doc = UserEditConditions::canUserEditPublication($isAdmin, $current_user['record_id'], $concept['contact_link'], $concept['contact_link'], $harmonist_perm);
+                $can_edit_linked_doc = UserEditConditions::canUserEditData($isAdmin, $current_user['record_id'], $concept['contact_link'], $concept['contact_link'], $harmonist_perm);
                 if($can_edit_linked_doc){
                     $linked_doc_link = $module->getSurveyLinkNewInstance("linked_documents", $record, $pidsArray['HARMONIST']);
                     ?>
