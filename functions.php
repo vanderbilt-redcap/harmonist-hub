@@ -144,6 +144,13 @@ function getFaIconFile($file_extension){
         $icon = "fa-file-powerpoint-o";
     }else if(strtolower($file_extension) == '.xlsx' || strtolower($file_extension) == 'xlsx'){
         $icon = "fa-file-excel-o";
+    }else if(strtolower($file_extension) == '.png' || strtolower($file_extension) == 'png' ||
+        strtolower($file_extension) == '.jpeg' || strtolower($file_extension) == 'jpeg' ||
+        strtolower($file_extension) == '.gif' || strtolower($file_extension) == 'gif' ||
+        strtolower($file_extension) == '.tiff' || strtolower($file_extension) == 'tiff' ||
+        strtolower($file_extension) == '.bmp' || strtolower($file_extension) == 'bmp' ||
+        strtolower($file_extension) == '.jpg' || strtolower($file_extension) == 'jpg'){
+        $icon = "fa-file-image-o";
     }
 
     return "<i class='fa ".$icon."' aria-hidden='true'></i> ";
