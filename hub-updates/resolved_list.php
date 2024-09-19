@@ -74,24 +74,6 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                 });
             });
 
-            function selectData(pid){
-                var checked = $('#'+pid).is(':checked');
-                if (!checked) {
-                    $('#' + pid).prop("checked", true);
-                    $('[row="' + pid + '"]').addClass('rowSelected');
-                    if($('.rowSelected').length >= ($('[name=\'chkAll_resolved\']').length - 1)){
-                        $('#ckb_resolved').prop("checked", true);
-                    }
-                } else {
-                    $('#' + pid).prop("checked", false);
-                    $('#ckb_resolved').prop("checked", false);
-                    $('[row="' + pid + '"]').removeClass('rowSelected');
-                }
-
-                //Update Projects Counter
-                updateCounterLabel();
-            }
-
             function changeFormUrlPDF(id){
                 var url = '<?=$module->getUrl('hub-updates/generate_pdf.php')?>';
                 var form_option = "download_PDF_selected";
@@ -180,10 +162,10 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                         <h3 class="panel-title">
                             <table class="table table-striped table-hover resolved-heading" style="margin-bottom:5px; border: 1px solid #dee2e6;font-size: 13px;" data-sortable>
                                 <tr row="<?=$id?>" value="<?=$id?>" name="chkAll_parent_resolved">
-                                    <td onclick="javascript:selectData('<?= $id; ?>')" style="width: 5%;">
-                                        <input value="<?=$id?>" id="<?=$id?>" onclick="selectData('<?= $id; ?>');" class='auto-submit' type="checkbox" name="chkAll_resolved" nameCheck='tablefields[]'>
+                                    <td onclick="javascript:selectData('<?= $id; ?>','resolved')" style="width: 5%;">
+                                        <input value="<?=$id?>" id="<?=$id?>" onclick="selectData('<?= $id; ?>','resolved');" class='auto-submit' type="checkbox" name="chkAll_resolved" nameCheck='tablefields[]'>
                                     </td>
-                                    <td onclick="javascript:selectData('<?= $id; ?>')">
+                                    <td onclick="javascript:selectData('<?= $id; ?>','resolved')">
                                         <?=$printProject;?>
                                     </td>
                                     <td>

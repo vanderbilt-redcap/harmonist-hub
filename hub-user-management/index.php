@@ -116,7 +116,7 @@ $hub_name = $setting['hub_name']." Hub";
                                 <table class="table table-striped table-hover" style="margin-bottom:0px; border: 1px solid #dee2e6;font-size: 13px;" data-sortable>
                                     <tr row="<?=$pidsArray[$constant]?>" value="<?=$pidsArray[$constant]?>" name="chkAll_parent_user">
                                         <td style="width: 5%;">
-                                            <input value="<?=$pidsArray[$constant]?>" id="<?=$pidsArray[$constant]?>" pid="<?=$id?>" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
+                                            <input value="<?=$pidsArray[$constant]?>" id="<?=$pidsArray[$constant]?>" pid="<?=$id?>" onclick="selectData('<?= $pidsArray[$constant]; ?>','user');" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
                                         </td>
                                         <td>
                                             <a data-toggle="collapse" href="#collapse<?=$constant?>" id="<?='table_'.$constant?>" class="label label-as-badge-square ">
@@ -149,7 +149,7 @@ $hub_name = $setting['hub_name']." Hub";
 <div id="addUsersForm" title="Add Users" style="display:none;">
     <form method="POST" action="<?=json_encode($module->getUrl('hub-user-management/user_management_AJAX.php'))?>">
         <div class="modal-body">
-            <div class="alert alert-success col-md-12" style="display: none" id="alert_text">Select at least one user to add to the projects.</div>
+            <div class="alert alert-danger col-md-12" style="display: none" id="alert_text">Select at least one user to add to the projects.</div>
             <div>Add user names separated by commas or select them from the selector.</div>
             <div>Only users added on the <strong><?=$hub_name?>:Parent Project (MAP)</strong> can be added to other projects.</div>
             <br/>

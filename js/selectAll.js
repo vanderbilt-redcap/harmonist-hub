@@ -32,3 +32,21 @@ function updateCounterLabel(){
         $("#pid_total").text("0");
     }
 }
+
+function selectData(pid, option){
+    var checked = $('#'+pid).is(':checked');
+    if ((!checked && option != 'user') || (checked && option == 'user')) {
+        $('#' + pid).prop("checked", true);
+        $('[row="' + pid + '"]').addClass('rowSelected');
+        if($('.rowSelected').length >= ($('[name=\'chkAll_'+option+'\']').length - 1)){
+            $('#ckb_'+option).prop("checked", true);
+        }
+    } else if ((checked && option != 'user') || (!checked && option == 'user')) {
+        $('#' + pid).prop("checked", false);
+        $('#ckb_'+option).prop("checked", false);
+        $('[row="' + pid + '"]').removeClass('rowSelected');
+    }
+
+    //Update Projects Counter
+    updateCounterLabel();
+}
