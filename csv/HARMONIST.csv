@@ -78,7 +78,7 @@ output_url,outputs,,text,"Web link (URL) to resource
 dochidden_y,linked_documents,,checkbox,"Hide File on Concept page","1,",,,,,,,,,,,," @HIDDEN-SURVEY"
 docupload_dt,linked_documents,,text,"Upload Datetime",,,datetime_ymd,,,,,,,,,," @READONLY-SURVEY @NOW-SERVER"
 doc_title,linked_documents,,text,"Short Title
-<div style=""font-weight:lighter;font-style:italic"">Provide a <u>short</u> title for the document. This will be the clickable download link on the Hub interface.</div>",,,,,,,,,LV,,,,
+<div style=""font-weight:lighter;font-style:italic"">Provide a <u>short</u> title for the document.</div>",,,,,,,,,LV,,,,
 doc_description,linked_documents,,notes,"Description
 <div style=""font-weight:lighter;font-style:italic"">(optional) Provide a brief description of the document. This text will be displayed on the Hub interface.</div>",,,,,,,,,LV,,,,
 doc_file,linked_documents,,file,"File Upload
