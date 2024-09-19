@@ -129,10 +129,13 @@ foreach ($projects_array as $index=>$name){
 
     #We create the surveys
     if(array_key_exists($index,$projects_array_surveys)){
+        #Create Hub theme
+        $theme_id = ProjectData::getThemeId($module);
+
         $module->query("UPDATE redcap_projects SET surveys_enabled = ? WHERE project_id = ?",["1",$project_id_new]);
         foreach ($projects_array_surveys[$index] as $survey){
             $formName = ucwords(str_replace("_"," ",$survey));
-            $module->query("INSERT INTO redcap_surveys (project_id,form_name,survey_enabled,save_and_return,save_and_return_code_bypass,edit_completed_response,title) VALUES (?,?,?,?,?,?,?)",[$project_id_new,$survey,1,1,1,1,$formName]);
+            $module->query("INSERT INTO redcap_surveys (project_id,form_name,survey_enabled,save_and_return,save_and_return_code_bypass,edit_completed_response,title,theme) VALUES (?,?,?,?,?,?,?)",[$project_id_new,$survey,1,1,1,1,$formName,$theme_id]);
             $surveyId = db_insert_id();
             $hash = $module->generateUniqueRandomSurveyHash();
             $Proj = new \Project($project_id_new);

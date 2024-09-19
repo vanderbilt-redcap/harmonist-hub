@@ -10,7 +10,6 @@ $hub_name = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', ('hub_name'))
 $printDataAll = HubUpdates::getPrintData($module, $pidsArray, $allUpdates);
 $printData = $printDataAll[0];
 $oldValues = $printDataAll[1];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -182,6 +181,18 @@ $oldValues = $printDataAll[1];
     </head>
     <body>
     <?php
+    if(!ProjectData::checkIfThemeExists($module, $pidsArray) && ($module->getProjectSetting('hub-updates-show-theme-msg') === "true" || $module->getProjectSetting('hub-updates-show-theme-msg') === null)){
+        echo '<div class="container" style="margin-top: 20px">
+                <div class="alert alert-warning col-md-12">
+                <div>The survey theme <strong>'.ProjectData::HUB_SURVEY_THEME_NAME.'</strong> does not exist in some of your Hub surveys.</div>
+                <div>Create and Install will add this theme in all the project/s surverys.</div>
+                <form method="POST" action="'.$module->getUrl('hub-updates/save_theme_AJAX.php').'&redcap_csrf_token='.$module->getCSRFToken().'" class="" id="resolved_list">
+                    <div class="float-right"><button type="submit" name="option" value="dismiss" class="btn btn-danger" style="display: block;" onclick="select_btn">Dismiss Message</button></div>
+                    <div class="float-right"><button type="submit" name="option" value="create" class="btn btn-success" style="display: block;margin-right: 10px;" id="select_btn">Create & Install Theme</button></div>
+                </form>
+                </div>
+            </div>';
+    }
     if(!empty($allUpdates))
     {
         $message = "";
@@ -193,6 +204,8 @@ $oldValues = $printDataAll[1];
             $message = "Last Updates has been successfully updated.";
         }else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'L')) {
             $message = "The variables have been successfully <strong>removed</strong> from the resolved list.";
+        }else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'T')) {
+            $message = "<strong>".ProjectData::HUB_SURVEY_THEME_NAME."</strong> has been successfully updated. Check the logs to see which surveys have been updated.";
         }
         ?>
         <?php if (array_key_exists('message', $_REQUEST)){ ?>
