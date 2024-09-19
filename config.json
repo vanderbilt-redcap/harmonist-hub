@@ -26,6 +26,12 @@
         "icon": "fas fa-refresh",
         "url": "hub-updates/index.php",
         "show-header-and-footer": true
+      },
+      {
+        "name": "Hub REDCap User Management",
+        "icon": "fas fa-refresh",
+        "url": "hub-user-management/index.php",
+        "show-header-and-footer": true
       }
     ]
   },

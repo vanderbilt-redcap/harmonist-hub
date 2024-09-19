@@ -1,0 +1,21 @@
+/**RESET REDCAP LINK STYLES **/
+A.btn, A.btn:hover{ font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #ffffff; text-decoration: none; text-align:left; }
+A.btn:hover {outline: 1px solid #4ca2ff;}
+/****/
+.panel-heading{
+    padding: 0;
+}
+.remove_user{
+    color: red;
+    font-size: 12px;
+}
+.user_list_textarea{
+    width: 100%;
+    border-color:#dee2e6;
+    margin-top:10px;
+    border-radius:0.375rem;
+    min-height:100px;
+}
+tr.rowSelected td{
+    background-color: #e6f5ff;
+}

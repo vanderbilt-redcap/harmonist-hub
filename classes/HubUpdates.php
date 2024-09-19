@@ -1,7 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ . "/REDCapManagement.php");
-include_once(__DIR__ . "/../simplediff-modified/simplediff.php");
 
 class HubUpdates{
     const CHANGED = 'changed';
