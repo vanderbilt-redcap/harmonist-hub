@@ -130,7 +130,7 @@ foreach ($projects_array as $index=>$name){
     #We create the surveys
     if(array_key_exists($index,$projects_array_surveys)){
         #Create Hub theme
-        $theme_id = ProjectData::createSurveyTheme($module);
+        $theme_id = ProjectData::getThemeId($module);
 
         $module->query("UPDATE redcap_projects SET surveys_enabled = ? WHERE project_id = ?",["1",$project_id_new]);
         foreach ($projects_array_surveys[$index] as $survey){

@@ -214,42 +214,28 @@ class ProjectData
         if($row = $q->fetch_assoc()){
             return $row['theme_id'];
         }
-        return null;
-    }
-
-    public static function createSurveyTheme($module){
-        $theme_id = self::getThemeId($module);
-        if($theme_id != null){
-            return $theme_id;
-        }else {
-            $q = $module->query("INSERT INTO redcap_surveys_themes 
+        $q = $module->query("INSERT INTO redcap_surveys_themes 
                                 (theme_name, ui_id,theme_bg_page, theme_text_buttons, theme_text_title, theme_bg_title,
                                 theme_text_question, theme_bg_question, theme_text_sectionheader, theme_bg_sectionheader) VALUES(?,?,?,?,?,?,?,?,?,?)",
-                                [self::HUB_SURVEY_THEME_NAME, null, "eaeaea", "000000", "000000", "ffffff",
-                                    "000000", "ffffff", "000000", "c2e4fc"]);
-            $theme_id = db_insert_id();
-        }
-        return $theme_id;
+            [self::HUB_SURVEY_THEME_NAME, null, "eaeaea", "000000", "000000", "ffffff",
+                "000000", "ffffff", "000000", "c2e4fc"]);
+        return db_insert_id();
     }
 
     public static function checkIfThemeExists($module, $pidsArray){
         $theme_id = self::getThemeId($module);
-       if($theme_id != null){
-           foreach ($pidsArray as $constant => $project_id) {
-               $q_survey = $module->query("SELECT survey_id, form_name FROM redcap_surveys WHERE project_id = ? AND (theme <> ? OR theme is NULL)", [$project_id, $theme_id]);
-               if($row_survey = $q_survey->fetch_assoc()){
-                   return false;
-               }
+        foreach ($pidsArray as $constant => $project_id) {
+           $q_survey = $module->query("SELECT survey_id, form_name FROM redcap_surveys WHERE project_id = ? AND (theme <> ? OR theme is NULL)", [$project_id, $theme_id]);
+           if($row_survey = $q_survey->fetch_assoc()){
+               return false;
            }
-           return true;
-       }
-        return false;
+        }
+        return true;
     }
 
-    public static function updateThemeOnSurveys($module, $constant, $pidsArray, $theme_id=""){
-        if($theme_id === "") {
-            $theme_id = self::getThemeId($module);
-        }
+    public static function updateThemeOnSurveys($module, $constant, $pidsArray){
+        $theme_id = self::getThemeId($module);
+
         $surveys_without_theme = [];
         $q_survey = $module->query("SELECT survey_id, form_name FROM redcap_surveys WHERE project_id = ? AND (theme <> ? OR theme is NULL)", [$pidsArray[$constant],$theme_id]);
         while($row_survey = $q_survey->fetch_assoc()){

@@ -6,9 +6,8 @@ include_once(__DIR__ . "/../classes/HubUpdates.php");
 $option = $_REQUEST['option'];
 $message = "";
 if($option == "create"){
-    $theme_id = ProjectData::createSurveyTheme($module);
     foreach ($pidsArray as $constant => $project_id){
-        ProjectData::updateThemeOnSurveys($module, $constant, $pidsArray, $theme_id);
+        ProjectData::updateThemeOnSurveys($module, $constant, $pidsArray);
     }
     $message = "&message=T";
 }else if($option == "dismiss"){
