@@ -210,6 +210,7 @@ $hub_name = $settings['hub_name']." Hub";
     </div>
     <form method="POST" action="" id="user_list">
         <button type="submit" class="btn btn-danger float-right btnClassConfirm" id="remove_user" name="remove_user">Remove User</button>
+        <button type="submit" class="btn btn-warning float-right btnClassConfirm" id="remove_user" name="change_user" style="margin-right:10px">Change Role</button>
         <button type="submit" class="btn btn-primary float-right btnClassConfirm" id="add_user" name="add_user" style="margin-right:10px">Add User</button>
     </form>
 </div>
