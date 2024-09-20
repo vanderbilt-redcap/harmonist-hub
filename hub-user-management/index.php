@@ -197,6 +197,15 @@ $hub_name = $settings['hub_name']." Hub";
             }
             return true;
         }
+
+        function checkDataRemove(){
+            $('#alert_text').hide();
+            let errMsg = [];
+            if($(this).find('input[nameCheckUser='users[]']:checked').length == 0){
+                errMsg.push('Add at least one user to remove from the projects.');
+            }
+            return true;
+        }
     </script>
 </head>
 <body>
@@ -306,7 +315,7 @@ $hub_name = $settings['hub_name']." Hub";
             <input type="hidden" id="checked_values_remove_user" name="checked_values_remove_user">
         </div>
         <div class="modal-footer" style="padding-top: 30px;">
-            <a onclick="$('#remove_user_management').submit();" class="btn btn-danger" name="btnConfirm">Remove User</a>
+            <a onclick="checkDataRemove();$('#remove_user_management').submit();" class="btn btn-danger" name="btnConfirm">Remove User</a>
         </div>
     </form>
 </div>
