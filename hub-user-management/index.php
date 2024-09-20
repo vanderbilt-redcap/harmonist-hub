@@ -5,7 +5,7 @@ include_once(__DIR__ ."/../classes/HubREDCapUsers.php");
 
 $projects_array = REDCapManagement::getProjectsConstantsArray();
 $projects_titles_array = REDCapManagement::getProjectsTitlesArray();
-$hub_name = $setting['hub_name']." Hub";
+$hub_name = $settings['hub_name']." Hub";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,20 +26,36 @@ $hub_name = $setting['hub_name']." Hub";
     <script type="text/javascript" src="<?=$module->getUrl('js/selectAll.js')?>"></script>
     <script>
         $(document).ready(function () {
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+
+            var sButton = null;
+            var $form = $('#user_list');
+            var $submitButtons = $form.find('.btnClassConfirm');
+
+            $submitButtons.click(function(event) {
+                sButton = this;
+            });
+
             $('#user_list').submit(function (event) {
-                console.log("user_list")
+                //Clean up autocomplete
+                $('#new_username').val("");
+                $('#user-list').html("");
+
+                if (null === sButton) {
+                    sButton = $submitButtons[0];
+                }
+                console.log(sButton.name)
                 let checked_values = [];
                 $("input[nameCheck='tablefields[]']:checked").each(function() {
                     checked_values.push($(this).val());
                 });
 
                 if(checked_values.length != 0) {
-                    $('#checked_values').val(checked_values);
-                    let redcap_csrf_token = <?=json_encode($module->getCSRFToken())?>;
+                    //List of projects selected
                     let projects_titles_array = <?=json_encode($projects_titles_array)?>;
                     let hub_name = <?=json_encode($hub_name)?>;
-                    let option = $('#option').val();
-
                     let project_info = "<ul>";
                     if (checked_values.length == projects_titles_array.length) {
                         project_info += "<li><span style='color:red;'>ALL REDCap projects have been selected.</span></li>";
@@ -50,15 +66,104 @@ $hub_name = $setting['hub_name']." Hub";
                         });
                     }
                     project_info += "</ul>";
-                    $('#projectsSelected').html(project_info);
-                    $("#addUsersForm").dialog({
-                        width: 700,
-                        modal: true,
-                        enableRemoteModule: true
-                    });
+                    $('#projectsSelected_'+sButton.name).html(project_info);
+                    $('#checked_values_'+sButton.name).val(checked_values);
+
+                    if(sButton.name == "add_user") {
+                        $("#addUsersForm").dialog({
+                            width: 700,
+                            modal: true,
+                            enableRemoteModule: true
+                        });
+                    }else if(sButton.name == "remove_user") {
+                        let users_info = "<ul>";
+                        let user_removal_list = [];
+                        checked_values.forEach((project_id) => {
+                            let user_val = $('#user_'+project_id).attr('user_value');
+                            let user_name = $('#user_'+project_id).text();
+                            if(!user_removal_list.includes(user_val)){
+                                user_removal_list.push(user_val);
+                                users_info += "<li><input type='checkbox' nameCheckUser='users[]' value='"+user_val+"'><span style='padding-left: 5px'>"+user_name+"</span></li>";
+                            }
+                        });
+                        users_info += "<ul>";
+                        $('#user_remove_list').html(users_info);
+                        $("#removeUsersForm").dialog({
+                            width: 700,
+                            modal: true,
+                            enableRemoteModule: true
+                        }).prev(".ui-dialog-titlebar").css("background", "#f8d7da").css("color", "#721c24")
+                    }
                 }else{
                     $("#dialogWarning").dialog({modal:true, width:300}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");
                 }
+                return false;
+            });
+            $('#new_username').keyup(function(){
+                let term = $(this).val();
+                $.ajax({
+                    method: "POST",
+                    url: <?=json_encode($module->getUrl('hub-user-management/getUserInfoAutocomplete_AJAX.php'))?>,
+                    dataType: "json",
+                    data: {
+                        term: term
+                    }
+                }).done(function(response) {
+                    $("#user-list").show();
+                    var lists = '';
+                    $.each(response, function(key, user) {
+                        lists += "<div class='autocomplete-items' onclick='addUserName(\"" + user.value + "\")'><a onclick='addUserName(\"" + user.value + "\")'>" +  user.label + "</a></div>";
+                    });
+                    $("#user-list").html(lists);
+                });
+            });
+
+            $('#add_user_management').submit(function (event) {
+                let url = <?=json_encode($module->getUrl('hub-user-management/user_management_AJAX.php'))?>;
+                let data = $('#add_user_management').serialize();
+                console.log(url+"&"+data+"&user_role="+$('#user_role').val()+"&user_list_textarea="+$('#user_list_textarea').val()+"&option=add_user")
+
+                // $.ajax({
+                //     type: "POST",
+                //     url: url,
+                //     data: "&"+data+"&user_role="+$('#user_role').val()+"&user_list_textarea="+$('#user_list_textarea').val()+"&option=add_user",
+                //     error: function (xhr, status, error) {
+                //         alert(xhr.responseText);
+                //     },
+                //     success: function (result) {
+                //         // var status = jQuery.parseJSON(result)['status'];
+                //         // window.location = getMessageLetterUrl(window.location.href, success_message);
+                //     }
+                // });
+                return false;
+            });
+
+            $('#remove_user_management').submit(function (event) {
+                let url = <?=json_encode($module->getUrl('hub-user-management/user_management_AJAX.php'))?>;
+                let data = $('#remove_user_management').serialize();
+                let checked_values_user = [];
+                $("input[nameCheckUser='users[]']:checked").each(function() {
+                    checked_values_user.push($(this).val());
+                });
+                console.log(url+"&"+data+"&option=remove_user+users_checked="+checked_values_user)
+
+                // $.ajax({
+                //     type: "POST",
+                //     url: url,
+                //     data: "&"+data+"&option=remove_user+users_checked="+checked_values_user,
+                //     error: function (xhr, status, error) {
+                //         alert(xhr.responseText);
+                //     },
+                //     success: function (result) {
+                //         // var status = jQuery.parseJSON(result)['status'];
+                //         // window.location = getMessageLetterUrl(window.location.href, success_message);
+                //     }
+                // });
+                return false;
+            });
+
+            $('#remove_user').submit(function (event) {
+
                 return false;
             });
         });
@@ -74,10 +179,23 @@ $hub_name = $setting['hub_name']." Hub";
         }
         function checkData(){
             $('#alert_text').hide();
-            let user_list = $('#user_list_textarea').val()
-            if(user_list.length == 0){
-                $('#alert_text').show();
+            let errMsg = [];
+            if($('#user_list_textarea').val().length == 0){
+                errMsg.push('Add at least one user to add to the projects.');
             }
+            if($('#user_role').val().length == 0){
+                $('#alert_text').show();
+                errMsg.push('Select a role to assign to the users.');
+            }
+            if (errMsg.length > 0) {
+                $('#alert_text').empty();
+                $.each(errMsg, function (i, e) {
+                    $('#alert_text').append('<div>' + e + '</div>');
+                });
+                $('#alert_text').show();
+                return false;
+            }
+            return true;
         }
     </script>
 </head>
@@ -91,8 +209,8 @@ $hub_name = $setting['hub_name']." Hub";
         <span style="cursor: pointer;font-size: 14px;font-weight: normal;color: black;" onclick="checkAllText('user');">Select All</span>
     </div>
     <form method="POST" action="" id="user_list">
-        <button type="submit" onclick="$('#option').val('remove');" class="btn btn-danger float-right btnClassConfirm" id="removed_btn" name="resolved_btn">Remove User</button>
-        <button type="submit" onclick="$('#option').val('add');" class="btn btn-primary float-right btnClassConfirm" id="add_btn" name="save_btn" style="margin-right:10px">Add User</button>
+        <button type="submit" class="btn btn-danger float-right btnClassConfirm" id="remove_user" name="remove_user">Remove User</button>
+        <button type="submit" class="btn btn-primary float-right btnClassConfirm" id="add_user" name="add_user" style="margin-right:10px">Add User</button>
     </form>
 </div>
 <div class="container-fluid p-y-1">
@@ -132,7 +250,7 @@ $hub_name = $setting['hub_name']." Hub";
                         <div id="collapse<?=$constant?>" class="table-responsive panel-collapse collapse" aria-expanded="true">
                             <table style="width: 100%;margin-top: 5px;">
                                 <?php foreach ($users as $user){?>
-                                <tr><td style="padding-left: 30px;"><?=$user['name']." (".$user['value'].")";?> <a href=""><i class="fa-solid fa-x remove_user"></i></a></td></tr>
+                                <tr><td style="padding-left: 30px;" id="user_<?=$id?>" user_value="<?=$user['value']?>"><?=$user['name']." (".$user['value'].")";?> <a href=""><i class="fa-solid fa-x remove_user"></i></a></td></tr>
                                 <?php } ?>
                             </table>
                         </div>
@@ -147,30 +265,47 @@ $hub_name = $setting['hub_name']." Hub";
 </div>
 <!-- MODAL -->
 <div id="addUsersForm" title="Add Users" style="display:none;">
-    <form method="POST" action="<?=json_encode($module->getUrl('hub-user-management/user_management_AJAX.php'))?>">
+    <form method="POST" action="" id="add_user_management">
         <div class="modal-body">
-            <div class="alert alert-danger col-md-12" style="display: none" id="alert_text">Select at least one user to add to the projects.</div>
-            <div>Add user names separated by commas or select them from the selector.</div>
-            <div>Only users added on the <strong><?=$hub_name?>:Parent Project (MAP)</strong> can be added to other projects.</div>
-            <br/>
-            <select class="form-select" onchange="addUserName(this.value)">
-                <option value=""></option>
+            <div class="alert alert-danger col-md-12" style="display: none" id="alert_text"></div>
             <?php
-            $choices = HubREDCapUsers::getUserList($module, $pidsArray['PROJECTS']);
-            foreach ($choices as $user){
-                echo "<option value='".$user['value']."'>".$user['name']." (".$user['value'].")"."</option>";
-            }
+            $user_roles_info = "<div>This is more info on user roles:</div>";
             ?>
+            <div>Select a user role <a tabindex="0" role="button" class="info-toggle" data-html="true" data-container="body" data-toggle="tooltip" data-trigger="hover" data-placement="right" style="outline: none;" title="<?=$user_roles_info?>"><i class="fas fa-info-circle fa-fw" style="color:#0d6efd" aria-hidden="true"></i></a>:</div>
+            <select class="form-select" id="user_role">
+                <option></option>
+                <option value="<?=HubREDCapUsers::HUB_ROLE_ADMIN?>"><?=HubREDCapUsers::HUB_ROLE_ADMIN?></option>
             </select>
+            <br/>
+            <div>Add user names separated by commas or search and click on them:</div>
+            <div class="autocomplete-user">
+                <input id="new_username" class="form-control" type="text" name="new_username">
+                <div id="user-list"></div>
+            </div>
             <textarea id="user_list_textarea" class="user_list_textarea"></textarea>
             <br/>
             <br/>
             <div>You will be adding users to these projects:</div>
-            <div id="projectsSelected"></div>
-            <input type="hidden" id="checked_values" name="checked_values">
+            <div id="projectsSelected_add_user"></div>
+            <input type="hidden" id="checked_values_add_user" name="checked_values_add_user">
         </div>
         <div class="modal-footer" style="padding-top: 30px;">
-            <a onclick="checkData();" class="btn btn-success" id='btnConfirm' name="btnConfirm">Continue</a>
+            <a onclick="checkData();$('#add_user_management').submit();" class="btn btn-success" name="btnConfirm">Add User</a>
+        </div>
+    </form>
+</div>
+<div id="removeUsersForm" title="Remove Users" style="display:none;">
+    <form method="POST" action="" id="remove_user_management">
+        <div class="modal-body">
+            <div class="alert alert-danger col-md-12" style="display: none" id="alert_text"></div>
+            <div>Select the users you want to remove from the projects listed below:</div>
+            <div id="user_remove_list"></div>
+            <div>You will be removing these users from these projects:</div>
+            <div id="projectsSelected_remove_user"></div>
+            <input type="hidden" id="checked_values_remove_user" name="checked_values_remove_user">
+        </div>
+        <div class="modal-footer" style="padding-top: 30px;">
+            <a onclick="$('#remove_user_management').submit();" class="btn btn-danger" name="btnConfirm">Remove User</a>
         </div>
     </form>
 </div>

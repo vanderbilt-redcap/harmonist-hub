@@ -16,7 +16,6 @@ $event_id_RM = $Proj->firstEventId;
 $recordRM = array();
 if($option == "0"){
     #UNFOLLOW
-    error_log("UNFOLLOW");
     if (($key = array_search($userid, $array_userid)) !== false) {
         unset($array_userid[$key]);
         $string_userid = implode(",",$array_userid);
