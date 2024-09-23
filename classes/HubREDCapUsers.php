@@ -5,6 +5,7 @@ class HubREDCapUsers
 {
     const HUB_ROLE_ADMIN = "Hub Admin Role";
     const HUB_ROLE_USER = "Hub User Role";
+    private $roles;
 
     public static function getUserList($module, $project_id): array
     {
@@ -56,8 +57,7 @@ class HubREDCapUsers
         return $roles;
     }
 
-    public static function addUserToProject($module, $project_id, $user_name, $role_name, $user_name_main, $pidsArray){
-        $role_id = self::getUserRole($module, $role_name, $pidsArray['PROJECTS']);
+    public static function addUserToProject($module, $project_id, $user_name, $role_id, $user_name_main, $pidsArray, $role_name=""){
         $q = $module->query("SELECT role_id FROM redcap_user_rights WHERE project_id = ? AND username = ?", [$project_id,$user_name]);
         if($q->num_rows  == 0){
             $fields_rights = "project_id, username, role_id, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";

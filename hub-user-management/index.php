@@ -146,11 +146,12 @@ $hub_name = $settings['hub_name']." Hub";
             $('#add_user_management').submit(function (event) {
                 let url = <?=json_encode($module->getUrl('hub-user-management/user_management_AJAX.php'))?>;
                 let data = $('#add_user_management').serialize();
+                let role_name = $('#user_role_add_user option:selected').attr('role_name');
 
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: "&"+data+"&user_role="+$('#user_role').val()+"&user_list_textarea="+$('#user_list_textarea').val()+"&option=add_user",
+                    data: "&"+data+"&user_role_add_user="+$('#user_role_add_user').val()+"&role_name_add_user="+role_name+"&option=change_user",
                     error: function (xhr, status, error) {
                         alert(xhr.responseText);
                     },
@@ -185,6 +186,30 @@ $hub_name = $settings['hub_name']." Hub";
                 return false;
             });
 
+            $('#change_user_single_management').submit(function (event) {
+                let url = <?=json_encode($module->getUrl('hub-user-management/user_management_AJAX.php'))?>;
+                let data = $('#change_user_single_management').serialize();
+                let id = $(this).attr('id');
+                console.log(id)
+                console.log(data)
+                console.log($('#user_role_change_user_single').val())
+                console.log($('#user_role_change_user_single').attr('role_name'))
+
+                // $.ajax({
+                //     type: "POST",
+                //     url: url,
+                //     data: "&"+data+"&user_role_change_user_single="+$('#user_role_change_user_single').val()+"&user_list_textarea="+$('#user_list_textarea').val()+"&option=add_user",
+                //     error: function (xhr, status, error) {
+                //         alert(xhr.responseText);
+                //     },
+                //     success: function (result) {
+                //         var message = jQuery.parseJSON(result)['message'];
+                //         window.location = getMessageLetterUrl(window.location.href, message);
+                //     }
+                // });
+                return false;
+            });
+
             $('#remove_user').submit(function (event) {
 
                 return false;
@@ -205,15 +230,22 @@ $hub_name = $settings['hub_name']." Hub";
             let errMsg = [];
 
             if(option == "add_user") {
-                if ($('#user_role').val().length == 0) {
+                if ($('#user_role_'+option).val().length == 0) {
                     errMsg.push('Select a role to assign to the users.');
                 }
                 if ($('#user_list_textarea').val().length == 0) {
                     errMsg.push('Add at least one user to add to the projects.');
                 }
-            }else{
-               if($('#'+option+'_management').find('input[nameCheckUser=\'users[]\']:checked').length == 0){
-                    errMsg.push('Add at least one user needs to be checked to remove from the projects.');
+            }else {
+                if (option != "change_user_single"){
+                    if ($('#' + option + '_management').find('input[nameCheckUser=\'users[]\']:checked').length == 0) {
+                        errMsg.push('Add at least one user needs to be checked to remove from the projects.');
+                    }
+                }
+                if(option == "change_user" || option == "change_user_single") {
+                    if ($('#user_role_' + option).val().length == 0) {
+                        errMsg.push('A role must be selected.');
+                    }
                 }
             }
 
@@ -322,7 +354,11 @@ $hub_name = $settings['hub_name']." Hub";
                                         $user_data .= ", <em>".$role_name."</em>";
                                     }
                                     ?>
-                                <tr><td style="padding-left: 30px;" id="user_<?=$id?>" user_role="<?=$role_name?>" user_value="<?=$user['value']?>"><?=$user_data;?> <a href=""><i class="fa-solid fa-x remove_user"></i></a></td></tr>
+                                <tr><td style="padding-left: 30px;" id="user_<?=$id?>" user_role="<?=$role_name?>" user_value="<?=$user['value']?>">
+                                        <?=$user_data;?>
+                                        <a onclick='$("#dialogWarningDelete").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");' style="cursor:pointer;"><i class="fa-solid fa-x remove_user"></i></a>
+                                        <a onclick='$("#dialogWarningChange").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar");' style="cursor:pointer;"><i class="fa-solid fa-pencil" style="font-size:12px;"></i></a>
+                                    </td></tr>
                                 <?php } ?>
                             </table>
                         </div>
@@ -344,10 +380,10 @@ $hub_name = $settings['hub_name']." Hub";
             $user_roles_info = "<div>This is more info on user roles:</div>";
             ?>
             <div>Select a user role <a tabindex="0" role="button" class="info-toggle" data-html="true" data-container="body" data-toggle="tooltip" data-trigger="hover" data-placement="right" style="outline: none;" title="<?=$user_roles_info?>"><i class="fas fa-info-circle fa-fw" style="color:#0d6efd" aria-hidden="true"></i></a>:</div>
-            <select class="form-select" id="user_role">
+            <select class="form-select" id="user_role_add_user">
                 <option></option>
                 <?php foreach ($user_roles as $role => $role_id){
-                    echo "<option value='".$role_id."'>".$role."</option>";
+                    echo "<option value='".$role_id."' role_name='".$role."'>".$role."</option>";
                 }?>
             </select>
             <br/>
@@ -386,11 +422,12 @@ $hub_name = $settings['hub_name']." Hub";
 <div id="changeUsersForm" title="Change User Role" style="display:none;">
     <form method="POST" action="" id="change_user_management">
         <div class="modal-body">
+            <div class="alert alert-danger col-md-12" style="display: none" id="alert_text_change_user"></div>
             <div>Select a user role <a tabindex="0" role="button" class="info-toggle" data-html="true" data-container="body" data-toggle="tooltip" data-trigger="hover" data-placement="right" style="outline: none;" title="<?=$user_roles_info?>"><i class="fas fa-info-circle fa-fw" style="color:#0d6efd" aria-hidden="true"></i></a>:</div>
-            <select class="form-select" id="user_role">
+            <select class="form-select" id="user_role_change_user">
                 <option></option>
                 <?php foreach ($user_roles as $role => $role_id){
-                    echo "<option value='".$role_id."'>".$role."</option>";
+                    echo "<option value='".$role_id."' role_name='".$role."'>".$role."</option>";
                 }?>
             </select>
             <div id="user_remove_list" style="padding: 10px;"></div>
@@ -399,12 +436,35 @@ $hub_name = $settings['hub_name']." Hub";
             <input type="hidden" id="checked_values_change_user" name="checked_values_change_user">
         </div>
         <div class="modal-footer" style="padding-top: 30px;">
-            <a onclick="checkData('remove_user');" class="btn btn-danger" name="btnConfirm">Remove User</a>
+            <a onclick="checkData('change_user');" class="btn btn-primary" name="btnConfirm">Change Role</a>
         </div>
     </form>
 </div>
 <div id="dialogWarning" title="WARNING!" style="display:none;">
     <p>No projects selected.</p>
+</div>
+<div id="dialogWarningDelete" title="WARNING!" style="display:none;">
+    <p>Are you sure you want to remove this user?</p>
+    <p>This will remove the user from the project.</p>
+    <div class="modal-footer" style="padding-top: 30px;">
+        <a onclick="" class="btn btn-danger" name="btnConfirm">Remove User</a>
+    </div>
+</div>
+<div id="dialogWarningChange" title="Change User Role" style="display:none;">
+    <form method="POST" action="" id="change_user_single_management">
+        <div class="alert alert-danger col-md-12" style="display: none" id="alert_text_change_user_single"></div>
+        <div>Select a user role <a tabindex="0" role="button" class="info-toggle" data-html="true" data-container="body" data-toggle="tooltip" data-trigger="hover" data-placement="right" style="outline: none;" title="<?=$user_roles_info?>"><i class="fas fa-info-circle fa-fw" style="color:#0d6efd" aria-hidden="true"></i></a>:</div>
+        <br/>
+        <select class="form-select" id="user_role_change_user_single">
+            <option></option>
+            <?php foreach ($user_roles as $role => $role_id){
+                echo "<option value='".$role_id."'>".$role."</option>";
+            }?>
+        </select>
+        <div class="modal-footer" style="padding-top: 30px;">
+            <a onclick="checkData('change_user_single');" class="btn btn-primary" name="btnConfirm">Change Role</a>
+        </div>
+    </form>
 </div>
 </body>
 </html>
