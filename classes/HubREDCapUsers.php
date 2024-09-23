@@ -4,11 +4,12 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 class HubREDCapUsers
 {
     const HUB_ROLE_ADMIN = "Hub Admin Role";
+    const HUB_ROLE_USER = "Hub User Role";
 
     public static function getUserList($module, $project_id): array
     {
         $choices = [];
-        $sql = "SELECT ur.username,ui.user_firstname,ui.user_lastname
+        $sql = "SELECT ur.username,ui.user_firstname,ui.user_lastname,ur.role_id 
                     FROM redcap_user_rights ur, redcap_user_information ui
                     WHERE ur.project_id = ?
                             AND ui.username = ur.username
@@ -16,12 +17,12 @@ class HubREDCapUsers
         $result = $module->query($sql, [$project_id]);
         while ($row = $result->fetch_assoc()) {
             $row = $module->escape($row);
-            $choices[] = ['value' => strtolower($row['username']), 'name' => $row['user_firstname'] . ' ' . $row['user_lastname']];
+            $choices[] = ['value' => strtolower($row['username']), 'name' => $row['user_firstname'] . ' ' . $row['user_lastname'], 'role_id' => $row['role_id']];
         }
         return $choices;
     }
 
-    public static function getUserRole($module, $role_name){
+    public static function getUserRole($module, $role_name, $project_id){
         $q = $module->query("SELECT role_id FROM redcap_user_roles WHERE role_name = ?", [$role_name]);
         if($row = $q->fetch_assoc()){
             return $row['role_id'];
@@ -34,18 +35,29 @@ class HubREDCapUsers
 		random_setup, random_dashboard, random_perform, realtime_webservice_mapping, realtime_webservice_adjudicate, external_module_config,
 		mycap_participants,
 		data_entry, data_export_instruments";
-        $values =  [];
 
-        $q = $module->query("INSERT INTO redcap_user_roles 
-                                ($fields) VALUES(?,?,?,?,?,?,?,?,?,?)",
-            [$values]);
-        $role_id = db_insert_id();
-        return $role_id;
+        $instrument_names = \REDCap::getInstrumentNames(null,$project_id);
+        #Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
+        $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
+        $values =  [$project_id,$role_name];
+
+//        $q = $module->query("INSERT INTO redcap_user_roles
+//                                ($fields) VALUES(?,?,?,?,?,?,?,?,?,?)",
+//            [$values]);
+//        $role_id = db_insert_id();
+//        return $role_id;
+    }
+
+    public static function getAllRoles($module, $project_id){
+        $roles = [];
+        foreach ([self::HUB_ROLE_ADMIN,self::HUB_ROLE_USER] as $role){
+            $roles[$role] = self::getUserRole($module, $role, $project_id);
+        }
+        return $roles;
     }
 
     public static function addUserToProject($module, $project_id, $user_name, $role_name, $user_name_main, $pidsArray){
-        $role_id = self::getUserRole($module, $role_name);
-        $constant = array_search($project_id, $pidsArray);
+        $role_id = self::getUserRole($module, $role_name, $pidsArray['PROJECTS']);
         $q = $module->query("SELECT role_id FROM redcap_user_rights WHERE project_id = ? AND username = ?", [$project_id,$user_name]);
         if($q->num_rows  == 0){
             $fields_rights = "project_id, username, role_id, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
@@ -56,9 +68,34 @@ class HubREDCapUsers
                     VALUES (?,?,?,?,?,?,?,?,?)",
                 [$project_id, $user_name, $role_id, 1, 1, 1, 1, 1, 1, $data_entry]);
 
-            \REDCap::logEvent("Hub REDCap User Management: ".$user_name." added as ".$role_name." on  ".$constant." (PID #".$project_id.") by ".$user_name_main, "User Added on Project #".$project_id." by ".$user_name_main, null,null,null,$pidsArray['PROJECTS']);
-            \REDCap::logEvent("Hub REDCap User Management: ".$user_name." added as ".$role_name." on  ".$constant." (PID #".$project_id.") by ".$user_name_main, "User Added on Project #".$project_id." by ".$user_name_main, null,null,null,$project_id);
+            self::addUserLogs($user_name, $user_name_main, $project_id, $pidsArray, "added",  $role_name);
         }
+    }
+
+    public static function removeUserFromProject($module, $project_id, $user_name, $user_name_main, $pidsArray){
+        $q = $module->query("DELETE FROM redcap_user_rights WHERE project_id = $project_id and username = ?", [$project_id,$user_name]);
+        if($q->num_rows  > 0){
+            self::addUserLogs($user_name, $user_name_main, $project_id, $pidsArray, "removed");
+        }
+    }
+
+    public static function changeUserRole($module, $project_id, $user_name, $user_name_main, $pidsArray){
+
+    }
+
+    public static function addUserLogs($user_name, $user_name_main, $project_id, $pidsArray, $type,  $role_name=""){
+        $constant = array_search($project_id, $pidsArray);
+
+        $title = "Hub REDCap User Management: ".$user_name." ".$type;
+        if($role_name != null){
+            $title .= " as ".$role_name;
+        }
+        $title = " as ".$role_name." on  ".$constant." (PID #".$project_id.") by ".$user_name_main;
+
+        $message = "User ".ucfirst($type). " on Project #".$project_id." by ".$user_name_main;
+
+        \REDCap::logEvent($title, $message, null,null,null,$pidsArray['PROJECTS']);
+        \REDCap::logEvent($title, $message, null,null,null,$project_id);
     }
 
     public static function replaceTerm($match) {
