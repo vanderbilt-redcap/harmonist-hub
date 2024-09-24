@@ -11,7 +11,6 @@ if($option == "add_user") {
     $user_list = explode(",", $_REQUEST['user_list_textarea']);
     $role_id = $_REQUEST['user_role_id_'.$option];
     $role_name = $_REQUEST['user_role_name_'.$option];
-    $projects_titles_array = REDCapManagement::getProjectsTitlesArray();
 
     $email_users = HubREDCapUsers::gerUsersEmail($module, $user_list);
     foreach ($checked_values as $project_id) {
@@ -28,18 +27,23 @@ if($option == "add_user") {
     $user_list = explode(",", $_REQUEST['users_checked']);
     foreach ($checked_values as $project_id) {
         foreach ($user_list as $user_name) {
-//            HubREDCapUsers::removeUserFromProject($module, $project_id, $user_name, USERID, $pidsArray);
+            HubREDCapUsers::removeUserFromProject($module, $project_id, $user_name, USERID, $pidsArray);
         }
     }
     $message = "D";
-}else if($option == "change_user_single") {
+}else if($option == "change_user_single" || $option == "remove_user_single") {
     $user_name = $_REQUEST['user_id_'.$option];
     $role_id = $_REQUEST['user_role_id_'.$option];
     $role_name = $_REQUEST['user_role_name_'.$option];
     $project_id = $_REQUEST['project_id'];
 
-    HubREDCapUsers::changeUserRole($module, $project_id, $user_name, $role_id, $pidsArray, $role_name, USERID);
-    $message = "C";
+    if($option == "remove_user_single") {
+        HubREDCapUsers::removeUserFromProject($module, $project_id, $user_name, USERID, $pidsArray);
+        $message = "D";
+    }else{
+        HubREDCapUsers::changeUserRole($module, $project_id, $user_name, $role_id, $pidsArray, $role_name, USERID);
+        $message = "C";
+    }
 }
 
 echo json_encode(array(

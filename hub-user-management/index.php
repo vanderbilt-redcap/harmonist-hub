@@ -47,7 +47,7 @@ $hub_name = $settings['hub_name']." Hub";
                 if (null === sButton) {
                     sButton = $submitButtons[0];
                 }
-                console.log(sButton.name)
+
                 let checked_values = [];
                 $("input[nameCheck='tablefields[]']:checked").each(function() {
                     checked_values.push($(this).val());
@@ -62,15 +62,17 @@ $hub_name = $settings['hub_name']." Hub";
                     if(sButton.name == "change_user") {
                         let project_info = "<ul>";
                         checked_values.forEach((project_id) => {
-                            let user_val = $('#user_'+project_id).attr('user_value');
-                            let user_role = $('#user_'+project_id).attr('user_role');
-                            let user_name = $('#user_'+project_id).text();
                             let gotoREDCap = <?=json_encode(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=")?>;
-                            project_info += "<li style='list-style-type: none;'><input type='checkbox' nameCheckUser='users[]' value='"+user_val+"'><span style='padding-left: 5px'>"+user_name+"</span>";
-                            if(user_role != ""){
-                                project_info += ", "+user_role;
-                            }
-                            project_info += " on <a href='" + gotoREDCap + project_id + "' target='_blank'>" + hub_name + ": " + projects_titles_array[$("#" + project_id).attr("pid")] + "</a></li>";
+                            $('[user_pid = "'+project_id+'"]').each(function() {
+                                let user_val = $(this).attr('user_value');
+                                let user_role = $(this).attr('user_role');
+                                let user_name = $(this).text();
+                                project_info += "<li style='list-style-type: none;'><input type='checkbox' nameCheckUser='users[]' value='"+user_val+"'><span style='padding-left: 5px'>"+user_name+"</span>";
+                                if(user_role != ""){
+                                    project_info += ", "+user_role;
+                                }
+                                project_info += " on <a href='" + gotoREDCap + project_id + "' target='_blank'>" + hub_name + ": " + projects_titles_array[$("#" + project_id).attr("pid")] + "</a></li>";
+                            });
                         });
                         project_info += "<ul>";
                         $('#projectsSelected_'+sButton.name).html(project_info);
@@ -103,12 +105,14 @@ $hub_name = $settings['hub_name']." Hub";
                             let users_info = "<ul>";
                             let user_removal_list = [];
                             checked_values.forEach((project_id) => {
-                                let user_val = $('#user_'+project_id).attr('user_value');
-                                let user_name = $('#user_'+project_id).text();
-                                if(!user_removal_list.includes(user_val)){
-                                    user_removal_list.push(user_val);
-                                    users_info += "<li style='list-style-type: none;'><input type='checkbox' nameCheckUser='users[]' value='"+user_val+"'><span style='padding-left: 5px'>"+user_name+"</span></li>";
-                                }
+                                $('[user_pid = "'+project_id+'"]').each(function() {
+                                    let user_val = $(this).attr('user_value');
+                                    let user_name = $(this).text();
+                                    if(!user_removal_list.includes(user_val)){
+                                        user_removal_list.push(user_val);
+                                        users_info += "<li style='list-style-type: none;'><input type='checkbox' nameCheckUser='users[]' value='"+user_val+"'><span style='padding-left: 5px'>"+user_name+"</span></li>";
+                                    }
+                                });
                             });
                             users_info += "<ul>";
                             $('#user_remove_list').html(users_info);
@@ -124,6 +128,7 @@ $hub_name = $settings['hub_name']." Hub";
                 }
                 return false;
             });
+
             $('#new_username').keyup(function(){
                 let term = $(this).val();
                 $.ajax({
@@ -143,16 +148,14 @@ $hub_name = $settings['hub_name']." Hub";
                 });
             });
 
-            $('#add_user_management,#remove_user_management,#change_user_single_management').submit(function (event) {
+            $('#add_user_management,#remove_user_management,#change_user_single_management, #remove_user_single_management').submit(function (event) {
                 let url = <?=json_encode($module->getUrl('hub-user-management/user_management_AJAX.php'))?>;
                 let id = $(this).attr('id');
                 let option = id.replace('_management','');
-                let data = "&data=" + $('#'+option+'_management').serialize();
-
-                data += "&user_role_id_"+option+"="+$('#user_role_'+option).val()+
+                let data = "&user_role_id_"+option+"="+$('#user_role_'+option).val()+
                     "&user_role_name_"+option+"="+$('#user_role_'+option+' option:selected').attr('role_name')+
-                    "&user_id_"+option+"="+$('#user_id_change_user_single').val()+
-                    "&project_id="+$('#project_id_change_user_single').val()+
+                    "&user_id_"+option+"="+$('#user_id_'+option).val()+
+                    "&project_id="+$('#project_id_'+option).val()+
                     "&option="+option;
 
                 if(option == "add_user"){
@@ -164,11 +167,11 @@ $hub_name = $settings['hub_name']." Hub";
                     });
                     data += "&users_checked="+checked_values_user;
                 }
-                    console.log(data)
+
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: data,
+                    data: $('#'+option+'_management').serialize() + data,
                     error: function (xhr, status, error) {
                         alert(xhr.responseText);
                     },
@@ -177,15 +180,10 @@ $hub_name = $settings['hub_name']." Hub";
                         window.location = getMessageLetterUrl(window.location.href, message);
                     }
                 });
-
-                return false;
-            });
-
-            $('#remove_user').submit(function (event) {
-
                 return false;
             });
         });
+
         function addUserName(value){
             let user_list_textarea = $("#user_list_textarea").val();
             if(user_list_textarea == ""){
@@ -196,6 +194,7 @@ $hub_name = $settings['hub_name']." Hub";
                 $("#user_list_textarea").val(user_list_textarea+","+value)
             }
         }
+
         function checkData(option){
             $('#alert_text_'+option).hide();
             let errMsg = [];
@@ -325,7 +324,7 @@ $hub_name = $settings['hub_name']." Hub";
                                         $user_data .= ", <em>".$role_name."</em>";
                                     }
                                     ?>
-                                <tr><td style="padding:8px 30px;" id="user_<?=$pidsArray[$constant]?>" user_role="<?=$role_name?>" user_value="<?=$user['value']?>">
+                                <tr><td style="padding:8px 30px;" user_pid="<?=$pidsArray[$constant]?>" user_role="<?=$role_name?>" user_value="<?=$user['value']?>">
                                         <?=$user_data;?>
                                         <a onclick='$("#project_id_remove_user_single").val("<?=$pidsArray[$constant]?>");$("#user_id_remove_user_single").val("<?=$user['value']?>");$("#dialogWarningDelete").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");' style="cursor:pointer;padding-left: 5px;"><i class="fa-solid fa-x remove_user"></i></a>
                                         <a onclick='$("#project_id_change_user_single").val("<?=$pidsArray[$constant]?>");$("#user_id_change_user_single").val("<?=$user['value']?>");$("#dialogWarningChange").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar");' style="cursor:pointer;padding-left: 5px;"><i class="fa-solid fa-pencil" style="font-size:12px;"></i></a>
@@ -415,11 +414,15 @@ $hub_name = $settings['hub_name']." Hub";
     <p>No projects selected.</p>
 </div>
 <div id="dialogWarningDelete" title="WARNING!" style="display:none;">
-    <p>Are you sure you want to remove this user?</p>
-    <p>This will remove the user from the project.</p>
-    <div class="modal-footer" style="padding-top: 30px;">
-        <a onclick="" class="btn btn-danger" name="btnConfirm">Remove User</a>
-    </div>
+    <form method="POST" action="" id="remove_user_single_management">
+        <p>Are you sure you want to remove this user?</p>
+        <p>This will remove the user from the project.</p>
+        <input type="hidden" id="user_id_remove_user_single" name="user_id_remove_user_single">
+        <input type="hidden" id="project_id_remove_user_single" name="project_id_remove_user_single">
+        <div class="modal-footer" style="padding-top: 30px;">
+            <a onclick="$('#remove_user_single_management').closest('form').submit();" class="btn btn-danger" name="btnConfirm">Remove User</a>
+        </div>
+    </form>
 </div>
 <div id="dialogWarningChange" title="Change User Role" style="display:none;">
     <form method="POST" action="" id="change_user_single_management">

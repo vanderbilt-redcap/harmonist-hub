@@ -91,10 +91,8 @@ class HubREDCapUsers
 
     public static function removeUserFromProject($module, $project_id, $user_name, $user_name_main, $pidsArray): void
     {
-        $q = $module->query("DELETE FROM redcap_user_rights WHERE project_id = $project_id and username = ?", [$project_id,$user_name]);
-        if($q->num_rows  > 0){
-            self::addUserLogs($module, $user_name, $user_name_main, $project_id, $pidsArray, "removed");
-        }
+        $q = $module->query("DELETE FROM redcap_user_rights WHERE project_id = ? and username = ?", [$project_id,$user_name]);
+        self::addUserLogs($module, $user_name, $user_name_main, $project_id, $pidsArray, "removed");
     }
 
     public static function changeUserRole($module, $project_id, $user_name, $role_id, $pidsArray, $role_name, $user_name_main): void
