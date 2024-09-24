@@ -6,7 +6,7 @@ class HubREDCapUsers
 {
     const HUB_ROLE_ADMIN = "Hub Admin Role";
     const HUB_ROLE_USER = "Hub User Role";
-    private $roles;
+    const HUB_ROLES = ["3" => "ADMIN", "1" => "USER"];
 
     public static function getUserList($module, $project_id): array
     {
@@ -37,38 +37,54 @@ class HubREDCapUsers
         return $email_users;
     }
 
-    public static function getUserRole($module, $role_name, $project_id): int
+    public static function getUserRole($module, $role_name, $project_id, $role_type): int
     {
-        $q = $module->query("SELECT role_id FROM redcap_user_roles WHERE role_name = ?", [$role_name]);
+        $q = $module->query("SELECT role_id FROM redcap_user_roles WHERE role_name = ? AND project_id = ?", [$role_name,$project_id]);
         if($row = $q->fetch_assoc()){
             return $row['role_id'];
         }
 
-        $fields = "project_id, role_name, data_export_tool, data_import_tool, data_comparison_tool, data_logging, email_logging, file_repository, double_data, " .
-            "user_rights, design, alerts, lock_record, lock_record_multiform, lock_record_customize, data_access_groups, graphical, reports, calendar, " .
-            "record_create, record_rename, record_delete, dts, participants, data_quality_design, data_quality_execute, data_quality_resolution,
-		api_export, api_import, api_modules, mobile_app, mobile_app_download_data,
-		random_setup, random_dashboard, random_perform, realtime_webservice_mapping, realtime_webservice_adjudicate, external_module_config,
-		mycap_participants,
-		data_entry, data_export_instruments";
+        $fields = "project_id, role_name, data_export_instruments, data_entry, data_import_tool, data_comparison_tool, data_logging, file_repository,
+        user_rights, data_access_groups, graphical, reports, design, calendar, record_create, record_rename, record_delete,
+        participants, data_quality_resolution";
 
-        $instrument_names = \REDCap::getInstrumentNames(null,$project_id);
-        #Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
-        $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
-        $values =  [$project_id,$role_name];
+        $values = self::getUserRoleData($module, $project_id, $role_type, $role_name);
 
-//        $q = $module->query("INSERT INTO redcap_user_roles
-//                                ($fields) VALUES(?,?,?,?,?,?,?,?,?,?)",
-//            [$values]);
-//        $role_id = db_insert_id();
-//        return $role_id;
+        $q = $module->query("INSERT INTO redcap_user_roles
+                                ($fields) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", $values);
+        $role_id = db_insert_id();
+
+        return $role_id;
     }
+
+    public static function getUserRoleData($module, $project_id, $role_type, $role_name): array
+    {
+        $role_id = array_search($role_type, self::HUB_ROLES);
+        $instrument_names = \REDCap::getInstrumentNames(null,$project_id);
+
+        #Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
+        $data_entry = "[".implode(','.$role_id.'][',array_keys($instrument_names)).",".$role_id."]";
+        $data_export_instruments = "[".implode(',1][',array_keys($instrument_names)).",1]";
+
+        $values = [];
+        switch($role_id){
+            case 1:
+                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+                break;
+            case 3:
+                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+                break;
+        }
+        return $values;
+    }
+
 
     public static function getAllRoles($module, $project_id): array
     {
         $roles = [];
-        foreach ([self::HUB_ROLE_ADMIN,self::HUB_ROLE_USER] as $role){
-            $roles[$role] = self::getUserRole($module, $role, $project_id);
+        foreach (self::HUB_ROLES as $role_id => $role_type){
+            $role_name = constant("self::HUB_ROLE_".$role_type);
+            $roles[$role_name] = self::getUserRole($module, $role_name, $project_id, $role_type);
         }
         return $roles;
     }
@@ -117,6 +133,17 @@ class HubREDCapUsers
 
         \REDCap::logEvent($title, $message, null,null,null,$pidsArray['PROJECTS']);
         \REDCap::logEvent($title, $message, null,null,null,$project_id);
+    }
+
+    public static function getRoleSelector($id) {
+        $select = '<select class="form-select" id="'.$id.'">
+                <option></option>';
+        foreach (self::HUB_ROLES as $role_id => $role_type){
+            $role_name = constant("self::HUB_ROLE_".$role_type);
+            $select .= "<option value='".$role_id."' role_name='".$role_name."'>".$role_name."</option>";
+        }
+        $select .= "</select>";
+        return $select;
     }
 
     public static function replaceTerm($match) {

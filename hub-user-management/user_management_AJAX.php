@@ -33,9 +33,9 @@ if($option == "add_user") {
     $message = "D";
 }else if($option == "change_user_single" || $option == "remove_user_single") {
     $user_name = $_REQUEST['user_id_'.$option];
-    $role_id = $_REQUEST['user_role_id_'.$option];
     $role_name = $_REQUEST['user_role_name_'.$option];
     $project_id = $_REQUEST['project_id'];
+    $role_id = HubREDCapUsers::getUserRole($module, $role_name, $project_id, $_REQUEST['user_role_id_'.$option]);
 
     if($option == "remove_user_single") {
         HubREDCapUsers::removeUserFromProject($module, $project_id, $user_name, USERID, $pidsArray);

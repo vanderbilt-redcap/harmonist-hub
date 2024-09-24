@@ -5,7 +5,6 @@ include_once(__DIR__ ."/../classes/HubREDCapUsers.php");
 
 $projects_array = REDCapManagement::getProjectsConstantsArray();
 $projects_titles_array = REDCapManagement::getProjectsTitlesArray();
-$user_roles = HubREDCapUsers::getAllRoles($module, $pidsArray['PROJECTS']);
 $hub_name = $settings['hub_name']." Hub";
 ?>
 <!DOCTYPE html>
@@ -293,6 +292,7 @@ $hub_name = $settings['hub_name']." Hub";
         foreach ($projects_array as $id => $constant) {
             $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=" . $pidsArray[$constant], ENT_QUOTES);
             $users = HubREDCapUsers::getUserList($module, $pidsArray[$constant]);
+            $user_roles = HubREDCapUsers::getAllRoles($module, $pidsArray[$constant]);
             ?>
             <tr>
                 <td style="padding-bottom: 0;padding-top: 0;">
@@ -350,12 +350,7 @@ $hub_name = $settings['hub_name']." Hub";
             $user_roles_info = "<div>This is more info on user roles:</div>";
             ?>
             <div>Select a user role <a tabindex="0" role="button" class="info-toggle" data-html="true" data-container="body" data-toggle="tooltip" data-trigger="hover" data-placement="right" style="outline: none;" title="<?=$user_roles_info?>"><i class="fas fa-info-circle fa-fw" style="color:#0d6efd" aria-hidden="true"></i></a>:</div>
-            <select class="form-select" id="user_role_add_user">
-                <option></option>
-                <?php foreach ($user_roles as $role => $role_id){
-                    echo "<option value='".$role_id."' role_name='".$role."'>".$role."</option>";
-                }?>
-            </select>
+            <?php echo HubREDCapUsers::getRoleSelector("user_role_add_user");?>
             <br/>
             <div>Add user names separated by commas or search and click on them:</div>
             <div class="autocomplete-user">
@@ -389,17 +384,13 @@ $hub_name = $settings['hub_name']." Hub";
         </div>
     </form>
 </div>
+
 <div id="changeUsersForm" title="Change User Role" style="display:none;">
     <form method="POST" action="" id="change_user_management">
         <div class="modal-body">
             <div class="alert alert-danger col-md-12" style="display: none" id="alert_text_change_user"></div>
             <div>Select a user role <a tabindex="0" role="button" class="info-toggle" data-html="true" data-container="body" data-toggle="tooltip" data-trigger="hover" data-placement="right" style="outline: none;" title="<?=$user_roles_info?>"><i class="fas fa-info-circle fa-fw" style="color:#0d6efd" aria-hidden="true"></i></a>:</div>
-            <select class="form-select" id="user_role_change_user">
-                <option></option>
-                <?php foreach ($user_roles as $role => $role_id){
-                    echo "<option value='".$role_id."' role_name='".$role."'>".$role."</option>";
-                }?>
-            </select>
+            <?php echo HubREDCapUsers::getRoleSelector("user_role_change_user");?>
             <div id="user_remove_list" style="padding: 10px;"></div>
             <div>You will be changing the roles for these users/projects:</div>
             <div id="projectsSelected_change_user"></div>
@@ -429,12 +420,7 @@ $hub_name = $settings['hub_name']." Hub";
         <div class="alert alert-danger col-md-12" style="display: none" id="alert_text_change_user_single"></div>
         <div>Select a user role <a tabindex="0" role="button" class="info-toggle" data-html="true" data-container="body" data-toggle="tooltip" data-trigger="hover" data-placement="right" style="outline: none;" title="<?=$user_roles_info?>"><i class="fas fa-info-circle fa-fw" style="color:#0d6efd" aria-hidden="true"></i></a>:</div>
         <br/>
-        <select class="form-select" id="user_role_change_user_single">
-            <option></option>
-            <?php foreach ($user_roles as $role => $role_id){
-                echo "<option value='".$role_id."' role_name='".$role."'>".$role."</option>";
-            }?>
-        </select>
+        <?php echo HubREDCapUsers::getRoleSelector("user_role_change_user_single");?>
         <input type="hidden" id="user_id_change_user_single" name="user_id_change_user_single">
         <input type="hidden" id="project_id_change_user_single" name="project_id_change_user_single">
         <div class="modal-footer" style="padding-top: 30px;">
