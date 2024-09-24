@@ -24,7 +24,21 @@ class HubREDCapUsers
         return $choices;
     }
 
-    public static function getUserRole($module, $role_name, $project_id){
+    public static function gerUsersEmail($module, $user_list): array
+    {
+        $email_users = [];
+        foreach ($user_list as $user_name) {
+            $q = $module->query("SELECT user_email FROM redcap_user_information WHERE username = ?", [$user_name]);
+            if($row = $q->fetch_assoc()){
+                $email_users[$user_name]['email'] =  $row['user_email'];
+                $email_users[$user_name]['text'] =  '';
+            }
+        }
+        return $email_users;
+    }
+
+    public static function getUserRole($module, $role_name, $project_id): int
+    {
         $q = $module->query("SELECT role_id FROM redcap_user_roles WHERE role_name = ?", [$role_name]);
         if($row = $q->fetch_assoc()){
             return $row['role_id'];
@@ -50,7 +64,8 @@ class HubREDCapUsers
 //        return $role_id;
     }
 
-    public static function getAllRoles($module, $project_id){
+    public static function getAllRoles($module, $project_id): array
+    {
         $roles = [];
         foreach ([self::HUB_ROLE_ADMIN,self::HUB_ROLE_USER] as $role){
             $roles[$role] = self::getUserRole($module, $role, $project_id);
@@ -58,7 +73,8 @@ class HubREDCapUsers
         return $roles;
     }
 
-    public static function addUserToProject($module, $project_id, $user_name, $role_id, $user_name_main, $pidsArray, $role_name=""){
+    public static function addUserToProject($module, $project_id, $user_name, $role_id, $user_name_main, $pidsArray, $role_name=""): void
+    {
         $q = $module->query("SELECT role_id FROM redcap_user_rights WHERE project_id = ? AND username = ?", [$project_id,$user_name]);
         if($q->num_rows  == 0){
             $fields_rights = "project_id, username, role_id, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
@@ -66,30 +82,31 @@ class HubREDCapUsers
             #Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
             $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
             $module->query("INSERT INTO redcap_user_rights (" . $fields_rights . ")
-                    VALUES (?,?,?,?,?,?,?,?,?)",
+                    VALUES (?,?,?,?,?,?,?,?,?,?)",
                 [$project_id, $user_name, $role_id, 1, 1, 1, 1, 1, 1, $data_entry]);
 
-            self::addUserLogs($user_name, $user_name_main, $project_id, $pidsArray, "added",  $role_name);
+            self::addUserLogs($module, $user_name, $user_name_main, $project_id, $pidsArray, "added",  $role_name);
         }
     }
 
-    public static function removeUserFromProject($module, $project_id, $user_name, $user_name_main, $pidsArray){
+    public static function removeUserFromProject($module, $project_id, $user_name, $user_name_main, $pidsArray): void
+    {
         $q = $module->query("DELETE FROM redcap_user_rights WHERE project_id = $project_id and username = ?", [$project_id,$user_name]);
         if($q->num_rows  > 0){
-            self::addUserLogs($user_name, $user_name_main, $project_id, $pidsArray, "removed");
+            self::addUserLogs($module, $user_name, $user_name_main, $project_id, $pidsArray, "removed");
         }
     }
 
-    public static function changeUserRole($module, $project_id, $user_name, $role_id, $pidsArray, $role_name, $user_name_main){
+    public static function changeUserRole($module, $project_id, $user_name, $role_id, $pidsArray, $role_name, $user_name_main): void
+    {
         $module->query("UPDATE redcap_user_rights SET role_id = ? WHERE username = ? AND project_id = ?",[$role_id, $user_name, $project_id]);
-        self::addUserLogs($user_name, $user_name_main, $project_id, $pidsArray, "changed",  $role_name);
+        self::addUserLogs($module, $user_name, $user_name_main, $project_id, $pidsArray, "changed",  $role_name);
     }
 
-    public static function addUserLogs($user_name, $user_name_main, $project_id, $pidsArray, $type,  $role_name=""){
+    public static function addUserLogs($module, $user_name, $user_name_main, $project_id, $pidsArray, $type,  $role_name=""): void
+    {
         $constant = array_search($project_id, $pidsArray);
-        $projects_array = REDCapManagement::getProjectsConstantsArray();
-        $data_id = array_search($constant, $projects_array);
-        $project_title = REDCapManagement::getProjectsTitlesArray()[$data_id];
+        $project_title = $module->framework->getProject($pidsArray[$constant])->getTitle();
 
         $title = "Hub REDCap User Management: ".$user_name." ".strtoupper($type);
         $role = "";
