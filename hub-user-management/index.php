@@ -188,25 +188,27 @@ $hub_name = $settings['hub_name']." Hub";
 
             $('#change_user_single_management').submit(function (event) {
                 let url = <?=json_encode($module->getUrl('hub-user-management/user_management_AJAX.php'))?>;
-                let data = $('#change_user_single_management').serialize();
+                let data = "&data=" + $('#change_user_single_management').serialize();
                 let id = $(this).attr('id');
-                console.log(id)
-                console.log(data)
-                console.log($('#user_role_change_user_single').val())
-                console.log($('#user_role_change_user_single').attr('role_name'))
-
-                // $.ajax({
-                //     type: "POST",
-                //     url: url,
-                //     data: "&"+data+"&user_role_change_user_single="+$('#user_role_change_user_single').val()+"&user_list_textarea="+$('#user_list_textarea').val()+"&option=add_user",
-                //     error: function (xhr, status, error) {
-                //         alert(xhr.responseText);
-                //     },
-                //     success: function (result) {
-                //         var message = jQuery.parseJSON(result)['message'];
-                //         window.location = getMessageLetterUrl(window.location.href, message);
-                //     }
-                // });
+                let option = id.replace('_management','');
+                data += "&user_role_id_change_user_single="+$('#user_role_change_user_single').val()+
+                    "&user_role_name_change_user_single="+$('#user_role_change_user_single option:selected').attr('role_name')+
+                    "&user_id_change_user_single="+$('#user_id_change_user_single').val()+
+                    "&project_id="+$('#project_id_change_user_single').val()+
+                    "&option="+option;
+                    console.log(data)
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: data,
+                    error: function (xhr, status, error) {
+                        alert(xhr.responseText);
+                    },
+                    success: function (result) {
+                        var message = jQuery.parseJSON(result)['message'];
+                        window.location = getMessageLetterUrl(window.location.href, message);
+                    }
+                });
                 return false;
             });
 
@@ -354,10 +356,10 @@ $hub_name = $settings['hub_name']." Hub";
                                         $user_data .= ", <em>".$role_name."</em>";
                                     }
                                     ?>
-                                <tr><td style="padding-left: 30px;" id="user_<?=$id?>" user_role="<?=$role_name?>" user_value="<?=$user['value']?>">
+                                <tr><td style="padding-left: 30px;" id="user_<?=$pidsArray[$constant]?>" user_role="<?=$role_name?>" user_value="<?=$user['value']?>">
                                         <?=$user_data;?>
-                                        <a onclick='$("#dialogWarningDelete").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");' style="cursor:pointer;"><i class="fa-solid fa-x remove_user"></i></a>
-                                        <a onclick='$("#dialogWarningChange").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar");' style="cursor:pointer;"><i class="fa-solid fa-pencil" style="font-size:12px;"></i></a>
+                                        <a onclick='$("#project_id_remove_user_single").val("<?=$pidsArray[$constant]?>");$("#user_id_remove_user_single").val("<?=$user['value']?>");$("#dialogWarningDelete").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");' style="cursor:pointer;"><i class="fa-solid fa-x remove_user"></i></a>
+                                        <a onclick='$("#project_id_change_user_single").val("<?=$pidsArray[$constant]?>");$("#user_id_change_user_single").val("<?=$user['value']?>");$("#dialogWarningChange").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar");' style="cursor:pointer;"><i class="fa-solid fa-pencil" style="font-size:12px;"></i></a>
                                     </td></tr>
                                 <?php } ?>
                             </table>
@@ -458,9 +460,11 @@ $hub_name = $settings['hub_name']." Hub";
         <select class="form-select" id="user_role_change_user_single">
             <option></option>
             <?php foreach ($user_roles as $role => $role_id){
-                echo "<option value='".$role_id."'>".$role."</option>";
+                echo "<option value='".$role_id."' role_name='".$role."'>".$role."</option>";
             }?>
         </select>
+        <input type="hidden" id="user_id_change_user_single" name="user_id_change_user_single">
+        <input type="hidden" id="project_id_change_user_single" name="project_id_change_user_single">
         <div class="modal-footer" style="padding-top: 30px;">
             <a onclick="checkData('change_user_single');" class="btn btn-primary" name="btnConfirm">Change Role</a>
         </div>

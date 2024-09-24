@@ -1,5 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+include_once(__DIR__ . "/REDCapManagement.php");
 
 class HubREDCapUsers
 {
@@ -79,20 +80,25 @@ class HubREDCapUsers
         }
     }
 
-    public static function changeUserRole($module, $project_id, $user_name, $user_name_main, $pidsArray){
-
+    public static function changeUserRole($module, $project_id, $user_name, $role_id, $pidsArray, $role_name, $user_name_main){
+        $module->query("UPDATE redcap_user_rights SET role_id = ? WHERE username = ? AND project_id = ?",[$role_id, $user_name, $project_id]);
+        self::addUserLogs($user_name, $user_name_main, $project_id, $pidsArray, "changed",  $role_name);
     }
 
     public static function addUserLogs($user_name, $user_name_main, $project_id, $pidsArray, $type,  $role_name=""){
         $constant = array_search($project_id, $pidsArray);
+        $projects_array = REDCapManagement::getProjectsConstantsArray();
+        $data_id = array_search($constant, $projects_array);
+        $project_title = REDCapManagement::getProjectsTitlesArray()[$data_id];
 
-        $title = "Hub REDCap User Management: ".$user_name." ".$type;
+        $title = "Hub REDCap User Management: ".$user_name." ".strtoupper($type);
+        $role = "";
         if($role_name != null){
-            $title .= " as ".$role_name;
+            $role = " as '".$role_name."'";
         }
-        $title = " as ".$role_name." on  ".$constant." (PID #".$project_id.") by ".$user_name_main;
+        $title .= " on  ".$constant." (PID #".$project_id.") ";
 
-        $message = "User ".ucfirst($type). " on Project #".$project_id." by ".$user_name_main;
+        $message = "User ".$user_name." ".$type. " on ".$project_title." (PID #".$project_id.")".$role." by ".$user_name_main;
 
         \REDCap::logEvent($title, $message, null,null,null,$pidsArray['PROJECTS']);
         \REDCap::logEvent($title, $message, null,null,null,$project_id);
