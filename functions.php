@@ -138,12 +138,23 @@ function getFaIconFile($file_extension){
     $icon = "fa-file-o";
     if(strtolower($file_extension) == '.pdf' || strtolower($file_extension) == 'pdf'){
         $icon = "fa-file-pdf-o";
-    }else if(strtolower($file_extension) == '.doc' || strtolower($file_extension) == 'doc'){
+    }else if(strtolower($file_extension) == '.doc' || strtolower($file_extension) == 'doc' ||
+        strtolower($file_extension) == '.docx' || strtolower($file_extension) == 'docx'){
         $icon = "fa-file-word-o";
-    }else if(strtolower($file_extension) == '.pptx' || strtolower($file_extension) == 'pptx'){
+    }else if(strtolower($file_extension) == '.pptx' || strtolower($file_extension) == 'pptx' ||
+        strtolower($file_extension) == '.ppt' || strtolower($file_extension) == 'ppt'){
         $icon = "fa-file-powerpoint-o";
     }else if(strtolower($file_extension) == '.xlsx' || strtolower($file_extension) == 'xlsx'){
         $icon = "fa-file-excel-o";
+    }else if(strtolower($file_extension) == '.html' || strtolower($file_extension) == 'html'){
+        $icon = "fa-file-code-o";
+    }else if(strtolower($file_extension) == '.png' || strtolower($file_extension) == 'png' ||
+        strtolower($file_extension) == '.jpeg' || strtolower($file_extension) == 'jpeg' ||
+        strtolower($file_extension) == '.gif' || strtolower($file_extension) == 'gif' ||
+        strtolower($file_extension) == '.tiff' || strtolower($file_extension) == 'tiff' ||
+        strtolower($file_extension) == '.bmp' || strtolower($file_extension) == 'bmp' ||
+        strtolower($file_extension) == '.jpg' || strtolower($file_extension) == 'jpg'){
+        $icon = "fa-file-image-o";
     }
 
     return "<i class='fa ".$icon."' aria-hidden='true'></i> ";
