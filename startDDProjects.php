@@ -71,7 +71,7 @@ foreach ($projects_array as $index=>$name){
                         "<li>AWS Bucket name</li>" .
                         "<li>AWS Bucket Credentials</li>" .
                         "</ul>";
-                \Vanderbilt\HarmonistHubExternalModule\sendEmail("harmonist@vumc.org", "noreply.harmonist@vumc.org", "noreply.harmonist@vumc.org", $subject, $message, "Not in database","New DataTolkit setup needed",$project_id_new);
+                \Vanderbilt\HarmonistHubExternalModule\sendEmail(REDCapManagement::DEFAULT_EMAIL_ADDRESS, "noreply.harmonist@vumc.org", "noreply.harmonist@vumc.org", $subject, $message, "Not in database","New DataTolkit setup needed",$project_id_new);
             }
         }
         #Add the Default values or they get deleted with the saved new record

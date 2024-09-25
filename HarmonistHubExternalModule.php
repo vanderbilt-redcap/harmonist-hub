@@ -136,7 +136,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             echo '</script>';
 
         }catch (Throwable $e) {
-            \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Hook Error", $e->getMessage());
+            \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Hook Error", $e->getMessage());
         }
     }
 
@@ -155,7 +155,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 echo '</script>';
             }
         }catch (Throwable $e) {
-            \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Hook Error", $e->getMessage());
+            \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Hook Error", $e->getMessage());
         }
     }
 
@@ -279,7 +279,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                             include("crontasks/cron_json.php");
                         }
                     } catch (Throwable $e) {
-                        \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org',"Cron Error", $e->getMessage());
+                        \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS,"Cron Error", $e->getMessage());
                     }
                 }
             }

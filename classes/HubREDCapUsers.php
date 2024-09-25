@@ -7,6 +7,9 @@ class HubREDCapUsers
     const HUB_ROLE_ADMIN = "Hub Admin Role";
     const HUB_ROLE_USER = "Hub User Role";
     const HUB_ROLES = ["3" => "ADMIN", "1" => "USER"];
+    const ADD_USER = "add_user";
+    const REMOVE_USER = "remove_user";
+    const CHANGE_USER = "change_user";
 
     public static function getUserList($module, $project_id): array
     {
@@ -94,11 +97,9 @@ class HubREDCapUsers
 
     public static function setUserChanges($module, $pidsArray, $option, $user_list, $checked_values, $role_name, $role_type): string
     {
-        error_log("setUserChanges ".$option);
-        error_log("changeUserRole: ".$role_name);
         $message = "";
         $email_users = "";
-        if($option == "add_user"){
+        if($option == self::ADD_USER){
             $email_users = self::gerUsersEmail($module, $user_list);
             $message = "A";
         }
@@ -106,22 +107,22 @@ class HubREDCapUsers
         foreach ($checked_values as $project_id) {
             $role_id = self::getUserRole($module, $role_name, $project_id, $role_type);
             foreach ($user_list as $user_name) {
-                if($option == "add_user") {
+                if($option == self::ADD_USER) {
                     self::addUserToProject($module, $project_id, $user_name, $role_id, USERID, $pidsArray, $role_name);
                     $gotoREDCap = APP_PATH_WEBROOT_ALL . "ProjectSetup/index.php?pid=" . $project_id;
                     $email_users[$user_name]['text'] .= "<div>PID #" . $project_id . " - <a href='" . $gotoREDCap . "'>" . $module->framework->getProject($pidsArray[array_search($project_id, $pidsArray)])->getTitle() . "</a></div>";
-                }else if($option == "remove_user"){
+                }else if($option == self::REMOVE_USER){
                     self::removeUserFromProject($module, $project_id, $user_name, USERID, $pidsArray);
                     $message = "D";
-                }else if($option == "change_user"){
+                }else if($option == self::CHANGE_USER){
                     self::changeUserRole($module, $project_id, $user_name, $role_id, $pidsArray, $role_name, USERID);
                     $message = "C";
                 }
             }
         }
-        if($option == "add_user"){
+        if($option == self::ADD_USER){
             foreach ($email_users as $user_name => $data){
-                \REDCap::email($data['email'],'harmonist@vumc.org',"You have been added to a ".$settings['hub_name']." Hub Project", $data['text']);
+                \REDCap::email($data['email'],REDCapManagement::DEFAULT_EMAIL_ADDRESS,"You have been added to a ".$settings['hub_name']." Hub Project", $data['text']);
             }
         }
         return $message;

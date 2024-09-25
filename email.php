@@ -6,7 +6,7 @@ include_once(__DIR__ . "/classes/REDCapManagement.php");
 function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $action_description="", $pid="", $cc=""){
     if (filter_var($to, FILTER_VALIDATE_EMAIL)) {
         if ($from == "") {
-            $from = "harmonist@vumc.org";
+            $from = REDCapManagement::DEFAULT_EMAIL_ADDRESS;
         }
 
         REDCapManagement::getEnvironment();
@@ -27,7 +27,7 @@ function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $actio
         $send = $email->send();
 
         if (!$send) {
-            \REDCap::email('harmonist@vumc.org', 'harmonist@vumc.org', "Mailer Error:" .
+            \REDCap::email(REDCapManagement::DEFAULT_EMAIL_ADDRESS, REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Mailer Error:" .
                 $action_description, "Mailer Error (send = " . $send . "): the email could not be sent in project " . $pid . " record #" . $record_id .
                 "<br><br>To: " . $to . "<br>CC: " . $cc . "<br>From (" . $fromName . $environment . "): " . $from . "<br>Subject: " . $subject .
                 "<br>Message: <br>" . $message);
