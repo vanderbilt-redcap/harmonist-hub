@@ -6,6 +6,8 @@ include_once(__DIR__ ."/../classes/HubREDCapUsers.php");
 $projects_array = REDCapManagement::getProjectsConstantsArray();
 $projects_titles_array = REDCapManagement::getProjectsTitlesArray();
 $hub_name = $settings['hub_name']." Hub";
+array_push($projects_array,"PROJECTS");
+array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +35,7 @@ $hub_name = $settings['hub_name']." Hub";
             var sButton = null;
             var $form = $('#user_list');
             var $submitButtons = $form.find('.btnClassConfirm');
+            let gotoREDCap = <?=json_encode(APP_PATH_WEBROOT_ALL . "ProjectSetup/index.php?pid=")?>;
 
             $submitButtons.click(function(event) {
                 sButton = this;
@@ -61,7 +64,6 @@ $hub_name = $settings['hub_name']." Hub";
                     if(sButton.name == "change_user") {
                         let project_info = "<ul>";
                         checked_values.forEach((project_id) => {
-                            let gotoREDCap = <?=json_encode(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=")?>;
                             $('[user_pid = "'+project_id+'"]').each(function() {
                                 let user_val = $(this).attr('user_value');
                                 let user_role = $(this).attr('user_role');
@@ -87,7 +89,6 @@ $hub_name = $settings['hub_name']." Hub";
                             project_info += "<li><span style='color:red;'>ALL REDCap projects have been selected.</span></li>";
                         } else {
                             checked_values.forEach((project_id) => {
-                                let gotoREDCap = <?=json_encode(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=")?>;
                                 project_info += "<li><a href='" + gotoREDCap + project_id + "' target='_blank'>" + hub_name + ": " + projects_titles_array[$("#" + project_id).attr("pid")] + "</a></li>";
                             });
                         }
@@ -293,7 +294,7 @@ $hub_name = $settings['hub_name']." Hub";
         <tbody>
         <?php
         foreach ($projects_array as $id => $constant) {
-            $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "Design/data_dictionary_codebook.php?pid=" . $pidsArray[$constant], ENT_QUOTES);
+            $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "ProjectSetup/index.php?pid=" . $pidsArray[$constant], ENT_QUOTES);
             $users = HubREDCapUsers::getUserList($module, $pidsArray[$constant]);
             $user_roles = HubREDCapUsers::getAllRoles($module, $pidsArray[$constant]);
             ?>

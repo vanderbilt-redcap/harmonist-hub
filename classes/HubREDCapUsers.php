@@ -27,7 +27,7 @@ class HubREDCapUsers
         return $choices;
     }
 
-    public static function gerUsersEmail($module, $user_list): array
+    public static function getUsersEmail($module, $user_list): array
     {
         $email_users = [];
         foreach ($user_list as $user_name) {
@@ -75,7 +75,7 @@ class HubREDCapUsers
         $values = [];
         switch($role_id){
             case 1:
-                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,0,0,0,1,0,0,1,1,0,1,1,0,0,1,1];
                 break;
             case 3:
                 $values = [$project_id,$role_name,$data_export_instruments,$data_entry,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
@@ -100,7 +100,7 @@ class HubREDCapUsers
         $message = "";
         $email_users = "";
         if($option == self::ADD_USER){
-            $email_users = self::gerUsersEmail($module, $user_list);
+            $email_users = self::getUsersEmail($module, $user_list);
             $message = "A";
         }
 
@@ -120,6 +120,7 @@ class HubREDCapUsers
                 }
             }
         }
+
         if($option == self::ADD_USER){
             foreach ($email_users as $user_name => $data){
                 \REDCap::email($data['email'],REDCapManagement::DEFAULT_EMAIL_ADDRESS,"You have been added to a ".$settings['hub_name']." Hub Project", $data['text']);
@@ -140,7 +141,13 @@ class HubREDCapUsers
                     VALUES (?,?,?,?,?,?,?,?,?,?)",
                 [$project_id, $user_name, $role_id, 1, 1, 1, 1, 1, 1, $data_entry]);
 
-            self::addUserLogs($module, $user_name, $user_name_main, $project_id, $pidsArray, "added",  $role_name);
+            if(is_int($pidsArray)){
+                $title = "$user_name added by $user_name_main";
+                $message = "User $user_name added on ".$module->framework->getProject($project_id)->getTitle()." (PID #".$project_id.") as $role_name by $user_name_main";
+                \REDCap::logEvent($title, $message, null,null,null,$pidsArray);
+            }else{
+                self::addUserLogs($module, $user_name, $user_name_main, $project_id, $pidsArray, "added",  $role_name);
+            }
         }
     }
 
