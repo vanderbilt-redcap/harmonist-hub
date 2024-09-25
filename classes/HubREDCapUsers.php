@@ -39,22 +39,25 @@ class HubREDCapUsers
 
     public static function getUserRole($module, $role_name, $project_id, $role_type): int
     {
-        $q = $module->query("SELECT role_id FROM redcap_user_roles WHERE role_name = ? AND project_id = ?", [$role_name,$project_id]);
-        if($row = $q->fetch_assoc()){
-            return $row['role_id'];
-        }
+        if($role_name != null) {
+            $q = $module->query("SELECT role_id FROM redcap_user_roles WHERE role_name = ? AND project_id = ?", [$role_name, $project_id]);
+            if ($row = $q->fetch_assoc()) {
+                return $row['role_id'];
+            }
 
-        $fields = "project_id, role_name, data_export_instruments, data_entry, data_import_tool, data_comparison_tool, data_logging, file_repository,
+            $fields = "project_id, role_name, data_export_instruments, data_entry, data_import_tool, data_comparison_tool, data_logging, file_repository,
         user_rights, data_access_groups, graphical, reports, design, calendar, record_create, record_rename, record_delete,
         participants, data_quality_resolution";
 
-        $values = self::getUserRoleData($module, $project_id, $role_type, $role_name);
+            $values = self::getUserRoleData($module, $project_id, $role_type, $role_name);
 
-        $q = $module->query("INSERT INTO redcap_user_roles
+            $q = $module->query("INSERT INTO redcap_user_roles
                                 ($fields) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", $values);
-        $role_id = db_insert_id();
+            $role_id = db_insert_id();
 
-        return $role_id;
+            return $role_id;
+        }
+        return 0;
     }
 
     public static function getUserRoleData($module, $project_id, $role_type, $role_name): array
@@ -87,6 +90,41 @@ class HubREDCapUsers
             $roles[$role_name] = self::getUserRole($module, $role_name, $project_id, $role_type);
         }
         return $roles;
+    }
+
+    public static function setUserChanges($module, $pidsArray, $option, $user_list, $checked_values, $role_name, $role_type): string
+    {
+        error_log("setUserChanges ".$option);
+        error_log("changeUserRole: ".$role_name);
+        $message = "";
+        $email_users = "";
+        if($option == "add_user"){
+            $email_users = self::gerUsersEmail($module, $user_list);
+            $message = "A";
+        }
+
+        foreach ($checked_values as $project_id) {
+            $role_id = self::getUserRole($module, $role_name, $project_id, $role_type);
+            foreach ($user_list as $user_name) {
+                if($option == "add_user") {
+                    self::addUserToProject($module, $project_id, $user_name, $role_id, USERID, $pidsArray, $role_name);
+                    $gotoREDCap = APP_PATH_WEBROOT_ALL . "ProjectSetup/index.php?pid=" . $project_id;
+                    $email_users[$user_name]['text'] .= "<div>PID #" . $project_id . " - <a href='" . $gotoREDCap . "'>" . $module->framework->getProject($pidsArray[array_search($project_id, $pidsArray)])->getTitle() . "</a></div>";
+                }else if($option == "remove_user"){
+                    self::removeUserFromProject($module, $project_id, $user_name, USERID, $pidsArray);
+                    $message = "D";
+                }else if($option == "change_user"){
+                    self::changeUserRole($module, $project_id, $user_name, $role_id, $pidsArray, $role_name, USERID);
+                    $message = "C";
+                }
+            }
+        }
+        if($option == "add_user"){
+            foreach ($email_users as $user_name => $data){
+                \REDCap::email($data['email'],'harmonist@vumc.org',"You have been added to a ".$settings['hub_name']." Hub Project", $data['text']);
+            }
+        }
+        return $message;
     }
 
     public static function addUserToProject($module, $project_id, $user_name, $role_id, $user_name_main, $pidsArray, $role_name=""): void

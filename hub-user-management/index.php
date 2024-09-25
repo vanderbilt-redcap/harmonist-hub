@@ -147,25 +147,28 @@ $hub_name = $settings['hub_name']." Hub";
                 });
             });
 
-            $('#add_user_management,#remove_user_management,#change_user_single_management, #remove_user_single_management').submit(function (event) {
+            $('#add_user_management, #remove_user_management, #change_user_management, #change_user_single_management, #remove_user_single_management').submit(function (event) {
                 let url = <?=json_encode($module->getUrl('hub-user-management/user_management_AJAX.php'))?>;
                 let id = $(this).attr('id');
                 let option = id.replace('_management','');
+                let role_name = $('#user_role_'+option+' option:selected').attr('role_name');
                 let data = "&user_role_id_"+option+"="+$('#user_role_'+option).val()+
-                    "&user_role_name_"+option+"="+$('#user_role_'+option+' option:selected').attr('role_name')+
                     "&user_id_"+option+"="+$('#user_id_'+option).val()+
                     "&project_id="+$('#project_id_'+option).val()+
                     "&option="+option;
 
                 if(option == "add_user"){
-                    data += "&user_list_textarea="+$("#user_list_textarea").val();
-                }else if(option == "remove_user"){
+                    data += "&users_checked="+$("#user_list_textarea").val();
+                }else if(option == "remove_user" || option == "change_user"){
                     let checked_values_user = [];
                     $("input[nameCheckUser='users[]']:checked").each(function() {
                         checked_values_user.push($(this).val());
                     });
                     data += "&users_checked="+checked_values_user;
+                }else if(option == "remove_user_single") {
+                    role_name = $('#role_name_remove_user_single').val();
                 }
+                data +=  "&user_role_name_"+option+"="+role_name;
 
                 $.ajax({
                     type: "POST",
@@ -326,7 +329,7 @@ $hub_name = $settings['hub_name']." Hub";
                                     ?>
                                 <tr><td style="padding:8px 30px;" user_pid="<?=$pidsArray[$constant]?>" user_role="<?=$role_name?>" user_value="<?=$user['value']?>">
                                         <?=$user_data;?>
-                                        <a onclick='$("#project_id_remove_user_single").val("<?=$pidsArray[$constant]?>");$("#user_id_remove_user_single").val("<?=$user['value']?>");$("#dialogWarningDelete").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");' style="cursor:pointer;padding-left: 5px;"><i class="fa-solid fa-x remove_user"></i></a>
+                                        <a onclick='$("#project_id_remove_user_single").val("<?=$pidsArray[$constant]?>");$("#user_id_remove_user_single").val("<?=$user['value']?>");$("#role_name_remove_user_single").val("<?=$role_name?>");$("#dialogWarningDelete").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");' style="cursor:pointer;padding-left: 5px;"><i class="fa-solid fa-x remove_user"></i></a>
                                         <a onclick='$("#project_id_change_user_single").val("<?=$pidsArray[$constant]?>");$("#user_id_change_user_single").val("<?=$user['value']?>");$("#dialogWarningChange").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar");' style="cursor:pointer;padding-left: 5px;"><i class="fa-solid fa-pencil" style="font-size:12px;"></i></a>
                                     </td></tr>
                                 <?php } ?>
@@ -408,6 +411,7 @@ $hub_name = $settings['hub_name']." Hub";
     <form method="POST" action="" id="remove_user_single_management">
         <p>Are you sure you want to remove this user?</p>
         <p>This will remove the user from the project.</p>
+        <input type="hidden" id="role_name_remove_user_single" name="role_name_remove_user_single">
         <input type="hidden" id="user_id_remove_user_single" name="user_id_remove_user_single">
         <input type="hidden" id="project_id_remove_user_single" name="project_id_remove_user_single">
         <div class="modal-footer" style="padding-top: 30px;">
