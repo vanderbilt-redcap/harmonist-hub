@@ -65,7 +65,7 @@ $hub_name = $settings['hub_name']." Hub";
                             $('[user_pid = "'+project_id+'"]').each(function() {
                                 let user_val = $(this).attr('user_value');
                                 let user_role = $(this).attr('user_role');
-                                let user_name = $(this).text();
+                                let user_name = $(this).attr('user_name');
                                 project_info += "<li style='list-style-type: none;'><input type='checkbox' nameCheckUser='users[]' value='"+user_val+"'><span style='padding-left: 5px'>"+user_name+"</span>";
                                 if(user_role != ""){
                                     project_info += ", "+user_role;
@@ -106,7 +106,7 @@ $hub_name = $settings['hub_name']." Hub";
                             checked_values.forEach((project_id) => {
                                 $('[user_pid = "'+project_id+'"]').each(function() {
                                     let user_val = $(this).attr('user_value');
-                                    let user_name = $(this).text();
+                                    let user_name = $(this).attr('user_name');
                                     if(!user_removal_list.includes(user_val)){
                                         user_removal_list.push(user_val);
                                         users_info += "<li style='list-style-type: none;'><input type='checkbox' nameCheckUser='users[]' value='"+user_val+"'><span style='padding-left: 5px'>"+user_name+"</span></li>";
@@ -322,12 +322,13 @@ $hub_name = $settings['hub_name']." Hub";
                             <table style="width: 100%;margin-top: 5px;">
                                 <?php foreach ($users as $user){
                                     $user_data = $user['name']." (<strong>".$user['value']."</strong>)";
+                                    $role_name = "";
                                     if($user['role_id'] != null){
                                         $role_name = array_search($user['role_id'], $user_roles);
                                         $user_data .= ", <em>".$role_name."</em>";
                                     }
                                     ?>
-                                <tr><td style="padding:8px 30px;" user_pid="<?=$pidsArray[$constant]?>" user_role="<?=$role_name?>" user_value="<?=$user['value']?>">
+                                <tr><td style="padding:8px 30px;" user_pid="<?=$pidsArray[$constant]?>" user_role="<?=$role_name?>" user_name="<?=$user['name'].' (<strong>'.$user['value'].'</strong>)'?>" user_value="<?=$user['value']?>">
                                         <?=$user_data;?>
                                         <a onclick='$("#project_id_remove_user_single").val("<?=$pidsArray[$constant]?>");$("#user_id_remove_user_single").val("<?=$user['value']?>");$("#role_name_remove_user_single").val("<?=$role_name?>");$("#dialogWarningDelete").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");' style="cursor:pointer;padding-left: 5px;"><i class="fa-solid fa-x remove_user"></i></a>
                                         <a onclick='$("#project_id_change_user_single").val("<?=$pidsArray[$constant]?>");$("#user_id_change_user_single").val("<?=$user['value']?>");$("#dialogWarningChange").dialog({modal:true, width:400}).prev(".ui-dialog-titlebar");' style="cursor:pointer;padding-left: 5px;"><i class="fa-solid fa-pencil" style="font-size:12px;"></i></a>
