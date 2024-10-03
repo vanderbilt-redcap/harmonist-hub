@@ -249,37 +249,38 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 
         foreach ($this->getProjectsWithModuleEnabled() as $project_id){
-            $settingsPID = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='SETTINGS'")[0]['project_id'];
-
-            if($settingsPID != "") {
-                $settings = \REDCap::getData(array('project_id' => $settingsPID), 'array')[1][$this->framework->getEventId($settingsPID)];
-
+            $hub_mapper = $this->getProjectSetting('hub-mapper',$project_id);
+            if(is_numeric($project_id) && $project_id == $hub_mapper) {
                 #Get Projects ID's
                 $pidsArray = REDCapManagement::getPIDsArray($project_id);
 
-                if(!empty($pidsArray) && !empty($settings)) {
-                    try {
-                        #CRONS
-                        if ($cronAttributes['cron_name'] == 'cron_metrics' && $settings['deactivate_metrics_cron___1'] != "1") {
-                            include("crontasks/cron_metrics.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_delete' && ($settings['deactivate_datadown___1'] != "1" || $settings['deactivate_datahub___1'] != "1")) {
-                            include("crontasks/cron_delete_AWS.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder' && ($settings['deactivate_datadown___1'] != "1" || $settings['deactivate_datahub___1'] != "1")) {
-                            include("crontasks/cron_data_upload_expiration_reminder.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown___1'] != "1" || $settings['deactivate_datahub___1'] != "1")) {
-                           include("crontasks/cron_data_upload_notification.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_monthly_digest') {
-                            //Every First Monday of the Month
-                            include("crontasks/cron_monthly_digest.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_req_finalized_notification') {
-                            include("crontasks/cron_req_finalized_notification.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_publications') {
-                            include("crontasks/cron_publications.php");
-                        } else if ($cronAttributes['cron_name'] == 'cron_json') {
-                            include("crontasks/cron_json.php");
+                if (!empty($pidsArray) && is_array($pidsArray) && $pidsArray['SETTINGS'] !== "") {
+                    $settings = \REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$this->framework->getEventId($pidsArray['SETTINGS'])];
+
+                    if (!empty($settings)) {
+                        try {
+                            #CRONS
+                            if ($cronAttributes['cron_name'] == 'cron_metrics' && $settings['deactivate_metrics_cron___1'] != "1") {
+                                include("crontasks/cron_metrics.php");
+                            } else if ($cronAttributes['cron_name'] == 'cron_delete' && ($settings['deactivate_datadown___1'] != "1" || $settings['deactivate_datahub___1'] != "1")) {
+                                include("crontasks/cron_delete_AWS.php");
+                            } else if ($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder' && ($settings['deactivate_datadown___1'] != "1" || $settings['deactivate_datahub___1'] != "1")) {
+                                include("crontasks/cron_data_upload_expiration_reminder.php");
+                            } else if ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown___1'] != "1" || $settings['deactivate_datahub___1'] != "1")) {
+                                include("crontasks/cron_data_upload_notification.php");
+                            } else if ($cronAttributes['cron_name'] == 'cron_monthly_digest') {
+                                //Every First Monday of the Month
+                                include("crontasks/cron_monthly_digest.php");
+                            } else if ($cronAttributes['cron_name'] == 'cron_req_finalized_notification') {
+                                include("crontasks/cron_req_finalized_notification.php");
+                            } else if ($cronAttributes['cron_name'] == 'cron_publications') {
+                                include("crontasks/cron_publications.php");
+                            } else if ($cronAttributes['cron_name'] == 'cron_json') {
+                                include("crontasks/cron_json.php");
+                            }
+                        } catch (Throwable $e) {
+                            \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Cron Error", $e->getMessage());
                         }
-                    } catch (Throwable $e) {
-                        \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org',"Cron Error", $e->getMessage());
                     }
                 }
             }
