@@ -75,7 +75,7 @@ class REDCapManagement {
         $pidsArray = array();
         foreach ($projects_array as $constant){
             $pid = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='".$constant."'")[0]['project_id'];
-            if($pid != ""){
+            if($pid !== ""){
                 $pidsArray[$constant] = $pid;
             }
         }
