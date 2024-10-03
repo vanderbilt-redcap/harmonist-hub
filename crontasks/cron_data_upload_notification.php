@@ -23,8 +23,5 @@ if(is_numeric($pidsArray['DATAUPLOAD']) && is_numeric($pidsArray['SETTINGS']) &&
             true
         );
     }
-}else{
-    error_log("IeDEA IeDEA CRON CronDataUploadNotification Failed PID: ".$project_id.", PROJECTS: ".$pidsArray['PROJECTS'].", DATAUPLOAD: ".$pidsArray['DATAUPLOAD'].", SETTINGS: ".$pidsArray['SETTINGS'].", SOP: ".$pidsArray['SOP']);
-    return;  // Stop execution and avoid emailing anyone else errors, since we know the following getData() is going to fail anyway
 }
 ?>

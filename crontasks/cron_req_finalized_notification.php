@@ -14,8 +14,5 @@ if(is_numeric($pidsArray['RMANAGER']) && is_numeric($pidsArray['SETTINGS'])) {
             true
         );
     }
-}else{
-    error_log("IeDEA CRON CronReqFinalizedNotification Failed PID: ".$project_id.", PROJECTS: ".$pidsArray['PROJECTS'].", RMANAGER: ".$pidsArray['RMANAGER'].", SETTINGS: ".$pidsArray['SETTINGS']);
-    return;  // Stop execution and avoid emailing anyone else errors, since we know the following getData() is going to fail anyway
 }
 ?>
