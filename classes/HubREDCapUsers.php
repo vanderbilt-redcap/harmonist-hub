@@ -242,6 +242,7 @@ class HubREDCapUsers
 
         // Set the subquery for all search terms used
         $subsqla = [];
+        $subvalue = [];
         foreach ($search_terms as $key=>$this_term) {
             // Trim and set to lower case
             $search_terms[$key] = $this_term = trim(strtolower($this_term));
@@ -251,14 +252,16 @@ class HubREDCapUsers
                 $subsqla[] = "username like ?";
                 $subsqla[] = "user_firstname like ?";
                 $subsqla[] = "user_lastname like ?";
+                $subvalue [] = "%".$this_term."%";
+                $subvalue [] = "%".$this_term."%";
+                $subvalue [] = "%".$this_term."%";
             }
         }
-        $sql_value = "%".$this_term."%";
         $subsql = implode(" or ", $subsqla);
 
         $q = $module->query("select distinct username, user_firstname, user_lastname, user_email
 		from redcap_user_information where ($subsql) 
-		order by username",[$sql_value,$sql_value,$sql_value]);
+		order by username",$subvalue);
         while($row = $q->fetch_assoc()){
             // Trim all, just in case
             $row['username'] = trim(strtolower($row['username']));
