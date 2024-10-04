@@ -41,6 +41,10 @@ class REDCapManagement {
         return $projects_array;
     }
 
+    public static function getCronNeededConstants(){
+        return ['METRICS', 'SETTINGS', 'PEOPLE', 'HARMONIST', 'COMMENTSVOTES', 'RMANAGER', 'DATAUPLOAD', 'DATADOWNLOAD', 'EXTRAOUTPUTS', 'REGIONS', 'SOP', 'DATAMODEL'];
+    }
+
     public static function getProjectConstantsArrayWithoutDeactivatedProjects(){
         $projects_array = self::getProjectsConstantsArray();
         $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
@@ -70,7 +74,7 @@ class REDCapManagement {
         return $projects_array;
     }
 
-    public static function getPIDsArray($project_id){
+    public static function getPIDsArray($project_id, $option = ""){
         $projects_array = array_merge(self::getProjectsConstantsArray(),self::getSurveyConstantsArray());
         $pidsArray = array();
         foreach ($projects_array as $constant){
@@ -80,6 +84,14 @@ class REDCapManagement {
             }
         }
         $pidsArray['PROJECTS'] = $project_id;
+
+        if($option == "cron"){
+            foreach (self::getCronNeededConstants() as $constant_id){
+                if(!array_key_exists($constant_id,$pidsArray) || (array_key_exists($constant_id,$pidsArray) && empty($pidsArray[$constant_id]))){
+                    return null;
+                }
+            }
+        }
         return $pidsArray;
     }
 
