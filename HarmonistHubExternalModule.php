@@ -252,7 +252,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             $hub_mapper = $this->getProjectSetting('hub-mapper',$project_id);
             if(is_numeric($project_id) && $project_id == $hub_mapper) {
                 #Get Projects ID's
-                $pidsArray = REDCapManagement::getPIDsArray($project_id);
+                $pidsArray = REDCapManagement::getPIDsArray($project_id, "cron");
 
                 if (!empty($pidsArray) && is_array($pidsArray) && $pidsArray['SETTINGS'] !== "") {
                     $settings = \REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$this->framework->getEventId($pidsArray['SETTINGS'])];
