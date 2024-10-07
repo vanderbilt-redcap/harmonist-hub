@@ -126,6 +126,7 @@ $date = new \DateTime($sop['sop_due_d']);
 $data['sop_due_d_preview'] = $date->format('d F Y');
 
 $data['concept_id'] = $concept_id;
+$data['record_id'] = $record;
 
 #Load information for STEP4
 $dataformat_prefer_text = "";
