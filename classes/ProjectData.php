@@ -162,17 +162,23 @@ class ProjectData
     }
 
     public static function replaceSymbolsForPDF($sopData){
-        $specialCharacters = ["&ge;", "&le;" ];
-        $specialCharactersReplacements = ["&gt;=","&lt;="];
-        $dataChanged = $sopData;
-
-        foreach($sopData as $index => $sop){
-            if(!is_array($sop)) {
-                #Only check data text no checkboxes, etc.
-                foreach ($specialCharacters as $specialChar => $replacementData) {
-                    $dataChanged[$index] = str_replace($specialCharacters, $specialCharactersReplacements, $dataChanged[$index]);
+        if(is_array($sopData)){
+            $specialCharacters = ["&ge;", "&le;" ];
+            $specialCharactersReplacements = ["&gt;=","&lt;="];
+            $dataChanged = $sopData;
+            foreach($sopData as $index => $sop){
+                if(!is_array($sop)) {
+                    #Only check data text no checkboxes, etc.
+                    foreach ($specialCharacters as $specialChar => $replacementData) {
+                        $dataChanged[$index] = str_replace($specialCharacters, $specialCharactersReplacements, $dataChanged[$index]);
+                    }
                 }
             }
+        }else{
+            #Case scenario Code Lists
+            $specialCharacters = [">", "<" ];
+            $specialCharactersReplacements = ["&gt;","&lt;"];
+            $dataChanged = str_replace($specialCharacters, $specialCharactersReplacements, $sopData);
         }
         return $dataChanged;
     }
