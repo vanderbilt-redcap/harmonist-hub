@@ -6,6 +6,7 @@ use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 require_once 'vendor/autoload.php';
 require_once(dirname(__FILE__)."/classes/ArrayFunctions.php");
+require_once(dirname(__FILE__)."/classes/ProjectData.php");
 
 
 /**
@@ -1653,7 +1654,7 @@ function generateTablesHTML_pdf($module, $pidCodeList, $dataTable,$fieldsSelecte
                             $codeformat = \REDCap::getData($pidCodeList, 'json-array',array('record_id' => $data['code_list_ref'][$id]),array('code_format','code_list','code_file'));
 
                             if ($codeformat['code_format'] == '1') {
-                                $codeOptions = empty($codeformat['code_list']) ? $data['code_text'][$id] : explode(" | ", $codeformat['code_list']);
+                                $codeOptions = empty($codeformat['code_list']) ? $data['code_text'][$id] : explode(" | ", ProjectData::replaceSymbolsForPDF($codeformat['code_list']));
                                 if (!empty($codeOptions[0])) {
                                     $dataFormat .= "<div style='padding-left:15px'>";
                                 }
