@@ -1306,17 +1306,17 @@ function getParamUrl(url, newParam){
     return url;
 }
 
-function exploreDataToken(data){
+function exploreDataToken(data,url,url_relocation){
     $.ajax({
         type: "POST",
-        url: "sop/sop_explore_data_AJAX.php",
+        url: url,
         data: data,
         error: function (xhr, status, error) {
             alert(xhr.responseText);
         },
         success: function (result) {
             var tokendt = JSON.parse(result);
-            window.location = 'index.php?option=dab&tokendab='+tokendt;
+            window.location = url_relocation+"&"+tokendt;
         }
     });
 }

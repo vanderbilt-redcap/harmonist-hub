@@ -46,6 +46,7 @@ $newItems = \REDCap::getData($pidsArray['NEWITEMS'], 'json-array', null,null,nul
 ArrayFunctions::array_sort_by_column($newItems, 'news_d',SORT_DESC);
 $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-calendar-o'=>'#ff8080','fa-bell-o'=>'#dff028',
     'fa-list-ol'=>'#b3d9ff','fa-file-o'=>'#a3a3c2','fa-trophy'=>'#9999ff','fa-exclamation-triangle'=>'#a3c2c2');
+$exploreDataToken = json_encode("&code=".getCrypt($current_user['record_id'],'e',$secret_key,$secret_iv));
 ?>
 <div class="optionSelectData">
     <h3>Data Hub</h3>
@@ -57,8 +58,7 @@ $news_icon_color = array('fa-newspaper-o'=>'#ffbf80',	'fa-bullhorn'=>'#ccc','fa-
         <div class="well centerwell data_boxes" >
             <i class="fa fa-2x fa-fw fa-map" aria-hidden="true"></i>
             <div class="welltitle"><strong>Explore</strong> the different types of <?=$settings['hub_name']?> data</div>
-
-            <a class="btn btn-warning" disabled><em>Coming Soon</em></a>
+            <a onclick='javascript:exploreDataToken(<?=$exploreDataToken;?>,<?=json_encode($module->getUrl("sop/sop_explore_data_AJAX.php"));?>,<?=json_encode($module->getUrl('index.php?option=dab&tokendab='));?>)' class="btn btn-warning">Explore Data</a>
         </div>
     </div>
     <div class="col-sm-3">
