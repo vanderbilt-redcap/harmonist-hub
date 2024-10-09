@@ -165,15 +165,15 @@ class HubREDCapUsers
 
     public static function addUserLogs($module, $user_name, $user_name_main, $project_id, $pidsArray, $type,  $role_name=""): void
     {
-        $constant = array_search($project_id, $pidsArray);
-        $project_title = $module->framework->getProject($pidsArray[$constant])->getTitle();
+        $projectIdConstant = array_search($project_id, $pidsArray);
+        $project_title = $module->framework->getProject($pidsArray[$projectIdConstant])->getTitle();
 
         $title = "Hub REDCap User Management: ".$user_name." ".strtoupper($type);
         $role = "";
         if($role_name != null){
             $role = " as '".$role_name."'";
         }
-        $title .= " on  ".$constant." (PID #".$project_id.") ";
+        $title .= " on  ".$projectIdConstant." (PID #".$project_id.") ";
 
         $message = "User ".$user_name." ".$type. " on ".$project_title." (PID #".$project_id.")".$role." by ".$user_name_main;
 
