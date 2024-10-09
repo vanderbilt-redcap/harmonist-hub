@@ -45,7 +45,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             if (count($dd_array) == 1 && $isAdmin && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
                 $link['url'] = $this->getUrl("installProjects.php");
             }
-        }else{
+        }else if($link['name'] == "Hub Updates"){
             #HUB UPDATES
             #User has no permissions to see Last Updates, do not show link
             if(!$this->getUser()->hasDesignRights($project_id)){
@@ -136,7 +136,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             echo '</script>';
 
         }catch (Throwable $e) {
-            \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Hook Error", $e->getMessage());
+            \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Hook Error", $e->getMessage());
         }
     }
 
@@ -155,7 +155,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 echo '</script>';
             }
         }catch (Throwable $e) {
-            \REDCap::email('eva.bascompte.moragas@vumc.org', 'harmonist@vumc.org', "Hook Error", $e->getMessage());
+            \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Hook Error", $e->getMessage());
         }
     }
 

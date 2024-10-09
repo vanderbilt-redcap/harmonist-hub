@@ -27,7 +27,6 @@ $recordSecurity[$token][$event_id]['uploadregion_id'] = $upload_user['person_reg
 
 $results = \Records::saveData($pidsArray['DATATOOLUPLOADSECURITY'], 'array', $recordSecurity,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 \Records::addRecordToRecordListCache($pidsArray['DATATOOLUPLOADSECURITY'], $token, 1);
-error_log($token);
 
 $tokendt = getCrypt($token,'e',$secret_key,$secret_iv);
 

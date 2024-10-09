@@ -36,7 +36,7 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
         <link type='text/css' href='<?=$module->getUrl('css/jquery.dataTables.min.css')?>' rel='stylesheet' media='screen' />
 
         <script type="text/javascript" src="<?=$module->getUrl('js/jquery.dataTables.min.js')?>"></script>
-
+        <script type="text/javascript" src="<?=$module->getUrl('js/selectAll.js')?>"></script>
         <script>
             $(document).ready(function () {
                 $('#selectDataTableHubUpdates').dataTable({
@@ -73,59 +73,6 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                     return true;
                 });
             });
-
-            function selectData(pid){
-                var checked = $('#'+pid).is(':checked');
-                if (!checked) {
-                    $('#' + pid).prop("checked", true);
-                    $('[row="' + pid + '"]').addClass('rowSelected');
-                    if($('.rowSelected').length >= ($('[name=\'chkAll_resolved\']').length - 1)){
-                        $('#ckb_resolved').prop("checked", true);
-                    }
-                } else {
-                    $('#' + pid).prop("checked", false);
-                    $('#ckb_resolved').prop("checked", false);
-                    $('[row="' + pid + '"]').removeClass('rowSelected');
-                }
-
-                //Update Projects Counter
-                updateCounterLabel();
-            }
-
-            function checkAllResolved() {
-                if ($("[name='chkAll_resolved']").prop("checked")) {
-                    $("[name='chkAll_resolved']").prop("checked", true);
-                    $("[name='chkAll_parent_resolved']").addClass('rowSelected');
-                } else {
-                    $("[name='chkAll_resolved']").prop("checked", false);
-                    $("[name='chkAll_parent_resolved']").removeClass('rowSelected');
-                }
-
-                //Update Projects Counter
-                updateCounterLabel();
-            }
-
-            function checkAllResolvedText() {
-                if ($("[name='chkAll_resolved']").prop("checked")) {
-                    $("[name='chkAll_resolved']").prop("checked", false);
-                    $("[name='chkAll_parent_resolved']").removeClass('rowSelected');
-                } else {
-                    $("[name='chkAll_resolved']").prop("checked", true);
-                    $("[name='chkAll_parent_resolved']").addClass('rowSelected');
-                }
-
-                //Update Projects Counter
-                updateCounterLabel();
-            }
-
-            function updateCounterLabel(){
-                var count = $('.rowSelected').length;
-                if(count>0){
-                    $("#pid_total").text(count);
-                }else{
-                    $("#pid_total").text("0");
-                }
-            }
 
             function changeFormUrlPDF(id){
                 var url = '<?=$module->getUrl('hub-updates/generate_pdf.php')?>';
@@ -178,8 +125,8 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                 <span style="padding-left: 5px"><?=HubUpdates::getIcon(HubUpdates::REMOVED)." <span style='vertical-align: sub'>".ucfirst(HubUpdates::REMOVED)?></span></span>
         </div>
         <div id="pdf" style="margin-right:15px;float:right;">
-            <input type="checkbox" id="ckb_resolved" name="chkAll_resolved" onclick="checkAllResolved();" style="cursor: pointer;">
-            <span style="cursor: pointer;font-size: 14px;font-weight: normal;color: black;" onclick="checkAllResolvedText();">Select All</span>
+            <input type="checkbox" id="ckb_resolved" name="chkAll_resolved" onclick="checkAll('resolved');" style="cursor: pointer;">
+            <span style="cursor: pointer;font-size: 14px;font-weight: normal;color: black;" onclick="checkAllText('resolved');">Select All</span>
         </div>
         <div id="selectAllDiv" style="float: right"></div>
         <table id="selectDataTableHubUpdates" style="padding-bottom: 10px;">
@@ -215,10 +162,10 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                         <h3 class="panel-title">
                             <table class="table table-striped table-hover resolved-heading" style="margin-bottom:5px; border: 1px solid #dee2e6;font-size: 13px;" data-sortable>
                                 <tr row="<?=$id?>" value="<?=$id?>" name="chkAll_parent_resolved">
-                                    <td onclick="javascript:selectData('<?= $id; ?>')" style="width: 5%;">
-                                        <input value="<?=$id?>" id="<?=$id?>" onclick="selectData('<?= $id; ?>');" class='auto-submit' type="checkbox" name="chkAll_resolved" nameCheck='tablefields[]'>
+                                    <td onclick="javascript:selectData('<?= $id; ?>','resolved')" style="width: 5%;">
+                                        <input value="<?=$id?>" id="<?=$id?>" onclick="selectData('<?= $id; ?>','resolved');" class='auto-submit' type="checkbox" name="chkAll_resolved" nameCheck='tablefields[]'>
                                     </td>
-                                    <td onclick="javascript:selectData('<?= $id; ?>')">
+                                    <td onclick="javascript:selectData('<?= $id; ?>','resolved')">
                                         <?=$printProject;?>
                                     </td>
                                     <td>

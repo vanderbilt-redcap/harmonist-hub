@@ -267,7 +267,7 @@ $oldValues = $printDataAll[1];
                             <span style="cursor: pointer;font-size: 14px;font-weight: normal;color: black;" onclick="checkAllText('<?= $constant ?>');">Select All</span>
                         </span>
 
-                        <a href="<?=$printData[$constant]['gotoredcap']?>"target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;margin-top: 5px;">Go to REDCap</a>
+                        <a href="<?=$printData[$constant]['gotoredcap']?>" target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;margin-top: 5px;">Go to REDCap</a>
                         <span class="hub-update-last-updated">
                             <?php echo "Updated on ".HubUpdates::getTemplateLastUpdatedDate($module, $constant);?>
                         </span>

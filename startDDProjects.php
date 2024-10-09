@@ -2,6 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
+include_once(__DIR__ . "/classes/HubREDCapUsers.php");
 
 if(APP_PATH_WEBROOT[0] == '/'){
     $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
@@ -71,7 +72,7 @@ foreach ($projects_array as $index=>$name){
                         "<li>AWS Bucket name</li>" .
                         "<li>AWS Bucket Credentials</li>" .
                         "</ul>";
-                \Vanderbilt\HarmonistHubExternalModule\sendEmail("harmonist@vumc.org", "noreply.harmonist@vumc.org", "noreply.harmonist@vumc.org", $subject, $message, "Not in database","New DataTolkit setup needed",$project_id_new);
+                \Vanderbilt\HarmonistHubExternalModule\sendEmail(REDCapManagement::DEFAULT_EMAIL_ADDRESS, "noreply.harmonist@vumc.org", "noreply.harmonist@vumc.org", $subject, $message, "Not in database","New DataTolkit setup needed",$project_id_new);
             }
         }
         #Add the Default values or they get deleted with the saved new record
@@ -112,15 +113,10 @@ foreach ($projects_array as $index=>$name){
     }
 
     #ADD USER PERMISSIONS
-    $fields_rights = "project_id, username, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
-    $instrument_names = \REDCap::getInstrumentNames(null,$project_id_new);
-    #Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
-    $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
+    $user_roles = HubREDCapUsers::getAllRoles($module, $project_id_new);
     foreach ($userPermission as $user){
         if($user != null && $user != USERID) {
-            $module->query("INSERT INTO redcap_user_rights (" . $fields_rights . ")
-                    VALUES (?,?,?,?,?,?,?,?,?)",
-                [$project_id_new, $user, 1, 1, 1, 1, 1, 1, $data_entry]);
+            HubREDCapUsers::addUserToProject($module, $project_id_new, $user, $user_roles[HubREDCapUsers::HUB_ROLE_USER], "Harmonist Installation Process", $project_id, HubREDCapUsers::HUB_ROLE_USER);
         }
     }
 
