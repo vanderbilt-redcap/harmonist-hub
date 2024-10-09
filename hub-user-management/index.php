@@ -30,25 +30,14 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
         $(document).ready(function () {
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
-            })
-
-            var sButton = null;
-            var $form = $('#user_list');
-            var $submitButtons = $form.find('.btnClassConfirm');
-            let gotoREDCap = <?=json_encode(APP_PATH_WEBROOT_ALL . "ProjectSetup/index.php?pid=")?>;
-
-            $submitButtons.click(function(event) {
-                sButton = this;
             });
 
-            $('#user_list').submit(function (event) {
+            let gotoREDCap = <?=json_encode(APP_PATH_WEBROOT_ALL . "ProjectSetup/index.php?pid=")?>;
+
+            $('#add_user,#change_user,#remove_user').click(function () {
                 //Clean up autocomplete
                 $('#new_username').val("");
                 $('#user-list').html("");
-
-                if (null === sButton) {
-                    sButton = $submitButtons[0];
-                }
 
                 let checked_values = [];
                 $("input[nameCheck='tablefields[]']:checked").each(function() {
@@ -59,9 +48,10 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
                     //List of projects selected
                     let projects_titles_array = <?=json_encode($projects_titles_array)?>;
                     let hub_name = <?=json_encode($hub_name)?>;
-                    $('#checked_values_'+sButton.name).val(checked_values);
+                    let button_name = $(this).attr('id');
+                    $('#checked_values_'+button_name).val(checked_values);
 
-                    if(sButton.name == "change_user") {
+                    if(button_name == "change_user") {
                         let project_info = "<ul>";
                         checked_values.forEach((project_id) => {
                             $('[user_pid = "'+project_id+'"]').each(function() {
@@ -76,7 +66,7 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
                             });
                         });
                         project_info += "<ul>";
-                        $('#projectsSelected_'+sButton.name).html(project_info);
+                        $('#projectsSelected_'+button_name).html(project_info);
 
                         $("#changeUsersForm").dialog({
                             width: 700,
@@ -93,15 +83,15 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
                             });
                         }
                         project_info += "</ul>";
-                        $('#projectsSelected_'+sButton.name).html(project_info);
+                        $('#projectsSelected_'+button_name).html(project_info);
 
-                        if(sButton.name == "add_user") {
+                        if(button_name == "add_user") {
                             $("#addUsersForm").dialog({
                                 width: 700,
                                 modal: true,
                                 enableRemoteModule: true
                             });
-                        }else if(sButton.name == "remove_user") {
+                        }else if(button_name == "remove_user") {
                             let users_info = "<ul>";
                             let user_removal_list = [];
                             checked_values.forEach((project_id) => {
@@ -278,11 +268,9 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
         <input type="checkbox" id="ckb_user" name="chkAll_user" onclick="checkAll('user');" style="cursor: pointer;">
         <span style="cursor: pointer;font-size: 14px;font-weight: normal;color: black;" onclick="checkAllText('user');">Select All</span>
     </div>
-    <form method="POST" action="" id="user_list">
-        <button type="submit" class="btn btn-danger float-right btnClassConfirm" id="remove_user" name="remove_user">Remove User</button>
-        <button type="submit" class="btn btn-warning float-right btnClassConfirm" id="change_user" name="change_user" style="margin-right:10px">Change Role</button>
-        <button type="submit" class="btn btn-primary float-right btnClassConfirm" id="add_user" name="add_user" style="margin-right:10px">Add User</button>
-    </form>
+    <button type="button" class="btn btn-danger float-right btnClassConfirm" id="remove_user">Remove User</button>
+    <button type="button" class="btn btn-warning float-right btnClassConfirm" id="change_user"style="margin-right:10px">Change Role</button>
+    <button type="button" class="btn btn-primary float-right btnClassConfirm" id="add_user" style="margin-right:10px">Add User</button>
 </div>
 <div class="container-fluid p-y-1">
     <table id="" style="padding-bottom: 10px;width: 100%;">
