@@ -143,7 +143,7 @@ class HubREDCapUsers
 
             if(is_int($pidsArray)){
                 $title = "$user_name added by $user_name_main";
-                $message = "User $user_name added on ".$module->framework->getProject($project_id)->getTitle()." (PID #".$project_id.") as $role_name by $user_name_main";
+                $message = "User '$user_name' added on ".$module->framework->getProject($project_id)->getTitle()." (PID #".$project_id.") as $role_name by $user_name_main";
                 \REDCap::logEvent($title, $message, null,null,null,$pidsArray);
             }else{
                 self::addUserLogs($module, $user_name, $user_name_main, $project_id, $pidsArray, "added",  $role_name);
