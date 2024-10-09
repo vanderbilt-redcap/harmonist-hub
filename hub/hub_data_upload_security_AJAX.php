@@ -17,7 +17,7 @@ if(!empty($assoc_concept)){
 
 $upload_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $user),array('access_token','email','firstname','lastname','person_region'))[0];
 
-$token = \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(12);
+$token = getRandomIdentifier(12);
 
 $Proj = new \Project($pidsArray['DATATOOLUPLOADSECURITY']);
 $event_id = $Proj->firstEventId;
@@ -42,7 +42,7 @@ $recordSecurity[$token][$event_id]['uploadregion_id'] = $upload_user['person_reg
 $results = \Records::saveData($pidsArray['DATATOOLUPLOADSECURITY'], 'array', $recordSecurity,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 \Records::addRecordToRecordListCache($pidsArray['DATATOOLUPLOADSECURITY'], $token, 1);
 
-$tokendt = \Vanderbilt\HarmonistHubExternalModule\getCrypt($token,'e',$secret_key,$secret_iv);
+$tokendt = getCrypt($token,'e',$secret_key,$secret_iv);
 
 echo json_encode($tokendt);
 ?>
