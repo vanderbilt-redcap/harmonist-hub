@@ -48,8 +48,8 @@ class HubREDCapUsers
                 return $row['role_id'];
             }
 
-            $fields = "project_id, role_name, data_export_instruments, data_entry, data_import_tool, data_comparison_tool, data_logging, file_repository,
-        user_rights, data_access_groups, graphical, reports, design, calendar, record_create, record_rename, record_delete,
+            $fields = "project_id, role_name, data_export_instruments, data_entry, data_import_tool, data_comparison_tool, data_logging, email_logging, file_repository,
+        user_rights, data_access_groups, graphical, reports, design, alerts, calendar, record_create, record_rename, record_delete,
         participants, data_quality_resolution";
 
             $values = self::getUserRoleData($module, $project_id, $role_type, $role_name);
@@ -75,10 +75,10 @@ class HubREDCapUsers
         $values = [];
         switch($role_id){
             case 1:
-                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,0,0,0,1,0,0,1,1,0,1,1,0,0,1,1];
+                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,0,0,0,1,1,0,0,1,1,0,1,0,1,0,0,1,1];
                 break;
             case 3:
-                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,1,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1];
                 break;
         }
         return $values;
