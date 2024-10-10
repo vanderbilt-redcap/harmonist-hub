@@ -55,7 +55,7 @@ class HubREDCapUsers
             $values = self::getUserRoleData($module, $project_id, $role_type, $role_name);
 
             $q = $module->query("INSERT INTO redcap_user_roles
-                                ($fields) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", $values);
+                                ($fields) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", $values);
             $role_id = db_insert_id();
 
             return $role_id;
@@ -75,10 +75,10 @@ class HubREDCapUsers
         $values = [];
         switch($role_id){
             case 1:
-                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,0,0,0,1,1,0,0,1,1,0,1,0,1,0,0,1,1];
+                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,0,0,0,0,1,0,0,1,1,0,0,0,1,0,0,1,1];
                 break;
             case 3:
-                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,1,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1];
+                $values = [$project_id,$role_name,$data_export_instruments,$data_entry,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1];
                 break;
         }
         return $values;
