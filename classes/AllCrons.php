@@ -995,18 +995,19 @@ class AllCrons
                 }
 
                 $comment_vote = "";
+                $app_path_module = APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(dirname(__DIR__))+1);
                 if($comment['pi_vote'] != ''){
                     if ($comment['pi_vote'] == "1") {
                         //Approved
-                        $comment_vote = '<img src="'.APP_PATH_MODULE.'/img/vote_approved.jpg" alt="Approved">&nbsp;&nbsp;<span style="color:#5cb85c;">Approved</span>';
+                        $comment_vote = '<img src="'.$app_path_module.'/img/vote_approved.jpg" alt="Approved">&nbsp;&nbsp;<span style="color:#5cb85c;">Approved</span>';
                     } else if ($comment['pi_vote'] == "0") {
                         //Not Approved
-                        $comment_vote = '<img src="'.APP_PATH_MODULE.'/img/vote_notapproved.jpg" alt="Not Approved">&nbsp;&nbsp;<span style="color:#e74c3c">Not Approved</span>';
+                        $comment_vote = '<img src="'.$app_path_module.'/img/vote_notapproved.jpg" alt="Not Approved">&nbsp;&nbsp;<span style="color:#e74c3c">Not Approved</span>';
                     } else if ($comment['pi_vote'] == "9") {
                         //Complete
-                        $comment_vote = '<img src="'.APP_PATH_MODULE.'/img/vote_abstained.jpg" alt="Abstained">&nbsp;&nbsp;<span  style="color:#8c8c8c">Abstained</span>';
+                        $comment_vote = '<img src="'.$app_path_module.'/img/vote_abstained.jpg" alt="Abstained">&nbsp;&nbsp;<span  style="color:#8c8c8c">Abstained</span>';
                     } else {
-                        $comment_vote = '<img src="'.APP_PATH_MODULE.'/img/vote_abstained.jpg" alt="Abstained">&nbsp;&nbsp;<span  style="color:#8c8c8c">Abstained</span>';
+                        $comment_vote = '<img src="'.$app_path_module.'/img/vote_abstained.jpg" alt="Abstained">&nbsp;&nbsp;<span  style="color:#8c8c8c">Abstained</span>';
                     }
                 }
 
