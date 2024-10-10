@@ -45,11 +45,11 @@ if($option == "1" && $save_option == ""){
         foreach ($sop_drafts as $draft){
             if($draft['sop_active'] == '1') {
                 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $draft['sop_concept_id']));
-                $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id'];
+                $concept_id_val = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id'];
                 if($draft['record_id'] == $record_id){
-                    $data_select .=  "<option value='" . $draft['record_id'] . "' concept='" . $draft['sop_concept_id'] . "' concept_id='" . $concept_id . "' selected>" . $draft['sop_name'] . "</option>";
+                    $data_select .=  "<option value='" . $draft['record_id'] . "' concept='" . $draft['sop_concept_id'] . "' concept_id='" . $concept_id_val . "' selected>" . $draft['sop_name'] . "</option>";
                 }else{
-                    $data_select .=  "<option value='" . $draft['record_id'] . "' concept='" . $draft['sop_concept_id'] . "' concept_id='" . $concept_id . "'>" . $draft['sop_name'] . "</option>";
+                    $data_select .=  "<option value='" . $draft['record_id'] . "' concept='" . $draft['sop_concept_id'] . "' concept_id='" . $concept_id_val . "'>" . $draft['sop_name'] . "</option>";
                 }
 
             }
