@@ -75,15 +75,15 @@ class AllCrons
         $messageArray = array();
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
         if(strtotime($expired_date) >= strtotime(date('Y-m-d'))) {
-            if(!array_key_exists('emails_sent_y',$upload) || $upload['emails_sent_y___1'] == '0') {
+            if(!array_key_exists('emails_sent_y___1',$upload) || $upload['emails_sent_y___1'] == '0') {
                 if($email) {
                     //Save data on project
                     $Proj = new \Project($pidsArray['DATAUPLOAD']);
                     $event_id = $Proj->firstEventId;
                     $arraySaveDU = array();
-                    $arraySaveDU[$upload['record_id']][$event_id]['emails_sent_y'] = array(1 => "1");//checkbox
+                    $arraySaveDU[$upload['record_id']][$event_id]['emails_sent_y___1'] = array(1 => "1");//checkbox
                     $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $arraySaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-                    \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $upload['emails_sent_y'], 1);
+                    \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $upload['emails_sent_y___1'], 1);
                 }
 
                 $downloaders_list = "";
