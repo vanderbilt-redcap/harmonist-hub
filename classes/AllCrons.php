@@ -9,7 +9,7 @@ class AllCrons
         $messageArray = array();
         $expired_date = self::sendEmailToday($upload, $extra_days_delete, $extra_days, $extra_days2);
         if ($expired_date != null) {
-            if ($sop['sop_downloaders'] != "") {
+            if ($sop['sop_downloaders'] !== "") {
                 $downloaders = explode(',', $sop['sop_downloaders']);
                 $number_downloaders = count($downloaders);
                 $messageArray['numDownloaders'] = $number_downloaders;
@@ -188,7 +188,7 @@ class AllCrons
         $message['requests_finalized'] = 0;
         $message['active_data_calls'] = 0;
         foreach ($requests as $req){
-            if((!array_key_exists('finalize_y',$req) || $req['finalize_y'] == "") && $req['due_d'] != "" ){
+            if((!array_key_exists('finalize_y',$req) || $req['finalize_y'] === "") && $req['due_d'] !== "" ){
                 $message['active_requests'] = $message['active_requests'] + 1;
                 $isEmpty = false;
                 $datetime = strtotime($req['due_d']);
@@ -413,7 +413,7 @@ class AllCrons
 				sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
 
 				#to downloaders
-				if ($sop['sop_downloaders'] != "") {
+				if ($sop['sop_downloaders'] !== "") {
 					$downloaders = explode(',', $sop['sop_downloaders']);
 					$number_downloaders = count($downloaders);
 					$messageArray['numDownloaders'] = $number_downloaders;
