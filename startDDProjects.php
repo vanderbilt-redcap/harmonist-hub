@@ -14,6 +14,7 @@ $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
 #hardcoded value for now.
 $hub_profile =  "solo";
+$userRoles = $module->getProjectSetting('user-role',$project_id);
 $userPermission = $module->getProjectSetting('user-permission',$project_id);
 $module->setProjectSetting('hub-mapper',$project_id);
 
@@ -114,9 +115,9 @@ foreach ($projects_array as $index=>$name){
 
     #ADD USER PERMISSIONS
     $user_roles = HubREDCapUsers::getAllRoles($module, $project_id_new);
-    foreach ($userPermission as $user){
+    foreach ($userPermission as $userIndex => $user){
         if($user != null && $user != USERID) {
-            HubREDCapUsers::addUserToProject($module, $project_id_new, $user, $user_roles[HubREDCapUsers::HUB_ROLE_USER], "Harmonist Installation Process", $project_id, HubREDCapUsers::HUB_ROLE_USER);
+            HubREDCapUsers::addUserToProject($module, $project_id_new, $user, $user_roles[constant("HubREDCapUsers::HUB_ROLE_".strtoupper($userRoles[$userIndex]))], "Harmonist Installation Process", $project_id, "Hub ".ucfirst($userRoles[$userIndex])." Role");
         }
     }
 
