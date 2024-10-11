@@ -46,7 +46,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 $link['url'] = $this->getUrl("installProjects.php");
             }
         }else{
-            #HUB UPDATES
             #User has no permissions to see Last Updates, do not show link
             if(!$this->getUser()->hasDesignRights($project_id)){
                 return false;
