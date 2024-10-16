@@ -45,42 +45,43 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             if (count($dd_array) == 1 && $isAdmin && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
                 $link['url'] = $this->getUrl("installProjects.php");
             }
-        }else if($link['name'] == "Hub Updates"){
-            #HUB UPDATES
+        }else{
             #User has no permissions to see Last Updates, do not show link
             if(!$this->getUser()->hasDesignRights($project_id)){
                 return false;
-            }else{
-                $hub_projectname = $this->getProjectSetting('hub-projectname');
-                $hub_profile = $this->getProjectSetting('hub-profile');
-                if($hub_projectname == '' || $hub_profile == ''){
-                    #Fields are empty, project has not been installed yet, do not show link
-                    return false;
-                }else{
-                    $dd_array = \REDCap::getDataDictionary('array');
-                    $data_array = \REDCap::getData($project_id, 'array');
-                    if(count($dd_array) == 1 && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
-                        #The Data Dictionary is empty, do not show link
-                        return false;
-                    }
-                    $pidsArray = REDCapManagement::getPIDsArray($project_id);
-                    $hub_updates = $this->getProjectSetting('hub-updates');
-                    $today = date("Y-m-d");
+            }
+            $hub_projectname = $this->getProjectSetting('hub-projectname');
+            $hub_profile = $this->getProjectSetting('hub-profile');
+            if($hub_projectname == '' || $hub_profile == ''){
+                #Fields are empty, project has not been installed yet, do not show link
+                return false;
+            }
 
-                    #Only save & check hub-updates once a day
-                    if(strtotime($hub_updates['timestamp']) < strtotime($today)) {
-                        $allUpdates['data'] = HubUpdates::compareDataDictionary($this, $pidsArray);
-                        $allUpdates['timestamp'] = $today;
-                        $total_updates = count($allUpdates['data']);
-                        $allUpdates['total_updates'] = $total_updates;
-                        $this->setProjectSetting('hub-updates', $allUpdates);
-                    }else{
-                        $total_updates = $hub_updates['total_updates'];
-                    }
+            $dd_array = \REDCap::getDataDictionary('array');
+            $data_array = \REDCap::getData($project_id, 'array');
+            if (count($dd_array) == 1 && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
+                #The Data Dictionary is empty, do not show link
+                return false;
+            }
 
-                    if($total_updates > 0)
-                        $link['name'] .= " (" . $total_updates . ")";
+            if($link['name'] == "Hub Updates") {
+                $pidsArray = REDCapManagement::getPIDsArray($project_id);
+                $hub_updates = $this->getProjectSetting('hub-updates');
+                $today = date("Y-m-d");
+
+                #Only save & check hub-updates once a day
+                if (strtotime($hub_updates['timestamp']) < strtotime($today)) {
+                    $allUpdates['data'] = HubUpdates::compareDataDictionary($this, $pidsArray);
+                    $allUpdates['timestamp'] = $today;
+                    $total_updates = count($allUpdates['data']);
+                    $allUpdates['total_updates'] = $total_updates;
+                    $this->setProjectSetting('hub-updates', $allUpdates);
+                } else {
+                    $total_updates = $hub_updates['total_updates'];
                 }
+
+                if ($total_updates > 0)
+                    $link['name'] .= " (" . $total_updates . ")";
             }
         }
         return parent::redcap_module_link_check_display($project_id,$link);
