@@ -56,7 +56,6 @@ function printSQLDifferences($old, $new){
             $print['new'] .=  filter_tags($value) . ' ';
         }
     }
-    error_log(json_encode($print,JSON_PRETTY_PRINT));
     return $print;
 }
 
