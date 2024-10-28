@@ -283,7 +283,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                     $extra_days = ' + ' . $settings['recentfinalreq_expiration'] . " days";
                     foreach ($requests as $req) {
                         $expire_date = date('Y-m-d', strtotime($req['workflowcomplete_d'] . $extra_days));
-                        if($req['workflowcomplete_d'] != "" && strtotime ($expire_date) >= strtotime(date('Y-m-d'))){
+                        if($req['workflowcomplete_d'] != "" && strtotime($expire_date) >= strtotime(date('Y-m-d'))){
                             $any_request_found = true;
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['RMANAGER'], $req['request_id'], "finalization_of_request", "");
                             $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash'])."&modal=modal";
@@ -334,9 +334,9 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                 '<div style="padding-top:5px;">by <a href="mailto:' . $req['contact_email'] . '">' . $req['contact_name'] . '</a>' . htmlspecialchars($region,ENT_QUOTES) . '</div>' .
                                 '<div style="padding-top:5px;">Completed on: ' . $req['workflowcomplete_d'] . '</div></td>' .
                                 '<td><a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&record=" . $req['request_id'] . '" target="_blank">' . htmlspecialchars($req['request_title'],ENT_QUOTES) . '</a></td>' .
-                                '<td><div>' . filter_tags($finalize_review) . '</div></td>' .
-                                '<td><div>' . filter_tags($request_docs) . '</div></td>' .
-                                '<td><div>' . filter_tags($assign_mr) . '</div></td>' .
+                                '<td><div>' . $finalize_review . '</div></td>' .
+                                '<td><div>' . $request_docs . '</div></td>' .
+                                '<td><div>' . $assign_mr . '</div></td>' .
                                 '</tr>';
                         }
                     }
