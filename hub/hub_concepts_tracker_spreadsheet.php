@@ -49,7 +49,8 @@ if(!empty($concepts)){
         $admin_update_previous = "";
         if(array_key_exists('adminupdate_d',$concept)){
             $date_ordered = $concept['adminupdate_d'];
-            arsort($date_ordered);
+            if(is_array($date_ordered))
+                arsort($date_ordered);
             $counter = 0;
             foreach ($date_ordered as $index => $date){
                 if($counter == 0){
@@ -84,7 +85,7 @@ if(!empty($concepts)){
 
         #PUBLICATIONS
         if(array_key_exists('output_year',$concept)){
-            $number_pubs = count($concept['output_year']);
+            $number_pubs = (empty($concept['output_year'])) ? 0 : count($concept['output_year']);
             $count_pub = 0;
             foreach ($concept['output_year'] as $id => $year){
                 $concept_id = $concept['concept_id'];

@@ -384,7 +384,7 @@ $img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJE
                 $newconcept_btn_css = "display: inline-block";
                 ?>
                 <div style="display: inline-block">
-                    <form method="POST" action="<?=$module->getUrl('hub/hub_concepts_tracker_spreadsheet.php').'&NOAUTH'?>" id="form_concepts_tracker">
+                    <form method="POST" action="<?=$module->getUrl('hub/hub_concepts_tracker_spreadsheet.php')?>" id="form_concepts_tracker">
                         <button type="submit" class="btn btn-primary"><span class="fa fa-arrow-down"></span> Concept Tracker</button>
                     </form>
                 </div>
