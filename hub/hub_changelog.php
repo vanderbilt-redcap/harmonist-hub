@@ -28,13 +28,12 @@ ArrayFunctions::array_sort_by_column($changelog,'release_d',SORT_DESC);
                             </tr>'.'
                             </thead></tbody>';
                     foreach($changelog as $log){
-                        $log = $module->escape($log);
                         if($log['release_d'] != '') {
                             echo '<tr>' .
-                                '<td style="text-align: center">' . $log['version_num'] . '</td>' .
-                                '<td >' . $log['release_d'] . '</td>' .
-                                '<td style="width:224px">' . $log['major_features'] . '</td>' .
-                                '<td>' . $log['changes'] . '</td>' .
+                                '<td style="text-align: center">' . $module->escape($log['version_num']) . '</td>' .
+                                '<td >' . $module->escape($log['release_d']) . '</td>' .
+                                '<td style="width:224px">' . filter_tags($log['major_features']) . '</td>' .
+                                '<td>' . filter_tags($log['changes']) . '</td>' .
                                 '</tr>';
                         }
                     }
