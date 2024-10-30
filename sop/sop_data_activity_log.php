@@ -253,7 +253,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 
                             $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $recent_activity['downloader_region']),array('region_code'))[0]['region_code'];
 
-                            $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept']);
+                            $assoc_concept = getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept']);
 
                             $data_request = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $recent_activity['download_id']),array('data_assoc_request'))[0]['data_assoc_request'];
 
@@ -283,17 +283,17 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 
                             $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array',array('record_id' => $recent_activity['data_upload_region']),array('region_code'))[0]['region_code'];
 
-                            $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
+                            $assoc_concept = getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
 
                             $file = "";
                             $buttons = "";
                             $activity_hidden = "upload";
                             $activity = '<i class="fa fa-fw fa-arrow-up text-success" aria-hidden="true"></i> upload ';
                             if($current_user['person_region'] == $recent_activity['data_upload_region'] || $isAdmin) {
-                                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['data_upload_pdf'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                                $file = getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['data_upload_pdf'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                             }
                             if($recent_activity['deleted_y'] != "1" && ($recent_activity['data_upload_person'] == $current_user['record_id'] || $isAdmin)){
-                                    $crypt = \Vanderbilt\HarmonistHubExternalModule\getCrypt("&id=".$recent_activity['record_id']."&idu=".$current_user['record_id'],'e',$secret_key,$secret_iv);
+                                    $crypt = getCrypt("&id=".$recent_activity['record_id']."&idu=".$current_user['record_id'],'e',$secret_key,$secret_iv);
                                     $buttons = "<a href='#' onclick='$(\"#deleted_record\").val(\"".$crypt."\");$(\"#modal-data-download-confirmation\").modal(\"show\");' class='fa fa-trash' style='color: #000;cursor:pointer;text-decoration: none;' title='delete'></a>";
                             }
 
@@ -305,7 +305,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                 '<td width="80px">'.$module->escape($recent_activity['data_assoc_request']).'</td>'.
                                 '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
                                 '<td>'.$module->escape($activity_hidden).'</td>'.
-                                '<td width="50px"> '.$module->escape($file).'</td>'.
+                                '<td width="50px"> '.$file.'</td>'.
                                 '<td width="50px"> '.filter_tags($buttons).'</td>';
 
                             if($isAdmin){
@@ -341,7 +341,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                     '<td width="80px">'.$module->escape($recent_activity['data_assoc_request']).'</td>'.
                                     '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
                                     '<td>'.$module->escape($activity_hidden).'</td>'.
-                                    '<td width="50px"> '.$module->escape($file).'</td>'.
+                                    '<td width="50px"> '.$file.'</td>'.
                                     '<td width="50px"></td>';
 
                                 if($isAdmin){
