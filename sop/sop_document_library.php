@@ -158,9 +158,9 @@ $upload_type = $module->escape($module->getChoiceLabels('upload_type', $pidsArra
                             $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $filel['file_uploader']),array('firstname','lastname','email'))[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
-                            $file_pdf = (!is_numeric($filel['file'])) ? $filel['file_title'] : \Vanderbilt\HarmonistHubExternalModule\getOtherFilesLink($module, $filel['file'], $filel['record_id'], $current_user['record_id'], $secret_key, $secret_iv, $filel['file_title']);
+                            $file_pdf = (!is_numeric($filel['file'])) ? $filel['file_title'] : getOtherFilesLink($module, $filel['file'], $filel['record_id'], $current_user['record_id'], $secret_key, $secret_iv, $filel['file_title']);
 
-                            echo '<tr><td width="250x">' .htmlspecialchars($file_pdf,ENT_QUOTES) . '</td>' .
+                            echo '<tr><td width="250x">' .$file_pdf . '</td>' .
                                 '<td width="450px"><div>' . htmlspecialchars($filel['file_description'],ENT_QUOTES) . '</div><div style="padding-top: 10px">'.$module->escape($tags).'</div></td>' .
                                 '<td width="100px">' . htmlspecialchars($upload_type[$filel['upload_type']],ENT_QUOTES) . '</td>' .
                                 '<td width="150px"><a href="mailto:' . $module->escape($people['email']) . '">' . htmlspecialchars($name ,ENT_QUOTES). '</a></td>' .

@@ -179,16 +179,16 @@ class REDCapManagement {
                 0=>'deadlines',
                 1=>'announcements'
             ),
-            22>array(
+            22=>array(
                 0=>'file_information'
             ),
-            24>array(
+            24=>array(
                 0=>'news_item'
             ),
-            26>array(
+            26=>array(
                 0=>'output_record'
             ),
-            27>array(
+            27=>array(
                 0=>'tblcenter'
             )
         );
