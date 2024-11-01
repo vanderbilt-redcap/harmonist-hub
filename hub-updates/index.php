@@ -193,6 +193,16 @@ $oldValues = $printDataAll[1];
                 </div>
             </div>';
     }
+    if(!ProjectData::checkIfSurveysAreActivated($module, $pidsArray)){
+        echo '<div class="container" style="margin-top: 20px">
+                <div class="alert alert-warning col-md-12">
+                <div>There are surveys not activated on their respective projects.</div>
+                <form method="POST" action="'.$module->getUrl('hub-updates/update_surveys_AJAX.php').'&redcap_csrf_token='.$module->getCSRFToken().'" class="" id="resolved_list">
+                    <div class="float-right"><button type="submit" name="option" value="update" class="btn btn-success" style="display: block;margin-right: 10px;">Activate Surveys</button></div>
+                </form>
+                </div>
+            </div>';
+    }
     if(!empty($allUpdates))
     {
         $message = "";
@@ -206,6 +216,8 @@ $oldValues = $printDataAll[1];
             $message = "The variables have been successfully <strong>removed</strong> from the resolved list.";
         }else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'T')) {
             $message = "<strong>".ProjectData::HUB_SURVEY_THEME_NAME."</strong> has been successfully updated. Check the logs to see which surveys have been updated.";
+        }else if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'V')) {
+            $message = "The surveys have been succesfully created. Check the logs to see which instruments have been updated.";
         }
         ?>
         <?php if (array_key_exists('message', $_REQUEST)){ ?>
