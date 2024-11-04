@@ -182,7 +182,7 @@ $oldValues = $printDataAll[1];
     <body>
     <?php
     if(!ProjectData::checkIfThemeExists($module, $pidsArray) && ($module->getProjectSetting('hub-updates-show-theme-msg') === "true" || $module->getProjectSetting('hub-updates-show-theme-msg') === null)){
-        echo '<div class="container" style="margin-top: 20px">
+        echo '<div class="container" style="margin-top: 10px">
                 <div class="alert alert-warning col-md-12">
                 <div>The survey theme <strong>'.ProjectData::HUB_SURVEY_THEME_NAME.'</strong> does not exist in some of your Hub surveys.</div>
                 <div>Create and Install will add this theme in all the project/s surverys.</div>
@@ -194,7 +194,7 @@ $oldValues = $printDataAll[1];
             </div>';
     }
     if(!ProjectData::checkIfSurveysAreActivated($module, $pidsArray)){
-        echo '<div class="container" style="margin-top: 20px">
+        echo '<div class="container" style="margin-top: 10px">
                 <div class="alert alert-warning col-md-12">
                 <div>There are surveys not activated on their respective projects.</div>
                 <form method="POST" action="'.$module->getUrl('hub-updates/update_surveys_AJAX.php').'&redcap_csrf_token='.$module->getCSRFToken().'" class="" id="resolved_list">
