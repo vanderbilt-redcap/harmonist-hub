@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-
+include_once(__DIR__ . "/REDCapManagement.php");
 
 class ProjectData
 {
@@ -252,6 +252,49 @@ class ProjectData
             $data = json_encode($surveys_without_theme,JSON_PRETTY_PRINT);
             \REDCap::logEvent("Hub Updates: ".self::HUB_SURVEY_THEME_NAME." (".$theme_id.")  added on  ".$constant." (PID #".$pidsArray[$constant].")", $data, null,null,null,$pidsArray[$constant]);
             \REDCap::logEvent("Hub Updates: ".self::HUB_SURVEY_THEME_NAME." (".$theme_id.") added on  ".$constant." (PID #".$pidsArray[$constant].")", $data, null,null,null,$pidsArray['PROJECTS']);
+        }
+    }
+
+    public static function checkIfSurveysAreActivated($module, $pidsArray, $addSurvey = false){
+        $projects_array = REDCapManagement::getProjectsConstantsArray();
+        $projects_array_surveys = REDCapManagement::getProjectsSurveysArray();
+        foreach ($projects_array_surveys as $constant_id => $survey_data){
+            $project_id = $pidsArray[$projects_array[$constant_id]];
+            $q = $module->query("SELECT project_name FROM redcap_projects WHERE project_id = ? AND surveys_enabled <> ?",[$pidsArray[$projects_array[$constant_id]], "1"]);
+            if($q->num_rows > 0){
+                if($addSurvey){
+                    self::addSurvey($module, $project_id, $projects_array_surveys[$constant_id], $projects_array[$constant_id], $pidsArray);
+                }else{
+                    return false;
+                }
+            }else{
+                $q_survey = $module->query("SELECT survey_id FROM redcap_surveys WHERE project_id = ? AND survey_enabled = ?",[$pidsArray[$projects_array[$constant_id]], "1"]);
+                if($q_survey->num_rows == 0){
+                    if($addSurvey){
+                        self::addSurvey($module, $project_id, $projects_array_surveys[$constant_id], $projects_array[$constant_id], $pidsArray);
+                    }else{
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public static function addSurvey($module, $project_id, $surveys, $constant, $pidsArray){
+        $module->query("UPDATE redcap_projects SET surveys_enabled = ? WHERE project_id = ?", ["1", $project_id]);
+        foreach ($surveys as $survey) {
+            $formName = ucwords(str_replace("_", " ", $survey));
+            $module->query("INSERT INTO redcap_surveys (project_id,form_name,survey_enabled,save_and_return,save_and_return_code_bypass,edit_completed_response,title) VALUES (?,?,?,?,?,?,?)", [$project_id, $survey, 1, 1, 1, 1, $formName]);
+            $surveyId = db_insert_id();
+            $hash = $module->generateUniqueRandomSurveyHash();
+            $Proj = new \Project($project_id);
+            $event_id = $Proj->firstEventId;
+
+            $module->query("INSERT INTO redcap_surveys_participants (survey_id,hash,event_id) VALUES (?,?,?)", [$surveyId, $hash, $event_id]);
+
+            \REDCap::logEvent("Hub Updates: survey added on  " . $constant . " (PID #" . $pidsArray[$constant] . ")", "Instrument $survey has been added as a survey.", null, null, null, $pidsArray[$constant]);
+            \REDCap::logEvent("Hub Updates: survey added on  " . $constant . " (PID #" . $pidsArray[$constant] . ")", "Instrument $survey has been added as a survey.", null, null, null, $pidsArray['PROJECTS']);
         }
     }
 }
