@@ -294,7 +294,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function hook_every_page_before_render($project_id=null) {
         if (PAGE == "ProjectSetup/index.php") {
-            echo "<script type='text/javascript' src='".$this->getUrl('js/jquery-3.3.1.min.js')."'></script>\n";
+            echo "<script type='text/javascript' src='".$this->getUrl('js/jquery-3.7.1.min.js')."'></script>\n";
             echo "
             <style>
                 .chklisttext {
