@@ -92,7 +92,7 @@ if(!empty($homepage)) {
         }
     }
     if(!empty($announcements)){
-        echo '<div class="alert alert-info">'.filter_tags($announcements).'</div>';
+        echo '<div class="alert alert-info">'.$announcements.'</div>';
     }else{
         echo '<div class="alert alert-info"><ul class="fa-ul"><li><i class="fa-li fa fa-bell-o"></i>No Announcements. ';
         if($isAdmin){
