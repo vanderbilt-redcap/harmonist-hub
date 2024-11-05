@@ -692,7 +692,7 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
             var activity_color = ['#337ab7','#ffa64d','#00b386','#bf80ff'];
             var activity_data = ['concepts','manuscripts','abstracts','mrdatarequests'];
             Object.keys(activity_data).forEach(function (index) {
-                if (show_activity_single[parseInt(index)+1] == '1') {
+                if (show_activity_single[parseInt(index)] == '1') {
                     dataset.push(
                         {
                             label: activity_labels[index],
