@@ -1,9 +1,9 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$TBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'json-array', null);
+$TBLCenter = $module->escape(\REDCap::getData($pidsArray['TBLCENTERREVISED'], 'json-array', null));
 
-$regionstbl = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+$regionstbl = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1"));
 ArrayFunctions::array_sort_by_column($regionstbl, 'region_code');
 
 $region_array = \Vanderbilt\HarmonistHubExternalModule\getTBLCenterUpdatePercentRegions($TBLCenter, $regionstbl, $settings['pastlastreview_dur']);
