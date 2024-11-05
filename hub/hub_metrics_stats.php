@@ -263,6 +263,7 @@ $show_donuts_single = ProjectData::getCheckboxValuesAsArray($module, $pidsArray[
 $pub_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'pub_data', $settings);
 $abs_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'abs_data', $settings);
 $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'activity_data', $settings);
+print_array($array_sections_all);
 ?>
 <script>
     $(document).ready(function() {
@@ -692,7 +693,7 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
             var activity_color = ['#337ab7','#ffa64d','#00b386','#bf80ff'];
             var activity_data = ['concepts','manuscripts','abstracts','mrdatarequests'];
             Object.keys(activity_data).forEach(function (index) {
-                if (show_activity_single[parseInt(index)+1] == '1') {
+                if (show_activity_single[parseInt(index)] == '1') {
                     dataset.push(
                         {
                             label: activity_labels[index],
