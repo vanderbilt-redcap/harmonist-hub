@@ -263,7 +263,6 @@ $show_donuts_single = ProjectData::getCheckboxValuesAsArray($module, $pidsArray[
 $pub_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'pub_data', $settings);
 $abs_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'abs_data', $settings);
 $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETTINGS'], 'activity_data', $settings);
-print_array($array_sections_all);
 ?>
 <script>
     $(document).ready(function() {
