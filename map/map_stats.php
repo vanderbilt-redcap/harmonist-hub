@@ -105,7 +105,6 @@ $jsonLegendData = json_encode($totalLegend);
                 map.dataProvider.zoomLatitude = totalAreasByRegionZoom[index]['latitude'];
                 map.dataProvider.zoomLongitude = totalAreasByRegionZoom[index]['longitude'];
             }
-
             map.validateData();
         }
     </script>
