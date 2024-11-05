@@ -149,7 +149,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             $region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $people['person_region']),null,null,null,false,false,false,"[showregion_y] = 1")[0];
 
                             echo '<tr><td width="170px">'.htmlspecialchars($comment_time,ENT_QUOTES).'</td>'.
-                                '<td width="80px">'.htmlspecialchars($assoc_concept,ENT_QUOTES).'</td>'.
+                                '<td width="80px">'.filter_tags($assoc_concept).'</td>'.
                                 '<td width="200px">'.htmlspecialchars($name,ENT_QUOTES).'</td>'.
                                 '<td width="230px">';
 
@@ -167,7 +167,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                                 '<td width="360px"><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.htmlspecialchars($sop_name,ENT_QUOTES).'</a></td>';
 
                             if($recent_activity['revised_file'] != ''){
-                                echo '<td width="40px">'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
+                                echo '<td width="40px">'.getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
                             }else{
                                 echo '<td width="40px"></td>';
                             }
@@ -180,12 +180,12 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             $data_upload_region = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $recent_activity['download_id']),array('data_upload_region'))[0]['data_upload_region'];
                             $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $data_upload_region),array('region_code'))[0]['region_code'];
 
-                            $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept']);
+                            $assoc_concept = getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept']);
 
                             $icon = '<i class="fa fa-fw fa-arrow-down text-info" aria-hidden="true"></i>';
 
                             echo '<tr><td width="170px">'.htmlspecialchars($comment_time,ENT_QUOTES).'</td>'.
-                                '<td width="80px">'.htmlspecialchars($assoc_concept,ENT_QUOTES).'</td>'.
+                                '<td width="80px">'.filter_tags($assoc_concept).'</td>'.
                                 '<td width="200px">'.htmlspecialchars($name,ENT_QUOTES).'</td>'.
                                 '<td width="230px">downloaded data</td>'.
                                 '<td width="40px">'.htmlspecialchars($region_code,ENT_QUOTES).'</td>'.
@@ -198,10 +198,10 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
 
                             $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $recent_activity['data_upload_region']),array('region_code'))[0]['region_code'];
 
-                            $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
+                            $assoc_concept = getReqAssocConceptLink($module, $pidsArray, $recent_activity['data_assoc_concept']);
 
                             echo '<tr><td width="170px">'.htmlspecialchars($comment_time,ENT_QUOTES).'</td>'.
-                                '<td width="80px">'.htmlspecialchars($assoc_concept,ENT_QUOTES).'</td>'.
+                                '<td width="80px">'.filter_tags($assoc_concept).'</td>'.
                                 '<td width="200px">'.htmlspecialchars($name,ENT_QUOTES).'</td>'.
                                 '<td width="230px">uploaded data</td>'.
                                 '<td width="40px">'.htmlspecialchars($region_code,ENT_QUOTES).'</td>'.
