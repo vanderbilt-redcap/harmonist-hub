@@ -622,7 +622,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                             $downloaders_list = "";
                             $downloadersOrdered = array();
                             foreach ($downloaders as $down) {
-                                $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down),array('firstname','lastname','email'))[0];
+                                $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down),array('firstname','lastname','email','person_region'))[0];
                                 $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
 
                                 $downloadersOrdered[$down]['name'] = $peopleDown['firstname'] . " " . $peopleDown['lastname'];
@@ -639,7 +639,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                                 if(count($downloadersOrdered) == $count){
                                     $comma = "";
                                 }
-                                $downloaders_list .= "<div style='display:inline-block;'><a href='mailto:" . $downO['email'] . "'>" . $downO['name'] . "</a> ".htmlspecialchars($downO['region_code'].$comma,ENT_QUOTES)."</div>";
+                                $downloaders_list .= "<div style='display:inline-block;'><a href='mailto:" . $downO['email'] . "'>" . $downO['name'] . "</a> ".htmlspecialchars($downO['region_code'],ENT_QUOTES).$comma."</div>";
                             }
 
                         }else{
