@@ -32,8 +32,11 @@ define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
 //$projects = \REDCap::getData(array('project_id'=>$pidsArray['PROJECTS']),'array');
 
-$secret_key="";
-$secret_iv="";
+//$secret_key="";
+//$secret_iv="";
+if(ENVIRONMENT != "DEV") {
+    require_once "/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php";
+}
 
 if($module == null)
     $module = $this;
