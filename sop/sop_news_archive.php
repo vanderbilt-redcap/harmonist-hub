@@ -265,13 +265,13 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'N')){
                             '<td width="8%">'.htmlspecialchars($news['news_d'],ENT_QUOTES).'</td>'.
                             '<td>'.htmlspecialchars($news_type[$news['news_type']],ENT_QUOTES).'</td>'.
                             '<td>'.htmlspecialchars($news['news_category'],ENT_QUOTES).'</td>'.
-                            '<td width="13%">'.\Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $news['news_person'], 'email').' ('.htmlspecialchars($region_code,ENT_QUOTES).')</td>'.
+                            '<td width="13%">'.getPeopleName($pidsArray['PEOPLE'], $news['news_person'], 'email').' ('.htmlspecialchars($region_code,ENT_QUOTES).')</td>'.
                             '<td style="width: 60%">'.
                                         '<div><span class="label news-label-tiny" style="background-color:'.htmlspecialchars($news_icon_color[$news['news_type']],ENT_QUOTES).';margin-right: 10px;" title="'.htmlspecialchars($news_type[$news['news_type']],ENT_QUOTES).'"><i class="fa '.htmlspecialchars($news['news_type'],ENT_QUOTES).'"></i></span></div>'.
                                         '<div style="padding-bottom: 10px;"><strong>'.htmlspecialchars($news['news_title'],ENT_QUOTES).'</strong></div>'.
-                                        '<div class="more">'.htmlspecialchars($news['news'],ENT_QUOTES)." ".'</div></td>'.
-                            '<td style="width: 15%;word-break: break-all"><div>'.$module->escape(\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")).'</div>'.
-                            '<div>'.$module->escape(\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")).' </div></td>';
+                                        '<div class="more">'.filter_tags($news['news'],ENT_QUOTES)." ".'</div></td>'.
+                            '<td style="width: 15%;word-break: break-all"><div>'.$module->escape(getFileLink($module, $pidsArray['PROJECTS'], $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"")).'</div>'.
+                            '<div>'.getFileLink($module, $pidsArray['PROJECTS'], $news['news_file'],'','',$secret_key,$secret_iv,$current_user['record_id'],"").' </div></td>';
                         if($isAdmin || $harmonist_perm_news){
                             $edit = "";
                             if($isAdmin || $news['news_person'] == $current_user['record_id']){
