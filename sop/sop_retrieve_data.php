@@ -84,7 +84,7 @@ foreach ($request_DU as $down){
 //                $concept_header = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $concept_id . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_sheet . '</a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . '</a>';
                 $concept_header = $concept_sheet . ' | Data Request #' . $sop_id;
 
-                $array_dates = $module->escape(\Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1'));
+                $array_dates = $module->escape(getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1'));
 
                 $downloads_active = 0;
                 $body = '';
@@ -93,7 +93,7 @@ foreach ($request_DU as $down){
                     if ($data_up['data_upload_person'] == $current_user['record_id'] || ($key = array_search($current_user['record_id'], $array_userid)) !== false) {
                         $permission_granted = true;
                         $data_printed = true;
-                        $assoc_concept = \Vanderbilt\HarmonistHubExternalModule\getReqAssocConceptLink($module, $pidsArray, $data_up['data_assoc_concept']);
+                        $assoc_concept = getReqAssocConceptLink($module, $pidsArray, $data_up['data_assoc_concept']);
 
                         $assoc_request = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $data_up['data_assoc_request']),array('request_title'))[0]['request_title'];
 
@@ -103,19 +103,19 @@ foreach ($request_DU as $down){
                         $RecordSetRegion = \REDCap::getData($pidsArray['REGIONS'], 'array', array('record_id' => $data_up['data_upload_region']));
                         $region_code = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegion,$pidsArray['REGIONS'])[0]['region_code'];
 
-                        $file_pdf = ($data_up['data_upload_pdf'] == "") ? "" : \Vanderbilt\HarmonistHubExternalModule\getFileLink($module,  $pidsArray['PROJECTS'], $data_up['data_upload_pdf'], '1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                        $file_pdf = ($data_up['data_upload_pdf'] == "") ? "" : getFileLink($module,  $pidsArray['PROJECTS'], $data_up['data_upload_pdf'], '1','',$secret_key,$secret_iv,$current_user['record_id'],"");
 
                         $extra_days = ' + ' . $settings['retrievedata_expiration'] . " days";
                         $expire_date = date('Y-m-d', strtotime($data_up['responsecomplete_ts'] . $extra_days));
 
-                        $array_expire_dates = \Vanderbilt\HarmonistHubExternalModule\getNumberOfDaysLeftButtonHTML($expire_date, '', '', '2');
+                        $array_expire_dates = getNumberOfDaysLeftButtonHTML($expire_date, '', '', '2');
                         $expiration_date = $array_expire_dates['text'] . " " . $array_expire_dates['button'];
 
                         $deleted = "";
                         $buttons = "";
                         if ($data_up['deleted_y'] != '1' && strtotime ($expire_date) >= strtotime(date('Y-m-d'))) {
                             $downloads_active++;
-                            $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&code=' . \Vanderbilt\HarmonistHubExternalModule\getCrypt("id=". $data_up['record_id']."&pid=".$user,'e',$secret_key,$secret_iv). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
+                            $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php').'&pid='.$pidsArray['PROJECTS'].'&code=' . getCrypt("id=". $data_up['record_id']."&pid=".$user,'e',$secret_key,$secret_iv). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
                         } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != ""){
                             if($data_up['deletion_type'] == '2'){
                                 $person_info_delete = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $data_up['deletion_hubuser']),array('firstname','lastname','email'))[0];
@@ -142,7 +142,7 @@ foreach ($request_DU as $down){
                             "<td>" . htmlspecialchars($region_code,ENT_QUOTES) . "</td>" .
                             "<td>" . filter_tags($contact_person) . "</td>" .
                             "<td>" . htmlspecialchars($data_up['data_upload_zip'],ENT_QUOTES).filter_tags($deleted) . "</td>" .
-                            "<td style='text-align: center;'>" . htmlspecialchars($file_pdf,ENT_QUOTES) . "</td>" .
+                            "<td style='text-align: center;'>" . filter_tags($file_pdf) . "</td>" .
                             "<td>" . filter_tags($expiration_date) . "</td>" .
                             "<td>" . filter_tags($buttons) . "</td>" .
                             "<td>" . filter_tags($notes) . "</td></tr>" ;
