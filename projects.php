@@ -19,7 +19,7 @@ REDCapManagement::getEnvironment();
 
 #Mapper Project
 $project_id_main = ($project_id != '')?$project_id:(int)$_GET['pid'];
-error_log("runCronDataUploadNotification - projects - 3 project_id_main:".$project_id_main);
+
 #Get Projects ID's
 $pidsArray = REDCapManagement::getPIDsArray($project_id_main);
 error_log("runCronDataUploadNotification - projects - 4");
@@ -31,7 +31,7 @@ define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
 define('APP_PATH_PLUGIN',APP_PATH_WEBROOT_FULL."external_modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
 define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
 define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
-
+error_log("runCronDataUploadNotification - projects - 4.2");
 //$projects = \REDCap::getData(array('project_id'=>$pidsArray['PROJECTS']),'array');
 
 //$secret_key="";
@@ -39,7 +39,7 @@ define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 if(ENVIRONMENT != "DEV") {
     require_once "/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php";
 }
-
+error_log("runCronDataUploadNotification - projects - 4.3");
 if($module == null && !$isCron)
     $module = $this;
 error_log("runCronDataUploadNotification - projects - 5");
