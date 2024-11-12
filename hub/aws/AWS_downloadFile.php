@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ ."/../projects.php");
+include_once(__DIR__ ."/../../projects.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 require_once "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
