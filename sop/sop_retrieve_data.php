@@ -115,7 +115,7 @@ foreach ($request_DU as $down){
                         $buttons = "";
                         if ($data_up['deleted_y'] != '1' && strtotime ($expire_date) >= strtotime(date('Y-m-d'))) {
                             $downloads_active++;
-                            $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php').'&pid='.$pidsArray['PROJECTS'].'&code=' . getCrypt("id=". $data_up['record_id']."&pid=".$user,'e',$secret_key,$secret_iv). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
+                            $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php').'&pid='.$pidsArray['PROJECTS'].'&code=' . getCrypt("id=". $data_up['record_id']."&user_id=".$hubData->getCurrentUser()['record_id'],'e',$secret_key,$secret_iv). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
                         } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != ""){
                             if($data_up['deletion_type'] == '2'){
                                 $person_info_delete = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $data_up['deletion_hubuser']),array('firstname','lastname','email'))[0];

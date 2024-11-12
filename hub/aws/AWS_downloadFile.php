@@ -5,14 +5,14 @@ use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 require_once "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
 
-$code = \Vanderbilt\HarmonistHubExternalModule\getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
+$code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 $exploded = array();
 parse_str($code, $exploded);
 
 $record_id = $exploded['id'];
 $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
 
-$credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
+$credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
 $s3 = new S3Client([
     'version' => 'latest',
     'region' => 'us-east-2',
@@ -25,8 +25,8 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
     $array_userid = explode(',', $sop['sop_downloaders']);
     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
     $RecordSetCurrentUser = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('access_token' => $token));
-    $current_user = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetCurrentUser,$pidsArray['PEOPLE'])[0];
-    if ($request_DU['data_upload_person'] == $current_user['record_id'] || ($key = array_search($current_user['record_id'], $array_userid)) !== false) {
+    $current_user = $exploded['user_id'];
+    if ($request_DU['data_upload_person'] == $current_user || ($key = array_search($current_user, $array_userid)) !== false) {
         try {
             #Get the object
             $result = $s3->getObject(array(
