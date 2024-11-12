@@ -84,7 +84,7 @@ if($isAdmin) {
             <?php if($isAdmin){ ?>
                 <ul class="nav navbar-nav navbar-links">
                     <li class="menu-item dropdown">
-                        <a href="<?=$module->getUrl('index.php?NOAUTH&option=adm')?>"role="button" option="adm">Admin <span class="badge label-default"><?=$numberOfAdminRequest?></span></a>
+                        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=adm'?>"role="button" option="adm">Admin <span class="badge label-default"><?=$numberOfAdminRequest?></span></a>
                     </li>
                 </ul>
             <?php } ?>
