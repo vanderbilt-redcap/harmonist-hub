@@ -87,7 +87,7 @@ class AllCrons
                 }
 
                 $downloaders_list = "";
-                if ($sop['sop_downloaders'] != "") {
+                if ($sop['sop_downloaders'] !== "") {
                     $downloaders = explode(',', $sop['sop_downloaders']);
                     $number_downloaders = count($downloaders);
                     $messageArray['numDownloaders'] = $number_downloaders;
@@ -125,7 +125,7 @@ class AllCrons
                 $date_time = $date->format("Y-m-d H:i");
                 $expire_date = date('Y-m-d', strtotime($date_time . $extra_days));
 
-                if ($email && $people['email'] != "") {
+                if ($email && $people['email'] !== "") {
                     $subject = "Successful " . $settings['hub_name'] . " data upload for " . $concept_id;
                     $message = "<div>Dear " . $firstname . ",</div><br/><br/>" .
                         "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=sop&record=" . $upload['data_assoc_request'] . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
@@ -139,7 +139,7 @@ class AllCrons
 
                 }
                 #Data Downloaders email
-                if ($downloadersOrdered != "") {
+                if ($downloadersOrdered !== "") {
                     $date = new \DateTime($upload['responsecomplete_ts']);
                     $date->modify("+1 hours");
                     $date_time = $date->format("Y-m-d H:i");
