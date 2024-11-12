@@ -56,13 +56,13 @@ if($isAdmin) {
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTHoption=hub'?>" role="button" option="hub">Requests <span class="badge label-default"><?=$numberOfOpenRequest?></span></a>
+                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=hub'?>" role="button" option="hub">Requests <span class="badge label-default"><?=$numberOfOpenRequest?></span></a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTHoption=cpt'?>"role="button" option="cpt">Concepts</a>
+                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=cpt'?>"role="button" option="cpt">Concepts</a>
                 </li>
             </ul>
 
