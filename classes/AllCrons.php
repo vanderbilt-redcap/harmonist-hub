@@ -75,7 +75,7 @@ class AllCrons
         $messageArray = array();
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
         if(strtotime($expired_date) >= strtotime(date('Y-m-d'))) {
-            if(!array_key_exists('emails_sent_y___1',$upload) || $upload['emails_sent_y___1'] !== 1) {
+            if(!array_key_exists('emails_sent_y___1',$upload) || $upload['emails_sent_y___1'] !== "1") {
                 if($email) {
                     //Save data on project
                     $Proj = new \Project($pidsArray['DATAUPLOAD']);
