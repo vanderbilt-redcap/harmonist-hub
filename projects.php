@@ -41,21 +41,21 @@ if(!$isCron) {
     }
 
     $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
+
+    if(!empty($settings)){
+        $settings = $module->escape($settings);
+    }else{
+        $settings = htmlspecialchars($settings,ENT_QUOTES);
+    }
+
+    #Escape name just in case they add quotes
+    if(!empty($settings["hub_name"])) {
+        $settings["hub_name"] = addslashes($settings["hub_name"]);
+    }
+
+    #Sanitize text title and descrition for pages
+    $settings = ProjectData::sanitizeALLVariablesFromInstrument($module,$pidsArray['SETTINGS'],array(0=>"harmonist_text"),$settings);
+
+    $default_values = new ProjectData;
+    $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
 }
-
-if(!empty($settings)){
-    $settings = $module->escape($settings);
-}else{
-    $settings = htmlspecialchars($settings,ENT_QUOTES);
-}
-
-#Escape name just in case they add quotes
-if(!empty($settings["hub_name"])) {
-    $settings["hub_name"] = addslashes($settings["hub_name"]);
-}
-
-#Sanitize text title and descrition for pages
-$settings = ProjectData::sanitizeALLVariablesFromInstrument($module,$pidsArray['SETTINGS'],array(0=>"harmonist_text"),$settings);
-
-$default_values = new ProjectData;
-$default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
