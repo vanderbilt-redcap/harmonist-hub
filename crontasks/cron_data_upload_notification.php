@@ -1,5 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+error_log("runCronDataUploadNotification - 001");
+error_log("runCronDataUploadNotification - path = ".__DIR__ ."/../projects.php");
 include_once(__DIR__ ."/../projects.php");
 error_log("runCronDataUploadNotification - 002");
 require_once(dirname(dirname(__FILE__))."/classes/AllCrons.php");
