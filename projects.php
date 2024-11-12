@@ -14,9 +14,9 @@ include_once(__DIR__ . "/classes/HubData.php");
 include_once(__DIR__ . "/classes/ExcelFunctions.php");
 include_once(__DIR__ . "/classes/CopyJSON.php");
 include_once(__DIR__ . "/classes/UserEditConditions.php");
-error_log("runCronDataUploadNotification - projects - 1");
+
 REDCapManagement::getEnvironment();
-error_log("runCronDataUploadNotification - projects - 2");
+
 #Mapper Project
 $project_id_main = ($project_id != '')?$project_id:(int)$_GET['pid'];
 error_log("runCronDataUploadNotification - projects - 3 project_id_main:".$project_id_main);
@@ -40,7 +40,7 @@ if(ENVIRONMENT != "DEV") {
     require_once "/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php";
 }
 
-if($module == null)
+if($module == null && !$isCron)
     $module = $this;
 error_log("runCronDataUploadNotification - projects - 5");
 $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
