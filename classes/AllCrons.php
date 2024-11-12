@@ -81,7 +81,7 @@ class AllCrons
                     $Proj = new \Project($pidsArray['DATAUPLOAD']);
                     $event_id = $Proj->firstEventId;
                     $arraySaveDU = array();
-                    $arraySaveDU[$upload['record_id']][$event_id]['emails_sent_y___1'] = array(1 => "1");//checkbox
+                    $arraySaveDU[$upload['record_id']][$event_id]['emails_sent_y___1'] = "1";//checkbox
                     $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $arraySaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
                     \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $upload['emails_sent_y___1'], 1);
                 }
