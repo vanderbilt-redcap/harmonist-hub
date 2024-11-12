@@ -257,7 +257,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
                 if (!empty($pidsArray) && is_array($pidsArray) && $pidsArray['SETTINGS'] !== "") {
                     $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
-
+                    error_log("runCronDataUploadNotification - SETTINGS: ".$pidsArray['SETTINGS']);
                     if (!empty($settings)) {
                         try {
                             #CRONS
