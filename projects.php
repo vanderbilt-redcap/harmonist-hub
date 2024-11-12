@@ -39,8 +39,9 @@ if(ENVIRONMENT != "DEV") {
     require_once "/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php";
 }
 
-if($module == null && !$isCron)
+if($module == null && !$isCron) {
     $module = $this;
+}
 
 $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 if(!empty($settings)){
