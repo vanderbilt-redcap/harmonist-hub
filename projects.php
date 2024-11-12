@@ -14,13 +14,15 @@ include_once(__DIR__ . "/classes/HubData.php");
 include_once(__DIR__ . "/classes/ExcelFunctions.php");
 include_once(__DIR__ . "/classes/CopyJSON.php");
 include_once(__DIR__ . "/classes/UserEditConditions.php");
-
+error_log("runCronDataUploadNotification - projects - 1");
 REDCapManagement::getEnvironment();
-
+error_log("runCronDataUploadNotification - projects - 2");
 #Mapper Project
 $project_id_main = ($project_id != '')?$project_id:(int)$_GET['pid'];
+error_log("runCronDataUploadNotification - projects - 3 project_id_main:".$project_id_main);
 #Get Projects ID's
 $pidsArray = REDCapManagement::getPIDsArray($project_id_main);
+error_log("runCronDataUploadNotification - projects - 4");
 
 if(APP_PATH_WEBROOT[0] == '/'){
     $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
@@ -40,20 +42,22 @@ if(ENVIRONMENT != "DEV") {
 
 if($module == null)
     $module = $this;
-
+error_log("runCronDataUploadNotification - projects - 5");
 $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 if(!empty($settings)){
     $settings = $module->escape($settings);
 }else{
     $settings = htmlspecialchars($settings,ENT_QUOTES);
 }
-
+error_log("runCronDataUploadNotification - projects - 6");
 #Escape name just in case they add quotes
 if(!empty($settings["hub_name"])) {
     $settings["hub_name"] = addslashes($settings["hub_name"]);
 }
+error_log("runCronDataUploadNotification - projects - 7");
 #Sanitize text title and descrition for pages
 $settings = ProjectData::sanitizeALLVariablesFromInstrument($module,$pidsArray['SETTINGS'],array(0=>"harmonist_text"),$settings);
-
+error_log("runCronDataUploadNotification - projects - 8");
 $default_values = new ProjectData;
 $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
+error_log("runCronDataUploadNotification - projects - 9");
