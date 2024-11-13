@@ -101,7 +101,7 @@ if($settings['deactivate_datadown___1'] != "1"){
     ?>
 <div class="hidden-xs" style="margin-bottom: 20px;"></div>
 <div class="modal fade" id="modal-data-download-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
-    <form class="form-horizontal" action="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dnd'?>" method="post" id='dataDownloadForm'>
+    <form class="form-horizontal" action="<?=$module->getUrl('index.php').'&pid='.$pidsArray['PROJECTS'].'&option=dnd'?>" method="post" id='dataDownloadForm'>
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">

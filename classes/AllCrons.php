@@ -75,19 +75,19 @@ class AllCrons
         $messageArray = array();
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
         if(strtotime($expired_date) >= strtotime(date('Y-m-d'))) {
-            if(!array_key_exists('emails_sent_y___1',$upload) || $upload['emails_sent_y___1'] == '0') {
+            if(!array_key_exists('emails_sent_y___1',$upload) || $upload['emails_sent_y___1'] !== "1") {
                 if($email) {
                     //Save data on project
                     $Proj = new \Project($pidsArray['DATAUPLOAD']);
                     $event_id = $Proj->firstEventId;
                     $arraySaveDU = array();
-                    $arraySaveDU[$upload['record_id']][$event_id]['emails_sent_y___1'] = array(1 => "1");//checkbox
+                    $arraySaveDU[$upload['record_id']][$event_id]['emails_sent_y___1'] = "1";//checkbox
                     $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $arraySaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
                     \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $upload['emails_sent_y___1'], 1);
                 }
 
                 $downloaders_list = "";
-                if ($sop['sop_downloaders'] != "") {
+                if ($sop['sop_downloaders'] !== "") {
                     $downloaders = explode(',', $sop['sop_downloaders']);
                     $number_downloaders = count($downloaders);
                     $messageArray['numDownloaders'] = $number_downloaders;
@@ -125,7 +125,7 @@ class AllCrons
                 $date_time = $date->format("Y-m-d H:i");
                 $expire_date = date('Y-m-d', strtotime($date_time . $extra_days));
 
-                if ($email && $people['email'] != "") {
+                if ($email && $people['email'] !== "") {
                     $subject = "Successful " . $settings['hub_name'] . " data upload for " . $concept_id;
                     $message = "<div>Dear " . $firstname . ",</div><br/><br/>" .
                         "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=sop&record=" . $upload['data_assoc_request'] . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
@@ -139,7 +139,7 @@ class AllCrons
 
                 }
                 #Data Downloaders email
-                if ($downloadersOrdered != "") {
+                if ($downloadersOrdered !== "") {
                     $date = new \DateTime($upload['responsecomplete_ts']);
                     $date->modify("+1 hours");
                     $date_time = $date->format("Y-m-d H:i");
@@ -149,7 +149,7 @@ class AllCrons
                     $subject = "New " . $settings['hub_name'] . " " . $concept_id . " dataset available for download";
 
                     foreach ($downloadersOrdered as $down) {
-                        if ($email && $down['email'] != "") {
+                        if ($email && $down['email'] !== "") {
                             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
                                 "<div>A new dataset has been submitted to secure cloud storage by <strong>" . $name_uploader . "</strong> from <strong>" . $region_code_uploader . "</strong> in response to \"" . $sop['sop_name'] . "\" for concept <b>" . $concept_id . "</b>. The upload was received at " . $date_time . " Eastern US Time (ET). </div><br/>" .
                                 "<div>The data will be available to download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .

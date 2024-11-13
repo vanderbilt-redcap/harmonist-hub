@@ -37,7 +37,7 @@ if(!empty($_REQUEST['email'])) {
             $send_record = "&record=".$current_record;
         }
 
-        $url = $module->getUrl("index.php")."&NOAUTH&token=".$token.$send_option.$send_record."&pid=".$pidsArray['PROJECTS'];
+        $url = $module->getUrl("index.php")."&NOAUTH&token=".$token.$send_option.$send_record;
         $message = "<html>Here is your link to access the ".$settings['hub_name']." Hub:<br/><a href='".$url."'>".$url."</a><br/><br/><span style='color:#e74c3c'>**This link is unique to you and should not be forwarded to others.</span><br/>".
             "This link will expire in ".$settings['accesslink_dur']." days. You can request a new link at any time, which will invalidate the old link. If you are logging into the Hub from a public computer, please remember to log out of the Hub to invalidate the link.</html>";
 
@@ -47,7 +47,7 @@ if(!empty($_REQUEST['email'])) {
             $environment = " ".ENVIRONMENT;
         }
 
-        \Vanderbilt\HarmonistHubExternalModule\sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $settings['hub_name']." Hub Access Link".$environment, $message,$people['record_id'],"Review Hub Access Sent",$pidsArray['PEOPLE']);
+        sendEmail(strtolower($people['email']), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $settings['hub_name']." Hub Access Link".$environment, $message,$people['record_id'],"Review Hub Access Sent",$pidsArray['PEOPLE']);
         $module->log("HUB: " . $pidsArray['PROJECTS'] . " - Token sent");
         #Default to 7 days if empty
         if($settings['accesslink_dur'] == ""){
@@ -72,7 +72,7 @@ if(!empty($_REQUEST['email'])) {
         if(ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
-        \Vanderbilt\HarmonistHubExternalModule\sendEmail(strtolower($email), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database","Access denied",$pidsArray['PEOPLE']);
+        \sendEmail(strtolower($email), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database","Access denied",$pidsArray['PEOPLE']);
     }
 }
 

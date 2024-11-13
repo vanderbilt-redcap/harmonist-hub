@@ -261,7 +261,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'pdc' && !$deactivate_datahub)
                         {
                             include('sop/sop_data_call_archive.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown___1'] != "1")
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !$deactivate_datahub && $settings['deactivate_datadown___1'] != "1" && !array_key_exists('NOAUTH', $_REQUEST))
                         {
                             include('sop/sop_retrieve_data.php');
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'out')

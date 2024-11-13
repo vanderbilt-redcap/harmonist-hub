@@ -1,18 +1,18 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ ."/../projects.php");
+include_once(__DIR__ ."/../../projects.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 require_once "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
 
-$code = \Vanderbilt\HarmonistHubExternalModule\getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
+$code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 $exploded = array();
 parse_str($code, $exploded);
 
 $record_id = $exploded['id'];
 $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
 
-$credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
+$credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
 $s3 = new S3Client([
     'version' => 'latest',
     'region' => 'us-east-2',
@@ -25,8 +25,8 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
     $array_userid = explode(',', $sop['sop_downloaders']);
     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
     $RecordSetCurrentUser = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('access_token' => $token));
-    $current_user = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetCurrentUser,$pidsArray['PEOPLE'])[0];
-    if ($request_DU['data_upload_person'] == $current_user['record_id'] || ($key = array_search($current_user['record_id'], $array_userid)) !== false) {
+    $current_user = $exploded['user_id'];
+    if ($request_DU['data_upload_person'] == $current_user || ($key = array_search($current_user, $array_userid)) !== false) {
         try {
             #Get the object
             $result = $s3->getObject(array(
@@ -84,7 +84,7 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
                 "<div>The dataset you submitted to secure cloud storage in response to <strong>\"" . $sop['sop_name'] . "\"</strong> on " . $date_time . " Eastern US Time (ET) has been downloaded by <b>" . $downloader_all . "</b> at " . $download_time_et . ".</div><br/>" .
                 "<div>Your dataset will remain available for download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
-            \Vanderbilt\HarmonistHubExternalModule\sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'], "Dataset downloaded", $pidsArray['DATADOWNLOAD']);
+            sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $request_DU['data_upload_person'], "Dataset downloaded", $pidsArray['DATADOWNLOAD']);
 
             if ($request_DU['data_upload_person'] != $downloader) {
                 $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $downloader))[0];
@@ -96,7 +96,7 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
                     " from " . $region_codeUp . " in response to <strong>\"" . $sop['sop_name'] . "\"</strong> (uploaded on " . $date_time . " ET).</div><br/>" .
                     "<div>The dataset will remain available for download until <span style='color:red;font-weight: bold'>" . $expire_date . " 23:59 ET</span>.</div><br/>" .
                     "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
-                \Vanderbilt\HarmonistHubExternalModule\sendEmail($peopleDown['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $downloader, "Dataset downloaded", $pidsArray['DATADOWNLOAD']);
+                sendEmail($peopleDown['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $downloader, "Dataset downloaded", $pidsArray['DATADOWNLOAD']);
             }
 
 

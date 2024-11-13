@@ -248,7 +248,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
         }
         define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
-
+        $isCron = true;
         foreach ($this->getProjectsWithModuleEnabled() as $project_id){
             $hub_mapper = $this->getProjectSetting('hub-mapper',$project_id);
             if(is_numeric($project_id) && $project_id == $hub_mapper) {
@@ -256,18 +256,17 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 $pidsArray = REDCapManagement::getPIDsArray($project_id, "cron");
 
                 if (!empty($pidsArray) && is_array($pidsArray) && $pidsArray['SETTINGS'] !== "") {
-                    $settings = \REDCap::getData(array('project_id' => $pidsArray['SETTINGS']), 'array')[1][$this->framework->getEventId($pidsArray['SETTINGS'])];
-
+                    $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
                     if (!empty($settings)) {
                         try {
                             #CRONS
-                            if ($cronAttributes['cron_name'] == 'cron_metrics' && $settings['deactivate_metrics_cron___1'] != "1") {
+                            if ($cronAttributes['cron_name'] == 'cron_metrics' && $settings['deactivate_metrics_cron___1'] !== "1") {
                                 include("crontasks/cron_metrics.php");
-                            } else if ($cronAttributes['cron_name'] == 'cron_delete' && ($settings['deactivate_datadown___1'] != "1" || $settings['deactivate_datahub___1'] != "1")) {
+                            } else if ($cronAttributes['cron_name'] == 'cron_delete' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
                                 include("crontasks/cron_delete_AWS.php");
-                            } else if ($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder' && ($settings['deactivate_datadown___1'] != "1" || $settings['deactivate_datahub___1'] != "1")) {
+                            } else if ($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
                                 include("crontasks/cron_data_upload_expiration_reminder.php");
-                            } else if ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown___1'] != "1" || $settings['deactivate_datahub___1'] != "1")) {
+                            } else if ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
                                 include("crontasks/cron_data_upload_notification.php");
                             } else if ($cronAttributes['cron_name'] == 'cron_monthly_digest') {
                                 //Every First Monday of the Month
