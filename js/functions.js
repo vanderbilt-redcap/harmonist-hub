@@ -886,8 +886,6 @@ function changeVisibility(recordid,visibility){
  * @constructor
  */
 function CallAJAXAndShowMessage(data,url,letter,url_window){
-    console.log(data);
-    console.log(url);
     $.ajax({
         type: "POST",
         url: url,

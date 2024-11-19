@@ -3,8 +3,9 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../../projects.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
+error_log("IeDEA EM - Delete AWS require");
 require_once "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
-
+error_log("IeDEA EM - Delete AWS require 2");
 $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 $exploded = array();
 parse_str($code, $exploded);
@@ -12,9 +13,9 @@ parse_str($code, $exploded);
 $record_id = $exploded['id'];
 $user = $exploded['idu'];
 $deletion_rs = $_REQUEST['deletion_rs'];
-
+error_log("IeDEA EM - Delete AWS Data Upload");
 $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
-
+error_log("IeDEA EM - Delete AWS Before Credentials");
 $credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
 $s3 = new S3Client([
     'version' => 'latest',
