@@ -1,5 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+error_log("IeDEA EM - Delete AWS projects");
 include_once(__DIR__ ."/../../projects.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
