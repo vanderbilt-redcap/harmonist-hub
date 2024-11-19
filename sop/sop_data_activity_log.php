@@ -306,7 +306,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                 '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
                                 '<td>'.$module->escape($activity_hidden).'</td>'.
                                 '<td width="50px"> '.$file.'</td>'.
-                                '<td width="50px"> '.filter_tags($buttons).'</td>';
+                                '<td width="50px"> '.$buttons.'</td>';
 
                             if($isAdmin){
                                 $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $module->escape($pidsArray['DATAUPLOAD']) . "&arm=1&id=" . $module->escape($recent_activity['record_id']);
