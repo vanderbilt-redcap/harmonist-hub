@@ -294,6 +294,9 @@ if($hub_projectname != '' && $hub_profile != ''){
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'abt')
                         {
                             include('hub/hub_about.php');
+                        }else if( array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dab' && !$deactivate_toolkit)
+                        {
+                            include('sop/sop_explore_data.php');
                         }
                         else{
                             include('hub/hub_home.php');
