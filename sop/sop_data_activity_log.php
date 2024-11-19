@@ -124,7 +124,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                 if(window.location.href.match(/(&del=)([0-9a-zA-Z]{32})/)){
                     refresh_url = window.location.href.replace( /(&del=)([0-9a-zA-Z]{32})/, '' );
                 }
-                CallAJAXAndShowMessage("&deletion_rs="+$('#dataUpReason').val()+'&code='+$('#deleted_record').val(),<?=json_encode($module->getUrl('hub/aws/AWS_deleteFile.php').'&NOAUTH')?>,'D',refresh_url);
+                CallAJAXAndShowMessage("&deletion_rs="+$('#dataUpReason').val()+'&code='+$('#deleted_record').val(),<?=json_encode($module->getUrl('hub/aws/AWS_deleteFile.php'))?>,'D',refresh_url);
             }
             return false;
         });
@@ -306,7 +306,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                 '<td width="220px">'.$module->escape($recent_activity['data_upload_zip']).'</td>'.
                                 '<td>'.$module->escape($activity_hidden).'</td>'.
                                 '<td width="50px"> '.$file.'</td>'.
-                                '<td width="50px"> '.filter_tags($buttons).'</td>';
+                                '<td width="50px"> '.$buttons.'</td>';
 
                             if($isAdmin){
                                 $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $module->escape($pidsArray['DATAUPLOAD']) . "&arm=1&id=" . $module->escape($recent_activity['record_id']);
