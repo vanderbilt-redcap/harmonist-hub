@@ -19,6 +19,11 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
     $datareq_id = $record;
     $datareq_title = "<em>(for Data Request #".$record.")</em>";
 }
+
+$user_id = "";
+if (defined('USERID')) {
+    $user_id = USERID;
+}
 ?>
 <script>
     //To filter the data
@@ -113,7 +118,14 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 
         $('#dataDownloadForm').submit(function () {
             $("#modal-data-download-confirmation").modal("hide");
-            window.location.href = addDeleteCode($('#deleted_record').val());
+            let user_id = '<?=$user_id?>';
+            if(user_id !== ""){
+                console.log(user_id);
+            }else{
+                console.log("user blank");
+                window.location.href = addDeleteCode($('#deleted_record').val(),window.location.href.replace("NOAUTH",""));
+            }
+            // window.location.href = addDeleteCode($('#deleted_record').val());
             return false;
         });
         $('#dataTransferDelete').submit(function () {
