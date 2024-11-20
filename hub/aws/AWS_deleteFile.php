@@ -15,7 +15,7 @@ $deletion_rs = $_REQUEST['deletion_rs'];
 
 $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
 
-$credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
+$credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
 $s3 = new S3Client([
     'version' => 'latest',
     'region' => 'us-east-2',
@@ -23,7 +23,7 @@ $s3 = new S3Client([
 ]);
 
 try {
-    if($request_DU['deleted_y'] != "1") {
+    if($request_DU['deleted_y'] !== "1") {
         // Delete the object
         $result = $s3->deleteObject(array(
             'Bucket' => $request_DU['data_upload_bucket'],

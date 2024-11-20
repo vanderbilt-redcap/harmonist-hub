@@ -113,7 +113,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 
         $('#dataDownloadForm').submit(function () {
             $("#modal-data-download-confirmation").modal("hide");
-            window.location.href = addDeleteCode($('#deleted_record').val());
+            window.location.href = addDeleteCode($('#deleted_record').val(),window.location.href.replace("NOAUTH",""));
             return false;
         });
         $('#dataTransferDelete').submit(function () {

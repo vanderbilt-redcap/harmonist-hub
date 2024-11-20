@@ -1038,8 +1038,7 @@ function copyStringToClipboard (str) {
     document.body.removeChild(el);
 }
 
-function addDeleteCode(code){
-    var url = window.location.href;
+function addDeleteCode(code, url){
     if (url.substring(url.length-1) == "#")
     {
         url = url.substring(0, url.length-1);
