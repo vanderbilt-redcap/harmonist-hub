@@ -1,12 +1,10 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-error_log("IeDEA EM - Delete AWS projects");
 include_once(__DIR__ ."/../../projects.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
-error_log("IeDEA EM - Delete AWS require");
 require_once "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
-error_log("IeDEA EM - Delete AWS require 2");
+
 $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 $exploded = array();
 parse_str($code, $exploded);
@@ -14,9 +12,9 @@ parse_str($code, $exploded);
 $record_id = $exploded['id'];
 $user = $exploded['idu'];
 $deletion_rs = $_REQUEST['deletion_rs'];
-error_log("IeDEA EM - Delete AWS Data Upload");
+
 $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
-error_log("IeDEA EM - Delete AWS Before Credentials");
+
 $credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
 $s3 = new S3Client([
     'version' => 'latest',
@@ -25,15 +23,13 @@ $s3 = new S3Client([
 ]);
 
 try {
-    error_log("IeDEA EM - Delete AWS record_id: ".$record_id);
     if($request_DU['deleted_y'] !== "1") {
-        error_log("IeDEA EM - Delete AWS IN");
         // Delete the object
         $result = $s3->deleteObject(array(
             'Bucket' => $request_DU['data_upload_bucket'],
             'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip']
         ));
-        error_log("IeDEA EM - Delete AWS 1");
+
         //Save data on project
         $Proj = new \Project($pidsArray['DATAUPLOAD']);
         $event_id = $Proj->firstEventId;
@@ -48,13 +44,13 @@ try {
         $recordSaveDU[$record_id][$event_id]['deleted_y'] = "1";
         $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $recordSaveDU,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $record_id,1);
-        error_log("IeDEA EM - Delete AWS 2");
+
         #EMAIL NOTIFICATION
         $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $request_DU['data_assoc_concept']));
         $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
         $concept_id = $concepts['concept_id'];
         $concept_title = $concepts['concept_title'];
-        error_log("IeDEA EM - Delete AWS 3");
+
         $peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $request_DU['data_upload_person']))[0];
 
         $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array('region_code'))[0]['region_code'];
@@ -69,7 +65,7 @@ try {
         $delete_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $user))[0];
         $delete_user_fullname = $delete_user['firstname'] . " " . $delete_user['lastname'];
         $delete_user_name = $delete_user['firstname'];
-        error_log("IeDEA EM - Delete AWS 4");
+
         if ($user == $request_DU['data_upload_person']) {
             $subject = "Confirmation of ".$settings['hub_name']." " . $concept_id . " dataset deletion";
             $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
