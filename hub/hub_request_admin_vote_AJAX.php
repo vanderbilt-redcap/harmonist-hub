@@ -16,11 +16,11 @@ $all_votes_completed = true;
 foreach ($region_vote_values as $votes_info){
     $region = explode('_',$votes_info)[0];
     $vote = (explode('_',$votes_info)[1] == "none")? "":explode('_',$votes_info)[1];
-    if(!empty($region) && !empty($vote)) {
+    if($region !== "" && $vote !== "") {
         if ($request['region_vote_status'][$region] != $vote && $vote != "") {
             $date = new \DateTime();
             $timestamp = $date->format('Y-m-d H:i:s');
-            if ($region != "") {
+            if ($region !== "") {
                 $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$region]['region_vote_status'] = $vote;
                 $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$region]['region_response_status'] = "2";
                 $recordRM[$request_id]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$region]['region_update_ts'] = $timestamp;
