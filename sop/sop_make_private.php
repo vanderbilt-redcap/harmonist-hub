@@ -40,4 +40,5 @@ if(!empty($regioncode)){
 
 $results = \Records::saveData($pidsArray['SOPCOMMENTS'], 'array', $arraySOPComments,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 \Records::addRecordToRecordListCache($pidsArray['SOPCOMMENTS'], $record,1);
+error_log(json_encode($results,JSON_PRETTY_PRINT))
 ?>
