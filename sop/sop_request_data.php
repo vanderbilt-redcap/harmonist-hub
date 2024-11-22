@@ -6,12 +6,12 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         $('#makePrivate').submit(function () {
             $('#sop-make-private-confirmation').modal('hide');
             var data = $('#makePrivate').serialize();
-            CallAJAXAndShowMessage(data,<?=json_encode($module->getUrl("sop/sop_make_private.php"))?>, "X",window.location.href);
+            CallAJAXAndShowMessage(data,<?=json_encode($module->getUrl("sop/sop_make_private.php",true))?>, "X",window.location.href);
             return false;
         });
         $('#deleteDataRequest').submit(function () {
             var data = $('#deleteDataRequest').serialize();
-            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_delete_data_request.php'))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=smn&message=D"))?>);
+            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_delete_data_request.php',true))?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=smn&message=D"))?>);
             return false;
         });
     } );
