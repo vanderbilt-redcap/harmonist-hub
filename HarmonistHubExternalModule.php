@@ -114,105 +114,105 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function redcap_save_record($project_id,$record,$instrument,$event_id){
         \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "redcap_save_record",$project_id);
-//        echo '<script>';
-//        include_once("js/iframe.js");
-//        echo '</script>';
-//
-//        #Get Projects ID's
-//        $hub_mapper = $this->getProjectSetting('hub-mapper');
-//        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-//        try {
-//            #Depending on the project we add one hook or another
-//            if ($project_id == $pidsArray['SOP']) {
-//                include_once("hooks/save_record_SOP.php");
-//            } else if ($project_id == $pidsArray['RMANAGER']) {
-//                include_once("hooks/save_record_requestManager.php");
-//            } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
-//                include_once("hooks/save_record_commentsAndVotes.php");
-//            } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
-//                include_once("hooks/save_record_SOP_comments.php");
-//            }
-//            echo '<script>';
-//            include_once("js/iframe.js");
-//            echo '</script>';
-//
-//        }catch (Throwable $e) {
-//            \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Hook Error", $e->getMessage());
-//        }
+        echo '<script>';
+        include_once("js/iframe.js");
+        echo '</script>';
+
+        #Get Projects ID's
+        $hub_mapper = $this->getProjectSetting('hub-mapper');
+        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
+        try {
+            #Depending on the project we add one hook or another
+            if ($project_id == $pidsArray['SOP']) {
+                include_once("hooks/save_record_SOP.php");
+            } else if ($project_id == $pidsArray['RMANAGER']) {
+                include_once("hooks/save_record_requestManager.php");
+            } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
+                include_once("hooks/save_record_commentsAndVotes.php");
+            } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
+                include_once("hooks/save_record_SOP_comments.php");
+            }
+            echo '<script>';
+            include_once("js/iframe.js");
+            echo '</script>';
+
+        }catch (Throwable $e) {
+            \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Hook Error", $e->getMessage());
+        }
     }
 
-//    function redcap_survey_acknowledgement_page($project_id, $record, $instrument, $event_id){
-//        #Get Projects ID's
-//        $hub_mapper = $this->getProjectSetting('hub-mapper');
-//        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-//        try {
-//            #Depending on the project que add one hook or another
-//            if ($project_id == $pidsArray['SOP'] && $instrument == 'dhwg_review_request') {
-//                include_once("sop/sop_make_public_request_AJAX.php?record=" . $record);
-//                echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=smn&record='.$record.'&message=P") . '</script>';
-//            }else{
-//                echo '<script>';
-//                include_once("js/iframe.js");
-//                echo '</script>';
-//            }
-//        }catch (Throwable $e) {
-//            \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Hook Error", $e->getMessage());
-//        }
-//    }
+    function redcap_survey_acknowledgement_page($project_id, $record, $instrument, $event_id){
+        #Get Projects ID's
+        $hub_mapper = $this->getProjectSetting('hub-mapper');
+        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
+        try {
+            #Depending on the project que add one hook or another
+            if ($project_id == $pidsArray['SOP'] && $instrument == 'dhwg_review_request') {
+                include_once("sop/sop_make_public_request_AJAX.php?record=" . $record);
+                echo '<script>parent.location.href = ' . json_encode($this->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=smn&record='.$record.'&message=P") . '</script>';
+            }else{
+                echo '<script>';
+                include_once("js/iframe.js");
+                echo '</script>';
+            }
+        }catch (Throwable $e) {
+            \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Hook Error", $e->getMessage());
+        }
+    }
 
-//    function redcap_survey_page_top($project_id){
-//        #Get Projects ID's
-//        $hub_mapper = $this->getProjectSetting('hub-mapper');
-//        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-//
-//        echo "<script>
-//            $(document).ready(function() {
-//                window.onbeforeunload = null;
-//                //Hide save and return button for all surveys
-//                $('[name=submit-btn-savereturnlater]').hide();
-//            });
-//        </script>";
-//
-//        #Add to all projects needed
-//        if($project_id == $pidsArray['HARMONIST']){
-//            echo "<script>
-//                $(document).ready(function() {
-//                    $('#return_code_completed_survey_div').hide();
-//                    $('#surveytitlelogo').hide();
-//                    $('.bubbleInfo').hide();
-//                    $('#two_factor_verification_code_btn span').show();
-//                    $('body').css('background-color','#fff');
-//                    $('[name=submit-btn-saverecord]').text('Submit');
-//                    $('.questionnum ').hide();
-//
-//                    //For Queue Surveys
-//                    $('table#table-survey_queue .hidden').removeClass('hidden').hide().show('fade');
-//                    $('.wrap a').parent().parent().parent().parent().hide();
-//                    $( 'span:contains(\'Close survey queue\')' ).parent().parent().hide();
-//                    $( 'span:contains(\'Close survey\')' ).parent().parent().hide();
-//                });
-//            </script>";
-//        }else{
-//            if (array_key_exists('modal', $_REQUEST)) {
-//                echo "<script>
-//                    $(document).ready(function() {
-//                        $('#return_code_completed_survey_div').hide();
-//                        $('#surveytitlelogo').hide();
-//                        $('.bubbleInfo').hide();
-//                        $('#pagecontent span.ui-button-text').hide();
-//                        $('#two_factor_verification_code_btn span').show();
-//                        $('body').css('background-color','#fff');
-//                        $('[name=submit-btn-saverecord]').text('Submit');
-//                    });
-//                </script>";
-//            }
-//            echo "<script>
-//                $(document).ready(function() {
-//                    $('.questionnum ').hide();
-//                });
-//            </script>";
-//        }
-//    }
+    function redcap_survey_page_top($project_id){
+        #Get Projects ID's
+        $hub_mapper = $this->getProjectSetting('hub-mapper');
+        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
+
+        echo "<script>
+            $(document).ready(function() {
+                window.onbeforeunload = null;
+                //Hide save and return button for all surveys
+                $('[name=submit-btn-savereturnlater]').hide();
+            });
+        </script>";
+
+        #Add to all projects needed
+        if($project_id == $pidsArray['HARMONIST']){
+            echo "<script>
+                $(document).ready(function() {
+                    $('#return_code_completed_survey_div').hide();
+                    $('#surveytitlelogo').hide();
+                    $('.bubbleInfo').hide();
+                    $('#two_factor_verification_code_btn span').show();
+                    $('body').css('background-color','#fff');
+                    $('[name=submit-btn-saverecord]').text('Submit');
+                    $('.questionnum ').hide();
+
+                    //For Queue Surveys
+                    $('table#table-survey_queue .hidden').removeClass('hidden').hide().show('fade');
+                    $('.wrap a').parent().parent().parent().parent().hide();
+                    $( 'span:contains(\'Close survey queue\')' ).parent().parent().hide();
+                    $( 'span:contains(\'Close survey\')' ).parent().parent().hide();
+                });
+            </script>";
+        }else{
+            if (array_key_exists('modal', $_REQUEST)) {
+                echo "<script>
+                    $(document).ready(function() {
+                        $('#return_code_completed_survey_div').hide();
+                        $('#surveytitlelogo').hide();
+                        $('.bubbleInfo').hide();
+                        $('#pagecontent span.ui-button-text').hide();
+                        $('#two_factor_verification_code_btn span').show();
+                        $('body').css('background-color','#fff');
+                        $('[name=submit-btn-saverecord]').text('Submit');
+                    });
+                </script>";
+            }
+            echo "<script>
+                $(document).ready(function() {
+                    $('.questionnum ').hide();
+                });
+            </script>";
+        }
+    }
 
     function cronMethod($cronAttributes){
         //Only perform actions between 12am and 6am for crons that update at night
