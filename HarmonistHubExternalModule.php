@@ -142,6 +142,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function redcap_survey_acknowledgement_page($project_id, $record, $instrument, $event_id){
+        \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "redcap_save_record",$project_id);
         #Get Projects ID's
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
