@@ -114,31 +114,31 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function redcap_save_record($project_id,$record,$instrument,$event_id){
         \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "redcap_save_record",$project_id);
-        echo '<script>';
-        include_once("js/iframe.js");
-        echo '</script>';
-
-        #Get Projects ID's
-        $hub_mapper = $this->getProjectSetting('hub-mapper');
-        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-        try {
-            #Depending on the project we add one hook or another
-            if ($project_id == $pidsArray['SOP']) {
-                include_once("hooks/save_record_SOP.php");
-            } else if ($project_id == $pidsArray['RMANAGER']) {
-                include_once("hooks/save_record_requestManager.php");
-            } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
-                include_once("hooks/save_record_commentsAndVotes.php");
-            } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
-                include_once("hooks/save_record_SOP_comments.php");
-            }
-            echo '<script>';
-            include_once("js/iframe.js");
-            echo '</script>';
-
-        }catch (Throwable $e) {
-            \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Hook Error", $e->getMessage());
-        }
+//        echo '<script>';
+//        include_once("js/iframe.js");
+//        echo '</script>';
+//
+//        #Get Projects ID's
+//        $hub_mapper = $this->getProjectSetting('hub-mapper');
+//        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
+//        try {
+//            #Depending on the project we add one hook or another
+//            if ($project_id == $pidsArray['SOP']) {
+//                include_once("hooks/save_record_SOP.php");
+//            } else if ($project_id == $pidsArray['RMANAGER']) {
+//                include_once("hooks/save_record_requestManager.php");
+//            } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
+//                include_once("hooks/save_record_commentsAndVotes.php");
+//            } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
+//                include_once("hooks/save_record_SOP_comments.php");
+//            }
+//            echo '<script>';
+//            include_once("js/iframe.js");
+//            echo '</script>';
+//
+//        }catch (Throwable $e) {
+//            \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "Hook Error", $e->getMessage());
+//        }
     }
 
     function redcap_survey_acknowledgement_page($project_id, $record, $instrument, $event_id){
