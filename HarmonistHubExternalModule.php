@@ -113,6 +113,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function redcap_save_record($project_id,$record,$instrument,$event_id){
+        \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "redcap_save_record",$project_id);
         echo '<script>';
         include_once("js/iframe.js");
         echo '</script>';
@@ -120,7 +121,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         #Get Projects ID's
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-        \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "redcap_save_record",$project_id." == ".$pidsArray['COMMENTSVOTES']);
         try {
             #Depending on the project we add one hook or another
             if ($project_id == $pidsArray['SOP']) {
@@ -142,6 +142,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function redcap_survey_acknowledgement_page($project_id, $record, $instrument, $event_id){
+        \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "redcap_survey_acknowledgement_page",$project_id);
         #Get Projects ID's
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
@@ -161,6 +162,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     }
 
     function redcap_survey_page_top($project_id){
+        \REDCap::email('eva.bascompte.moragas@vumc.org', REDCapManagement::DEFAULT_EMAIL_ADDRESS, "redcap_survey_page_top",$project_id);
         #Get Projects ID's
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
