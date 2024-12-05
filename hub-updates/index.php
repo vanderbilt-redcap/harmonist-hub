@@ -230,41 +230,20 @@ if (!ProjectData::checkIfModuleIsEnabledOnProjects($module, $pidsArray, (int)$_G
             </div>';
 }
 if (!empty($allUpdates)) {
-    $message = "";
-    if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')) {
-        $message = "The Data Dictionary has been successfully updated.";
-    } else {
-        if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'R')) {
-            $message = "The variables have been successfully <strong>added</strong> to the resolved list.";
-        } else {
-            if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'U')) {
-                $message = "Last Updates has been successfully updated.";
-            } else {
-                if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'L')) {
-                    $message = "The variables have been successfully <strong>removed</strong> from the resolved list.";
-                } else {
-                    if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'T')) {
-                        $message = "<strong>" . ProjectData::HUB_SURVEY_THEME_NAME . "</strong> has been successfully updated. Check the logs to see which surveys have been updated.";
-                    } else {
-                        if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'V')) {
-                            $message = "The surveys have been succesfully created. Check the logs to see which instruments have been updated.";
-                        } else {
-                            if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'E')) {
-                                $message = "The module and settings have been enabled on the projects.";
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    ?>
-    <?php
-    if (array_key_exists('message', $_REQUEST)) { ?>
+    $message = [
+        'S' => "The Data Dictionary has been successfully updated.",
+        'R' => "The variables have been successfully <strong>added</strong> to the resolved list.",
+        'U' => "The variables have been successfully <strong>removed</strong> from the resolved list.",
+        'L' => "The Data Dictionary has been successfully updated.",
+        'T' => "<strong>" . ProjectData::HUB_SURVEY_THEME_NAME . "</strong> has been successfully updated. Check the logs to see which surveys have been updated.",
+        'V' => "The surveys have been succesfully created. Check the logs to see which instruments have been updated.",
+        'E' => "The module and settings have been enabled on the projects.",
+    ];
+    if (array_key_exists('message', $_REQUEST) && !empty($message[$_REQUEST['message']])) { ?>
         <div class="container" style="margin-top: 20px">
-            <div class="alert alert-success col-md-12" id="success_message"><?= $message ?></div>
+            <div class="alert alert-success col-md-12" id="success_message"><?= $message[$_REQUEST['message']] ?></div>
         </div>
-    <?php
+        <?php
     } ?>
     <div class="title">
         You have <strong><?= count($allUpdates) ?></strong> projects to update.
