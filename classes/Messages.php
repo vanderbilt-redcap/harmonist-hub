@@ -1,4 +1,5 @@
 <?php
+
 namespace Vanderbilt\HarmonistHubExternalModule;
 
 use Project;
@@ -21,4 +22,5 @@ class Messages
         return $message[$letter];
     }
 }
+
 ?>

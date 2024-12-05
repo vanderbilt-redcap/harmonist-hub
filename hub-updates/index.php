@@ -233,7 +233,9 @@ if (!ProjectData::checkIfModuleIsEnabledOnProjects($module, $pidsArray, (int)$_G
 if (!empty($allUpdates)) {
     if (array_key_exists('message', $_REQUEST) && !empty(Messages::getHubUpdatesMessage($_REQUEST['message']))) { ?>
         <div class="container" style="margin-top: 20px">
-            <div class="alert alert-success col-md-12" id="success_message"><?= Messages::getHubUpdatesMessage($_REQUEST['message']) ?></div>
+            <div class="alert alert-success col-md-12" id="success_message"><?= Messages::getHubUpdatesMessage(
+                    $_REQUEST['message']
+                ) ?></div>
         </div>
         <?php
     } ?>
