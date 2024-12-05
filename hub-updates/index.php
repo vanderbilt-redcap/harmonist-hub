@@ -5,6 +5,7 @@ use REDCap;
 
 include_once(__DIR__ . "/../projects.php");
 include_once(__DIR__ . "/../classes/HubUpdates.php");
+include_once(__DIR__ . "/../classes/Messages.php");
 
 $allUpdates = $module->getProjectSetting('hub-updates')['data'];
 #Sanitize text title and descrition for pages
@@ -230,18 +231,9 @@ if (!ProjectData::checkIfModuleIsEnabledOnProjects($module, $pidsArray, (int)$_G
             </div>';
 }
 if (!empty($allUpdates)) {
-    $message = [
-        'S' => "The Data Dictionary has been successfully updated.",
-        'R' => "The variables have been successfully <strong>added</strong> to the resolved list.",
-        'U' => "The variables have been successfully <strong>removed</strong> from the resolved list.",
-        'L' => "The Data Dictionary has been successfully updated.",
-        'T' => "<strong>" . ProjectData::HUB_SURVEY_THEME_NAME . "</strong> has been successfully updated. Check the logs to see which surveys have been updated.",
-        'V' => "The surveys have been succesfully created. Check the logs to see which instruments have been updated.",
-        'E' => "The module and settings have been enabled on the projects.",
-    ];
-    if (array_key_exists('message', $_REQUEST) && !empty($message[$_REQUEST['message']])) { ?>
+    if (array_key_exists('message', $_REQUEST) && !empty(Messages::getHubUpdatesMessage($_REQUEST['message']))) { ?>
         <div class="container" style="margin-top: 20px">
-            <div class="alert alert-success col-md-12" id="success_message"><?= $message[$_REQUEST['message']] ?></div>
+            <div class="alert alert-success col-md-12" id="success_message"><?= Messages::getHubUpdatesMessage($_REQUEST['message']) ?></div>
         </div>
         <?php
     } ?>
