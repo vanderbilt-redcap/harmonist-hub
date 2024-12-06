@@ -401,10 +401,12 @@ class HubUpdates{
            } else {
                $col = "<div class='mb-2'>" . self::checkTagsExistAndAreClosed($old[$var]) . "</div>";
            }
+           if ($var == "field_name" && $old['form_name'] != "" && $new['form_name'] !== $old['form_name']) {
+               $col .= "<small class='d-flex' style='font-size:12px;'>Form name: <span class='text-muted' style='text-decoration: line-through;padding-left:5px;'>".$old['form_name']."</span><small>";
+           }
            $col .= self::getFieldLabel($new, $old, self::CHANGED,'Show the field ONLY if: ','branching_logic', $option);
        }else {
            $col = self::checkTextLengthAndSplit($option, $new['field_name']);
-
            if ($new['branching_logic'] != "") {
                $col .= "<small class='d-flex' style='font-size:12px;'>Show the field ONLY if: " . filter_tags($new['branching_logic']) . "</small>";
            }
