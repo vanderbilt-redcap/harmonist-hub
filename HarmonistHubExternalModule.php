@@ -315,35 +315,23 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                             #CRONS
                             if ($cronAttributes['cron_name'] == 'cron_metrics' && $settings['deactivate_metrics_cron___1'] !== "1") {
                                 include("crontasks/cron_metrics.php");
-                            } else {
-                                if ($cronAttributes['cron_name'] == 'cron_delete' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
-                                    include("crontasks/cron_delete_AWS.php");
-                                } else {
-                                    if ($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
-                                        include("crontasks/cron_data_upload_expiration_reminder.php");
-                                    } else {
-                                        if ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
-                                            include("crontasks/cron_data_upload_notification.php");
-                                        } else {
-                                            if ($cronAttributes['cron_name'] == 'cron_monthly_digest') {
-                                                //Every First Monday of the Month
-                                                include("crontasks/cron_monthly_digest.php");
-                                            } else {
-                                                if ($cronAttributes['cron_name'] == 'cron_req_finalized_notification') {
-                                                    include("crontasks/cron_req_finalized_notification.php");
-                                                } else {
-                                                    if ($cronAttributes['cron_name'] == 'cron_publications') {
-                                                        include("crontasks/cron_publications.php");
-                                                    } else {
-                                                        if ($cronAttributes['cron_name'] == 'cron_json') {
-                                                            include("crontasks/cron_json.php");
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                            } elseif ($cronAttributes['cron_name'] == 'cron_delete' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
+                                include("crontasks/cron_delete_AWS.php");
+                            } elseif ($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
+                                include("crontasks/cron_data_upload_expiration_reminder.php");
+                            } elseif ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
+                                include("crontasks/cron_data_upload_notification.php");
+                            } elseif ($cronAttributes['cron_name'] == 'cron_monthly_digest') {
+                                //Every First Monday of the Month
+                                include("crontasks/cron_monthly_digest.php");
+                            } elseif ($cronAttributes['cron_name'] == 'cron_req_finalized_notification') {
+                                include("crontasks/cron_req_finalized_notification.php");
+                            } elseif ($cronAttributes['cron_name'] == 'cron_publications') {
+                                include("crontasks/cron_publications.php");
+                            } elseif ($cronAttributes['cron_name'] == 'cron_json') {
+                                include("crontasks/cron_json.php");
+                            } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data') {
+                                include("crontasks/cron_upload_pending_data_set_data.php");
                             }
                         } catch (Throwable $e) {
                             REDCap::email(

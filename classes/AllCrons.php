@@ -75,7 +75,7 @@ class AllCrons
         $messageArray = array();
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
         if(strtotime($expired_date) >= strtotime(date('Y-m-d'))) {
-            if(!array_key_exists('emails_sent_y___1',$upload) || $upload['emails_sent_y___1'] !== "1") {
+            if(!array_key_exists('emails_sent_y___1', $upload) || $upload['emails_sent_y___1'] !== "1") {
                 if($email) {
                     //Save data on project
                     $Proj = new \Project($pidsArray['DATAUPLOAD']);
@@ -698,96 +698,6 @@ class AllCrons
         return $message;
     }
 
-    public static function runCronUploadPendingDataSetData($module, $pidsArray, $s3, $bucket, $settings, $email = false)
-    {
-        try {
-            $message = array();
-            $message['pending_total'] = 0;
-            //Get list of elements in folder
-            $objects = $s3->getIterator('ListObjects', array(
-                "Bucket" => $bucket,
-                "Prefix" => "pending/"
-            ));
-
-            foreach ($objects as $object) {
-                $file_name = str_replace("pending/", '', $object['Key']);
-                $file_name_extension = explode('.', $file_name)[1];
-                $file_name = explode('.', $file_name)[0];
-
-                if ($file_name_extension == 'json') {
-                    $message['pending_total'] = $message['pending_total'] + 1;
-                    #Get the object
-                    $result = $s3->getObject(array(
-                        'Bucket' => $bucket,
-                        'Key' => $object['Key']
-                    ));
-
-                    $s3->registerStreamWrapper();
-                    $data = file_get_contents($module->getSafePath('s3://' . $bucket . '/'.$object['Key'],'s3://' . $bucket . '/'));
-                    // Open a stream in read-only mode
-                    if ($stream = fopen('s3://' . $bucket . '/' . $object['Key'], 'r')) {
-                        // While the stream is still open
-                        while (!feof($stream)) {
-                            // Read 1,024 bytes from the stream
-                            $uploadData = json_decode(fread($stream, 1024), true);
-                        }
-                        // Be sure to close the stream resource when you're done with it
-                        fclose($stream);
-                    }
-
-                    if ($uploadData != '') {
-                        if (strpos($file_name, 'test_') !== false) {
-                            #test file
-                            $message['data_assoc_concept'] = $uploadData[0]['data_assoc_concept'];
-                            $message['responsecomplete_ts'] = $uploadData[0]['responsecomplete_ts'];
-                        }else {
-                            $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null, null, null, null, false, false, false,
-                                "[data_assoc_concept] = " . $uploadData[0]['data_assoc_concept'] . " AND [data_assoc_request] = " . $uploadData[0]['data_assoc_request'] .
-                                " AND [data_upload_person] = " . $uploadData[0]['data_upload_person'] . " AND [data_upload_region] = " . $uploadData[0]['data_upload_region'])[0];
-
-                            if ($request_DU != "") {
-                                $found = false;
-                                foreach ($request_DU as $upload) {
-                                    if (strtotime($upload['responsecomplete_ts']) == strtotime($uploadData[0]['responsecomplete_ts']) || $upload['responsecomplete_ts'] == "") {
-                                        self::addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settings, $upload['record_id']);
-                                        $found = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!$found) {
-                                    self::addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settings, "");
-                                }
-                            } else {
-                                #Record is missing, create new one
-                                self::addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settings, "");
-                            }
-                        }
-                    }
-
-                    if($email != false) {
-                        #Delete the object after uploading the record
-                        #JSON
-                        $result = $s3->deleteObject(array(
-                            'Bucket' => $bucket,
-                            'Key' => $object['Key']
-                        ));
-
-                        #REPORT
-                        $reportHash = "Report" . str_replace("_details", "", $file_name) . ".pdf";
-                        $result = $s3->deleteObject(array(
-                            'Bucket' => $bucket,
-                            'Key' => 'pending/' . $reportHash
-                        ));
-                    }
-                }
-            }
-            return $message;
-        } catch (S3Exception $e) {
-            echo $e->getMessage() . "\n";
-        }
-    }
-
     public static function runCronJson($module, $pidsArray, $settings, $email = false)
     {
         CopyJSON::hasJsoncopyBeenUpdated($module, '0a', $settings, $pidsArray);
@@ -907,7 +817,7 @@ class AllCrons
         $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $recordUp, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $recordpdf, 1);
 
-        if (($record != "" && $upload['data_upload_pdf'] == "") || $record == "") {
+        if (($record !== "" && $upload['data_upload_pdf'] === "") || $record === "") {
             //SAVE PDF ON DB
             $reportHash = "Report" . str_replace("_details", "", $file_name);
             $storedName = md5($reportHash);
@@ -925,13 +835,11 @@ class AllCrons
             $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'json', $jsonConcepts, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 
             \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $record, 1);
-
         }
 
         #EMAIL NOTIFICATION
         $subject = "Pending dataset upload found for " . $settings['hub_name'] . " " . $concept_id;
-
-        if ($settings['hub_email_pending_uploads'] != "") {
+        if ($settings['hub_email_pending_uploads'] !== "") {
             $emails = explode(';', $settings['hub_email_pending_uploads']);
             foreach ($emails as $email) {
                 sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $recordpdf,"Pending dataset upload notification", $pidsArray['DATAUPLOAD']);
