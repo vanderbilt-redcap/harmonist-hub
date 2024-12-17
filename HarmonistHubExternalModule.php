@@ -332,6 +332,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                                     include("crontasks/cron_publications.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_json') {
                                     include("crontasks/cron_json.php");
+                                } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data') {
+                                    include("crontasks/cron_upload_pending_data_set_data.php");
                                 }
                             } catch (Throwable $e) {
                                 REDCap::email(

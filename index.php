@@ -178,10 +178,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                         else if( array_key_exists('option', $_REQUEST) && $option === 'log')
                         {
                             include('hub/hub_changelog.php');
-                        }else if( array_key_exists('option', $_REQUEST) && $option === 'iut')
-                        {
-                            include('hub/hub_unit_test.php');
-                        } else if( array_key_exists('option', $_REQUEST) && $option === 'smn' && !$deactivate_datahub)
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'smn' && !$deactivate_datahub)
                         {
                             include('sop/sop_request_data.php');
                         } else if( array_key_exists('option', $_REQUEST) && $option === 'sra' && !$deactivate_datahub)

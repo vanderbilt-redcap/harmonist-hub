@@ -75,7 +75,7 @@ class AllCrons
         $messageArray = array();
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
         if(strtotime($expired_date) >= strtotime(date('Y-m-d'))) {
-            if(!array_key_exists('emails_sent_y___1',$upload) || $upload['emails_sent_y___1'] !== "1") {
+            if(!array_key_exists('emails_sent_y___1', $upload) || $upload['emails_sent_y___1'] !== "1") {
                 if($email) {
                     //Save data on project
                     $Proj = new \Project($pidsArray['DATAUPLOAD']);
@@ -355,93 +355,93 @@ class AllCrons
         $message['code_test'] = 1;
         return $message;
     }
-	
-	/**
-	 * @param $module Object Module object to access module functions
-	 * @param $pidsArray array Full list of every PID mapped in project
-	 * @param $s3 Object Amazon S3 interaction object
-	 * @param $upload array Array of S3 parameters
-	 * @param $sop array SOP Record Data with AWS data to be deleted
-	 * @param $expired_date string Date the SOP dataset expires
-	 * @param $settings array Hub settings for this Harmonist instance
-	 * @return array|string
-	 */
+
+    /**
+     * @param $module Object Module object to access module functions
+     * @param $pidsArray array Full list of every PID mapped in project
+     * @param $s3 Object Amazon S3 interaction object
+     * @param $upload array Array of S3 parameters
+     * @param $sop array SOP Record Data with AWS data to be deleted
+     * @param $expired_date string Date the SOP dataset expires
+     * @param $settings array Hub settings for this Harmonist instance
+     * @return array|string
+     */
     public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $sop, $expired_date, $settings)
     {
         if((!array_key_exists('deleted_y',$upload) || $upload['deleted_y'] != "1") && strtotime($expired_date) <= strtotime(date('Y-m-d'))){
             try {
-				#Delete the object
-				$result = $s3->deleteObject(array(
-					'Bucket' => $upload['data_upload_bucket'],
-					'Key' => $upload['data_upload_folder'] . $upload['data_upload_zip']
-				));
+                #Delete the object
+                $result = $s3->deleteObject(array(
+                                                'Bucket' => $upload['data_upload_bucket'],
+                                                'Key' => $upload['data_upload_folder'] . $upload['data_upload_zip']
+                                            ));
 
-				//Save data on project
-				$Proj = new \Project($pidsArray['DATAUPLOAD']);
-				$event_id = $Proj->firstEventId;
-				$recordSaveDU = array();
-				$recordSaveDU[$upload['record_id']][$event_id]['record_id'] = $upload['record_id'];
-				$recordSaveDU[$upload['record_id']][$event_id]['deletion_type'] = "1";
-				$date = new \DateTime();
-				$recordSaveDU[$upload['record_id']][$event_id]['deletion_ts'] = $date->format('Y-m-d H:i:s');
-				$recordSaveDU[$upload['record_id']][$event_id]['deletion_rs'] = "Expired. Deleted automatically";
-				$recordSaveDU[$upload['record_id']][$event_id]['deletion_information_complete'] = "2";
-				$recordSaveDU[$upload['record_id']][$event_id]['deleted_y'] = "1";
-				$results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $recordSaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-				\Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $upload['record_id'], 1);
+                //Save data on project
+                $Proj = new \Project($pidsArray['DATAUPLOAD']);
+                $event_id = $Proj->firstEventId;
+                $recordSaveDU = array();
+                $recordSaveDU[$upload['record_id']][$event_id]['record_id'] = $upload['record_id'];
+                $recordSaveDU[$upload['record_id']][$event_id]['deletion_type'] = "1";
+                $date = new \DateTime();
+                $recordSaveDU[$upload['record_id']][$event_id]['deletion_ts'] = $date->format('Y-m-d H:i:s');
+                $recordSaveDU[$upload['record_id']][$event_id]['deletion_rs'] = "Expired. Deleted automatically";
+                $recordSaveDU[$upload['record_id']][$event_id]['deletion_information_complete'] = "2";
+                $recordSaveDU[$upload['record_id']][$event_id]['deleted_y'] = "1";
+                $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $recordSaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+                \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $upload['record_id'], 1);
 
-				#EMAIL NOTIFICATION
-				$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-				$concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
-				$concept_id = $concepts['concept_id'];
-				$concept_title = $concepts['concept_title'];
+                #EMAIL NOTIFICATION
+                $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
+                $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
+                $concept_id = $concepts['concept_id'];
+                $concept_title = $concepts['concept_title'];
 
-				$peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
-				$region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array('region_code'))[0]['region_code'];
+                $peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
+                $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array('region_code'))[0]['region_code'];
 
-				$date = new \DateTime($upload['responsecomplete_ts']);
-				$date->modify("+1 hours");
-				$date_time = $date->format("Y-m-d H:i");
+                $date = new \DateTime($upload['responsecomplete_ts']);
+                $date->modify("+1 hours");
+                $date_time = $date->format("Y-m-d H:i");
 
-				#to uploader user
-				$url = $module->getUrl("index.php")."&NOAUTH&option=dat=&pid=" . $pidsArray['PROJECTS'];
-				$subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
-				$message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
-					"<div>The dataset you submitted to secure cloud storage in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
-					"This dataset will not be available for future downloads. To replace the deleted dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Submit Data on the <a href='" . $url . "' target='_blank'>Data page</a></strong>.</div><br/>" .
-					"<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
-				sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
+                #to uploader user
+                $url = $module->getUrl("index.php")."&NOAUTH&option=dat=&pid=" . $pidsArray['PROJECTS'];
+                $subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
+                $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
+                    "<div>The dataset you submitted to secure cloud storage in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
+                    "This dataset will not be available for future downloads. To replace the deleted dataset, log in to the " . $settings['hub_name'] . " Hub and select&nbsp;<strong>Submit Data on the <a href='" . $url . "' target='_blank'>Data page</a></strong>.</div><br/>" .
+                    "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
+                sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
 
-				#to downloaders
-				if ($sop['sop_downloaders'] !== "") {
-					$downloaders = explode(',', $sop['sop_downloaders']);
-					$number_downloaders = count($downloaders);
-					$messageArray['numDownloaders'] = $number_downloaders;
+                #to downloaders
+                if ($sop['sop_downloaders'] !== "") {
+                    $downloaders = explode(',', $sop['sop_downloaders']);
+                    $number_downloaders = count($downloaders);
+                    $messageArray['numDownloaders'] = $number_downloaders;
 
-					$downloadersOrdered = array();
-					foreach ($downloaders as $down) {
-						$peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
-						$region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
+                    $downloadersOrdered = array();
+                    foreach ($downloaders as $down) {
+                        $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
+                        $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
 
-						$downloadersOrdered = self::getDownloadersOrdered($down,$downloadersOrdered,$peopleDown,$region_codeDown);
-					}
-					ArrayFunctions::array_sort_by_column($downloadersOrdered, 'name');
+                        $downloadersOrdered = self::getDownloadersOrdered($down,$downloadersOrdered,$peopleDown,$region_codeDown);
+                    }
+                    ArrayFunctions::array_sort_by_column($downloadersOrdered, 'name');
 
-					$RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
-					$concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id'];
+                    $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $upload['data_assoc_concept']));
+                    $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_id'];
 
-					$subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
-					foreach ($downloadersOrdered as $down) {
-						$message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
-							"<div>The dataset previously submitted in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) by&nbsp;<b>" . $peopleUp['firstname'] . " " . $peopleUp['lastname'] . " from " . $region_codeUp . "</b> has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
-							"If you still need to access this dataset, please e-mail <a href='mailto:" . $peopleUp['email'] . "'>" . $peopleUp['email'] . "</a> to request a new dataset.</div><br/>" .
-							"<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
+                    $subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
+                    foreach ($downloadersOrdered as $down) {
+                        $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
+                            "<div>The dataset previously submitted in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) by&nbsp;<b>" . $peopleUp['firstname'] . " " . $peopleUp['lastname'] . " from " . $region_codeUp . "</b> has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
+                            "If you still need to access this dataset, please e-mail <a href='mailto:" . $peopleUp['email'] . "'>" . $peopleUp['email'] . "</a> to request a new dataset.</div><br/>" .
+                            "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
 
-						sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
-					}
-					$message['code_test'] = "1";
-				}
-				\REDCap::logEvent("Dataset deleted automatically\nRecord " . $upload['record_id'], "Concept ID: " . $concept_id . "\n Draft ID: " . $sop['record_id'], null, null, null, $pidsArray['DATAUPLOAD']);
+                        sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
+                    }
+                    $message['code_test'] = "1";
+                }
+                \REDCap::logEvent("Dataset deleted automatically\nRecord " . $upload['record_id'], "Concept ID: " . $concept_id . "\n Draft ID: " . $sop['record_id'], null, null, null, $pidsArray['DATAUPLOAD']);
             } catch (S3Exception $e) {
                 echo $e->getMessage() . "\n";
             }
@@ -698,96 +698,6 @@ class AllCrons
         return $message;
     }
 
-    public static function runCronUploadPendingDataSetData($module, $pidsArray, $s3, $bucket, $settings, $email = false)
-    {
-        try {
-            $message = array();
-            $message['pending_total'] = 0;
-            //Get list of elements in folder
-            $objects = $s3->getIterator('ListObjects', array(
-                "Bucket" => $bucket,
-                "Prefix" => "pending/"
-            ));
-
-            foreach ($objects as $object) {
-                $file_name = str_replace("pending/", '', $object['Key']);
-                $file_name_extension = explode('.', $file_name)[1];
-                $file_name = explode('.', $file_name)[0];
-
-                if ($file_name_extension == 'json') {
-                    $message['pending_total'] = $message['pending_total'] + 1;
-                    #Get the object
-                    $result = $s3->getObject(array(
-                        'Bucket' => $bucket,
-                        'Key' => $object['Key']
-                    ));
-
-                    $s3->registerStreamWrapper();
-                    $data = file_get_contents($module->getSafePath('s3://' . $bucket . '/'.$object['Key'],'s3://' . $bucket . '/'));
-                    // Open a stream in read-only mode
-                    if ($stream = fopen('s3://' . $bucket . '/' . $object['Key'], 'r')) {
-                        // While the stream is still open
-                        while (!feof($stream)) {
-                            // Read 1,024 bytes from the stream
-                            $uploadData = json_decode(fread($stream, 1024), true);
-                        }
-                        // Be sure to close the stream resource when you're done with it
-                        fclose($stream);
-                    }
-
-                    if ($uploadData != '') {
-                        if (strpos($file_name, 'test_') !== false) {
-                            #test file
-                            $message['data_assoc_concept'] = $uploadData[0]['data_assoc_concept'];
-                            $message['responsecomplete_ts'] = $uploadData[0]['responsecomplete_ts'];
-                        }else {
-                            $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null, null, null, null, false, false, false,
-                                "[data_assoc_concept] = " . $uploadData[0]['data_assoc_concept'] . " AND [data_assoc_request] = " . $uploadData[0]['data_assoc_request'] .
-                                " AND [data_upload_person] = " . $uploadData[0]['data_upload_person'] . " AND [data_upload_region] = " . $uploadData[0]['data_upload_region'])[0];
-
-                            if ($request_DU != "") {
-                                $found = false;
-                                foreach ($request_DU as $upload) {
-                                    if (strtotime($upload['responsecomplete_ts']) == strtotime($uploadData[0]['responsecomplete_ts']) || $upload['responsecomplete_ts'] == "") {
-                                        self::addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settings, $upload['record_id']);
-                                        $found = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!$found) {
-                                    self::addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settings, "");
-                                }
-                            } else {
-                                #Record is missing, create new one
-                                self::addUploadRecord($module, $s3, $uploadData, $file_name, $bucket, $settings, "");
-                            }
-                        }
-                    }
-
-                    if($email != false) {
-                        #Delete the object after uploading the record
-                        #JSON
-                        $result = $s3->deleteObject(array(
-                            'Bucket' => $bucket,
-                            'Key' => $object['Key']
-                        ));
-
-                        #REPORT
-                        $reportHash = "Report" . str_replace("_details", "", $file_name) . ".pdf";
-                        $result = $s3->deleteObject(array(
-                            'Bucket' => $bucket,
-                            'Key' => 'pending/' . $reportHash
-                        ));
-                    }
-                }
-            }
-            return $message;
-        } catch (S3Exception $e) {
-            echo $e->getMessage() . "\n";
-        }
-    }
-
     public static function runCronJson($module, $pidsArray, $settings, $email = false)
     {
         CopyJSON::hasJsoncopyBeenUpdated($module, '0a', $settings, $pidsArray);
@@ -852,7 +762,7 @@ class AllCrons
         return $messageArray;
     }
 
-    function addUploadRecord($module, $pidsArray, $s3, $uploadData, $file_name, $bucket, $settings, $record = "")
+    public static function addUploadRecord($module, $pidsArray, $s3, $uploadData, $file_name, $bucket, $settings, $record = "")
     {
         #Email Data
         $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $uploadData[0]['data_assoc_concept']));
@@ -867,8 +777,7 @@ class AllCrons
 
         $gotoredcap = APP_PATH_WEBROOT_ALL . "DataEntry/record_status_dashboard.php?pid=" . $pidsArray['DATAUPLOAD'];
 
-
-        if ($record != "") {
+        if ($record !== "") {
             $recordpdf = $record;
 
             $RecordSetUpload = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $record));
@@ -883,7 +792,6 @@ class AllCrons
                 "<div>Click here to view the <a href='" . $gotoredcap . "'>Hub Uploads</a> page.</div>";
         } else {
             $recordpdf = $module->framework->addAutoNumberedRecord($pidsArray['DATAUPLOAD']);
-
             $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['DATAUPLOAD'] . "&arm=1&id=" . $recordpdf;
             $message = "<div>Dear administrator,</div><br/>" .
                 "<div>A pending upload dataset has been found on the Harmonist Data Toolkit server: </div><br/>" .
@@ -906,8 +814,7 @@ class AllCrons
         $recordUp[$recordpdf][$event_id]['data_upload_zip'] = $uploadData[0]['data_upload_zip'];
         $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'array', $recordUp, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
         \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $recordpdf, 1);
-
-        if (($record != "" && $upload['data_upload_pdf'] == "") || $record == "") {
+        if (($record !== "" && $upload['data_upload_pdf'] === "") || $record === "") {
             //SAVE PDF ON DB
             $reportHash = "Report" . str_replace("_details", "", $file_name);
             $storedName = md5($reportHash);
@@ -917,21 +824,17 @@ class AllCrons
             $filesize = file_put_contents(EDOC_PATH . $storedName, $output);
 
             //Save document on DB
-            $q = $module->query("INSERT INTO redcap_edocs_metadata (stored_name,doc_name,doc_size,file_extension,mime_type,gzipped,project_id,stored_date) VALUES (?,?,?,?,?,?,?,?)", [$storedName, 'application/octet-stream', $reportHash . ".pdf", $filesize, '.pdf', '0', $pidsArray['DATAUPLOAD'], date('Y-m-d h:i:s')]);
-            $docId = db_insert_id();
+            $docId = \REDCap::storeFile($filePath, $pidsArray['DATAUPLOAD'], $reportHash . ".pdf");
 
             //Add document DB ID to project
             $jsonConcepts = json_encode(array(array('record_id' => $recordpdf, 'data_upload_pdf' => $docId)));
             $results = \Records::saveData($pidsArray['DATAUPLOAD'], 'json', $jsonConcepts, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-
             \Records::addRecordToRecordListCache($pidsArray['DATAUPLOAD'], $record, 1);
-
         }
 
         #EMAIL NOTIFICATION
         $subject = "Pending dataset upload found for " . $settings['hub_name'] . " " . $concept_id;
-
-        if ($settings['hub_email_pending_uploads'] != "") {
+        if (!empty($settings['hub_email_pending_uploads'])) {
             $emails = explode(';', $settings['hub_email_pending_uploads']);
             foreach ($emails as $email) {
                 sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $recordpdf,"Pending dataset upload notification", $pidsArray['DATAUPLOAD']);
