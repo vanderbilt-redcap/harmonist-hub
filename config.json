@@ -149,7 +149,7 @@
       "cron_max_run_time": "60"
     },
     {
-      "cron_name": "cron_upload_pending",
+      "cron_name": "cron_upload_pending_data_set_data",
       "cron_description": "Cron that sends an email and generates an uploads records if there are any pending files",
       "method": "cronMethod",
       "cron_frequency": "21600",
