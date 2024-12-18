@@ -333,6 +333,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                                 } elseif ($cronAttributes['cron_name'] == 'cron_json') {
                                     include("crontasks/cron_json.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data') {
+                                    error_log("IeDEA HUB: cron_upload_pending_data_set_data");
                                     include("crontasks/cron_upload_pending_data_set_data.php");
                                 }
                             } catch (Throwable $e) {

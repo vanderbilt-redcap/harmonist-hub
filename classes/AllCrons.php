@@ -764,6 +764,7 @@ class AllCrons
 
     public static function addUploadRecord($module, $pidsArray, $s3, $uploadData, $file_name, $bucket, $settings, $record = "")
     {
+        error_log("IeDEA HUB: cron_upload_pending_data_set_data addUploadRecord");
         #Email Data
         $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $uploadData[0]['data_assoc_concept']));
         $concept_id = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets, $pidsArray['HARMONIST'])[0]['concept_id'];
