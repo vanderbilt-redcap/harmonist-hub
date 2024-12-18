@@ -332,7 +332,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                                     include("crontasks/cron_publications.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_json') {
                                     include("crontasks/cron_json.php");
-                                } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data') {
+                                } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
                                     error_log("IeDEA HUB: cron_upload_pending_data_set_data");
                                     include("crontasks/cron_upload_pending_data_set_data.php");
                                 }
