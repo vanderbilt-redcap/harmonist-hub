@@ -301,6 +301,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         }
         define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
         $isCron = true;
+        error_log("IeDEA HUB: ".json_encode($this->getProjectsWithModuleEnabled(),JSON_PRETTY_PRINT));
         foreach ($this->getProjectsWithModuleEnabled() as $project_id) {
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
             $disable_crons = $this->getProjectSetting('disable-crons', $hub_mapper);
