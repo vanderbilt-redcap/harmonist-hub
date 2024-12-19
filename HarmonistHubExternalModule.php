@@ -306,7 +306,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
             $disable_crons = $this->getProjectSetting('disable-crons', $hub_mapper);
             if (!$disable_crons) {
-                if($hub_mapper == 2747) {
+                if($hub_mapper == "2747") {
                     error_log(
                         "IeDEA HUB: cron_upload_pending_data_set_data on PID=MAPPER: " . $project_id . " = " . $hub_mapper
                     );
