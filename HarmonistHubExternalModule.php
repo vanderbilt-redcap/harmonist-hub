@@ -261,7 +261,9 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function cronMethod($cronAttributes)
     {
-        error_log("IeDEA HUB: cron_upload_pending_data_set_data on cron_name: " . $cronAttributes['cron_name']);
+        if ($cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
+            error_log("IeDEA HUB: cron_upload_pending_data_set_data on cron_name: " . $cronAttributes['cron_name']);
+        }
         //Only perform actions between 12am and 6am for crons that update at night
         if ($cronAttributes['cron_name'] != 'cron_upload_pending_data_set_data' && $cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
             $hourRange = 6;
