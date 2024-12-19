@@ -261,9 +261,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function cronMethod($cronAttributes)
     {
-        if ($cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
-            error_log("IeDEA HUB: cron_upload_pending_data_set_data on cron_name: " . $cronAttributes['cron_name']);
-        }
         //Only perform actions between 12am and 6am for crons that update at night
         if ($cronAttributes['cron_name'] != 'cron_upload_pending_data_set_data' && $cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
             $hourRange = 6;
@@ -298,7 +295,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 }
             }
         }
-
         //Perform cron actions here
         if (APP_PATH_WEBROOT[0] == '/') {
             $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
@@ -306,6 +302,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
         $isCron = true;
         foreach ($this->getProjectsWithModuleEnabled() as $project_id) {
+            error_log("IeDEA HUB: cron_upload_pending_data_set_data on PID ENABLED: ".$project_id);
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
             $disable_crons = $this->getProjectSetting('disable-crons', $hub_mapper);
             if($hub_mapper == "2747" || $project_id == "2747") {
