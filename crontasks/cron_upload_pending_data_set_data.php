@@ -9,7 +9,7 @@ use Aws\Credentials\Credentials;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 use REDCap;
-error_log("IeDEA HUB: cron_upload_pending_data_set_data BEFORE credentials PROJECTS: ".$pidsArray['PROJECTS']);
+error_log("IeDEA HUB: cron_upload_pending_data_set_data BEFORE credentials PROJECTS: ".$pidsArray['PROJECTS']."_aws_s3.php");
 if(file_exists("/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php")) {
     require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
     error_log("IeDEA HUB: cron_upload_pending_data_set_data AFTER credentials");

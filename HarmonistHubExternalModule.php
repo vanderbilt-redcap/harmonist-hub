@@ -262,7 +262,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     function cronMethod($cronAttributes)
     {
         //Only perform actions between 12am and 6am for crons that update at night
-        if ($cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
+        if ($cronAttributes['cron_name'] != 'cron_upload_pending_data_set_data' && $cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
             $hourRange = 6;
             if (date('G') > $hourRange) {
                 // Only perform actions between 12am and 6am.
@@ -314,6 +314,11 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                         $settings = REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
                         if (!empty($settings)) {
                             try {
+                                if($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data'){
+                                    error_log("cron_upload_pending_data_set_data on PID: ".$project_id);
+                                    error_log("cron_upload_pending_data_set_data on deactivate_datadown___1: ".$settings['deactivate_datadown___1']);
+                                    error_log("cron_upload_pending_data_set_data on deactivate_datahub___1: ".$settings['deactivate_datahub___1']);
+                                }
                                 #CRONS
                                 if ($cronAttributes['cron_name'] == 'cron_metrics' && $settings['deactivate_metrics_cron___1'] !== "1") {
                                     include("crontasks/cron_metrics.php");
