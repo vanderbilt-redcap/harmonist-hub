@@ -295,7 +295,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 }
             }
         }
-
         //Perform cron actions here
         if (APP_PATH_WEBROOT[0] == '/') {
             $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
@@ -304,9 +303,9 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $isCron = true;
         foreach ($this->getProjectsWithModuleEnabled() as $project_id) {
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
-            $disable_crons = $this->getProjectSetting('disable-crons', $hub_mapper);
-            if (!$disable_crons) {
-                if (is_numeric($project_id) && $project_id == $hub_mapper) {
+            if (is_numeric($project_id) && $project_id == $hub_mapper) {
+                $disable_crons = $this->getProjectSetting('disable-crons', $project_id);
+                if (!$disable_crons) {
                     #Get Projects ID's
                     $pidsArray = REDCapManagement::getPIDsArray($project_id, "cron");
 
@@ -332,7 +331,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                                     include("crontasks/cron_publications.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_json') {
                                     include("crontasks/cron_json.php");
-                                } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data') {
+                                } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
                                     include("crontasks/cron_upload_pending_data_set_data.php");
                                 }
                             } catch (Throwable $e) {
