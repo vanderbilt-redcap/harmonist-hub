@@ -306,6 +306,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
             $disable_crons = $this->getProjectSetting('disable-crons', $hub_mapper);
             if (!$disable_crons) {
+                error_log("cron_upload_pending_data_set_data on PID=MAPPER: ".$project_id." = ".$hub_mapper);
                 if (is_numeric($project_id) && $project_id == $hub_mapper) {
                     #Get Projects ID's
                     $pidsArray = REDCapManagement::getPIDsArray($project_id, "cron");
