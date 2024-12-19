@@ -262,7 +262,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     function cronMethod($cronAttributes)
     {
         //Only perform actions between 12am and 6am for crons that update at night
-        if ($cronAttributes['cron_name'] != 'cron_upload_pending_data_set_data' && $cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
+        if ($cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
             $hourRange = 6;
             if (date('G') > $hourRange) {
                 // Only perform actions between 12am and 6am.
@@ -305,9 +305,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
             if (is_numeric($project_id) && $project_id == $hub_mapper) {
                 $disable_crons = $this->getProjectSetting('disable-crons', $project_id);
-                if($hub_mapper == "2747" || $project_id == "2747") {
-                    error_log("IeDEA HUB: cron_upload_pending_data_set_data on disable_crons: " . $disable_crons);
-                }
                 if (!$disable_crons) {
                     #Get Projects ID's
                     $pidsArray = REDCapManagement::getPIDsArray($project_id, "cron");
@@ -316,11 +313,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                         $settings = REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
                         if (!empty($settings)) {
                             try {
-                                if($project_id == "2747" && $cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data'){
-                                    error_log("IeDEA HUB: cron_upload_pending_data_set_data on PID: ".$project_id);
-                                    error_log("IeDEA HUB: cron_upload_pending_data_set_data on deactivate_datadown___1: ".$settings['deactivate_datadown___1']);
-                                    error_log("IeDEA HUB: cron_upload_pending_data_set_data on deactivate_datahub___1: ".$settings['deactivate_datahub___1']);
-                                }
                                 #CRONS
                                 if ($cronAttributes['cron_name'] == 'cron_metrics' && $settings['deactivate_metrics_cron___1'] !== "1") {
                                     include("crontasks/cron_metrics.php");
@@ -340,7 +332,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                                 } elseif ($cronAttributes['cron_name'] == 'cron_json') {
                                     include("crontasks/cron_json.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
-                                    error_log("IeDEA HUB: cron_upload_pending_data_set_data");
                                     include("crontasks/cron_upload_pending_data_set_data.php");
                                 }
                             } catch (Throwable $e) {

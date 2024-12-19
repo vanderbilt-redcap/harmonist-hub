@@ -9,10 +9,8 @@ use Aws\Credentials\Credentials;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 use REDCap;
-error_log("IeDEA HUB: cron_upload_pending_data_set_data BEFORE credentials PROJECTS: ".$pidsArray['PROJECTS']."_aws_s3.php");
 if(file_exists("/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php")) {
     require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
-    error_log("IeDEA HUB: cron_upload_pending_data_set_data AFTER credentials");
     $credentials = new Credentials($aws_key, $aws_secret);
     $s3 = new S3Client([
                            'version' => 'latest',
@@ -36,7 +34,6 @@ if(file_exists("/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws
             $file_name = explode('.', $file_name)[0];
 
             if ($file_name_extension == 'json') {
-                error_log("IeDEA HUB: cron_upload_pending_data_set_data File Found");
                 #Get the object
                 $result = $s3->getObject(array(
                                              'Bucket' => $bucket,
@@ -117,7 +114,6 @@ if(file_exists("/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws
                         );
                     }
                 }
-                error_log("IeDEA HUB: cron_upload_pending_data_set_data DELETE!!");
                 #Delete the object after uploading the record
                 #JSON
                 $result = $s3->deleteObject(array(
