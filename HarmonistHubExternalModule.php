@@ -301,14 +301,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         }
         define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
         $isCron = true;
-        if ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data'){
-            error_log("IeDEA HUB: ".json_encode($this->getProjectsWithModuleEnabled()));
-        }
         foreach ($this->getProjectsWithModuleEnabled() as $project_id) {
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
-            if($hub_mapper == "2747" || $project_id == "2747") {
-                error_log("IeDEA HUB: cron_upload_pending_data_set_data on PID=MAPPER: " . $project_id . " = " . $hub_mapper);
-            }
             if (is_numeric($project_id) && $project_id == $hub_mapper) {
                 $disable_crons = $this->getProjectSetting('disable-crons', $hub_mapper);
                 if (!$disable_crons) {
