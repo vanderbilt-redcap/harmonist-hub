@@ -305,17 +305,13 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             error_log("IeDEA HUB: ".json_encode($this->getProjectsWithModuleEnabled()));
         }
         foreach ($this->getProjectsWithModuleEnabled() as $project_id) {
-            if ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data'){
-                error_log("IeDEA HUB: ".$project_id);
-            }
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
-            $disable_crons = $this->getProjectSetting('disable-crons', $hub_mapper);
             if($hub_mapper == "2747" || $project_id == "2747") {
                 error_log("IeDEA HUB: cron_upload_pending_data_set_data on PID=MAPPER: " . $project_id . " = " . $hub_mapper);
-                error_log("IeDEA HUB: cron_upload_pending_data_set_data on disable_crons: " . $disable_crons);
             }
-            if (!$disable_crons) {
-                if (is_numeric($project_id) && $project_id == $hub_mapper) {
+            if (is_numeric($project_id) && $project_id == $hub_mapper) {
+                $disable_crons = $this->getProjectSetting('disable-crons', $hub_mapper);
+                if (!$disable_crons) {
                     #Get Projects ID's
                     $pidsArray = REDCapManagement::getPIDsArray($project_id, "cron");
 
