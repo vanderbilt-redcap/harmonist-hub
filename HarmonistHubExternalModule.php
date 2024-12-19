@@ -318,7 +318,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                         $settings = REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
                         if (!empty($settings)) {
                             try {
-                                if($project_id == "2470" && $cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data'){
+                                if($project_id == "2747" && $cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data'){
                                     error_log("IeDEA HUB: cron_upload_pending_data_set_data on PID: ".$project_id);
                                     error_log("IeDEA HUB: cron_upload_pending_data_set_data on deactivate_datadown___1: ".$settings['deactivate_datadown___1']);
                                     error_log("IeDEA HUB: cron_upload_pending_data_set_data on deactivate_datahub___1: ".$settings['deactivate_datahub___1']);
