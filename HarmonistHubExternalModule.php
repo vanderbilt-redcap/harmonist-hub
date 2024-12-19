@@ -306,7 +306,11 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
             $disable_crons = $this->getProjectSetting('disable-crons', $hub_mapper);
             if (!$disable_crons) {
-                error_log("cron_upload_pending_data_set_data on PID=MAPPER: ".$project_id." = ".$hub_mapper);
+                if($hub_mapper == 2747) {
+                    error_log(
+                        "IeDEA HUB: cron_upload_pending_data_set_data on PID=MAPPER: " . $project_id . " = " . $hub_mapper
+                    );
+                }
                 if (is_numeric($project_id) && $project_id == $hub_mapper) {
                     #Get Projects ID's
                     $pidsArray = REDCapManagement::getPIDsArray($project_id, "cron");
@@ -316,9 +320,9 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                         if (!empty($settings)) {
                             try {
                                 if($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data'){
-                                    error_log("cron_upload_pending_data_set_data on PID: ".$project_id);
-                                    error_log("cron_upload_pending_data_set_data on deactivate_datadown___1: ".$settings['deactivate_datadown___1']);
-                                    error_log("cron_upload_pending_data_set_data on deactivate_datahub___1: ".$settings['deactivate_datahub___1']);
+                                    error_log("IeDEA HUB: cron_upload_pending_data_set_data on PID: ".$project_id);
+                                    error_log("IeDEA HUB: cron_upload_pending_data_set_data on deactivate_datadown___1: ".$settings['deactivate_datadown___1']);
+                                    error_log("IeDEA HUB: cron_upload_pending_data_set_data on deactivate_datahub___1: ".$settings['deactivate_datahub___1']);
                                 }
                                 #CRONS
                                 if ($cronAttributes['cron_name'] == 'cron_metrics' && $settings['deactivate_metrics_cron___1'] !== "1") {
