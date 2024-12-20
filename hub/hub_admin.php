@@ -41,7 +41,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     }
     ?>
     <h3>Admin Page</h3>
-    <p class="hub-title"><?=$settings['hub_admin_text']?></p>
+    <p class="hub-title"><?=filter_tags($settings['hub_admin_text']);?></p>
     <div>
         <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;display: none;" id="succMsgContainer">Your edits have been saved.</div>
     </div>
