@@ -36,10 +36,10 @@ if($_REQUEST['type'] != ""){
         function( settings, data, dataIndex ) {
             var final = $('#selectFinal option:selected').val();
             var type = $('#selectReqType option:selected').val();
-            var column_final = data[5];
+            var column_final = data[data.length-1];
             var column_type = data[1];
-            var typePosition = column_type.search(type)
-            var finalPosition = column_final.search(final)
+            var typePosition = column_type.search(type);
+            var finalPosition = column_final.search(final);
 
             if(final != 'Select All' && finalPosition >= 0){
                 if(type != 'Select All' && typePosition >= 0){
@@ -113,11 +113,11 @@ if($_REQUEST['type'] != ""){
             if(!empty($requests)) {
                 $commentDetails = $hubData->getCommentDetails();
 
-                $user_req_header = \Vanderbilt\HarmonistHubExternalModule\getRequestHeader($hubData, $settings['vote_grid'], '1','archive');
+                $user_req_header = getRequestHeader($hubData, $settings['vote_grid'], '1','archive');
 
                 $requests_counter = 0;
                 foreach ($requests as $req) {
-                    $user_req_body .= \Vanderbilt\HarmonistHubExternalModule\getHomeRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails, $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
+                    $user_req_body .= getHomeRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails, $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'],'none','archive');
                     if($user_req_body != ""){
                         $requests_counter++;
                     }
