@@ -72,7 +72,7 @@ if(!empty($_REQUEST['email'])) {
         if(ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
-        \sendEmail(strtolower($email), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database","Access denied",$pidsArray['PEOPLE']);
+        sendEmail(strtolower($email), $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "Access Denied for ".$settings['hub_name']." Hub".$environment, $message,"Not in database","Access denied",$pidsArray['PEOPLE']);
     }
 }
 

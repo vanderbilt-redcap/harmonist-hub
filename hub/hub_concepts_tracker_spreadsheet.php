@@ -202,7 +202,7 @@ $sheet = ExcelFunctions::getExcelData($mca_sheet,$multireg_abs,$section_headers,
 
 
 $writer = new Xlsx($spreadsheet);
-
+ob_end_clean();
 header('Content-Type: application/vnd.ms-excel');
 header('Content-Disposition: attachment; filename="'.$filename.'"');
 $writer->save("php://output");
