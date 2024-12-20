@@ -99,7 +99,7 @@ $sheet = ExcelFunctions::getExcelData($sheet,$excel_data,$section_headers,$secti
 $sheet->setTitle('Outputs');
 
 $writer = new Xlsx($spreadsheet);
-
+ob_end_clean();
 header('Content-Type: application/vnd.ms-excel');
 header('Content-Disposition: attachment; filename="'.$filename.'"');
 $writer->save("php://output");
