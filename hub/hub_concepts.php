@@ -28,7 +28,7 @@ if (!empty($concepts)) {
         $id_people = $concept['contact_link'];
         $name = "";
         if(!empty($id_people)){
-            $name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $id_people);
+            $name = getPeopleName($pidsArray['PEOPLE'], $id_people);
         }
         $tags = "";
         foreach ($concept['concept_tags'] as $tag=>$value){
@@ -60,7 +60,7 @@ if (!empty($concepts)) {
 
         $file_concept ='';
         if($concept["concept_file"] != ""){
-            $file_concept = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept["concept_file"],'1','', $secret_key, $secret_iv, $current_user['record_id'],"");
+            $file_concept = getFileLink($module, $pidsArray['PROJECTS'], $concept["concept_file"],'1','', $secret_key, $secret_iv, $current_user['record_id'],"");
         }
         $concepts_table .= '<td style="text-align: center;">'.$file_concept.'</td>';
 
@@ -88,7 +88,7 @@ if(array_key_exists('message', $_REQUEST)){
     }
 }
 
-$img = \Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'src');
+$img = getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'src');
 
 ?>
 <script language="JavaScript">

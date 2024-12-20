@@ -43,7 +43,7 @@ foreach ($regions as $region){
     foreach ($votes as $vote){
         if(array_key_exists('pi_vote',$vote)){
             $region_time = $vote['responsecomplete_ts'];
-            $name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $vote['response_person'],"");
+            $name = getPeopleName($pidsArray['PEOPLE'], $vote['response_person'],"");
 
             $region_row .= '<tr>'.
                 '<td><span class="'.$region_vote_icon_view[$vote['pi_vote']].' '.$region_vote_icon_text[$vote['pi_vote']].'" aria-hidden="true"></span><span class="'.$region_vote_icon_text[$vote['pi_vote']].'"> '.$vote_text[$vote['pi_vote']].'</span></td>'.
@@ -55,13 +55,13 @@ foreach ($regions as $region){
         }
     }
 
-    $votes_menu .= ' <li class="'.$module->escape($active).'"><a data-toggle="tab" href="#'.$region['region_code'].'">'.$region['region_code'].' <span class="badge '.$activeLabel.' '.$activetab.'">'.$total_votes.'</span></a></li>';
+    $votes_menu .= ' <li class="'.$active.'"><a data-toggle="tab" href="#'.$region['region_code'].'">'.$region['region_code'].' <span class="badge '.$activeLabel.' '.$activetab.'">'.$total_votes.'</span></a></li>';
 
     if($region_row == ''){
         $region_row .= '<tr><td colspan="3">No votes recorded.</td></tr>';
     }
 
-    $votes_table .= '<div id="'.$module->escape($region['region_code']).'" class="tab-pane fade '.$module->escape($in.$active).'">'.$module->escape($votes_text).'
+    $votes_table .= '<div id="'.$region['region_code'].'" class="tab-pane fade '.$in.$active.'">'.filter_tags($votes_text).'
                    <table class="table table-striped">
                     <thead>
                     <tr>
