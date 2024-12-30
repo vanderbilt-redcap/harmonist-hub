@@ -28,9 +28,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         #Do not show link unless we are in the main project
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $dd_array = REDCap::getDataDictionary('array');
-        error_log($link['name']);
-        error_log("***MAPPER: ".$hub_mapper);
-        error_log("***project_id: ".$project_id);
+
         if ($hub_mapper != "" && $project_id != $hub_mapper || (count($dd_array) == 1 && $hub_mapper == "")) {
             return false;
         }
@@ -70,8 +68,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 #Fields are empty, project has not been installed yet, do not show link
                 return false;
             }
-
-            $dd_array = REDCap::getDataDictionary('array');
             $data_array = REDCap::getData($project_id, 'array');
             if (count($dd_array) == 1 && !array_key_exists('project_constant', $dd_array) && !array_key_exists(
                     'project_id',
