@@ -25,8 +25,6 @@ class HubUpdates{
                 $removed = array_diff_key($old, $new);
                 $added = array_diff_key($new, $old);
                 $possiblyChanged = array_intersect_key($new, $old);
-            }else{
-                error_log("IeDEA warning PID: ".$pidsArray[$constant]." constant: ".$constant);
             }
 
             if(!empty($added)) {
@@ -105,11 +103,13 @@ class HubUpdates{
             preg_match_all($pattern, $sqlNew['sql'], $matchNew);
             //Change pids in Admins SQL (NEW) to match the old and check for changes again
             foreach ($matchOld[0] as $index => $slqPid) {
-                $pattern_replace = "/" . $matchNew[0][$index] . "/";
-                if ($pattern == '/\[data-table:(.*?)\]/') {
-                    $pattern_replace = "/\[data-table:" . $matchNew[1][$index] . "\]/";
+                if(!empty($matchNew[0][$index])){
+                    $pattern_replace = "/" . $matchNew[0][$index] . "/";
+                    if ($pattern == '/\[data-table:(.*?)\]/') {
+                        $pattern_replace = "/\[data-table:" . $matchNew[1][$index] . "\]/";
+                    }
+                    $sqlNew['sql'] = preg_replace($pattern_replace, $slqPid, $sqlNew['sql'], 1);
                 }
-                $sqlNew['sql'] = preg_replace($pattern_replace, $slqPid, $sqlNew['sql'], 1);
             }
         }
         //Compare if the newly changed SQL is the same as the old if not return sql as it has changed
@@ -121,54 +121,62 @@ class HubUpdates{
 
     public static function changeSQLDataTable($sqlOld, $sqlNew): array
     {
-        if(str_contains($sqlOld, 'redcap_data')){
+        if (str_contains($sqlOld, 'redcap_data')) {
             $sql_redcap_data = $sqlOld;
-        }else if(str_contains($sqlNew['sql'], 'redcap_data')){
-            $sql_redcap_data = $sqlNew['sql'];
-        }else if(empty($sqlOld)){
-            //A new SQL has been added, check if it needs to be readjusted
-            $sql_redcap_data = $sqlNew['sql'];
+        } else {
+            if (str_contains($sqlNew['sql'], 'redcap_data')) {
+                $sql_redcap_data = $sqlNew['sql'];
+            } else {
+                if (empty($sqlOld)) {
+                    //A new SQL has been added, check if it needs to be readjusted
+                    $sql_redcap_data = $sqlNew['sql'];
+                }
+            }
         }
         $sql_redcap_data_compare = $sql_redcap_data;
 
-        while (($lastPos = strpos($sql_redcap_data, 'redcap_data', $lastPos))!== false) {
+        while (($lastPos = strpos($sql_redcap_data, 'redcap_data', $lastPos)) !== false) {
             $positions[] = $lastPos;
             $lastPos = $lastPos + strlen('redcap_data');
         }
         $redcap_data_ocurrences = substr_count($sql_redcap_data, 'redcap_data');
-        for($i = 0 ; $i < $redcap_data_ocurrences; $i++){
+        for ($i = 0; $i < $redcap_data_ocurrences; $i++) {
             $rest = substr($sql_redcap_data, $positions[$i], strlen($sql_redcap_data));
             $pos_pid_1 = (strpos($rest, 'project_id=')) ?? null;
             $pos_pid_2 = (strpos($rest, 'project_id = ')) ?? null;
             $table_replace = "";
-            if($pos_pid_1 != null && $pos_pid_2 != null){
-                if($pos_pid_1 <= $pos_pid_2 && $pos_pid_1 != null){
+            if ($pos_pid_1 != null && $pos_pid_2 != null) {
+                if ($pos_pid_1 <= $pos_pid_2 && $pos_pid_1 != null) {
                     preg_match_all('/project_id=(\d+)/', $rest, $matchNew);
                     $slqPid = $matchNew[1][0];
                     $table_replace = "[data-table:" . $slqPid . "]";
-                }else{
+                } else {
                     preg_match_all('/project_id\s=\s(\d+)/', $rest, $matchNew);
                     $slqPid = $matchNew[1][0];
                     $table_replace = "[data-table:" . $slqPid . "]";
                 }
-            }else if($pos_pid_1 != null){
-                preg_match_all('/project_id=(\d+)/', $rest, $matchNew);
-                $slqPid = $matchNew[1][0];
-                $table_replace = "[data-table:" . $slqPid . "]";
-            }else if($pos_pid_2 != null){
-                preg_match_all('/project_id\s=\s(\d+)/', $rest, $matchNew);
-                $slqPid = $matchNew[1][0];
-                $table_replace = "[data-table:" . $slqPid . "]";
+            } else {
+                if ($pos_pid_1 != null) {
+                    preg_match_all('/project_id=(\d+)/', $rest, $matchNew);
+                    $slqPid = $matchNew[1][0];
+                    $table_replace = "[data-table:" . $slqPid . "]";
+                } else {
+                    if ($pos_pid_2 != null) {
+                        preg_match_all('/project_id\s=\s(\d+)/', $rest, $matchNew);
+                        $slqPid = $matchNew[1][0];
+                        $table_replace = "[data-table:" . $slqPid . "]";
+                    }
+                }
             }
-            if($table_replace != "") {
-                if(str_contains($sql_redcap_data, 'redcap_data')){
+            if ($table_replace != "") {
+                if (str_contains($sql_redcap_data, 'redcap_data')) {
                     $sql_redcap_data = preg_replace("/redcap_data/", $table_replace, $sql_redcap_data, 1);
                 }
             }
         }
 
-        if($sql_redcap_data != $sql_redcap_data_compare){
-            if(str_contains($sqlOld, 'redcap_data') || empty($sqlOld)){
+        if ($sql_redcap_data != $sql_redcap_data_compare) {
+            if (str_contains($sqlOld, 'redcap_data') || empty($sqlOld)) {
                 $sqlNew['changed'] = true;
             }
             $sqlNew['sql'] = $sql_redcap_data;

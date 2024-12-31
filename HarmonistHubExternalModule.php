@@ -29,7 +29,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $dd_array = REDCap::getDataDictionary('array');
 
-        if ($hub_mapper != "" && $project_id != $hub_mapper || (count($dd_array) == 1 && $hub_mapper == "")) {
+        #If it's not the mapper, do not show link in project
+        if ($hub_mapper != "" && $project_id != $hub_mapper) {
             return false;
         }
         if ($link['name'] == "Harmonist Hub") {
