@@ -1,28 +1,32 @@
+
 "Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
 record_id,data_specification,,text,"Record ID",,,,,,,,,,,,,
-sop_active,data_specification,,radio,"<div style=""color:black; text-align:center; border: 1px #d35400; background-color: #e67e22; padding:6px; max-width:800px;"">Active SOP?</div>","1, Yes | 0, No",,,,,,,,,,,,
-sop_status,data_specification,,dropdown,"<div class=""green"">SOP Status</div>","0, Draft | 1, Final | 2, Template",,,,,,,,,,,,
-sop_visibility,data_specification,,dropdown,"SOP Visibility (for drafts)","1, Private | 2, Public",,,,,,,,,,,,
-sop_hubuser,data_specification,,sql,"Person ID of Hub User who built the SOP
-<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
+sop_active,data_specification,,radio,"<div style=""color:black; text-align:center; border: 1px #d35400; background-color: #e67e22; padding:6px; max-width:800px;"">Active Data Request?</div>","1, Yes | 0, No",,,,,,,,,,,,
+sop_status,data_specification,,dropdown,"<div class=""green"">Data Request Status</div>","0, Draft | 1, Final | 2, Template",,,,,,,,,,,,
+sop_visibility,data_specification,,dropdown,"Data Request Visibility (for drafts)","1, Private | 2, Public",,,,,,,,,,,,
+sop_hubuser,data_specification,,sql,"Person ID of Hub User who built the Data Request
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
 sop_name,data_specification,,text,"Name of Data Request",,,,,,,,,,,,,
-sop_creator,data_specification,"SOP Contact People",sql,"Research Contact for Data Request
-<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value ASC",,autocomplete,,,,,,,,,,
-sop_creator_org,data_specification,,text,"Institution for Research Contact #1",,,,,,,,,,,,,
+sop_creator,data_specification,"Data Request Contact People",sql,"Research Contact for Data Request
+<div style=""font-weight:lighter;font-style:italic"">Person ID in H5 project. Autopopulated by Hub Data Request Builder</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,,,,,
+sop_creator_org,data_specification,,text,"Institution for Research Contact #1
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>",,,,,,,,,,,,,
 sop_creator2,data_specification,,sql,"(Optional) Research Contact #2 for Data Request 
-<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value ASC",,autocomplete,,,,,,,,,,
-sop_creator2_org,data_specification,,text,"(Optional) Institution for Research Contact #2",,,,,,,,,,,,,
+<div style=""font-weight:lighter;font-style:italic"">Person ID in H5 project. Autopopulated by Hub Data Request Builder</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,,,,,
+sop_creator2_org,data_specification,,text,"(Optional) Institution for Research Contact #2
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>",,,,,,,,,,,,,
 sop_datacontact,data_specification,,sql,"Data Contact for Data Request 
-<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value ASC",,autocomplete,,,,,,,,,,
-sop_datacontact_org,data_specification,,text,"Institution of Data Contact",,,,,,,,,,,,,
+<div style=""font-weight:lighter;font-style:italic"">Person ID in H5 project. Autopopulated by Hub Data Request Builder</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,,,,,
+sop_datacontact_org,data_specification,,text,"Institution of Data Contact
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>",,,,,,,,,,,,,
 sop_concept_id,data_specification,"Data Request Details",sql,"Associated Concept ID
-<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>","SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 58325 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = 58325 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",,autocomplete,,,,,,,,,,
+<div style=""font-weight:lighter;font-style:italic"">Concept ID in H1 project. Autopopulated by Hub Data Request Builder</div>","SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 2122 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = 2122 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value, b.value",,autocomplete,,,,,,,,,,
 sop_created_dt,data_specification,,text,"Datetime this request was started
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>",,,datetime_seconds_ymd,,,,,,,,,,
 sop_updated_dt,data_specification,,text,"Datetime this request was UPDATED
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>",,,datetime_seconds_ymd,,,,,,,,,,
 sop_tablefields,data_specification,,notes,"JSON of Selected Table Fields (CDM Variables)
-<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>",,,,,,,,,,,,,
+<div style=""font-weight:lighter;font-style:italic"">JSON-formatted list of Data Model table and variable IDs from H0A. Autopopulated by Hub Data Request Builder</div>",,,,,,,,,,,,,
 sop_extrapdf,data_specification,,file,"User-uploaded PDF with extra data tables ",,,,,,,,,,,,,
 sop_inclusion,data_specification,,notes,"Inclusion Criteria
 <div style=""font-weight:lighter;font-style:italic"">Rich text field, Autopopulated by Hub Data Request Builder</div>",,,,,,,,,,,,,
@@ -32,10 +36,12 @@ sop_notes,data_specification,,notes,"Data Request Notes
 <div style=""font-weight:lighter;font-style:italic"">Rich text field, Autopopulated by Hub Data Request Builder</div>",,,,,,,,,,,,,
 sop_due_d,data_specification,,text,"Requested data due date
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub Data Request Builder</div>",,,date_ymd,,,,,,,,,,
-sop_downloaders,data_specification,,text,"List of Hub/REDCap users who can download the data",,,,,,,,,,,,,
-sop_downloaders_dummy,data_specification,,checkbox,"Downloaders DUMMY Selected?","1, YES",,,,,,,,,,,,
+sop_downloaders,data_specification,,text,"List of Hub/REDCap users who can download the data
+<div style=""font-weight:lighter;font-style:italic"">Comma-separated values list of Person IDs from H5. Autopopulated by Hub Data Request Builder</div>",,,,,,,,,,,,,
+sop_downloaders_dummy,data_specification,,checkbox,"Is the Data Downloaders Placeholder selected?
+<div style=""font-weight:lighter;font-style:italic"">Data Request designer has indicated that the Data Downloaders are not yet known. Otherwise ""Data Downloaders"" is a required field. Autopopulated by Hub Data Request Builder</div>","1, YES",,,,,,,,,,,,
 dataformat_prefer,data_specification,,checkbox,"Preferred File Format
-<div style=""font-weight:lighter;font-style:italic"">I prefer to receive data in this format.</div>","1, CSV | 2, SAS | 3, Stata | 4, SPSS | 5, R | 9, Other (describe)",,,,,,,,,,,,
+<div style=""font-weight:lighter;font-style:italic"">I prefer to receive data in this format. Autopopulated by Hub Data Request Builder</div>","1, CSV (.csv, always allowed) | 2, SAS (.sas7bdat) | 3, Stata (.dta) | 4, SPSS (.sav) | 5, R data (.rds) | 9, Other (describe)",,,,,,,,,,,,
 dataformat_notes,data_specification,,notes,"File Format Details
 <div style=""font-weight:lighter;font-style:italic"">Describe other software, software version, or other file requests</div>",,,,,,,,,,,,,
 sop_finalpdf,data_specification,"For Complete Data Request Drafts",file,"Generated PDF of Data Request",,,,,,,,,,,,,
@@ -55,32 +61,12 @@ dhwg_message,dhwg_review_request,"Next Steps for Requesting Data",notes,"Message
 dhwg_review,dhwg_review_request,,radio,"<div style=""font-weight:lighter;font-style:italic"">For Admin Use:</div>
 Skip DHWG Chair(s) notification (e.g., data request was developed during collaborative screenshare)","1, Skip notification, just make this Data Request public.",,,,,,,,LV,,,,
 sop_finalize_person,finalization_of_data_request,,sql,"Person starting the Data Call
-<div style=""font-weight:lighter;font-style:italic"">Select your name. List contains Hub Admins and Data Admins.</div>","SELECT DISTINCT
-
-    a.record,
-
-    CONCAT(a.value, ' ', b.value) AS
-
-VALUE
-
-FROM redcap_data a
-
-LEFT JOIN redcap_data b on b.project_id = 59097 and b.record = a.record and b.field_name = 'lastname'
-
-LEFT JOIN redcap_data c on c.project_id = 59097 and c.record = a.record
-
-WHERE a.field_name = 'firstname' and a.project_id = 59097 and ((c.field_name = 'harmonist_perms' AND c.value = '1') OR (c.field_name = 'harmonistadmin_y' AND c.value = '1'))
-
-ORDER BY
-
-   a.value,
-
-    b.value",,,,,,,,LV,,,,
+<div style=""font-weight:lighter;font-style:italic"">Select your name. List contains Hub Admins and Data Admins.</div>","SELECT DISTINCT a.record, CONCAT(a.value, ' ', b.value) AS VALUE FROM redcap_data a LEFT JOIN redcap_data b on b.project_id = 2128 and b.record = a.record and b.field_name = 'lastname' LEFT JOIN redcap_data c on c.project_id = 2128 and c.record = a.record WHERE a.field_name = 'firstname' and a.project_id = 2128 and ((c.field_name = 'harmonist_perms' AND c.value = '1') OR (c.field_name = 'harmonistadmin_y' AND c.value = '1')) ORDER BY a.value, b.value",,,,,,,,LV,,,,
 sop_final_d,finalization_of_data_request,,text,"Data Call Start Date",,,date_ymd,,,,,,LV,,,," @HIDDEN-SURVEY @READONLY @TODAY"
 sop_finalize_y,finalization_of_data_request,,checkbox,"Finalize this Data Request
 <div style=""font-weight:lighter;font-style:italic"">Select this option to begin an official call for data using this set of variables and criteria.</div>","1, <span style=""color:#1F8B4D;font-weight:bold"">Begin Data Call</span>",,,,,,,,LV,,,,
 sop_final_notes,finalization_of_data_request,,notes,Notes,,,,,,,,,LV,,,,
-data_region,region_participation_status,,sql,"Data Region","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099 GROUP BY a.record  ORDER BY value",,,,,,,,,,,,
+data_region,region_participation_status,,sql,"Data Region","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=2127 GROUP BY a.record  ORDER BY value",,,,,,,,,,,,
 data_response_status,region_participation_status,,dropdown,"Data Submission Status","0, Not Started | 1, Partial Data | 2, Complete Data | 3, Not Applicable (data not available) | 4, Not Applicable (region not requested) | 9, Other Status",,,,,,,,,,,,
 region_update_ts,region_participation_status,,text,"Last Update Timestamp",,,datetime_seconds_ymd,,,,,,,,,,
 region_complete_ts,region_participation_status,,text,"Region Completion Timestamp",,,datetime_seconds_ymd,,,,,,,,,,
