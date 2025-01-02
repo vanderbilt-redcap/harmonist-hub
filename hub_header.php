@@ -18,6 +18,19 @@ if($isAdmin) {
     ArrayFunctions::array_sort_by_column($request_admin, 'requestopen_ts');
     $numberOfAdminRequest = $module->escape(\Vanderbilt\HarmonistHubExternalModule\numberOfAdminRequest($request_admin));
 }
+
+#Hide/Show Projects Tab
+//$deactivate_projects = false;
+//if($settings['deactivate_projects_opt'][0] == "0"){
+//    //Hide for all
+//    $deactivate_projects = true;
+//}else if($settings['deactivate_projects_opt'][0] == "1" && $current_user['harmonistadmin_y'] != '1'){
+//    //Not an Admin
+//    $deactivate_projects = true;
+//}else if($settings['deactivate_projects_opt'][0] == "2") {
+//    //Show Everyone
+//    $deactivate_projects = false;
+//}
 ?>
 
 <nav class="navbar navbar-default" role="navigation">
@@ -71,6 +84,14 @@ if($isAdmin) {
                     <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=out'?>"role="button" option="out">Publications</a>
                 </li>
             </ul>
+
+<!--            --><?php //if(!$deactivate_projects){ ?>
+<!--                <ul class="nav navbar-nav navbar-links">-->
+<!--                    <li class="menu-item dropdown">-->
+<!--                        <a href="index.php?option=std"role="button" option="std">Projects</a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            --><?php //} ?>
 
             <?php if($settings['deactivate_datahub___1'] != "1"){ ?>
             <ul class="nav navbar-nav navbar-links">
