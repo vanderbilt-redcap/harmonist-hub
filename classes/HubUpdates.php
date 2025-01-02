@@ -419,7 +419,7 @@ class HubUpdates
         $select_choices = $choices;
         $select_array = explode("|", $select_choices);
         foreach ($select_array as $key => $val) {
-            $new_choices = explode(",", $val);
+            $new_choices = explode(",", $val, 2);
             $array_to_fill[trim($new_choices[0])] = trim($new_choices[1]);
         }
 
