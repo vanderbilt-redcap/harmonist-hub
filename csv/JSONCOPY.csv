@@ -7,3 +7,4 @@ version,data_model_json,,text,"JSON version for this sub-project
 json_copy_update_d,data_model_json,,text,"Datetime of last update",,,datetime_seconds_ymd,,,,,,,,,,
 jsoncopy_file,data_model_json,,file,"JSON File of the Data Model
 <div style=""font-weight:lighter"">A machine-readable summary of either the data model or the code lists project in JavaScript Object Notation (JSON) format. These JSON files can be used as input for scripts and external software. They also serve to archive prior states of the data model.</div>",,,,,,,,,,,,,
+jsoncopy,data_model_json,,notes,"<div class=""rich-text-field-label""><p>JSON<br><span style=""font-weight: normal;"">(unsure if we are using this field? I think it was too small to store the whole JSON content)</span></p></div>",,,,,,,,,LV,,,,
