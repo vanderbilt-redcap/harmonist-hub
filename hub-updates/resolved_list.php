@@ -102,7 +102,7 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
     <br><br>
     <?php if(!empty($resolved_list)){ ?>
     <h4 class="title">
-        Select the REDCap variables you want to remove from the resolved list and press the button at the end.
+        Select the REDCap variables you want to remove from the ignore list and press the button at the end.
     </h4>
     <?php $message = "";
         if (array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'R')) {
@@ -180,7 +180,7 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
                                             }
                                             $resolved_date = "";
                                             if(isset($hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'])){
-                                                $resolved_date = "Resolved on ".$hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'];
+                                                $resolved_date = "Added to Ignore List on ".$hub_updates_resolved_list_last_updated[$constant][$variable['field_name']]['date'];
                                             }
                                             ?>
                                             <span class="hub-update-last-updated">
@@ -268,11 +268,11 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
         <div style="padding-right: 10px;">
             <form method="POST" style="float:right" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=removed&redcap_csrf_token='.$module->getCSRFToken()?>" id="remove_data">
                 <input type="hidden" id="checked_values" name="checked_values">
-                <button type="submit" class="btn btn-primary btn-block float-right" id="remove_btn">Remove from Resolved List</button>
+                <button type="submit" class="btn btn-primary btn-block float-right" id="remove_btn">Remove from Ignore List</button>
             </form>
             <form method="POST" style="float:right;margin-right: 5px;" action="<?=$module->getUrl('hub-updates/last_updates_process_data_AJAX.php').'&option=dates&redcap_csrf_token='.$module->getCSRFToken()?>" id="update_data">
                 <input type="hidden" id="checked_values_dates" name="checked_values_dates">
-                <button type="submit" class="btn btn-secondary btn-block float-right" id="remove_btn">Update Resolved Date</button>
+                <button type="submit" class="btn btn-secondary btn-block float-right" id="remove_btn">Update Ignore Date</button>
             </form>
             <form method="POST" style="float:right;margin-right: 5px;" action="" id="download_PDF_selected">
                 <a onclick="changeFormUrlPDF(this.id);" id="download_PDF_sel" class="btn btn-secondary">
@@ -286,7 +286,7 @@ foreach ($allUpdates['data']  as $constant => $project_data) {
     </div>
     <?php } else {?>
     <h4  class="title">
-        You have no variables in the resolved list.
+        You have no variables in the ignore list.
     </h4>
     <?php } ?>
     </body>

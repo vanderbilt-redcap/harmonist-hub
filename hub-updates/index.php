@@ -87,8 +87,8 @@ $oldValues = $printDataAll[1];
                         dialog_color = "#155724";
                         option = "save";
                     } else if (sButton.name == "resolved_btn") {
-                        title = "Are you sure you want to mark as resolved <strong>" + fields_total + "</strong> fields?<br>";
-                        title += "<em>*These fields will not show up again on Hub Updates unless they are removed from the resolved list.</em>";
+                        title = "Are you sure you want ignore <strong>" + fields_total + "</strong> fields?<br>";
+                        title += "<em>*These fields will not show up again on Hub Updates unless they are removed from the ignore list.</em>";
                         dialog_background_color = "#fff3cd";
                         dialog_color = "#856404";
                         option = "resolved";
@@ -268,11 +268,11 @@ if (!empty($allUpdates)) { ?>
             'hub-updates/resolved_list.php'
         ) . '&redcap_csrf_token=' . $module->getCSRFToken() ?>" class="" id="resolved_list">
             If you do not want to make changes to certain variables
-            <mark style="background-color: #fffbce">mark them as resolved</mark>
+            <mark style="background-color: #fffbce">ignore</mark>
             and the updates will omit them from now onwards.
             <br><br>
             <div style="float: left;padding-right: 5px;">You can always add them back by clicking here:</div>
-            <button type="submit" class="btn btn-resolved" style="display: block;" id="select_btn">See Resolved List
+            <button type="submit" class="btn btn-resolved" style="display: block;" id="select_btn">See Ignore List
             </button>
         </form>
     </div>
@@ -285,11 +285,11 @@ if (!empty($allUpdates)) { ?>
         </form>
         <form method="POST" action="" id="save_data">
             <button type="submit" onclick="$('#option').val('save');"
-                    class="btn btn-primary float-right btnClassConfirm" id="save_btn" name="save_btn">Save Changes
+                    class="btn btn-primary float-right btnClassConfirm" id="save_btn" name="save_btn">Apply Changes
             </button>
             <button type="submit" onclick="$('#option').val('resolved');"
                     class="btn btn-warning float-right btnClassConfirm" id="resolved_btn" name="resolved_btn"
-                    style="margin-right:10px">Mark as Resolved
+                    style="margin-right:10px">Ignore
             </button>
         </form>
     </div>
@@ -457,8 +457,8 @@ if (!empty($allUpdates)) { ?>
             <form method="POST" action="<?= $module->getUrl(
                 'hub-updates/resolved_list.php'
             ) . '&redcap_csrf_token=' . $module->getCSRFToken() ?>" class="" id="resolved_list">
-                <div style="float: left;padding-right: 5px;">You can check your resolved list clicking here:</div>
-                <button type="submit" class="btn btn-resolved" style="display: block;" id="select_btn">See Resolved
+                <div style="float: left;padding-right: 5px;">You can check your ignore list clicking here:</div>
+                <button type="submit" class="btn btn-resolved" style="display: block;" id="select_btn">See Ignore
                     List
                 </button>
             </form>
