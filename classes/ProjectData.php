@@ -255,7 +255,7 @@ class ProjectData
             return $row['theme_id'];
         }
         $q = $module->query(
-            "INSERT INTO redcap_surveys_themes 
+            "INSERT INTO redcap_surveys_themes
                                 (theme_name, ui_id,theme_bg_page, theme_text_buttons, theme_text_title, theme_bg_title,
                                 theme_text_question, theme_bg_question, theme_text_sectionheader, theme_bg_sectionheader) VALUES(?,?,?,?,?,?,?,?,?,?)",
             [
@@ -469,4 +469,3 @@ class ProjectData
     }
 }
 ?>
-
