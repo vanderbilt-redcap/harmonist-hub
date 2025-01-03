@@ -287,7 +287,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                         foreach ($concept['adminupdate_d'] as $index=>$value){
                             echo '<tr>';
                             echo  '<td style="width: 10%;">' . htmlspecialchars($value,ENT_QUOTES). '</td>';
-                            echo  '<td>' . htmlspecialchars($concept["admin_update"][$index],ENT_QUOTES). '</td>';
+                            echo  '<td>' . filter_tags($concept["admin_update"][$index]). '</td>';
                             echo  '<td style="width: 25%;">'.htmlspecialchars($admin_status[$concept["admin_status"][$index]],ENT_QUOTES).'</td>';
                             echo '</tr>';
                         }
@@ -296,7 +296,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                         foreach ($concept['update_d'] as $index=>$value){
                             echo '<tr>';
                             echo  '<td style="width: 10%;">' . htmlspecialchars($value,ENT_QUOTES). '</td>';
-                            echo  '<td>' . htmlspecialchars($concept["project_update"][$index],ENT_QUOTES). '</td>';
+                            echo  '<td>' . filter_tags($concept["project_update"][$index]). '</td>';
                             echo  '<td style="width: 25%;">'.htmlspecialchars($project_status[$concept["project_status"][$index]],ENT_QUOTES).'</td>';
                             echo '</tr>';
                         }
