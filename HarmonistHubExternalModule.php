@@ -366,7 +366,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             </style>
             <script>
                 //$(document).ready(function() { $('.chklist.round:eq(6)').hide(); });
-            </script>\n";
+            </script>";
         }
     }
 
