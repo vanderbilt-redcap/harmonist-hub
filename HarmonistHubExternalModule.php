@@ -224,6 +224,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 $(document).ready(function() {
                     $('#return_code_completed_survey_div').hide();
                     $('#surveytitlelogo').hide();
+                    $('#surveyinstructions').hide();
                     $('.bubbleInfo').hide();
                     $('#two_factor_verification_code_btn span').show();
                     $('body').css('background-color','#fff');
@@ -243,6 +244,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                     $(document).ready(function() {
                         $('#return_code_completed_survey_div').hide();
                         $('#surveytitlelogo').hide();
+                        $('#surveyinstructions').hide();
                         $('.bubbleInfo').hide();
                         $('#pagecontent span.ui-button-text').hide();
                         $('#two_factor_verification_code_btn span').show();
