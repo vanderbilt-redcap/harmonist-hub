@@ -284,7 +284,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                     //It's not Monday
                     return;
                 }
-                $firstMondayDate = new DateTime(date('Y-m-j'));
+                $firstMondayDate = new \DateTime(date('Y-m-j'));
                 $firstMondayMonth = date(
                     "j",
                     strtotime(
