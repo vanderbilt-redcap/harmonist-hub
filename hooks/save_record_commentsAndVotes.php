@@ -158,9 +158,6 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                         $comment_vote = '<img src="'.APP_PATH_MODULE.'/img/vote_abstained.jpg" alt="Abstained">&nbsp;&nbsp;<span  style="color:#8c8c8c">Abstained</span>';
                     }
                 }
-
-                $url = $this->getUrl("index.php")."&NOAUTH&option=hub&record=".$comment['sop_id']."&pid=".$pidsArray['PROJECTS'];
-
                 $subject = $environment." ".$settings['hub_name']." Request #".$request['request_id']." feedback posted: ".$name.", ".$comment_time;
 
                 $hub_organization = "";
