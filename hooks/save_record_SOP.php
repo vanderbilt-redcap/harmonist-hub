@@ -20,7 +20,7 @@ if(empty($completion_time)){
 $comments_DCStarted = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'json-array', array('sop_id' => $record),null,null,null,false,false,false,"[other_action] = 3")[0];
 $comments_DCCompleted = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'json-array', array('sop_id' => $record),null,null,null,false,false,false,"[other_action] = 4")[0];
 
-if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" && $sop['sop_finalize_y'][1] == '1') || ($instrument == 'dhwg_review_request') || ($instrument == 'data_call_closure' && $comments_DCCompleted == "" && $sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'] == "1")){
+if(($instrument == 'finalization_of_data_request' && $comments_DCStarted == "" && $sop['sop_finalize_y'][1] == '1') || ($instrument == 'dhwg_review_request') || ($instrument == 'data_call_closure' && $comments_DCCompleted == "" && $sop['sop_closed_y'] != "" && $sop['sop_closed_y'] == "1")){
     $recordsPeople = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_hubuser']),null,array('person_region'),null,false,false,false,null)[0]['person_region'];
 
     $arrayComments = array(array('record_id' => $this->framework->addAutoNumberedRecord($pidsArray['SOPCOMMENTS']),'responsecomplete_ts' => $completion_time, 'sop_id' => $sop['record_id'], 'response_region' => $person_region, 'response_person' => $sop['sop_hubuser']));
