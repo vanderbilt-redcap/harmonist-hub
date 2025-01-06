@@ -173,6 +173,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                             <p><strong>Request Title:</strong>&nbsp; <a href="'.$this->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=unf&record='.$request['request_id'].'">'.$request['request_title'].'</a>
                             <br /><strong>Contact Person:</strong>&nbsp; '.$request['contact_name'].', '.$request['contact_email'].'</p>  
                             <h2>Feedback</h2>
+                            <p><strong>Feedback provided by:</strong>&nbsp;'.$name.'</p>
                             <p><strong>Comments:</strong>&nbsp;'.nl2br($comment['comments']).'</p>
                             <p><strong>Vote:</strong>&nbsp; '.$comment_vote.'</p>
                             <p><strong>Writing group nominee(s):</strong>&nbsp; '.$comment['writing_group'].'</p>
