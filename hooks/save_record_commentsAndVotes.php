@@ -158,9 +158,6 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                         $comment_vote = '<img src="'.APP_PATH_MODULE.'/img/vote_abstained.jpg" alt="Abstained">&nbsp;&nbsp;<span  style="color:#8c8c8c">Abstained</span>';
                     }
                 }
-
-                $url = $this->getUrl("index.php")."&NOAUTH&option=hub&record=".$comment['sop_id']."&pid=".$pidsArray['PROJECTS'];
-
                 $subject = $environment." ".$settings['hub_name']." Request #".$request['request_id']." feedback posted: ".$name.", ".$comment_time;
 
                 $hub_organization = "";
@@ -170,9 +167,10 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
                 $message = '<h2>Feedback Posted on '.$request_type_label[$request['request_type']].' Request  #'.$request['request_id'].'</h2>
                             <p>A new comment, file, or vote for the following '.$settings["hub_name_req_email"].' request has been posted on the Hub.</p>
-                            <p><strong>Request Title:</strong>&nbsp; <a href="'.$url.'">'.$request['request_title'].'</a>
+                            <p><strong>Request Title:</strong>&nbsp; <a href="'.$this->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=unf&record='.$request['request_id'].'">'.$request['request_title'].'</a>
                             <br /><strong>Contact Person:</strong>&nbsp; '.$request['contact_name'].', '.$request['contact_email'].'</p>  
                             <h2>Feedback</h2>
+                            <p><strong>Feedback provided by:</strong>&nbsp;'.$name.'</p>
                             <p><strong>Comments:</strong>&nbsp;'.nl2br($comment['comments']).'</p>
                             <p><strong>Vote:</strong>&nbsp; '.$comment_vote.'</p>
                             <p><strong>Writing group nominee(s):</strong>&nbsp; '.$comment['writing_group'].'</p>
