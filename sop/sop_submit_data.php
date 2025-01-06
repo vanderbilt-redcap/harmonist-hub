@@ -97,7 +97,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
 </div>
 
 <div class="pull-right">
-    <p><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=lgd&type=upload'?>">View Data Activity Log</a> | <a href="<?=$module->getUrl('index.php?'.$pidsArray['PROJECTS'].'&option=pdc')?>">View Past Data Calls</a></p>
+    <p><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=lgd&type=upload'?>">View Data Activity Log</a> | <a href="<?=$module->getUrl('index.php')."&NOATH&option=pdc"?>">View Past Data Calls</a></p>
 </div>
 
 <div>

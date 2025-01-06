@@ -135,12 +135,12 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
 
     <div class="backTo">
         <?php
-        $back_button = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=smn'.'">< Back to Request Data</a>';
+        $back_button = '<a href="'.$module->getUrl('index.php').'&NOAUTH&option=smn'.'">< Back to Request Data</a>';
         if($_REQUEST['type'] != ""){
             if($_REQUEST['type'] == 's'){
-                $back_button = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'.'">< Back to Check and Submit Data</a>';
+                $back_button = '<a href="'.$module->getUrl('index.php').'&NOAUTH&option=upd'.'">< Back to Check and Submit Data</a>';
             }else if($_REQUEST['type'] == 'r'){
-                $back_button = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dnd'.'">< Back to Retrieve Data</a>';
+                $back_button = '<a href="'.$module->getUrl('index.php').'&NOAUTH&option=dnd'.'">< Back to Retrieve Data</a>';
             }
         }
         echo $back_button;
