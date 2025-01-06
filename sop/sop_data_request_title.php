@@ -197,7 +197,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                                 $survey_link =  $module->escape($module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']));
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-finalize\',\'redcap-finalize-frame\',\'' . $survey_link . '\');" style="cursor:pointer">Start Data Call</a></li>';
                             }
-                            if($sop['sop_status'] == "1" && $sop['sop_visibility'] == "2" && $sop['sop_finalize_y'][1] == '1' && empty($sop['sop_closed_y'][0])){
+                            if($sop['sop_status'] == "1" && $sop['sop_visibility'] == "2" && $sop['sop_finalize_y'][1] == '1' && empty($sop['sop_closed_y'])){
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], $record, "data_call_closure", "");
                                 $survey_link_closure =  $module->escape($module->escape(APP_PATH_WEBROOT_FULL . "/surveys/?s=".$passthru_link['hash']));
                                 echo '<li><a href="#" onclick="editIframeModal(\'hub-modal-data-closure\',\'redcap-closure-frame\',\'' . $survey_link_closure . '\');" style="cursor:pointer">Archive Data Call</a></li>';
@@ -531,7 +531,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
             </div>
 
             <div class="panel-body">
-                <?php if ($sop['sop_finalize_y'] != "" || ($sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'][1] != "1")) {
+                <?php if ($sop['sop_finalize_y'] != "" || ($sop['sop_closed_y'] != "" && $sop['sop_closed_y'] != "1")) {
                     $message_text = "";
                     if ($sop['sop_finalize_y'] != "") {
                         $message_text .= "Data Call started";
@@ -541,7 +541,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                             $message_text .= ".";
                         }
                     }
-                    if ($sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'][1] == "1") {
+                    if ($sop['sop_closed_y'] != "" && $sop['sop_closed_y'] == "1") {
                         $message_text .= " Data Call archived";
                         if ($sop['sop_closed_d'] != "") {
                             $message_text .= " on " . $sop['sop_closed_d'] . ".";

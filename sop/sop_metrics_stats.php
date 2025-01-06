@@ -203,7 +203,7 @@ foreach ($request_dataCall as $dataCall){
             $dataReq_values[2] += 1;
         }
     }
-    if($dataCall['sop_closed_y'][1] == '1'){
+    if($dataCall['sop_closed_y'] == '1'){
         $dataCall_closed += 1;
         $RecordSetDU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_assoc_request] = '".$dataCall['record_id']."'");
         if(!empty($RecordSetDU[0]))
