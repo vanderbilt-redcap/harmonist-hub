@@ -1068,14 +1068,14 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
         if ($type == "a") {
             $width = "style='100px'";
             $buttons = "<div><em>None</em></div>";
-            if ($sop['sop_finalize_y'] != "" || ($sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'][1] != "1")) {
+            if ($sop['sop_finalize_y'] != "" || ($sop['sop_closed_y'] != "" && $sop['sop_closed_y'] != "1")) {
                 if ($sop['sop_finalize_y'] != "") {
                     $buttons = "<div>Started</div>";
                     if ($sop['sop_final_d'] != "") {
                         $buttons .= "<div>" . $sop['sop_final_d'] . "</div>";
                     }
                 }
-                if ($sop['sop_closed_y'][1] != "" && $sop['sop_closed_y'][1] == "1") {
+                if ($sop['sop_closed_y'] != "" && $sop['sop_closed_y'] == "1") {
                     $buttons = "<div style='color: green;font-weight: bold;'>Completed</div>";
                     if ($sop['sop_closed_d'] != "") {
                         $buttons .= "<div>" . $sop['sop_closed_d'] . "</div>";
@@ -1241,9 +1241,9 @@ function getDataCallConceptsRow($module, $pidsArray, $sop, $isAdmin, $current_us
         $sop_status = "<em>Unknown</em>";
     }else{
         if($sop['sop_status'] == "1"){
-            if ($sop['sop_closed_y'][1] != '1') {
+            if ($sop['sop_closed_y'] != '1') {
                 $sop_closed_y = '<span class="label label-as-badge label-retrieve">Open</span>';
-            } else if ($sop['sop_closed_y'][1] == '1') {
+            } else if ($sop['sop_closed_y'] == '1') {
                 $sop_closed_y = '<span class="label label-as-badge label-default_dark">Closed</span>';
             }
         }
