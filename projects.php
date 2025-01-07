@@ -36,9 +36,9 @@ if(!$isCron) {
     define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
     define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
-    if(ENVIRONMENT != "DEV" && file_exists("/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php")) {
-        require_once "/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php";
-    }
+//    if(ENVIRONMENT != "DEV" && file_exists("/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php")) {
+//        require_once "/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php";
+//    }
 
     $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 
