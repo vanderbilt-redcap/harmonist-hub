@@ -45,16 +45,16 @@ if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['tok
             $Proj = new \Project($pidsArray['DATADOWNLOAD']);
             $event_id = $Proj->firstEventId;
             $recordSaveDU = array();
-            $recordSaveDU[$record_id][$event_id]['record_id'] = $record_id;
-            $recordSaveDU[$record_id][$event_id]['downloader_assoc_concept'] = $request_DU['data_assoc_concept'];
-            $recordSaveDU[$record_id][$event_id]['downloader_id'] = $downloader;
-            $recordSaveDU[$record_id][$event_id]['downloader_region'] = $downloader_region;
-            $recordSaveDU[$record_id][$event_id]['downloader_rcuser'] = USERID;
-            $recordSaveDU[$record_id][$event_id]['download_id'] = $record_id;
-            $recordSaveDU[$record_id][$event_id]['download_files'] = $request_DU['data_upload_zip'];
-            $recordSaveDU[$record_id][$event_id]['responsecomplete_ts'] = $download_time;
+            $recordDown = $module->framework->addAutoNumberedRecord($pidsArray['DATADOWNLOAD']);
+            $recordSaveDU[$recordDown][$event_id]['record_id'] = $recordDown;
+            $recordSaveDU[$recordDown][$event_id]['downloader_assoc_concept'] = $request_DU['data_assoc_concept'];
+            $recordSaveDU[$recordDown][$event_id]['downloader_id'] = $downloader;
+            $recordSaveDU[$recordDown][$event_id]['downloader_region'] = $downloader_region;
+            $recordSaveDU[$recordDown][$event_id]['downloader_rcuser'] = USERID;
+            $recordSaveDU[$recordDown][$event_id]['download_id'] = $record_id;
+            $recordSaveDU[$recordDown][$event_id]['download_files'] = $request_DU['data_upload_zip'];
+            $recordSaveDU[$recordDown][$event_id]['responsecomplete_ts'] = $download_time;
             $results = \Records::saveData($pidsArray['DATADOWNLOAD'], 'array', $recordSaveDU, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-            \Records::addRecordToRecordListCache($pidsArray['DATADOWNLOAD'], $record_id, 1);
 
             $date = new \DateTime($download_time);
             $date->modify("+1 hours");
