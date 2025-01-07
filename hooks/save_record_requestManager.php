@@ -210,10 +210,20 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 }
 
 #We save the date for Recently Finalized Requests table
-if(($request['finalize_y'] != "" && ($request['request_type'] != '1' && $request['request_type'] != '5')) || ($request['finalize_y'] == "2" && ($request['request_type'] == '1' || $request['request_type'] == '5')) || ($request['mr_assigned'] != "" && $request['finalconcept_doc'] != "" && $request['finalconcept_pdf'] != "")) {
-    $arrayRM = array(array('request_id' => $record));
-    $arrayRM[0]['workflowcomplete_d'] = date("Y-m-d");
-    $json = json_encode($arrayRM);
-    $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+if (empty($request['workflowcomplete_d'])) {
+    if (
+        // not finalized AND not concept sheet (#1) AND not fast track (#5)
+        ($request['finalize_y'] != "" && ($request['request_type'] != '1' && $request['request_type'] != '5'))
+        // finalized == rejected (2) AND IS  concept sheet (#1) OR fast track (#5)
+        || ($request['finalize_y'] == "2" && ($request['request_type'] == '1' || $request['request_type'] == '5'))
+        // has assigned tracking number not black AND youve uploaded a final concept doc AND a final PDF
+        || ($request['mr_assigned'] != "" && $request['finalconcept_doc'] != "" && $request['finalconcept_pdf'] != "")
+    ) {
+        $arrayRM = array(array('request_id' => $record));
+        $arrayRM[0]['workflowcomplete_d'] = date("Y-m-d");
+        $json = json_encode($arrayRM);
+        $results = \Records::saveData($pidsArray['RMANAGER'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+    }
 }
+
 ?>
