@@ -31,6 +31,10 @@ if($isAdmin) {
 //    //Show Everyone
 //    $deactivate_projects = false;
 //}
+$indexUrl = $module->getUrl('index.php');
+if($pid == $pidsArray['DATADOWNLOADUSERS']){
+    $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
+}
 ?>
 
 <nav class="navbar navbar-default" role="navigation">
@@ -47,12 +51,12 @@ if($isAdmin) {
                 $textStyleNoLogo = "padding-left:40px;padding-right:20px;";
                 if($settings['hub_logo'] != ""){
                     $textStyleNoLogo = ""; ?>
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTH'?>" style="text-decoration: none;float:left">
+                    <a href="<?=$indexUrl.'&NOAUTH'?>" style="text-decoration: none;float:left">
                         <img src='<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo'], 'src');?>' style='max-width:250px;height:40px;' class='wiki_logo_img' alt="<?=$hub_projectname?> Logo">
                     </a>
                 <?php } ?>
                     <?php if(empty($token) || array_key_exists('sout', $_REQUEST) || $settings['hub_logo'] == ""){ ?>
-                        <a href="<?=$module->getUrl('index.php').'&NOAUTH'?>" style="<?=$textStyleNoLogo?>text-decoration: none;float:left" class="hub_header_title">
+                        <a href="<?=$indexUrl.'&NOAUTH'?>" style="<?=$textStyleNoLogo?>text-decoration: none;float:left" class="hub_header_title">
                             <span class=""><?=$hub_projectname?> Hub</span>
                         </a>
                     <?php } ?>
@@ -63,25 +67,25 @@ if($isAdmin) {
         <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTH'?>" role="button" option="null">Home</a>
+                    <a href="<?=$indexUrl.'&NOAUTH'?>" role="button" option="null">Home</a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=hub'?>" role="button" option="hub">Requests <span class="badge label-default"><?=$numberOfOpenRequest?></span></a>
+                    <a href="<?=$indexUrl.'&NOAUTH&option=hub'?>" role="button" option="hub">Requests <span class="badge label-default"><?=$numberOfOpenRequest?></span></a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=cpt'?>"role="button" option="cpt">Concepts</a>
+                    <a href="<?=$indexUrl.'&NOAUTH&option=cpt'?>"role="button" option="cpt">Concepts</a>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=out'?>"role="button" option="out">Publications</a>
+                    <a href="<?=$indexUrl.'&NOAUTH&option=out'?>"role="button" option="out">Publications</a>
                 </li>
             </ul>
 
@@ -96,7 +100,7 @@ if($isAdmin) {
             <?php if($settings['deactivate_datahub___1'] != "1"){ ?>
             <ul class="nav navbar-nav navbar-links">
                 <li class="menu-item dropdown">
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=dat'?>"role="button" option="dat">Data Hub</a>
+                    <a href="<?=$indexUrl.'&NOAUTH&option=dat'?>"role="button" option="dat">Data Hub</a>
 
                 </li>
             </ul>
@@ -105,7 +109,7 @@ if($isAdmin) {
             <?php if($isAdmin){ ?>
                 <ul class="nav navbar-nav navbar-links">
                     <li class="menu-item dropdown">
-                        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=adm'?>"role="button" option="adm">Admin <span class="badge label-default"><?=$numberOfAdminRequest?></span></a>
+                        <a href="<?=$indexUrl.'&NOAUTH&option=adm'?>"role="button" option="adm">Admin <span class="badge label-default"><?=$numberOfAdminRequest?></span></a>
                     </li>
                 </ul>
             <?php } ?>
@@ -117,10 +121,10 @@ if($isAdmin) {
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle hidden-xs hidden-md hidden-lg" style="padding: 20px"><span class="label label-primary"><?=$person_region['region_code']?></span>&nbsp;&nbsp;<i class="fa fa-user" aria-hidden="true"></i> <span class="caret"></span></a>
 
                         <ul class="dropdown-menu">
-                            <li><a href="<?=$module->getUrl('index.php').'&NOAUTH&option=pro'?>"><i class="fa fa-user fa-fw" aria-hidden="true"></i> Profile</a></li>
-                            <li><a href="<?=$module->getUrl('index.php').'&NOAUTH&option=faq'?>"><i class="fa fa-support fa-fw" aria-hidden="true"></i> Help</a></li>
+                            <li><a href="<?=$indexUrl.'&NOAUTH&option=pro'?>"><i class="fa fa-user fa-fw" aria-hidden="true"></i> Profile</a></li>
+                            <li><a href="<?=$indexUrl.'&NOAUTH&option=faq'?>"><i class="fa fa-support fa-fw" aria-hidden="true"></i> Help</a></li>
                             <li class="divider"></li>
-                            <?php $url_logout = $module->getUrl('index.php').'&NOAUTH&sout';?>
+                            <?php $url_logout = $indexUrl.'&NOAUTH&sout';?>
                             <li><a href="#" onclick="destroy_session(<?="'".$url_logout."'"?>)"><i class="fa fa-sign-out fa-fw" aria-hidden="true"></i> Logout</a></li>
                         </ul>
                     </li>

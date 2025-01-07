@@ -1,5 +1,16 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+require_once dirname(__FILE__) . "/classes/HubData.php";
+
+$hubData = new HubData($module, $settings['hub_name'].$pidsArray['PROJECTS'], $token, $pidsArray);
+$current_user = $hubData->getCurrentUser();
+$name = $current_user['firstname'].' '.$current_user['lastname'];
+$person_region = $hubData->getPersonRegion();
+$isAdmin = $current_user['is_admin'];
+if($settings['hub_name'] !== ""){
+    $hub_projectname = $settings['hub_name'];
+}
+//****//
 
 $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 krsort($request_DU);
@@ -16,6 +27,58 @@ foreach ($request_DU as $down){
     array_push($array_downloads_by_concept[$down['data_assoc_concept']][$down['data_assoc_request']],$down);
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title><?=$settings['hub_name_title']?></title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <meta http-equiv="Cache-control" content="public">
+        <meta name="theme-color" content="#fff">
+        <link rel="icon" href="<?=getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_favicon'],'favicon')?>">
+
+        <?php include_once("head_scripts.php");?>
+
+        <script type='text/javascript'>
+            $(document).ready(function() {
+                Sortable.init();
+                $('[data-toggle="tooltip"]').tooltip();
+
+                var CACHE_NAME = 'iedea-site-cache';
+                var urlsToCache = [
+                    '/',
+                    '/css/style.css',
+                    '/js/base.js',
+                    '/js/functions.js'
+                ];
+
+                self.addEventListener('install', function(event) {
+                    // Perform install steps
+                    event.waitUntil(
+                        caches.open(CACHE_NAME)
+                            .then(function(cache) {
+                                return cache.addAll(urlsToCache);
+                            })
+                    );
+                });
+
+                var pageurloption = <?=json_encode($option)?>;
+                if(pageurloption != '') {
+                    $('[option=' + pageurloption + ']').addClass('navbar-active');
+                }
+
+            } );
+        </script>
+
+        <style>
+            table thead .glyphicon {
+                color: blue;
+            }
+        </style>
+    </head>
 <style>
     .dtr-control{
         width: 130px;
@@ -32,9 +95,12 @@ foreach ($request_DU as $down){
             });
     });
 </script>
+<body>
+<?php include('hub_header.php');?>
+<div class="container" style="margin: 0 auto;float:none;min-height: 900px;">
 <div class="optionSelect">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a>
+        <a href="<?=$indexUrl.'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a>
     </div>
     <div class="optionSelect">
         <h3>Retrieve Data</h3>
@@ -81,7 +147,6 @@ foreach ($request_DU as $down){
                     $contact_concept_person = "<i>None</i>";
                 }
 
-//                $concept_header = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $concept_id . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . $concept_sheet . '</a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . $sop_id . '</a>';
                 $concept_header = $concept_sheet . ' | Data Request #' . $sop_id;
 
                 $array_dates = $module->escape(getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1'));
@@ -115,7 +180,8 @@ foreach ($request_DU as $down){
                         $buttons = "";
                         if ($data_up['deleted_y'] != '1' && strtotime ($expire_date) >= strtotime(date('Y-m-d'))) {
                             $downloads_active++;
-                            $buttons = '<div><a href="'.$module->getUrl('hub/aws/AWS_downloadFile.php').'&pid='.$pidsArray['PROJECTS'].'&code=' . getCrypt("id=". $data_up['record_id']."&user_id=".$hubData->getCurrentUser()['record_id'],'e',$secret_key,$secret_iv). '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
+                            $downloadUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('hub/aws/AWS_downloadFile.php')).'&code=' . getCrypt("id=". $data_up['record_id']."&user_id=".$hubData->getCurrentUser()['record_id'],'e',$secret_key,$secret_iv);
+                            $buttons = '<div><a href="'.$downloadUrl. '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
                         } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != ""){
                             if($data_up['deletion_type'] == '2'){
                                 $person_info_delete = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $data_up['deletion_hubuser']),array('firstname','lastname','email'))[0];
@@ -162,7 +228,7 @@ foreach ($request_DU as $down){
                 <div id="collapse_concept_' . htmlspecialchars($concept_id . $sop_id,ENT_QUOTES) . '" class="panel-collapse collapse" aria-expanded="true">
                     <table class="table table_requests sortable-theme-bootstrap">
                         <div class="row request">
-                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Title: </strong><a href="'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . htmlspecialchars($concept_id,ENT_QUOTES) . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . htmlspecialchars($concept_title,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a> | <a href="'.$module->getUrl('index.php?pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $sop_id . '&type=r').'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . htmlspecialchars($sop_id,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a></div>
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Title: </strong><a href="'.$indexUrl.'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . htmlspecialchars($concept_id,ENT_QUOTES) . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . htmlspecialchars($concept_title,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a> | <a href="'.$indexUrl.'&option=sop&record=' . $sop_id . '&type=r'.'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . htmlspecialchars($sop_id,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a></div>
                         </div>
                         <div class="row request">
                             <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Contact: </strong>' . filter_tags($contact_concept_person) . '</div>
@@ -208,6 +274,9 @@ foreach ($request_DU as $down){
 </div>
 <?php
 if($settings['session_timeout_popup'] == 2 && $settings['session_timeout_popup'] != ''){
-    include(dirname(dirname(__FILE__))."/logout_popup.php");
+    include(dirname(dirname(__FILE__)) . "/logout_popup.php");
 }
 ?>
+</div>
+</body>
+</html>
