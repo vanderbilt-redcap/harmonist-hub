@@ -139,7 +139,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             "<li><b>Contact Link:</b> " . getPeopleName($pidsArray['PEOPLE'], $request['contactperson_id']) . "</li><li><b>Start Year:</b> " . $start_year . "</li><li><b>EC Approval Date:</b> " . $request['final_d'] . "</li>" .
             "<li><b>WG Link:</b> " . $wgroup_name . "</li><li><b>WG2 Link:</b> " . $wgroup2_name . "</li><li><b>Concept File:</b> " . $finalConcept_PDF . "</li><li><b>Concept Word:</b> " . $finalConcept_DOC . "</li></ul></div><br/>";
 
-        $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['HARMONIST'] . "&arm=1&id=" . $concept['record_id'];
+        $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['HARMONIST'] . "&arm=1&id=" . $concept_id;
         $message .= "<div>Click <a href='" . $link . "' target='_blank'>this link</a> to see the concept sheet.</div>";
         if($settings['hub_email_new_conceptsheet'] != "") {
             $emails = explode(';', $settings['hub_email_new_conceptsheet']);
