@@ -210,7 +210,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 }
 
 #We save the date for Recently Finalized Requests table
-if (!empty($request['workflowcomplete_d'])) {
+if (empty($request['workflowcomplete_d'])) {
     if (
         // not finalized AND not concept sheet (#1) AND not fast track (#5)
         ($request['finalize_y'] != "" && ($request['request_type'] != '1' && $request['request_type'] != '5'))
