@@ -10,7 +10,7 @@ use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 use REDCap;
 if(file_exists("/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php")) {
-    require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
+//    require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
     $credentials = new Credentials($aws_key, $aws_secret);
     $s3 = new S3Client([
                            'version' => 'latest',
