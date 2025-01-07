@@ -30,10 +30,14 @@ if($current_user != "") {
     $results = \Records::saveData($pidsArray['FILELIBRARY'], 'array', $recordFileL,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($pidsArray['FILELIBRARY'], $record, 1);
 }
+if($module->getProjectId() == "203280"){
+    
+} else {
+    header('Content-type: application/'.$extension);
+    header('Content-Disposition: attachment; filename="'.$filename.'"');
+    header('Content-Transfer-Encoding: binary');
+    header('Accept-Ranges: bytes');
+    @readfile($module->framework->getSafePath(EDOC_PATH.$sname, EDOC_PATH));  
+}
 
-header('Content-type: application/'.$extension);
-header('Content-Disposition: attachment; filename="'.$filename.'"');
-header('Content-Transfer-Encoding: binary');
-header('Accept-Ranges: bytes');
-@readfile($module->framework->getSafePath(EDOC_PATH.$sname, EDOC_PATH));
 ?>
