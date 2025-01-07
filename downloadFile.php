@@ -4,6 +4,10 @@ require_once "projects.php";
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
+if($module->getProjectId() == "203280"){
+    echo "<pre> request code ".var_dump($_REQUEST['code'])."</pre>";
+    echo "request str:<pre> ".var_dump($code)."</pre>";
+}
 $exploded = array();
 parse_str($code, $exploded);
 
