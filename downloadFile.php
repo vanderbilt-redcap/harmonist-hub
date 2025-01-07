@@ -13,6 +13,10 @@ $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
 $current_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $exploded['pid']))[0];
 
+if($module->getProjectId() == "203280"){
+    echo "<pre> ".var_dump($exploded)."</pre>";
+    echo "extension<pre> ".var_dump($extension)."</pre>";
+}
 if($current_user != "") {
     $record = $module->framework->addAutoNumberedRecord($pidsArray['FILELIBRARY']);
     $Proj = new \Project($pidsArray['FILELIBRARY']);
