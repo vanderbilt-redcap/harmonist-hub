@@ -83,7 +83,7 @@ function getFile($module, $project_id, $edoc, $type){
                 $file = $module->getUrl($url);
             }else if($type = "favicon") {
                 $download = getCrypt("sname=".$row['stored_name']."&file=". urlencode($row['doc_name'])."&edoc=".$edoc,'e',"","");
-                $file = $module->getUrl("downloadFile.php")."&NOAUTH&pid=".$project_id."&code=".$download;
+                $file = $module->getUrl("downloadFile.php")."&NOAUTH&code=".$download;
             }else{
                 $file = '<br/><div class="inside-panel-content"><a href="'.$module->getUrl($url,true).'" target="_blank"><span class="fa fa-file-o"></span> ' . $row['doc_name'] . '</a></div>';
             }
