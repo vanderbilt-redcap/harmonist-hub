@@ -1315,7 +1315,7 @@ function exploreDataToken(data,url,url_relocation){
         },
         success: function (result) {
             var tokendt = JSON.parse(result);
-            window.location = url_relocation+"&option=dab&tokendab="+tokendt;
+            window.location = url_relocation+"&option=dab&tokendab="+tokendt+"&NOAUTH";
         }
     });
 }
