@@ -4,10 +4,7 @@ require_once "projects.php";
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
-if($module->getProjectId() == "203280"){
-    echo "<pre> request code ".var_dump($_REQUEST['code'])."</pre>";
-    echo "request str:<pre> ".var_dump($code)."</pre>";
-}
+
 $exploded = array();
 parse_str($code, $exploded);
 
@@ -17,10 +14,6 @@ $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
 $current_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $exploded['pid']))[0];
 
-if($module->getProjectId() == "203280"){
-    echo "<pre> ".var_dump($exploded)."</pre>";
-    echo "extension<pre> ".var_dump($extension)."</pre>";
-}
 if($current_user != "") {
     $record = $module->framework->addAutoNumberedRecord($pidsArray['FILELIBRARY']);
     $Proj = new \Project($pidsArray['FILELIBRARY']);
@@ -34,14 +27,11 @@ if($current_user != "") {
     $results = \Records::saveData($pidsArray['FILELIBRARY'], 'array', $recordFileL,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($pidsArray['FILELIBRARY'], $record, 1);
 }
-if($module->getProjectId() == "203280"){
-    
-} else {
-    header('Content-type: application/'.$extension);
-    header('Content-Disposition: attachment; filename="'.$filename.'"');
-    header('Content-Transfer-Encoding: binary');
-    header('Accept-Ranges: bytes');
-    @readfile($module->framework->getSafePath(EDOC_PATH.$sname, EDOC_PATH));  
-}
+header('Content-type: application/'.$extension);
+header('Content-Disposition: attachment; filename="'.$filename.'"');
+header('Content-Transfer-Encoding: binary');
+header('Accept-Ranges: bytes');
+@readfile($module->framework->getSafePath(EDOC_PATH.$sname, EDOC_PATH));
+
 
 ?>
