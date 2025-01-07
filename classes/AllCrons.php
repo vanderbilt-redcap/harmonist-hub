@@ -404,7 +404,7 @@ class AllCrons
                 $date_time = $date->format("Y-m-d H:i");
 
                 #to uploader user
-                $url = $module->getUrl("index.php")."&NOAUTH&option=dat=&pid=" . $pidsArray['PROJECTS'];
+                $url = $module->getUrl("index.php")."&NOAUTH&option=dat&pid=" . $pidsArray['PROJECTS'];
                 $subject = "Notification of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
                 $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
                     "<div>The dataset you submitted to secure cloud storage in response to&nbsp;<strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted automatically because the&nbsp;<b><span style='color:#0070c0'>" . $settings['retrievedata_expiration'] . "-day storage window has ended</span></b>. " .
