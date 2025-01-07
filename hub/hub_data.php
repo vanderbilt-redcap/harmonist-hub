@@ -373,7 +373,7 @@ if($settings['deactivate_datadown___1'] != "1"){
                 </div>
             </a>
             <?php } ?>
-            <a href="des/index.php" target="_blank" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=APP_PATH_WEBROOT_FULL."plugins/iedea/des/"?>" target="_blank" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
                         <span style="float:left;font-weight: bold">iedeades.org</span>
