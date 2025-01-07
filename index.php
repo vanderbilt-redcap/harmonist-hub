@@ -119,10 +119,16 @@ if($hub_projectname != '' && $hub_profile != ''){
                 #TOKEN
                 if(!array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && !empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]) && !array_key_exists('option', $_REQUEST)){
                     #Login page
+                    if($pid == "203280"){
+                        echo "token does not exist in session";
+                    }
                 }else if(empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])){
 //                   session_write_close();
 //                   session_name($settings['hub_name']);
 //                   session_id($_COOKIE[$settings['hub_name']]);
+                    if($pid == "203280"){
+                        echo "we start session";
+                    }
                    session_start();
                }
 
@@ -168,8 +174,14 @@ if($hub_projectname != '' && $hub_profile != ''){
                     {
                         include('map/index.php');
                     }else if( !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])){
+                        if($pid == "203280"){
+                            echo "token does not exist in session. Second check";
+                        }
                         include('hub/hub_login.php');
                     }else if($current_user['active_y'] == "0"){
+                        if($pid == "203280"){
+                            echo "user is not active";
+                        }
                         include('hub/hub_login.php');
                     }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]) && isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])){
                         if( !array_key_exists('option', $_REQUEST)){
