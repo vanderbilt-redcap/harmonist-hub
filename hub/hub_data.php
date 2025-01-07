@@ -98,10 +98,11 @@ $exploreDataToken = json_encode("&code=".getCrypt($current_user['record_id'],'e'
 </div>
 <?php
 if($settings['deactivate_datadown___1'] != "1"){
+    $downloadUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS'],$module->getUrl('index.php').'&option=dnd');
     ?>
 <div class="hidden-xs" style="margin-bottom: 20px;"></div>
 <div class="modal fade" id="modal-data-download-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
-    <form class="form-horizontal" action="<?=$module->getUrl('index.php').'&option=dnd'?>" method="post" id='dataDownloadForm'>
+    <form class="form-horizontal" action="<?=$downloadUrl?>" method="post" id='dataDownloadForm'>
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
