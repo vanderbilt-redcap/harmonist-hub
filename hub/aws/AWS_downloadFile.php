@@ -2,6 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
+include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
 
 $hub_mapper = $module->getProjectSetting('hub-mapper');
 if($hub_mapper != "") {
