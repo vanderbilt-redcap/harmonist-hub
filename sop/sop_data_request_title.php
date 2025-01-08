@@ -30,16 +30,16 @@ if($sop !="") {
 
     $array_dates = getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1');
 
-    $status = 'badge-draft';
+    $statusBadge = 'badge-draft';
     if ($sop['sop_status'] == '1') {
-        $status = 'badge-final';
+        $statusBadge = 'badge-final';
     }
 
     $visibility = 'badge-private';
     if ($sop['sop_visibility'] == '2') {
         $visibility = 'badge-public';
     } else {
-        $status = 'hidden';
+        $statusBadge = 'hidden';
     }
 
     $date = new \DateTime($sop['sop_updated_dt']);
@@ -586,7 +586,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                     <div class="col-md-8 col-sm-12"><strong>Linked Concept:</strong> <?= filter_tags($concept); ?></div>
                     <div class="col-md-4">
                         <strong>Version: </strong><span><em><?=htmlspecialchars($sop_updated_dt,ENT_QUOTES)?></em></span>
-                        <span class="label label-as-badge <?= $status ?>"><?= htmlspecialchars($sop_status[$sop['sop_status']],ENT_QUOTES); ?></span>&nbsp;&nbsp;
+                        <span class="label label-as-badge <?= $statusBadge ?>"><?= htmlspecialchars($sop_status[$sop['sop_status']],ENT_QUOTES); ?></span>&nbsp;&nbsp;
                         <span class="label label-as-badge <?= $visibility ?>"><?= htmlspecialchars($sop_visibility[$sop['sop_visibility']],ENT_QUOTES); ?></span>
                     </div>
                 </div>
@@ -831,14 +831,14 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
 
 
                             if ($comment['sop_status'] == '1') {
-                                $status = 'badge-final';
+                                $statusBadge = 'badge-final';
                             } else {
-                                $status = 'badge-draft';
+                                $statusBadge = 'badge-draft';
                             }
 
                             $group_discussion .= "<tr>" .
                                 "<td style='width:20%'><a href='mailto:" . $people['email'] . "'>" . $name . "</a> (" . $comment['response_regioncode'] . ")<br/>" . $comment_time . "</td>" .
-                                "<td style='width:3%'><span class='label label-as-badge " . $status . "'>" . $sop_status[$comment['comment_ver']] . "</span></td>" .
+                                "<td style='width:3%'><span class='label label-as-badge " . $statusBadge . "'>" . $sop_status[$comment['comment_ver']] . "</span></td>" .
                                 "<td style='width:70%'>" . nl2br($comment['comments']) . $gd_files . "</td>" .
                                 "<td  style='width:5%'>";
                             if ($comment['response_person'] == $current_user['record_id']) {
