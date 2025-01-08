@@ -1,5 +1,17 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+require_once dirname(__FILE__) . "/classes/HubData.php";
+
+require_once "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
+
+$hubData = new HubData($module, $settings['hub_name'].$pidsArray['PROJECTS'], $token, $pidsArray);
+$current_user = $hubData->getCurrentUser();
+$name = $current_user['firstname'].' '.$current_user['lastname'];
+$person_region = $hubData->getPersonRegion();
+$isAdmin = $current_user['is_admin'];
+if($settings['hub_name'] !== ""){
+    $hub_projectname = $settings['hub_name'];
+}
 
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
 
@@ -22,6 +34,77 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
 
 $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS'],$module->getUrl('hub/aws/AWS_deleteFile.php'));
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title><?=$settings['hub_name_title']?></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="Cache-control" content="public">
+    <meta name="theme-color" content="#fff">
+    <link rel="icon" href="<?=getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_favicon'],'favicon')?>">
+
+    <?php include_once("head_scripts.php");?>
+
+    <script type='text/javascript'>
+        $(document).ready(function() {
+            Sortable.init();
+            $('[data-toggle="tooltip"]').tooltip();
+
+            var CACHE_NAME = 'iedea-site-cache';
+            var urlsToCache = [
+                '/',
+                '/css/style.css',
+                '/js/base.js',
+                '/js/functions.js'
+            ];
+
+            self.addEventListener('install', function(event) {
+                // Perform install steps
+                event.waitUntil(
+                    caches.open(CACHE_NAME)
+                        .then(function(cache) {
+                            return cache.addAll(urlsToCache);
+                        })
+                );
+            });
+
+            var pageurloption = <?=json_encode($option)?>;
+            if(pageurloption != '') {
+                $('[option=' + pageurloption + ']').addClass('navbar-active');
+            }
+
+        } );
+    </script>
+
+    <style>
+        table thead .glyphicon {
+            color: blue;
+        }
+    </style>
+</head>
+<style>
+    .dtr-control{
+        width: 130px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('.child_notes')
+            .dataTable({
+                responsive: true,
+                bFilter: false,
+                bPaginate: false,
+                bInfo: false
+            });
+    });
+</script>
+<body>
+<?php include('hub_header.php');?>
+<div class="container" style="margin: 0 auto;float:none;min-height: 900px;">
 <script>
     //To filter the data
     $.fn.dataTable.ext.search.push(
@@ -510,3 +593,5 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
     </form>
 </div>
 </div>
+</body>
+</html>
