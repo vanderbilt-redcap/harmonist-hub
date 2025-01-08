@@ -269,10 +269,10 @@ if($hub_projectname != '' && $hub_profile != ''){
                 } else {
                     if($pid == "203280"){
                         echo "We failed to get the token from either the 1) user id 2) the request parameter or 3): the session".$token."</br>";
-                        if (!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])) {
+                        if (empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])) {
                             echo "Token is empty</br>";
                         }
-                        if (isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
+                        if (!isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
                             echo "Token is not correct</br>";
                         }
                     }
