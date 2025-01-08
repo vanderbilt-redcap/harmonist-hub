@@ -347,7 +347,7 @@ if($settings['deactivate_datadown___1'] != "1"){
     </div>
     <div class="col-sm-3">
         <div class="list-group">
-            <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=lgd'?>" style="cursor:pointer" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS'],$module->getUrl('index.php').'&option=lgd&NOAUTH')?>" style="cursor:pointer" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
                         <span style="float:left;font-weight: bold">Data Log</span>

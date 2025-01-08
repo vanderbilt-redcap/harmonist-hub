@@ -31,9 +31,9 @@ if($hub_mapper != "") {
 
         $default_values = new ProjectData;
         $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
-        error_log("IEDEA - delete BEFORE");
+
         require_once "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
-        error_log("IEDEA - delete AFTER");
+
         $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
         $exploded = array();
         parse_str($code, $exploded);

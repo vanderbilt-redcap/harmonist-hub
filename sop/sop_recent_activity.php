@@ -174,7 +174,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             '</tr>';
                         }else if($recent_activity['download_id'] != ""){
                             #DOWNLOADS
-                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['response_person']),array('firstname','lastname','person_region'))[0];
+                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['downloader_id']),array('firstname','lastname','person_region'))[0];
                             $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $data_upload_region = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $recent_activity['download_id']),array('data_upload_region'))[0]['data_upload_region'];
