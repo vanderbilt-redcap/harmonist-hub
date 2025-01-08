@@ -195,12 +195,25 @@ if($hub_projectname != '' && $hub_profile != ''){
                     if($pid == "203280"){
                         echo "Got token out of session variable and it is correct: ".$token."</br>";
                     }
+                } else {
+                    if($pid == "203280"){
+                        echo "We failed to get the token from either the 1) user id 2) the request parameter or 3): the session".$token."</br>";
+                        if (!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])) {
+                            echo "Token is empty</br>";
+                        }
+                        if (isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
+                            echo "Token is not correct</br>";
+                        }
+                    }
                 }
 
                 //Session OUT
                 if(array_key_exists('sout', $_REQUEST)){
                     unset($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]);
                     unset($_SESSION[$settings['hub_name'].$pidsArray['PROJECTS']]);
+                    if($pid == "203280"){
+                        echo "sout was found in request...unsetting token</br>";
+                    }
                 }
 
                 if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
