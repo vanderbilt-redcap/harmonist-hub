@@ -40,7 +40,7 @@ if($hub_mapper != "") {
         if($settings['deactivate_datahub___1'] != "1") {
             var_dump("IN deactivate_datahub___1");
             if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php")) {
-                require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "ph_aws_s3p.php";
+                require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
             }
 
             if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_down_crypt.php")) {
