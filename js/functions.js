@@ -895,6 +895,9 @@ function CallAJAXAndShowMessage(data,url,letter,url_window){
         },
         success: function (result) {
             window.location = getMessageLetterUrl(url_window, letter);
+        },
+        error: function (xhr, status, error) {
+            alert(xhr.responseText);
         }
     });
 }
