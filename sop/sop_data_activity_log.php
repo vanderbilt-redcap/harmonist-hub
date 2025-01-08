@@ -472,7 +472,7 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
                 </div>
                 <div class="modal-body">
                     <p>Are you sure you want to delete this data set?</p>
-                    <p style="color:red!"><a href="<?=APP_PATH_WEBROOT_ALL?>" target="_blank">Click here to log into Vanderbilt REDCap</a> before proceeding (TEMPORARY HUB FIX) <a href="<?=APP_PATH_WEBROOT_ALL?>"><?=APP_PATH_WEBROOT_ALL?></a></p>
+                    <p style="color:red!"><a href="<?=APP_PATH_WEBROOT_ALL?>" target="_blank">Click here to log into Vanderbilt REDCap</a> before proceeding (TEMPORARY HUB FIX) <a href="<?=APP_PATH_WEBROOT_ALL?>" target="_blank"><?=APP_PATH_WEBROOT_ALL?></a></p>
                 </div>
                 <input type="hidden" id="assoc_concept" name="assoc_concept">
                 <input type="hidden" id="user" name="user">
