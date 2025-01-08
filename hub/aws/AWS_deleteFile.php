@@ -279,11 +279,16 @@ if($hub_mapper != "") {
                         }
                     }
                 }
+
+                session_start();
+                $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $delete_user['access_token'];
+                $returnToDataActivity = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'))."&NOAUTH&option=lgd&message=D";
+                header("Location: ".$returnToDataActivity);
+
             } catch (S3Exception $e) {
                 echo $e->getMessage() . "\n";
             }
         }
     }
 }
-echo json_encode("success");
 ?>

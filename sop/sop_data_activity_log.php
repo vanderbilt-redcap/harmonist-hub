@@ -19,8 +19,6 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
     $datareq_id = $record;
     $datareq_title = "<em>(for Data Request #".$record.")</em>";
 }
-
-$deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS'],$module->getUrl('hub/aws/AWS_deleteFile.php'));
 ?>
 <script>
     //To filter the data
@@ -115,20 +113,7 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
 
         $('#dataDownloadForm').submit(function () {
             $("#modal-data-download-confirmation").modal("hide");
-            window.location.href = addDeleteCode($('#deleted_record').val(),window.location.href);
-            return false;
-        });
-        $('#dataTransferDelete').submit(function () {
-            if($('#dataUpReason').val() == ""){
-                $('#dataUploadError').text('Please provide a reason to continue.');
-            }else{
-                var refresh_url = window.location.href;
-                if(window.location.href.match(/(&del=)([0-9a-zA-Z]{32})/)){
-                    refresh_url = window.location.href.replace( /(&del=)([0-9a-zA-Z]{32})/, '' );
-                }
-                CallAJAXAndShowMessage("&deletion_rs="+$('#dataUpReason').val()+'&code='+$('#deleted_record').val(),<?=json_encode($deleteAwsUrl)?>,'D',refresh_url);
-            }
-            return false;
+            $('#dataDownloadForm').attr('action', $('#dataDownloadForm').attr('action')+"&del="+$('#deleted_record').val());
         });
 
         var url_parameter = getQueryString("del");
@@ -364,7 +349,7 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
                                         $secret_key,
                                         $secret_iv
                                     );
-                                    $buttons = "<a href='#' onclick='$(\"#deleted_record\").val(\"" . $crypt . "\");$(\"#modal-data-download-confirmation\").modal(\"show\");' class='fa fa-trash' style='color: #000;cursor:pointer;text-decoration: none;' title='delete'></a>";
+                                    $buttons = "<a href='#' onclick='$(\"#deleted_record\").val(\"" . $crypt . "\");$(\"#file_name\").val(\"" . $module->escape($recent_activity['data_upload_zip']) . "\");$(\"#modal-data-download-confirmation\").modal(\"show\");' class='fa fa-trash' style='color: #000;cursor:pointer;text-decoration: none;' title='delete'></a>";
                                 }
 
                                 echo '<tr><td width="150px">' . $module->escape($comment_time) . '</td>' .
@@ -461,9 +446,11 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
         </div>
     </div>
 </div>
-
+<?php
+$deletedUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS'],$module->getUrl('index.php').'&option=lge');
+?>
 <div class="modal fade" id="modal-data-download-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
-    <form class="form-horizontal" action="" method="post" id='dataDownloadForm'>
+    <form class="form-horizontal" action="<?=$deletedUrl?>" method="post" id='dataDownloadForm'>
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -472,37 +459,13 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
                 </div>
                 <div class="modal-body">
                     <p>Are you sure you want to delete this data set?</p>
-                    <p style="color:red!"><a href="<?=APP_PATH_WEBROOT_ALL?>" target="_blank">Click here to log into Vanderbilt REDCap</a> before proceeding (TEMPORARY HUB FIX) <a href="<?=APP_PATH_WEBROOT_ALL?>" target="_blank"><?=APP_PATH_WEBROOT_ALL?></a></p>
+                    <p style="color:red">You will need to log in to Vanderbilt REDCap.</p>
                 </div>
-                <input type="hidden" id="assoc_concept" name="assoc_concept">
-                <input type="hidden" id="user" name="user">
+                <input type="hidden" id="file_name" name="file_name">
+                <input type="hidden" id="deleted_record" name="deleted_record">
                 <div class="modal-footer">
                     <button type="submit" form="dataDownloadForm" class="btn btn-default btn-success" id='btnModalRescheduleForm'>Continue</button>
                     <a href="#" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</a>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
-<div class="modal fade" id="modal-data-transfer-delete" tabindex="-1" role="dialog" aria-labelledby="Codes">
-    <form class="form-horizontal" action="" method="post" id='dataTransferDelete'>
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close" onclick="javascript:if(window.location.href.match(/(&del=)([0-9a-zA-Z]{32})/)){window.location.href = window.location.href.replace( /(&del=)([0-9a-zA-Z]{32})/, '' );}"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Delete Data Upload</h4>
-                </div>
-                <div class="modal-body">
-                    <span>Provide a reason for deleting this data upload:</span>
-                    <br>
-                    <br>
-                    <textarea name="dataUpReason" id="dataUpReason" style="width: 100%;"></textarea>
-                    <span id="dataUploadError" class="text-error"></span>
-                </div>
-                <input type="hidden" id="deleted_record" name="deleted_record">
-                <div class="modal-footer">
-                    <a class="btn btn-default btn-cancel" data-dismiss="modal" onclick="javascript:if(window.location.href.match(/(&del=)([0-9a-zA-Z]{32})/)){window.location.href = window.location.href.replace( /(&del=)([0-9a-zA-Z]{32})/, '' );}">Cancel</a>
-                    <button type="submit" form="dataTransferDelete" class="btn btn-default btn-danger" id='btnModalRescheduleForm'>Delete</button>
                 </div>
             </div>
         </div>
