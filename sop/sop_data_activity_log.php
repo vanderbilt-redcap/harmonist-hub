@@ -471,9 +471,8 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
                     <h4 class="modal-title">Delete Data</h4>
                 </div>
                 <div class="modal-body">
-                    <span>Are you sure you want to delete this data set?</span>
-                    <br>
-                    <span style="color:red;">You will need to log in to Vanderbilt REDCap.</span>
+                    <p>Are you sure you want to delete this data set?</p>
+                    <p style="color:red!"><a href="<?=APP_PATH_WEBROOT_ALL?>" target="_blank">Click here to log into Vanderbilt REDCap</a> before proceeding (TEMPORARY HUB FIX) <a href="<?=APP_PATH_WEBROOT_ALL?>" target="_blank"><?=APP_PATH_WEBROOT_ALL?></a></p>
                 </div>
                 <input type="hidden" id="assoc_concept" name="assoc_concept">
                 <input type="hidden" id="user" name="user">
