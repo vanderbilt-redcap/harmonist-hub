@@ -19,6 +19,8 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
     $datareq_id = $record;
     $datareq_title = "<em>(for Data Request #".$record.")</em>";
 }
+
+$deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS'],$module->getUrl('hub/aws/AWS_deleteFile.php'));
 ?>
 <script>
     //To filter the data
@@ -124,7 +126,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                 if(window.location.href.match(/(&del=)([0-9a-zA-Z]{32})/)){
                     refresh_url = window.location.href.replace( /(&del=)([0-9a-zA-Z]{32})/, '' );
                 }
-                CallAJAXAndShowMessage("&deletion_rs="+$('#dataUpReason').val()+'&code='+$('#deleted_record').val(),<?=json_encode($module->getUrl('hub/aws/AWS_deleteFile.php'))?>,'D',refresh_url);
+                CallAJAXAndShowMessage("&deletion_rs="+$('#dataUpReason').val()+'&code='+$('#deleted_record').val(),<?=json_encode($deleteAwsUrl)?>,'D',refresh_url);
             }
             return false;
         });

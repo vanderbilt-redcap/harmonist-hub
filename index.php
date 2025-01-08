@@ -178,7 +178,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                }
 
                 $token = "";
-                if(defined("USERID") && !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $option === 'dnd')  || (array_key_exists('option', $_REQUEST) && $option === 'iut') || (array_key_exists('option', $_REQUEST) && $option === 'lgd' && array_key_exists('del', $_REQUEST) && $_REQUEST['del'] != ''))){
+                if(defined("USERID") && !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $option === 'dnd')  || (array_key_exists('option', $_REQUEST) && $option === 'iut'))){
                     $_SESSION['token'] = array();
                     $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = getToken(USERID, $pidsArray['PEOPLE']);
                     $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
