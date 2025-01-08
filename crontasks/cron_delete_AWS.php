@@ -5,7 +5,7 @@ use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 
 
-//$url = "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
+$url = "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
 $headers = @get_headers($url);
 
 // If the URL exists, then we have the credentials in the server and can continue
