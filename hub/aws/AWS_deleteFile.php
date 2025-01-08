@@ -2,12 +2,18 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
+
+ini_set('display_errors',1);
+error_reporting(E_ERROR);
+
 include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
 
 $hub_mapper = $module->getProjectSetting('hub-mapper');
 if($hub_mapper != "") {
+    var_dump("IN MAPPER");
     $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
     if ($pid == $pidsArray['DATADOWNLOADUSERS']) {
+        var_dump("IN DATADOWNLOADUSERS");
         $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 
         if (!empty($settings)) {
@@ -32,6 +38,7 @@ if($hub_mapper != "") {
         $default_values = new ProjectData;
         $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
         if($settings['deactivate_datahub___1'] != "1") {
+            var_dump("IN deactivate_datahub___1");
             if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php")) {
                 require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "ph_aws_s3p.php";
             }
@@ -40,14 +47,17 @@ if($hub_mapper != "") {
                 require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_down_crypt.php";
             }
 
+            var_dump("IN after files");
+
             $code = getCrypt($_REQUEST['code'], "d", $secret_key, $secret_iv);
+            echo "<pre>" . var_dump($code) . "</pre>";
             $exploded = array();
             parse_str($code, $exploded);
 
             $record_id = $exploded['id'];
             $user = $exploded['idu'];
             $deletion_rs = $_REQUEST['deletion_rs'];
-
+            echo "<pre>" . var_dump($record_id) . "</pre>";
             $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
 
             $credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
@@ -56,15 +66,16 @@ if($hub_mapper != "") {
                                    'region' => 'us-east-2',
                                    'credentials' => $credentials
                                ]);
-
+            var_dump("after credentials");
             try {
                 if ($request_DU['deleted_y'] !== "1") {
+                    var_dump("deleted_y");
                     // Delete the object
                     $result = $s3->deleteObject(array(
                                                     'Bucket' => $request_DU['data_upload_bucket'],
                                                     'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip']
                                                 ));
-
+                    var_dump("after deleted_y");
                     //Save data on project
                     $Proj = new \Project($pidsArray['DATAUPLOAD']);
                     $event_id = $Proj->firstEventId;
