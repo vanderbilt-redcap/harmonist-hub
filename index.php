@@ -58,76 +58,6 @@ if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !array_key_exi
             }
         }
     }
-}else if( array_key_exists('option', $_REQUEST) && $option === 'lgd')
-{
-    if($hub_mapper != "") {
-        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-        if ($pid == $pidsArray['DATADOWNLOADUSERS']) {
-            $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
-
-            if (!empty($settings)) {
-                $settings = $module->escape($settings);
-            } else {
-                $settings = htmlspecialchars($settings, ENT_QUOTES);
-            }
-
-            #Escape name just in case they add quotes
-            if (!empty($settings["hub_name"])) {
-                $settings["hub_name"] = addslashes($settings["hub_name"]);
-            }
-
-            #Sanitize text title and descrition for pages
-            $settings = ProjectData::sanitizeALLVariablesFromInstrument(
-                $module,
-                $pidsArray['SETTINGS'],
-                array(0 => "harmonist_text"),
-                $settings
-            );
-
-            $default_values = new ProjectData;
-            $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
-            if ($settings['deactivate_datahub___1'] != "1") {
-                session_start();
-                $token = "";
-                if (defined("USERID") && !empty(getToken(USERID, $pidsArray['PEOPLE']))) {
-                    $_SESSION['token'] = array();
-                    $_SESSION['token'][$settings['hub_name'] . $pidsArray['PROJECTS']] = getToken(
-                        USERID,
-                        $pidsArray['PEOPLE']
-                    );
-                    $token = $_SESSION['token'][$settings['hub_name'] . $pidsArray['PROJECTS']];
-                } else {
-                    if (array_key_exists('token', $_REQUEST) && !empty($_REQUEST['token']) && isTokenCorrect(
-                            $_REQUEST['token'],
-                            $pidsArray['PEOPLE']
-                        )) {
-                        $token = $_REQUEST['token'];
-                    } else {
-                        if (!empty($_SESSION['token'][$settings['hub_name'] . $pidsArray['PROJECTS']]) && isTokenCorrect(
-                                $_SESSION['token'][$settings['hub_name'] . $pidsArray['PROJECTS']],
-                                $pidsArray['PEOPLE']
-                            )) {
-                            $token = $_SESSION['token'][$settings['hub_name'] . $pidsArray['PROJECTS']];
-                        }
-                    }
-                }
-                if (array_key_exists('token', $_REQUEST) && !empty($_REQUEST['token']) && isTokenCorrect(
-                        $_REQUEST['token'],
-                        $pidsArray['PEOPLE']
-                    )) {
-                    $_SESSION['token'][$settings['hub_name'] . $pidsArray['PROJECTS']] = $_REQUEST['token'];
-                }
-
-                if (array_key_exists('token', $_REQUEST) && !empty($_REQUEST['token']) && isTokenCorrect(
-                        $_REQUEST['token'],
-                        $pidsArray['PEOPLE']
-                    )) {
-                    $_SESSION['token'][$settings['hub_name'] . $pidsArray['PROJECTS']] = $_REQUEST['token'];
-                }
-            include('sop_data_activity_log.php');
-            }
-        }
-    }
 }
 ?>
 <!DOCTYPE html>
@@ -349,6 +279,9 @@ if($hub_projectname != '' && $hub_profile != ''){
                         }else if( array_key_exists('option', $_REQUEST) && $option === 'spr' && !$deactivate_datahub)
                         {
                             include('sop/sop_make_public_request_review.php');
+                        }else if( array_key_exists('option', $_REQUEST) && $option === 'lgd' && !$deactivate_datahub)
+                        {
+                            include('sop/sop_data_activity_log.php');
                         } else if( array_key_exists('option', $_REQUEST) && $option === 'cpt' )
                         {
                             include('hub/hub_concepts.php');
