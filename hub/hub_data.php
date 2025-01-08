@@ -308,7 +308,7 @@ if($settings['deactivate_datadown___1'] != "1"){
                                 $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['downloader_id']),array('firstname','lastname'))[0];
                                 $name = htmlspecialchars(trim($people['firstname'] . ' ' . $people['lastname']));
 
-                                $data_upload_region = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $recent_activity['downloader_id']),array('data_upload_region'))[0]['data_upload_region'];
+                                $data_upload_region = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $recent_activity['download_id']),array('data_upload_region'))[0]['data_upload_region'];
                                 $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $data_upload_region),array('region_code'))[0]['region_code'];
 
                                 $assoc_concept = getReqAssocConceptLink($module, $pidsArray, $recent_activity['downloader_assoc_concept'], "");
