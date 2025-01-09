@@ -52,10 +52,6 @@ if($hub_mapper != "") {
                 require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
             }
 
-            if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php")) {
-                require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
-            }
-
             if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_down_crypt.php")) {
                 require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_down_crypt.php";
             }
@@ -65,7 +61,7 @@ if($hub_mapper != "") {
             parse_str($code, $exploded);
 
             $record_id = $exploded['id'];
-            $user = $exploded['idu'];
+            $current_user = $exploded['idu'];
             $deletion_rs = $_REQUEST['deletion_rs'];
             $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
 
@@ -77,13 +73,8 @@ if($hub_mapper != "") {
                                ]);
             try {
                 if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
-                    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $request_DU['data_assoc_request']));
-                    $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
-                    $array_userid = explode(',', $sop['sop_downloaders']);
-                    $current_user = $exploded['user_id'];
                     $userData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $current_user),array('harmonistadmin_y','redcap_name'))[0];
-                    if (!empty($current_user) && $userData['redcap_name'] == USERID && ($request_DU['data_upload_person'] == $current_user || $userData[['harmonistadmin_y']])){
-
+                    if (!empty($current_user) && $userData['redcap_name'] == USERID && ($request_DU['data_upload_person'] == $current_user || $userData['harmonistadmin_y'])){
                             // Delete the object
                         $result = $s3->deleteObject(array(
                                                         'Bucket' => $request_DU['data_upload_bucket'],
