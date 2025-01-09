@@ -29,7 +29,24 @@ if($hub_mapper != "") {
 
         if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1"){
 
-            require_once "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
+            session_start();
+            $token = "";
+            if(defined("USERID") && !empty(getToken(USERID, $pidsArray['PEOPLE']))){
+                $_SESSION['token'] = array();
+                $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = getToken(USERID, $pidsArray['PEOPLE']);
+                $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
+            }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])){
+                $token = $_REQUEST['token'];
+            }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
+                $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
+            }
+            if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
+                $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $_REQUEST['token'];
+            }
+
+            if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php")) {
+                require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
+            }
 
             $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
             $exploded = array();
