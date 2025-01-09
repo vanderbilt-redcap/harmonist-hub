@@ -69,7 +69,7 @@ if($hub_mapper != "") {
                 $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
                 $RecordSetCurrentUser = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('access_token' => $token));
                 $current_user = $exploded['user_id'];
-                if ($request_DU['data_upload_person'] == $current_user || ($key = array_search($current_user, $array_userid)) !== false) {
+                if (!empty($current_user) && ($request_DU['data_upload_person'] == $current_user || ($key = array_search($current_user, $array_userid)) !== false)) {
                     try {
                         #Get the object
                         $result = $s3->getObject(array(
