@@ -28,7 +28,6 @@ if($hub_mapper != "") {
         $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
 
         if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1"){
-
             session_start();
             $token = "";
             if(defined("USERID") && !empty(getToken(USERID, $pidsArray['PEOPLE']))){
@@ -66,10 +65,9 @@ if($hub_mapper != "") {
                 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $request_DU['data_assoc_request']));
                 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
                 $array_userid = explode(',', $sop['sop_downloaders']);
-                $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
-                $RecordSetCurrentUser = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('access_token' => $token));
                 $current_user = $exploded['user_id'];
-                if (!empty($current_user) && ($request_DU['data_upload_person'] == $current_user || ($key = array_search($current_user, $array_userid)) !== false)) {
+                $userData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $current_user),array('harmonistadmin_y','redcap_name'))[0];
+                if (!empty($current_user) && $userData['redcap_name'] == USERID && ($request_DU['data_upload_person'] == $current_user || ($key = array_search($current_user, $array_userid)) !== false)) {
                     try {
                         #Get the object
                         $result = $s3->getObject(array(
