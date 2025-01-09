@@ -81,8 +81,8 @@ if($hub_mapper != "") {
                     $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
                     $array_userid = explode(',', $sop['sop_downloaders']);
                     $current_user = $exploded['user_id'];
-                    $isAdmin = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $current_user),array('harmonistadmin_y'))[0]['harmonistadmin_y'];
-                    if (!empty($current_user) && ($request_DU['data_upload_person'] == $current_user || $isAdmin)){
+                    $userData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $current_user),array('harmonistadmin_y','redcap_name'))[0];
+                    if (!empty($current_user) && $userData['redcap_name'] == USERID && ($request_DU['data_upload_person'] == $current_user || $userData[['harmonistadmin_y']])){
 
                             // Delete the object
                         $result = $s3->deleteObject(array(
