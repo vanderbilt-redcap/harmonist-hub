@@ -77,5 +77,8 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
             <button type="submit" form="deleteAwsData" class="btn btn-default btn-danger" id='btnModalRescheduleForm'>Delete</button>
         </div>
     </form>
+    <div style="padding-top: 500px;"></div>
+    <?php include('hub_footer.php'); ?>
+    <br/>
 </body>
 </html>
