@@ -89,13 +89,13 @@ foreach ($request_DU as $down){
 </style>
 <script>
     $(document).ready(function () {
-        $('.child_notes')
-            .dataTable({
-                responsive: true,
-                bFilter: false,
-                bPaginate: false,
-                bInfo: false
-            });
+        var tableDown = $('#sortable_table_downloads').DataTable({
+            order: [[ 0, "desc" ]],
+            responsive: true,
+            bFilter: false,
+            bPaginate: false,
+            bInfo: false
+        });
     });
 </script>
 <body>
@@ -242,10 +242,10 @@ foreach ($request_DU as $down){
                         <div class="row request"></div>
                     </table>
                     <div class="table-responsive">
-                    <table class="table table_requests sortable-theme-bootstrap dt-responsive child_notes" data-sortable id="sortable_table" width="100%">
+                    <table class="table table_requests sortable-theme-bootstrap dt-responsive child_notes" data-sortable id="sortable_table_downloads" width="100%">
                         <thead>
                         <tr>
-                            <th class="sorted_class" width="160px" data-sorted="true" data-sorted-direction="descending">Upload Date</th>
+                            <th class="sorted_class sorting_desc" width="160px" data-sorted="true" aria-sort="descending" data-sorted-direction="descending">Upload Date</th>
                             <th class="sorted_class" style="width:80px">Region</th>
                             <th class="sorted_class" style="width:150px">Submitted By</th>
                             <th class="sorted_class" style="width:250px">Filename</th>
