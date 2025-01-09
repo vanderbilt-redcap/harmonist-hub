@@ -86,7 +86,7 @@ if($hub_mapper != "") {
                         $recordSaveDU = array();
                         $recordSaveDU[$record_id][$event_id]['record_id'] = $record_id;
                         $recordSaveDU[$record_id][$event_id]['deletion_type'] = "2";
-                        $recordSaveDU[$record_id][$event_id]['deletion_hubuser'] = $user;
+                        $recordSaveDU[$record_id][$event_id]['deletion_hubuser'] = $current_user;
                         $date = new \DateTime();
                         $recordSaveDU[$record_id][$event_id]['deletion_ts'] = $date->format('Y-m-d H:i:s');
                         $recordSaveDU[$record_id][$event_id]['deletion_rs'] = $deletion_rs;
@@ -148,11 +148,11 @@ if($hub_mapper != "") {
                         );
                         $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP, $pidsArray['SOP'])[0];
 
-                        $delete_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $user))[0];
+                        $delete_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $current_user))[0];
                         $delete_user_fullname = $delete_user['firstname'] . " " . $delete_user['lastname'];
                         $delete_user_name = $delete_user['firstname'];
 
-                        if ($user == $request_DU['data_upload_person']) {
+                        if ($current_user == $request_DU['data_upload_person']) {
                             $subject = "Confirmation of " . $settings['hub_name'] . " " . $concept_id . " dataset deletion";
                             $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
                                 "<div>The dataset you submitted to secure cloud storage in response to <strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted successfully at your request and will not be available for future downloads.</div><br/>" .
@@ -203,7 +203,7 @@ if($hub_mapper != "") {
                                 $settings['accesslink_sender_name'],
                                 $subject,
                                 $message,
-                                $user,
+                                $current_user,
                                 "Dataset deleted",
                                 $pidsArray['DATAUPLOAD']
                             );
