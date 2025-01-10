@@ -13,91 +13,22 @@ $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
 $pid = (int)$_GET['pid'];
 $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
-$hub_mapper = $module->getProjectSetting('hub-mapper');
+
 
 if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !array_key_exists('NOAUTH', $_REQUEST))
 {
-    if($hub_mapper != "") {
-        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-        if ($pid == $pidsArray['DATADOWNLOADUSERS']) {
-            $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
-
-            if(!empty($settings)){
-                $settings = $module->escape($settings);
-            }else{
-                $settings = htmlspecialchars($settings,ENT_QUOTES);
-            }
-
-            #Escape name just in case they add quotes
-            if(!empty($settings["hub_name"])) {
-                $settings["hub_name"] = addslashes($settings["hub_name"]);
-            }
-
-            #Sanitize text title and descrition for pages
-            $settings = ProjectData::sanitizeALLVariablesFromInstrument($module,$pidsArray['SETTINGS'],array(0=>"harmonist_text"),$settings);
-
-            $default_values = new ProjectData;
-            $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
-
-            if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1"){
-                session_start();
-                $token = "";
-                if(defined("USERID") && !empty(getToken(USERID, $pidsArray['PEOPLE']))){
-                    $_SESSION['token'] = array();
-                    $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = getToken(USERID, $pidsArray['PEOPLE']);
-                    $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
-                }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])){
-                    $token = $_REQUEST['token'];
-                }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
-                    $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
-                }
-                if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
-                    $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $_REQUEST['token'];
-                }
-                include('sop_retrieve_data.php');
-            }
+   if($module->getDataManagement()->isAuthorizedPage($pid)){
+        $settings = $module->getDataManagement()->getSetttingsData();
+        if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1"){
+            $pidsArray = $module->getDataManagement()->getPidsArray();
+            include('sop_retrieve_data.php');
         }
     }
 }else if( array_key_exists('option', $_REQUEST) && $option === 'lge' && !array_key_exists('NOAUTH', $_REQUEST)){
-    if($hub_mapper != "") {
-        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-        if ($pid == $pidsArray['DATADOWNLOADUSERS']) {
-            $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
-
-            if(!empty($settings)){
-                $settings = $module->escape($settings);
-            }else{
-                $settings = htmlspecialchars($settings,ENT_QUOTES);
-            }
-
-            #Escape name just in case they add quotes
-            if(!empty($settings["hub_name"])) {
-                $settings["hub_name"] = addslashes($settings["hub_name"]);
-            }
-
-            #Sanitize text title and descrition for pages
-            $settings = ProjectData::sanitizeALLVariablesFromInstrument($module,$pidsArray['SETTINGS'],array(0=>"harmonist_text"),$settings);
-
-            $default_values = new ProjectData;
-            $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
-
-            if($settings['deactivate_datahub___1'] != "1"){
-                session_start();
-                $token = "";
-                if(defined("USERID") && !empty(getToken(USERID, $pidsArray['PEOPLE']))){
-                    $_SESSION['token'] = array();
-                    $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = getToken(USERID, $pidsArray['PEOPLE']);
-                    $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
-                }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])){
-                    $token = $_REQUEST['token'];
-                }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
-                    $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
-                }
-                if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
-                    $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $_REQUEST['token'];
-                }
-                include('sop_data_activity_log_delete.php');
-            }
+    if($module->getDataManagement()->isAuthorizedPage($pid)){
+        $settings = $module->getDataManagement()->getSetttingsData();
+        if($settings['deactivate_datahub___1'] != "1"){
+            include('sop_data_activity_log_delete.php');
         }
     }
 }
@@ -115,29 +46,20 @@ if($hub_projectname != '' && $hub_profile != ''){
         <?php }
 
             #User rights
-            $isAdmin = false;
+            $isAdminInstall = false;
             if(defined('USERID')) {
                 $UserRights = \REDCap::getUserRights(USERID)[USERID];
                 if ($UserRights['user_rights'] == '1') {
-                    $isAdmin = true;
+                    $isAdminInstall = true;
                 }
             }
 
             $dd_array = \REDCap::getDataDictionary('array');
             $data_array = \REDCap::getData($_GET['pid'], 'array');
-            if (count($dd_array) == 1 && $isAdmin && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
+            if (count($dd_array) == 1 && $isAdminInstall && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
                 //Do nothing
             } else {
                 include_once("projects.php");
-              /***
-                 * Installation hub-updates check to update new/missing variables
-                 * -Data Dictionary Variables
-                 * -Repeating Forms
-                 */
-                if($isAdmin && !array_key_exists('sout', $_REQUEST)) {
-//                    $module->compareDataDictionaries();
-//                    $module->compareRepeatingForms();
-                }
                 ?>
                 <head>
                     <title><?=$settings['hub_name_title']?></title>

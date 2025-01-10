@@ -1,5 +1,6 @@
 <?php
 use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
+use Vanderbilt\HarmonistHubExternalModule\HubData;
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,
@@ -11,6 +12,22 @@ $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$p
 $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $request_response_person = $module->getChoiceLabels('response_person', $pidsArray['RMANAGER']);
 $numberOfOpenRequest = $module->escape(\Vanderbilt\HarmonistHubExternalModule\numberOfOpenRequest($requests,$current_user['person_region']));
+
+$indexUrl = $module->getUrl('index.php');
+if($module->getDataManagement()->isAuthorizedPage($pid)){
+    $pidsArray = $module->getDataManagement()->getPidsArray();
+    $token = $module->getDataManagement()->getToken();
+    $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
+
+    $hubData = new HubData($module, $settings['hub_name'].$pidsArray['PROJECTS'], $token, $pidsArray);
+    $current_user = $hubData->getCurrentUser();
+    $name = $current_user['firstname'].' '.$current_user['lastname'];
+    $person_region = $hubData->getPersonRegion();
+    $isAdmin = $current_user['is_admin'];
+    if($settings['hub_name'] !== ""){
+        $hub_projectname = $settings['hub_name'];
+    }
+}
 
 $request_admin = "";
 if($isAdmin) {
@@ -31,10 +48,6 @@ if($isAdmin) {
 //    //Show Everyone
 //    $deactivate_projects = false;
 //}
-$indexUrl = $module->getUrl('index.php');
-if($pid == $pidsArray['DATADOWNLOADUSERS']){
-    $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
-}
 ?>
 
 <nav class="navbar navbar-default" role="navigation">

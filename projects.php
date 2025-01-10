@@ -14,6 +14,7 @@ include_once(__DIR__ . "/classes/HubData.php");
 include_once(__DIR__ . "/classes/ExcelFunctions.php");
 include_once(__DIR__ . "/classes/CopyJSON.php");
 include_once(__DIR__ . "/classes/UserEditConditions.php");
+include_once(__DIR__ . "/classes/DataManagement.php");
 
 REDCapManagement::getEnvironment();
 
@@ -40,21 +41,7 @@ if(!$isCron) {
         require_once "/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php";
     }
 
-    $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
-
-    if(!empty($settings)){
-        $settings = $module->escape($settings);
-    }else{
-        $settings = htmlspecialchars($settings,ENT_QUOTES);
-    }
-
-    #Escape name just in case they add quotes
-    if(!empty($settings["hub_name"])) {
-        $settings["hub_name"] = addslashes($settings["hub_name"]);
-    }
-
-    #Sanitize text title and descrition for pages
-    $settings = ProjectData::sanitizeALLVariablesFromInstrument($module,$pidsArray['SETTINGS'],array(0=>"harmonist_text"),$settings);
+    $settings = $module->getDataManagement()->getSetttingsData($pidsArray['SETTINGS']);
 
     $default_values = new ProjectData;
     $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
