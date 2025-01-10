@@ -21,7 +21,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             data += "&region="+$('#region').val();
             data += "&status_record="+$('#status_record').val();
             data += "&data_response_notes="+encodeURIComponent($('#data_response_notes').val());
-            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php')."&NOAUTH")?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=upd&message=S"))?>);
+            CallAJAXAndRedirect(data,<?=json_encode($module->getUrl('sop/sop_submit_data_change_status_AJAX.php')."&NOAUTH")?>,<?=json_encode($module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=upd&NOAUTH&message=S"))?>);
             return false;
         });
 

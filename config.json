@@ -40,7 +40,7 @@
     "hub/hub_requests_view_all_votes_AJAX","hub/hub_requests_view_mixed_votes_AJAX","hub/generate_publications_pdf","hub/generate_outputs_excel",
     "hub/hub_request_admin_vote_AJAX","hub/hub_data_upload_security_AJAX","hub/hub_request_follow_activity_AJAX",
     "sop/sop_step_1_save_AJAX","sop/sop_step_2_save_AJAX","sop/sop_step_3_save_AJAX","sop/sop_step_4_save_AJAX","sop/sop_step_5_generate_zip",
-    "sop/sop_data_request_title_admin_status_AJAX","sop/sop_submit_data_change_status_AJAX","sop/sop_request_data",
+    "sop/sop_data_request_title_admin_status_AJAX","sop/sop_submit_data","sop/sop_submit_data_change_status_AJAX","sop/sop_request_data",
     "sop/sop_make_private","sop/sop_delete_data_request","sop/sop_copy_data_request_AJAX","sop/sop_explore_data_AJAX",
     "hub-updates/generate_pdf"
   ],
