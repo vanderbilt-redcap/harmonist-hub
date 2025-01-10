@@ -157,15 +157,6 @@ if($hub_projectname != '' && $hub_profile != ''){
                     $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $_REQUEST['token'];
                 }
 
-                #OTHER DATA DISPLAYED ALWAYS OR OFTEN
-                $hubData = new HubData($module, $settings['hub_name'].$pidsArray['PROJECTS'], $token, $pidsArray);
-                $current_user = $hubData->getCurrentUser();
-                $name = $current_user['firstname'].' '.$current_user['lastname'];
-                $person_region = $hubData->getPersonRegion();
-                $isAdmin = $current_user['is_admin'];
-                if($settings['hub_name'] !== ""){
-                    $hub_projectname = $settings['hub_name'];
-                }
                 if( array_key_exists('option', $_REQUEST) && $option === 'dfq'){
                     //No header
                 }else{
