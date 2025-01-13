@@ -321,8 +321,8 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     $extension = ($row_concept_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
                     $pdf_path = $module->getUrl("loadPDF.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&edoc=".$concept["concept_file"]."#page=1&zoom=100";
 
-                    $file_icon = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
-                    $download_link = $module->getUrl("downloadFile.php")."&NOAUTH&code=".\Vanderbilt\HarmonistHubExternalModule\getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv);
+                    $file_icon = getFileLink($module, $pidsArray['PROJECTS'], $concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                    $download_link = $module->getUrl("downloadFile.php")."&NOAUTH&code=".getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv);
                     ?>
                     <span style="float: right;padding-right: 15px;"><?=$file_icon;?></span>
                     <a href="<?=$download_link?>" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>
@@ -355,22 +355,22 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
         <div id="collapse4" class="table-responsive panel-collapse collapse in" aria-expanded="false" style="overflow-y: hidden;">
             <table class="table sortable-theme-bootstrap" data-sortable>
             <?php
-            $q = $module->query("SELECT record FROM ".\Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['HARMONIST'])." WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$record,$pidsArray['HARMONIST']]);
+            $q = $module->query("SELECT record FROM ".getDataTable($pidsArray['HARMONIST'])." WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$record,$pidsArray['HARMONIST']]);
 
             $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_visibility] = 2 and [sop_concept_id] = ".$record);
             $data_requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
 
             ArrayFunctions::array_sort_by_column($data_requests,'sop_updated_dt',SORT_DESC);
             if(!empty($data_requests) || $q->num_rows > 0) {
-                echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsHeader($pidsArray['REGIONS'], $current_user['person_region'],$settings['vote_grid']);
+                echo getDataCallConceptsHeader($pidsArray['REGIONS'], $current_user['person_region'],$settings['vote_grid']);
                 foreach ($data_requests as $sop) {
-                        echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'','');
+                        echo getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'','');
                 }
                 while ($row = db_fetch_assoc($q)){
                     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$row['record']);
                     $data_requests_old = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
                     if(empty($data_requests_old)){
-                        echo \Vanderbilt\HarmonistHubExternalModule\getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$row['record'],"1");
+                        echo getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$row['record'],"1");
                     }
                 }
             }else{?>
