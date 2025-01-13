@@ -9,8 +9,8 @@ if ($module->getDataManagement()->isAuthorizedPage()) {
     $settings = $module->getDataManagement()->getSetttingsData();
     if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1") {
         $token = $module->getDataManagement()->getTokenSession();
-        $module->getDataManagement()->addAwsCredentials();
-        $module->getDataManagement()->addEncryptionCredentials();
+        $module->getDataManagement()->getAwsCredentialsServerVars();
+        $module->getDataManagement()->getEncryptionCredentialsServerVars();
 
         $code = getCrypt($_REQUEST['code'], "d", $secret_key, $secret_iv);
         $exploded = array();

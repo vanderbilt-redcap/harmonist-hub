@@ -117,13 +117,13 @@ class DataManagement
         return $this->token;
     }
 
-    public function addAwsCredentials()
+    public function getAwsCredentialsServerVars()
     {
         if(file_exists("/app001/credentials/Harmonist-Hub/" .  $this->getPidsArray()['PROJECTS'] . "_aws_s3.php")) {
             require_once "/app001/credentials/Harmonist-Hub/" .  $this->getPidsArray()['PROJECTS'] . "_aws_s3.php";
         }
     }
-    public function addEncryptionCredentials()
+    public function getEncryptionCredentialsServerVars()
     {
         if(file_exists("/app001/credentials/Harmonist-Hub/" . $this->getPidsArray()['PROJECTS'] . "_down_crypt.php")) {
             require_once "/app001/credentials/Harmonist-Hub/" . $this->getPidsArray()['PROJECTS'] . "_down_crypt.php";

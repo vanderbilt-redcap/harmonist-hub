@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
 
-$module->getDataManagement()->addAwsCredentials();
+$module->getDataManagement()->getAwsCredentialsServerVars();
 
 $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 krsort($request_DU);
