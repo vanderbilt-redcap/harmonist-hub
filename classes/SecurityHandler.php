@@ -61,7 +61,7 @@ class SecurityHandler
         $settings = ProjectData::sanitizeALLVariablesFromInstrument(
             $this->module,
             $project_id,
-            array(0 => "harmonist_text"),
+            [0 => "harmonist_text"],
             $settings
         );
 
@@ -89,7 +89,7 @@ class SecurityHandler
                             $_REQUEST
                         ) && $_REQUEST['option'] === 'iut')))
         ) {
-            $_SESSION['token'] = array();
+            $_SESSION['token'] = [];
             $_SESSION['token'][$token_session_name] = getToken(USERID, $this->pidsArray['PEOPLE']);
             $token = $_SESSION['token'][$token_session_name];
         } else {
