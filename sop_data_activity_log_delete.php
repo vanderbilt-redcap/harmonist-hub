@@ -3,10 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
 
 $module->getDataManagement()->addAwsCredentials();
-
-if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_down_crypt.php")) {
-    require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_down_crypt.php";
-}
+$module->getDataManagement()->addEncryptionCredentials();
 
 $deleteCode = $_REQUEST['del'];
 $file_name = $_REQUEST['file_name'];
