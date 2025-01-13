@@ -14,22 +14,17 @@ $hub_profile = $module->getProjectSetting('hub-profile');
 $pid = (int)$_GET['pid'];
 $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
 
-
-if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !array_key_exists('NOAUTH', $_REQUEST))
+if( array_key_exists('option', $_REQUEST) && !array_key_exists('NOAUTH', $_REQUEST) && ($option === 'dnd' || $option === 'lge'))
 {
    if($module->getDataManagement()->isAuthorizedPage()){
         $settings = $module->getDataManagement()->getSetttingsData();
-        if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1"){
-            $pidsArray = $module->getDataManagement()->getPidsArray();
-            include('sop_retrieve_data.php');
-        }
-    }
-}else if( array_key_exists('option', $_REQUEST) && $option === 'lge' && !array_key_exists('NOAUTH', $_REQUEST)){
-    if($module->getDataManagement()->isAuthorizedPage()){
-        $settings = $module->getDataManagement()->getSetttingsData();
-        if($settings['deactivate_datahub___1'] != "1"){
-            include('sop_data_activity_log_delete.php');
-        }
+       if($settings['deactivate_datahub___1'] != "1"){
+           if($option === 'lge') {
+               include('sop_data_activity_log_delete.php');
+           }elseif($option === 'dnd' && $settings['deactivate_datahub___1'] != "1"){
+               include('sop_data_activity_log_delete.php');
+           }
+       }
     }
 }
 ?>
