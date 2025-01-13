@@ -17,7 +17,7 @@ $option = htmlentities($_REQUEST['option'],ENT_QUOTES);
 
 if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !array_key_exists('NOAUTH', $_REQUEST))
 {
-   if($module->getDataManagement()->isAuthorizedPage($pid)){
+   if($module->getDataManagement()->isAuthorizedPage()){
         $settings = $module->getDataManagement()->getSetttingsData();
         if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1"){
             $pidsArray = $module->getDataManagement()->getPidsArray();
@@ -25,7 +25,7 @@ if( array_key_exists('option', $_REQUEST) && $option === 'dnd' && !array_key_exi
         }
     }
 }else if( array_key_exists('option', $_REQUEST) && $option === 'lge' && !array_key_exists('NOAUTH', $_REQUEST)){
-    if($module->getDataManagement()->isAuthorizedPage($pid)){
+    if($module->getDataManagement()->isAuthorizedPage()){
         $settings = $module->getDataManagement()->getSetttingsData();
         if($settings['deactivate_datahub___1'] != "1"){
             include('sop_data_activity_log_delete.php');
@@ -130,22 +130,10 @@ if($hub_projectname != '' && $hub_profile != ''){
                 if(!array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && !empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]) && !array_key_exists('option', $_REQUEST)){
                     #Login page
                 }else if(empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])){
-//                   session_write_close();
-//                   session_name($settings['hub_name']);
-//                   session_id($_COOKIE[$settings['hub_name']]);
                    session_start();
-               }
-
-                $token = "";
-                if(defined("USERID") && !array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && ((array_key_exists('option', $_REQUEST) && $option === 'dnd')  || (array_key_exists('option', $_REQUEST) && $option === 'iut'))){
-                    $_SESSION['token'] = array();
-                    $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = getToken(USERID, $pidsArray['PEOPLE']);
-                    $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
-                }else if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])){
-                    $token = $_REQUEST['token'];
-                }else if(!empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])&& isTokenCorrect($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']],$pidsArray['PEOPLE'])) {
-                    $token = $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']];
                 }
+
+                $token = $module->getDataManagement()->getTokenSession();
 
                 //Session OUT
                 if(array_key_exists('sout', $_REQUEST)){

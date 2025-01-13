@@ -14,7 +14,7 @@ $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_us
 $indexUrl = $module->getUrl('index.php');
 if($module->getDataManagement()->isAuthorizedPage($pid)){
     $pidsArray = $module->getDataManagement()->getPidsArray();
-    $token = $module->getDataManagement()->getToken();
+    $token = $module->getDataManagement()->getTokenSession();
     $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
 }
 
