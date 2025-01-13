@@ -20,13 +20,9 @@ class DataManagement
 
     public function isAuthorizedPage(): bool
     {
-        $hub_mapper = $this->module->getProjectSetting('hub-mapper');
-        if ($hub_mapper != "") {
-            $this->pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-            if ((int)$_GET['pid'] == $this->pidsArray['DATADOWNLOADUSERS']) {
-                $this->isAuthorized = true;
-                return true;
-            }
+        if ((int)$_GET['pid'] == $this->getPidsArray()['DATADOWNLOADUSERS']) {
+            $this->isAuthorized = true;
+            return true;
         }
         $this->isAuthorized = false;
         return false;
@@ -34,6 +30,12 @@ class DataManagement
 
     public function getPidsArray(): array
     {
+        if (empty($this->pidsArray)) {
+            $hub_mapper = $this->module->getProjectSetting('hub-mapper');
+            if ($hub_mapper !== "") {
+                $this->pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
+            }
+        }
         return $this->pidsArray;
     }
 
@@ -65,7 +67,7 @@ class DataManagement
 
         $this->hub_name = $settings['hub_name'];
         if ($this->isAuthorized) {
-            self::getTokenSession();
+            $this->token = self::getTokenSession();
         }
 
         return $settings;
@@ -113,6 +115,19 @@ class DataManagement
         }
         $this->token = $token;
         return $this->token;
+    }
+
+    public function addAwsCredentials()
+    {
+        if(file_exists("/app001/credentials/Harmonist-Hub/" .  $this->getPidsArray()['PROJECTS'] . "_aws_s3.php")) {
+            require_once "/app001/credentials/Harmonist-Hub/" .  $this->getPidsArray()['PROJECTS'] . "_aws_s3.php";
+        }
+    }
+    public function addEncryptionCredentials()
+    {
+        if(file_exists("/app001/credentials/Harmonist-Hub/" . $this->getPidsArray()['PROJECTS'] . "_down_crypt.php")) {
+            require_once "/app001/credentials/Harmonist-Hub/" . $this->getPidsArray()['PROJECTS'] . "_down_crypt.php";
+        }
     }
 }
 

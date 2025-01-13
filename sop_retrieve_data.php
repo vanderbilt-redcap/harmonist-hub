@@ -1,9 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
-if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php")) {
-    require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
-}
+
+$module->getDataManagement()->addAwsCredentials();
 
 $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 krsort($request_DU);

@@ -1,9 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
-if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php")) {
-    require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
-}
+
+$module->getDataManagement()->addAwsCredentials();
 
 if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_down_crypt.php")) {
     require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_down_crypt.php";
