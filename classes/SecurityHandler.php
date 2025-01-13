@@ -8,6 +8,7 @@ use REDCap;
 class SecurityHandler
 {
     private $module;
+    private $project_id;
     private $pidsArray = [];
     private $isAuthorized = false;
     private $hub_name;
@@ -16,11 +17,12 @@ class SecurityHandler
     public function __construct(HarmonistHubExternalModule $module)
     {
         $this->module = $module;
+        $this->project_id = (int)$_GET['pid'];
     }
 
     public function isAuthorizedPage(): bool
     {
-        if ((int)$_GET['pid'] == $this->getPidsArray()['DATADOWNLOADUSERS']) {
+        if ($this->project_id == $this->getPidsArray()['DATADOWNLOADUSERS']) {
             $this->isAuthorized = true;
             return true;
         }
