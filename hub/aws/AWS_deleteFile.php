@@ -4,12 +4,13 @@ use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 
 include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
-include_once(dirname(dirname(dirname(__FILE__))) . "/classes/DataManagement.php");if ($module->getDataManagement()->isAuthorizedPage()) {
-    $settings = $module->getDataManagement()->getSetttingsData();
+include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php");
+if ($module->getSecurityHandler()->isAuthorizedPage()) {
+    $settings = $module->getSecurityHandler()->getSetttingsData();
     if($settings['deactivate_datahub___1'] != "1") {
-        $token = $module->getDataManagement()->getTokenSession();
-        $module->getDataManagement()->getAwsCredentialsServerVars();
-        $module->getDataManagement()->getEncryptionCredentialsServerVars();
+        $token = $module->getSecurityHandler()->getTokenSession();
+        $module->getSecurityHandler()->getAwsCredentialsServerVars();
+        $module->getSecurityHandler()->getEncryptionCredentialsServerVars();
 
         $code = getCrypt($_REQUEST['code'], "d", $secret_key, $secret_iv);
         $exploded = array();

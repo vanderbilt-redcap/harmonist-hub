@@ -12,9 +12,9 @@ $request_response_person = $module->getChoiceLabels('response_person', $pidsArra
 $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region']));
 
 $indexUrl = $module->getUrl('index.php');
-if($module->getDataManagement()->isAuthorizedPage($pid)){
-    $pidsArray = $module->getDataManagement()->getPidsArray();
-    $token = $module->getDataManagement()->getTokenSession();
+if($module->getSecurityHandler()->isAuthorizedPage($pid)){
+    $pidsArray = $module->getSecurityHandler()->getPidsArray();
+    $token = $module->getSecurityHandler()->getTokenSession();
     $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
 }
 

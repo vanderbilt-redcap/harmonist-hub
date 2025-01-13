@@ -15,7 +15,7 @@ include_once(__DIR__ . "/classes/ArrayFunctions.php");
 include_once(__DIR__ . "/classes/ProjectData.php");
 include_once(__DIR__ . "/classes/CopyJSON.php");
 include_once(__DIR__ . "/classes/HubUpdates.php");
-include_once(__DIR__ . "/classes/DataManagement.php");
+include_once(__DIR__ . "/classes/SecurityHandler.php");
 include_once(__DIR__ . "/functions.php");
 
 require_once(dirname(__FILE__) . "/vendor/autoload.php");
@@ -505,12 +505,12 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         return $property->setValue($this, $value);
     }
 
-    public function getDataManagement(): DataManagement
+    public function getSecurityHandler(): SecurityHandler
     {
-        if (!$this->dataManagement) {
-            $this->dataManagement = new DataManagement($this);
+        if (!$this->securityHandler) {
+            $this->securityHandler = new SecurityHandler($this);
         }
-        return $this->dataManagement;
+        return $this->securityHandler;
     }
 }
 ?>

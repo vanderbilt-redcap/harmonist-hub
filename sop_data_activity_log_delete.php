@@ -2,8 +2,8 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
 
-$module->getDataManagement()->getAwsCredentialsServerVars();
-$module->getDataManagement()->getEncryptionCredentialsServerVars();
+$module->getSecurityHandler()->getAwsCredentialsServerVars();
+$module->getSecurityHandler()->getEncryptionCredentialsServerVars();
 
 $deleteCode = $_REQUEST['del'];
 $file_name = $_REQUEST['file_name'];

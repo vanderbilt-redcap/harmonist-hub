@@ -19,8 +19,8 @@ if (array_key_exists('option', $_REQUEST) && !array_key_exists(
         'NOAUTH',
         $_REQUEST
     ) && ($option === 'dnd' || $option === 'lge')) {
-    if ($module->getDataManagement()->isAuthorizedPage()) {
-        $settings = $module->getDataManagement()->getSetttingsData();
+    if ($module->getSecurityHandler()->isAuthorizedPage()) {
+        $settings = $module->getSecurityHandler()->getSetttingsData();
         if ($settings['deactivate_datahub___1'] != "1") {
             if ($option === 'lge') {
                 include('sop_data_activity_log_delete.php');
@@ -131,7 +131,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                    session_start();
                 }
 
-                $token = $module->getDataManagement()->getTokenSession();
+                $token = $module->getSecurityHandler()->getTokenSession();
 
                 //Session OUT
                 if(array_key_exists('sout', $_REQUEST)){

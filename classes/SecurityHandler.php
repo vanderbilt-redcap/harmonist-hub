@@ -5,7 +5,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use phpDocumentor\Reflection\Types\Boolean;
 use REDCap;
 
-class DataManagement
+class SecurityHandler
 {
     private $module;
     private $pidsArray = [];

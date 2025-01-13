@@ -14,7 +14,7 @@ include_once(__DIR__ . "/classes/HubData.php");
 include_once(__DIR__ . "/classes/ExcelFunctions.php");
 include_once(__DIR__ . "/classes/CopyJSON.php");
 include_once(__DIR__ . "/classes/UserEditConditions.php");
-include_once(__DIR__ . "/classes/DataManagement.php");
+include_once(__DIR__ . "/classes/SecurityHandler.php");
 
 REDCapManagement::getEnvironment();
 
@@ -37,9 +37,9 @@ if(!$isCron) {
     define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
     define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
-    $module->getDataManagement()->getEncryptionCredentialsServerVars();
+    $module->getSecurityHandler()->getEncryptionCredentialsServerVars();
 
-    $settings = $module->getDataManagement()->getSetttingsData($pidsArray['SETTINGS']);
+    $settings = $module->getSecurityHandler()->getSetttingsData($pidsArray['SETTINGS']);
 
     $default_values = new ProjectData;
     $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);
