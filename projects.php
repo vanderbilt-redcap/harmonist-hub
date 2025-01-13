@@ -37,7 +37,7 @@ if(!$isCron) {
     define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
     define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
-    $module->getDataManagement()->addEncryptionCredentials();
+    $module->getDataManagement()->getEncryptionCredentialsServerVars();
 
     $settings = $module->getDataManagement()->getSetttingsData($pidsArray['SETTINGS']);
 
