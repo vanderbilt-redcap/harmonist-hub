@@ -356,7 +356,14 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
             <table class="table sortable-theme-bootstrap" data-sortable>
             <?php
             $q = $module->query("SELECT record FROM ".getDataTable($pidsArray['HARMONIST'])." WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$record,$pidsArray['HARMONIST']]);
-            $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
+
+            $params = [
+                'project_id' => $pidsArray['SOP'],
+                'return_format' => 'array',
+                'filterLogic' => "[sop_active] = '1' and [sop_visibility] = '2' and [sop_concept_id] = ".$record,
+                'filterType' => "RECORD"
+            ];
+            $RecordSetSOP = \REDCap::getData($params);
             $data_requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
             ArrayFunctions::array_sort_by_column($data_requests,'sop_updated_dt',SORT_DESC);
             if(!empty($data_requests) || $q->num_rows > 0) {
