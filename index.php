@@ -22,7 +22,7 @@ if (array_key_exists('option', $_REQUEST) && !array_key_exists(
     ) && ($option === 'dnd' || $option === 'lge')) {
     if ($module->getSecurityHandler()->isAuthorizedPage()) {
         $pidsArray = $module->getSecurityHandler()->getPidsArray();
-        $settings = $module->getSecurityHandler()->getSetttingsData();
+        $settings = $module->getSecurityHandler()->getSettingsData();
         if ($settings['deactivate_datahub___1'] != "1" && !empty($_SESSION['token'][$module->getSecurityHandler()->getTokenSessionName()])) {
             $is_authorized_and_has_rights = true;
             if ($option === 'lge') {

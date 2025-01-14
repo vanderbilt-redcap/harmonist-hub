@@ -39,7 +39,7 @@ if(!$isCron) {
 
     $module->getSecurityHandler()->getEncryptionCredentialsServerVars();
 
-    $settings = $module->getSecurityHandler()->getSetttingsData($pidsArray['SETTINGS']);
+    $settings = $module->getSecurityHandler()->getSettingsData($pidsArray['SETTINGS']);
 
     $default_values = new ProjectData;
     $default_values_settings = $default_values->getDefaultValues($pidsArray['SETTINGS']);

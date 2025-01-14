@@ -8,36 +8,36 @@ use REDCap;
 class SecurityHandler
 {
     private $module;
-    private $project_id;
+    private $projectId;
     private $pidsArray = [];
     private $isAuthorized = false;
-    private $hub_name;
+    private $hubName;
     private $token;
     private $settings;
-    private $token_session_name;
+    private $tokenSessionName;
 
-    public function __construct(HarmonistHubExternalModule $module, $project_id)
+    public function __construct(HarmonistHubExternalModule $module, $projectId)
     {
         $this->module = $module;
-        $this->project_id = $project_id;
+        $this->projectId = $projectId;
         $this->pidsArray = self::getPidsArray();
-        $this->settings = self::getSetttingsData();
-        $this->token_session_name = $this->hub_name . $this->pidsArray['PROJECTS'];
+        $this->settings = self::getSettingsData();
+        $this->tokenSessionName = $this->hubName . $this->pidsArray['PROJECTS'];
     }
 
     public function getTokenSessionName(): string
     {
-        return $this->token_session_name;
+        return $this->tokenSessionName;
     }
 
     public function isAuthorizedPage(): bool
     {
-        if ($this->project_id == $this->getPidsArray()['DATADOWNLOADUSERS']) {
+        if ($this->projectId == $this->getPidsArray()['DATADOWNLOADUSERS']) {
             $this->isAuthorized = true;
-            return true;
         }
         $this->isAuthorized = false;
-        return false;
+
+        return $this->isAuthorized;
     }
 
     public function getPidsArray(): array
@@ -51,13 +51,13 @@ class SecurityHandler
         return $this->pidsArray;
     }
 
-    public function getSetttingsData($project_id = null): array
+    public function getSettingsData($projectId = null): array
     {
         if (empty($this->settings)) {
-            if ($project_id == null) {
-                $project_id = $this->pidsArray['SETTINGS'];
+            if ($projectId == null) {
+                $projectId = $this->pidsArray['SETTINGS'];
             }
-            $settings = REDCap::getData($project_id, 'json-array', null)[0];
+            $settings = REDCap::getData($projectId, 'json-array', null)[0];
 
             if (!empty($settings)) {
                 $settings = $this->module->escape($settings);
@@ -73,12 +73,12 @@ class SecurityHandler
             #Sanitize text title and descrition for pages
             $this->settings = ProjectData::sanitizeALLVariablesFromInstrument(
                 $this->module,
-                $project_id,
+                $projectId,
                 [0 => "harmonist_text"],
                 $settings
             );
 
-            $this->hub_name = $this->settings['hub_name'];
+            $this->hubName = $this->settings['hub_name'];
             if ($this->isAuthorized) {
                 $this->token = self::getTokenSession();
             }
@@ -105,11 +105,11 @@ class SecurityHandler
         if (!array_key_exists('token', $_REQUEST) && !array_key_exists(
                 'request',
                 $_REQUEST
-            ) && !empty($_SESSION['token'][$this->token_session_name]) && !array_key_exists('option', $_REQUEST)) {
+            ) && !empty($_SESSION['token'][$this->tokenSessionName]) && !array_key_exists('option', $_REQUEST)) {
             #Login page
             return false;
         } else {
-            if (empty($_SESSION['token'][$this->token_session_name]) || $this->isAuthorized) {
+            if (empty($_SESSION['token'][$this->tokenSessionName]) || $this->isAuthorized) {
                 session_start();
                 return true;
             }
@@ -120,10 +120,10 @@ class SecurityHandler
     public function isSessionOut(): bool
     {
         if (array_key_exists('sout', $_REQUEST)) {
-            unset($_SESSION['token'][$this->token_session_name]);
-            unset($_SESSION[$this->token_session_name]);
+            unset($_SESSION['token'][$this->tokenSessionName]);
+            unset($_SESSION[$this->tokenSessionName]);
             $this->token = null;
-            $this->token_session_name = null;
+            $this->tokenSessionName = null;
             return true;
         }
         return false;
@@ -144,8 +144,8 @@ class SecurityHandler
             #If it's an Authorized page, user is logged in REDCap and user has a token
             #If it's a NOAUTH page, user is logged in REDCap and token is not in url and is Downloads page
             $_SESSION['token'] = [];
-            $_SESSION['token'][$this->token_session_name] = getToken(USERID, $this->pidsArray['PEOPLE']);
-            $token = $_SESSION['token'][$this->token_session_name];
+            $_SESSION['token'][$this->tokenSessionName] = getToken(USERID, $this->pidsArray['PEOPLE']);
+            $token = $_SESSION['token'][$this->tokenSessionName];
             return $token;
         }
         return null;
@@ -159,15 +159,15 @@ class SecurityHandler
             )) {
             #Token is in url and is correct
             $token = $_REQUEST['token'];
-            $_SESSION['token'][$this->token_session_name] = $_REQUEST['token'];
+            $_SESSION['token'][$this->tokenSessionName] = $_REQUEST['token'];
             return $token;
         } else {
-            if (!empty($_SESSION['token'][$this->token_session_name]) && isTokenCorrect(
-                    $_SESSION['token'][$this->token_session_name],
+            if (!empty($_SESSION['token'][$this->tokenSessionName]) && isTokenCorrect(
+                    $_SESSION['token'][$this->tokenSessionName],
                     $this->pidsArray['PEOPLE']
                 )) {
                 #Token is in session and is correct
-                $token = $_SESSION['token'][$this->token_session_name];
+                $token = $_SESSION['token'][$this->tokenSessionName];
                 return $token;
             }
         }

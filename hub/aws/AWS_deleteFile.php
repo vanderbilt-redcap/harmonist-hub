@@ -6,7 +6,7 @@ use Aws\S3\Exception\S3Exception;
 include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
 include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php");
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
-    $settings = $module->getSecurityHandler()->getSetttingsData();
+    $settings = $module->getSecurityHandler()->getSettingsData();
     if($settings['deactivate_datahub___1'] != "1") {
         $module->getSecurityHandler()->getAwsCredentialsServerVars();
         $module->getSecurityHandler()->getEncryptionCredentialsServerVars();
