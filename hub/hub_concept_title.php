@@ -369,20 +369,18 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
             if(!empty($data_requests) || $q->num_rows > 0) {
                 echo getDataCallConceptsHeader($pidsArray['REGIONS'], $current_user['person_region'],$settings['vote_grid']);
                 foreach ($data_requests as $sop) {
-                    if ($sop['sop_concept_id'] == $record && $sop['sop_active'] == "1" && $sop['sop_visibility'] == "2") {
-                        echo getDataCallConceptsRow(
-                            $module,
-                            $pidsArray,
-                            $sop,
-                            $isAdmin,
-                            $current_user,
-                            $secret_key,
-                            $secret_iv,
-                            $settings['vote_grid'],
-                            '',
-                            ''
-                        );
-                    }
+                    echo getDataCallConceptsRow(
+                        $module,
+                        $pidsArray,
+                        $sop,
+                        $isAdmin,
+                        $current_user,
+                        $secret_key,
+                        $secret_iv,
+                        $settings['vote_grid'],
+                        '',
+                        ''
+                    );
                 }
                 while ($rowConcept = db_fetch_assoc($q)){
                     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$rowConcept['record']);
