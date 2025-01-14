@@ -1218,7 +1218,6 @@ function getDataCallConceptsRow($module, $pidsArray, $sop, $isAdmin, $current_us
             }else{
                 $small_screen_class = 'hidden-sm hidden-xs';
             }
-
             $status = $sop['data_response_status'][$region['record_id']];
             $status_row .= "<td style='text-align: center' class='".$small_screen_class."'>";
             $status_icons = getDataCallStatusIcons($status);
