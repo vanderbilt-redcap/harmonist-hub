@@ -356,21 +356,32 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
             <table class="table sortable-theme-bootstrap" data-sortable>
             <?php
             $q = $module->query("SELECT record FROM ".getDataTable($pidsArray['HARMONIST'])." WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$record,$pidsArray['HARMONIST']]);
-
-            $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_active] = 1 and [sop_visibility] = 2 and [sop_concept_id] = ".$record);
+            $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
             $data_requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
-
             ArrayFunctions::array_sort_by_column($data_requests,'sop_updated_dt',SORT_DESC);
             if(!empty($data_requests) || $q->num_rows > 0) {
                 echo getDataCallConceptsHeader($pidsArray['REGIONS'], $current_user['person_region'],$settings['vote_grid']);
                 foreach ($data_requests as $sop) {
-                        echo getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'','');
+                    if ($sop['sop_concept_id'] == $record && $sop['sop_active'] == "1" && $sop['sop_visibility'] == "2") {
+                        echo getDataCallConceptsRow(
+                            $module,
+                            $pidsArray,
+                            $sop,
+                            $isAdmin,
+                            $current_user,
+                            $secret_key,
+                            $secret_iv,
+                            $settings['vote_grid'],
+                            '',
+                            ''
+                        );
+                    }
                 }
-                while ($row = db_fetch_assoc($q)){
-                    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$row['record']);
+                while ($rowConcept = db_fetch_assoc($q)){
+                    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$rowConcept['record']);
                     $data_requests_old = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
                     if(empty($data_requests_old)){
-                        echo getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$row['record'],"1");
+                        echo getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$rowConcept['record'],"1");
                     }
                 }
             }else{?>
