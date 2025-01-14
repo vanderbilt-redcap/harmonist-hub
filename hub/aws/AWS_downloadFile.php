@@ -8,7 +8,6 @@ include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
     $settings = $module->getSecurityHandler()->getSetttingsData();
     if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1") {
-        $token = $module->getSecurityHandler()->getTokenSession();
         $module->getSecurityHandler()->getAwsCredentialsServerVars();
         $module->getSecurityHandler()->getEncryptionCredentialsServerVars();
 

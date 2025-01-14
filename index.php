@@ -15,17 +15,20 @@ $hub_profile = $module->getProjectSetting('hub-profile');
 $pid = (int)$_GET['pid'];
 $option = htmlentities($_REQUEST['option'], ENT_QUOTES);
 
+$is_authorized_and_has_rights = false;
 if (array_key_exists('option', $_REQUEST) && !array_key_exists(
         'NOAUTH',
         $_REQUEST
     ) && ($option === 'dnd' || $option === 'lge')) {
     if ($module->getSecurityHandler()->isAuthorizedPage()) {
+        $pidsArray = $module->getSecurityHandler()->getPidsArray();
         $settings = $module->getSecurityHandler()->getSetttingsData();
-        if ($settings['deactivate_datahub___1'] != "1") {
+        if ($settings['deactivate_datahub___1'] != "1" && !empty($_SESSION['token'][$module->getSecurityHandler()->getTokenSessionName()])) {
+            $is_authorized_and_has_rights = true;
             if ($option === 'lge') {
                 include('sop_data_activity_log_delete.php');
             } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
-                include('sop_data_activity_log_delete.php');
+                include('sop_retrieve_data.php');
             }
         }
     }
@@ -58,57 +61,8 @@ if($hub_projectname != '' && $hub_profile != ''){
                 //Do nothing
             } else {
                 include_once("projects.php");
+                include("hub_html_head.php");
                 ?>
-                <head>
-                    <title><?=$settings['hub_name_title']?></title>
-                    <meta charset="utf-8">
-                    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                    <meta name="viewport" content="width=device-width, initial-scale=1">
-                    <meta name="description" content="">
-                    <meta name="author" content="">
-                    <meta http-equiv="Cache-control" content="public">
-                    <meta name="theme-color" content="#fff">
-                    <link rel="icon" href="<?=getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_favicon'],'favicon')?>">
-
-                    <?php include_once("head_scripts.php");?>
-
-                    <script type='text/javascript'>
-                        $(document).ready(function() {
-                            Sortable.init();
-                            $('[data-toggle="tooltip"]').tooltip();
-
-                            var CACHE_NAME = 'iedea-site-cache';
-                            var urlsToCache = [
-                                '/',
-                                '/css/style.css',
-                                '/js/base.js',
-                                '/js/functions.js'
-                            ];
-
-                            self.addEventListener('install', function(event) {
-                                // Perform install steps
-                                event.waitUntil(
-                                    caches.open(CACHE_NAME)
-                                        .then(function(cache) {
-                                            return cache.addAll(urlsToCache);
-                                        })
-                                );
-                            });
-
-                            var pageurloption = <?=json_encode($option)?>;
-                            if(pageurloption != '') {
-                                $('[option=' + pageurloption + ']').addClass('navbar-active');
-                            }
-
-                        } );
-                    </script>
-
-                    <style>
-                        table thead .glyphicon {
-                            color: blue;
-                        }
-                    </style>
-                </head>
                 <body>
                 <?php
                 $deactivate_datahub = false;
@@ -124,24 +78,8 @@ if($hub_projectname != '' && $hub_profile != ''){
                 if($settings['deactivate_toolkit___1'] == "1"){
                     $deactivate_toolkit = true;
                 }
-                #TOKEN
-                if(!array_key_exists('token', $_REQUEST) && !array_key_exists('request', $_REQUEST) && !empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]) && !array_key_exists('option', $_REQUEST)){
-                    #Login page
-                }else if(empty($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']])){
-                   session_start();
-                }
 
                 $token = $module->getSecurityHandler()->getTokenSession();
-
-                //Session OUT
-                if(array_key_exists('sout', $_REQUEST)){
-                    unset($_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']]);
-                    unset($_SESSION[$settings['hub_name'].$pidsArray['PROJECTS']]);
-                }
-
-                if(array_key_exists('token', $_REQUEST)  && !empty($_REQUEST['token']) && isTokenCorrect($_REQUEST['token'],$pidsArray['PEOPLE'])) {
-                    $_SESSION['token'][$settings['hub_name'].$pidsArray['PROJECTS']] = $_REQUEST['token'];
-                }
 
                 if( array_key_exists('option', $_REQUEST) && $option === 'dfq'){
                     //No header
@@ -292,6 +230,16 @@ if($hub_projectname != '' && $hub_profile != ''){
                 <br/>
                 <?php
             }
+        }elseif(!$is_authorized_and_has_rights){
+            include("hub_html_head.php");
+            include('hub_header.php');
+            ?><body>
+                <div class="container" style="margin: 0 auto;float:none;min-height: 900px;">
+                    <?php include('hub/hub_login.php');?>
+                </div>
+                <br/>
+                <?php include('hub_footer.php'); ?>
+                <?php
         }
     ?>
     </body>

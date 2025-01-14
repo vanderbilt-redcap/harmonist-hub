@@ -1,5 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
+require_once dirname(__FILE__) . "/classes/HubData.php";
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,
     ["requestopen_ts","approval_y","finalize_y","region_response_status","request_id","contact_region",
@@ -12,8 +13,7 @@ $request_response_person = $module->getChoiceLabels('response_person', $pidsArra
 $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region']));
 
 $indexUrl = $module->getUrl('index.php');
-if($module->getSecurityHandler()->isAuthorizedPage($pid)){
-    $pidsArray = $module->getSecurityHandler()->getPidsArray();
+if($module->getSecurityHandler()->isAuthorizedPage($pid) && $is_authorized_and_has_rights){
     $token = $module->getSecurityHandler()->getTokenSession();
     $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
 }

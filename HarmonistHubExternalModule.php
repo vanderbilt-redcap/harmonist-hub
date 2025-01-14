@@ -508,7 +508,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     public function getSecurityHandler(): SecurityHandler
     {
         if (!$this->securityHandler) {
-            $this->securityHandler = new SecurityHandler($this);
+            $this->securityHandler = new SecurityHandler($this,(int)$_GET['pid']);
         }
         return $this->securityHandler;
     }
