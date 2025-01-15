@@ -24,6 +24,7 @@ class SecurityHandler
     private $requestToken;
     private $requestOption;
     private $hasNoauth;
+    private $requestUrl;
 
     public function __construct(HarmonistHubExternalModule $module, $projectId)
     {
@@ -49,6 +50,12 @@ class SecurityHandler
         $this->requestOption = $requestOption;
     }
 
+    public function setRequestUrl($requestUrl): void
+    {
+        $this->requestUrl = $requestUrl;
+        self::setHasNoauthOnUrl();
+    }
+
     public function getRequestOption(): ?string
     {
         return $this->requestOption;
@@ -59,10 +66,10 @@ class SecurityHandler
         return $this->tokenSessionName;
     }
 
-    public function setHasNoauthOnUrl($requestUrl): void
+    public function setHasNoauthOnUrl(): void
     {
         $this->hasNoauth = true;
-        if(!array_key_exists('NOAUTH', $requestUrl)){
+        if(!array_key_exists('NOAUTH', $this->requestUrl)){
             $this->hasNoauth = false;
         }
     }
@@ -144,10 +151,10 @@ class SecurityHandler
     public function retrieveSessionData(): bool
     {
         #Retrieve session (with session_start) on other pages
-        if (!array_key_exists(self::SESSION_TOKEN_STRING, $_REQUEST) && !array_key_exists(
+        if (!array_key_exists(self::SESSION_TOKEN_STRING, $this->requestUrl) && !array_key_exists(
                 'request',
-                $_REQUEST
-            ) && !empty($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]) && !array_key_exists(self::SESSION_OPTION_STRING, $_REQUEST)) {
+                $this->requestUrl
+            ) && !empty($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]) && !array_key_exists(self::SESSION_OPTION_STRING, $this->requestUrl)) {
             #Login page
             return false;
         } else {
@@ -161,7 +168,7 @@ class SecurityHandler
 
     public function isSessionOut(): bool
     {
-        if (array_key_exists(self::SESSION_OUT_STRING, $_REQUEST)) {
+        if (array_key_exists(self::SESSION_OUT_STRING, $this->requestUrl)) {
             self::logOut();
             return true;
         }
@@ -184,10 +191,10 @@ class SecurityHandler
         if (
             ($this->isAuthorized && defined("USERID") && !empty(getToken(USERID, $this->pidsArray['PEOPLE'])))
             ||
-            (!$this->isAuthorized && defined("USERID") && !array_key_exists(self::SESSION_TOKEN_STRING, $_REQUEST) && !array_key_exists(
+            (!$this->isAuthorized && defined("USERID") && !array_key_exists(self::SESSION_TOKEN_STRING, $this->requestUrl) && !array_key_exists(
                     'request',
-                    $_REQUEST
-                ) && ((array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd')))
+                    $this->requestUrl
+                ) && ((array_key_exists('option', $this->requestUrl) && $this->getRequestOption() === 'dnd')))
         ) {
             #If it's an Authorized page, user is logged in REDCap and user has a token
             #If it's a NOAUTH page, user is logged in REDCap and token is not in url and is Downloads page
@@ -201,13 +208,13 @@ class SecurityHandler
 
     public function isUrlTokenCorrect(): ?string
     {
-        if (array_key_exists(self::SESSION_TOKEN_STRING, $_REQUEST) && !empty($_REQUEST[self::SESSION_TOKEN_STRING]) && isTokenCorrect(
-                $_REQUEST[self::SESSION_TOKEN_STRING],
+        if (array_key_exists(self::SESSION_TOKEN_STRING, $this->requestUrl) && !empty($this->requestUrl[self::SESSION_TOKEN_STRING]) && isTokenCorrect(
+                $this->requestUrl[self::SESSION_TOKEN_STRING],
                 $this->pidsArray['PEOPLE']
             )) {
             #Token is in url and is correct
-            $token = $_REQUEST[self::SESSION_TOKEN_STRING];
-            $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName] = $_REQUEST[self::SESSION_TOKEN_STRING];
+            $token = $this->requestUrl[self::SESSION_TOKEN_STRING];
+            $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName] = $this->requestUrl[self::SESSION_TOKEN_STRING];
             return $token;
         } else {
             if (!empty($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]) && isTokenCorrect(

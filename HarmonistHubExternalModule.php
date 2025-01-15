@@ -512,7 +512,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         }
         $this->securityHandler->setRequestOption($_REQUEST['option']);
         $this->securityHandler->setRequestToken($_REQUEST['token']);
-        $this->securityHandler->setHasNoauthOnUrl($_REQUEST);
+        $this->securityHandler->setRequestUrl($_REQUEST);
 
         return $this->securityHandler;
     }
