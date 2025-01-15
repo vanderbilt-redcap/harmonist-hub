@@ -1,6 +1,6 @@
 <?php
-use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
-use Vanderbilt\HarmonistHubExternalModule\ProjectData;
+namespace Vanderbilt\HarmonistHubExternalModule;
+require_once dirname(__FILE__) . "/classes/HubData.php";
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,
     ["requestopen_ts","approval_y","finalize_y","region_response_status","request_id","contact_region",
@@ -10,13 +10,28 @@ $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$p
 
 $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $request_response_person = $module->getChoiceLabels('response_person', $pidsArray['RMANAGER']);
-$numberOfOpenRequest = $module->escape(\Vanderbilt\HarmonistHubExternalModule\numberOfOpenRequest($requests,$current_user['person_region']));
+$numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region']));
+
+$indexUrl = $module->getUrl('index.php');
+if($module->getSecurityHandler()->isAuthorizedPage() && $is_authorized_and_has_rights){
+    $token = $module->getSecurityHandler()->getTokenSession();
+    $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
+}
 
 $request_admin = "";
 if($isAdmin) {
     $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER']);
     ArrayFunctions::array_sort_by_column($request_admin, 'requestopen_ts');
-    $numberOfAdminRequest = $module->escape(\Vanderbilt\HarmonistHubExternalModule\numberOfAdminRequest($request_admin));
+    $numberOfAdminRequest = $module->escape(numberOfAdminRequest($request_admin));
+}
+
+$hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
+$current_user = $hubData->getCurrentUser();
+$name = $current_user['firstname'].' '.$current_user['lastname'];
+$person_region = $hubData->getPersonRegion();
+$isAdmin = $current_user['is_admin'];
+if($settings['hub_name'] !== ""){
+    $hub_projectname = $settings['hub_name'];
 }
 
 #Hide/Show Projects Tab
@@ -31,10 +46,6 @@ if($isAdmin) {
 //    //Show Everyone
 //    $deactivate_projects = false;
 //}
-$indexUrl = $module->getUrl('index.php');
-if($pid == $pidsArray['DATADOWNLOADUSERS']){
-    $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
-}
 ?>
 
 <nav class="navbar navbar-default" role="navigation">
