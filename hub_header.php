@@ -13,7 +13,7 @@ $request_response_person = $module->getChoiceLabels('response_person', $pidsArra
 $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region']));
 
 $indexUrl = $module->getUrl('index.php');
-if($module->getSecurityHandler()->isAuthorizedPage($pid) && $is_authorized_and_has_rights){
+if($module->getSecurityHandler()->isAuthorizedPage() && $is_authorized_and_has_rights){
     $token = $module->getSecurityHandler()->getTokenSession();
     $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
 }

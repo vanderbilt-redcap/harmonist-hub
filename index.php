@@ -12,24 +12,21 @@ define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
 
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
-$pid = (int)$_GET['pid'];
-$option = htmlentities($_REQUEST['option'], ENT_QUOTES);
 
+$pid = $module->getSecurityHandler()->getProjectId();
+$option = $module->getSecurityHandler()->getRequestOption();
 $is_authorized_and_has_rights = false;
-if (array_key_exists('option', $_REQUEST) && !array_key_exists(
-        'NOAUTH',
-        $_REQUEST
-    ) && ($option === 'dnd' || $option === 'lge')) {
-    if ($module->getSecurityHandler()->isAuthorizedPage()) {
-        $pidsArray = $module->getSecurityHandler()->getPidsArray();
-        $settings = $module->getSecurityHandler()->getSettingsData();
-        if ($settings['deactivate_datahub___1'] != "1" && !empty($_SESSION['token'][$module->getSecurityHandler()->getTokenSessionName()])) {
-            $is_authorized_and_has_rights = true;
-            if ($option === 'lge') {
-                include('sop_data_activity_log_delete.php');
-            } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
-                include('sop_retrieve_data.php');
-            }
+if ($module->getSecurityHandler()->isAuthorizedPage()) {
+    $pidsArray = $module->getSecurityHandler()->getPidsArray();
+    $settings = $module->getSecurityHandler()->getSettingsData();
+    if ($settings['deactivate_datahub___1'] != "1" && !empty(
+        $_SESSION['token'][$module->getSecurityHandler()->getTokenSessionName()]
+        )) {
+        $is_authorized_and_has_rights = true;
+        if ($option === 'lge') {
+            include('sop_data_activity_log_delete.php');
+        } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
+            include('sop_retrieve_data.php');
         }
     }
 }
@@ -232,6 +229,9 @@ if($hub_projectname != '' && $hub_profile != ''){
             }
         }elseif(!$is_authorized_and_has_rights){
             include("hub_html_head.php");
+            $pidsArray = $module->getSecurityHandler()->getPidsArray();
+            $settings = $module->getSecurityHandler()->getSettingsData();
+
             include('hub_header.php');
             ?><body>
                 <div class="container" style="margin: 0 auto;float:none;min-height: 900px;">

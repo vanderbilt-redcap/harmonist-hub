@@ -7,6 +7,12 @@ use REDCap;
 
 class SecurityHandler
 {
+    const SESSION_TOKEN_STRING = 'token';
+    const SESSION_OPTION_STRING = 'option';
+    const SESSION_OUT_STRING = 'sout';
+    const CREDENTIALS_PATH = "/app001/credentials/Harmonist-Hub/";
+    const CREDENTIALS_AWS_FILENAME = "_aws_s3.php";
+    const CREDENTIALS_ENCRYPTION_FILENAME = "_down_crypt.php";
     private $module;
     private $projectId;
     private $pidsArray = [];
@@ -15,6 +21,9 @@ class SecurityHandler
     private $token;
     private $settings;
     private $tokenSessionName;
+    private $requestToken;
+    private $requestOption;
+    private $hasNoauth;
 
     public function __construct(HarmonistHubExternalModule $module, $projectId)
     {
@@ -25,18 +34,47 @@ class SecurityHandler
         $this->tokenSessionName = $this->hubName . $this->pidsArray['PROJECTS'];
     }
 
+    public function getProjectId(): int
+    {
+        return $this->projectId;
+    }
+
+    public function setRequestToken($requestToken): void
+    {
+        $this->requestToken = $requestToken;
+    }
+
+    public function setRequestOption($requestOption): void
+    {
+        $this->requestOption = $requestOption;
+    }
+
+    public function getRequestOption(): ?string
+    {
+        return $this->requestOption;
+    }
+
     public function getTokenSessionName(): string
     {
         return $this->tokenSessionName;
     }
 
+    public function setHasNoauthOnUrl($requestUrl): void
+    {
+        $this->hasNoauth = true;
+        if(!array_key_exists('NOAUTH', $requestUrl)){
+            $this->hasNoauth = false;
+        }
+    }
+
     public function isAuthorizedPage(): bool
     {
-        if ($this->projectId == $this->getPidsArray()['DATADOWNLOADUSERS']) {
-            $this->isAuthorized = true;
-        }
         $this->isAuthorized = false;
-
+        if (($this->requestOption == 'dnd' || $this->requestOption == 'lge') && !$this->hasNoauth) {
+            if ($this->projectId == $this->getPidsArray()['DATADOWNLOADUSERS']) {
+                $this->isAuthorized = true;
+            }
+        }
         return $this->isAuthorized;
     }
 
@@ -79,10 +117,11 @@ class SecurityHandler
             );
 
             $this->hubName = $this->settings['hub_name'];
-            if ($this->isAuthorized) {
-                $this->token = self::getTokenSession();
-            }
         }
+        if ($this->isAuthorized) {
+            $this->token = self::getTokenSession();
+        }
+
         return $this->settings;
     }
 
@@ -91,25 +130,28 @@ class SecurityHandler
         if (!self::retrieveSessionData()) {
             return null;
         }
-        if (self::isSessionOut()) {
+
+        if (self::isSessionOut() || $this->logOut) {
             return null;
         }
+
         $token = self::isREDCapUserToken();
         $this->token = !is_null($token) ? $token : self::isUrlTokenCorrect();
+        $this->logOut = false;
         return $this->token;
     }
 
     public function retrieveSessionData(): bool
     {
         #Retrieve session (with session_start) on other pages
-        if (!array_key_exists('token', $_REQUEST) && !array_key_exists(
+        if (!array_key_exists(self::SESSION_TOKEN_STRING, $_REQUEST) && !array_key_exists(
                 'request',
                 $_REQUEST
-            ) && !empty($_SESSION['token'][$this->tokenSessionName]) && !array_key_exists('option', $_REQUEST)) {
+            ) && !empty($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]) && !array_key_exists(self::SESSION_OPTION_STRING, $_REQUEST)) {
             #Login page
             return false;
         } else {
-            if (empty($_SESSION['token'][$this->tokenSessionName]) || $this->isAuthorized) {
+            if (empty($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]) || $this->isAuthorized) {
                 session_start();
                 return true;
             }
@@ -119,14 +161,20 @@ class SecurityHandler
 
     public function isSessionOut(): bool
     {
-        if (array_key_exists('sout', $_REQUEST)) {
-            unset($_SESSION['token'][$this->tokenSessionName]);
-            unset($_SESSION[$this->tokenSessionName]);
-            $this->token = null;
-            $this->tokenSessionName = null;
+        if (array_key_exists(self::SESSION_OUT_STRING, $_REQUEST)) {
+            self::logOut();
             return true;
         }
         return false;
+    }
+
+    public function logOut(): void
+    {
+        unset($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]);
+        unset($_SESSION[$this->tokenSessionName]);
+        $this->token = null;
+        $this->tokenSessionName = null;
+        $this->logOut = true;
     }
 
     public function isREDCapUserToken(): ?string
@@ -136,16 +184,16 @@ class SecurityHandler
         if (
             ($this->isAuthorized && defined("USERID") && !empty(getToken(USERID, $this->pidsArray['PEOPLE'])))
             ||
-            (!$this->isAuthorized && defined("USERID") && !array_key_exists('token', $_REQUEST) && !array_key_exists(
+            (!$this->isAuthorized && defined("USERID") && !array_key_exists(self::SESSION_TOKEN_STRING, $_REQUEST) && !array_key_exists(
                     'request',
                     $_REQUEST
                 ) && ((array_key_exists('option', $_REQUEST) && $_REQUEST['option'] === 'dnd')))
         ) {
             #If it's an Authorized page, user is logged in REDCap and user has a token
             #If it's a NOAUTH page, user is logged in REDCap and token is not in url and is Downloads page
-            $_SESSION['token'] = [];
-            $_SESSION['token'][$this->tokenSessionName] = getToken(USERID, $this->pidsArray['PEOPLE']);
-            $token = $_SESSION['token'][$this->tokenSessionName];
+            $_SESSION[self::SESSION_TOKEN_STRING] = [];
+            $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName] = getToken(USERID, $this->pidsArray['PEOPLE']);
+            $token = $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName];
             return $token;
         }
         return null;
@@ -153,38 +201,31 @@ class SecurityHandler
 
     public function isUrlTokenCorrect(): ?string
     {
-        if (array_key_exists('token', $_REQUEST) && !empty($_REQUEST['token']) && isTokenCorrect(
-                $_REQUEST['token'],
+        if (array_key_exists(self::SESSION_TOKEN_STRING, $_REQUEST) && !empty($_REQUEST[self::SESSION_TOKEN_STRING]) && isTokenCorrect(
+                $_REQUEST[self::SESSION_TOKEN_STRING],
                 $this->pidsArray['PEOPLE']
             )) {
             #Token is in url and is correct
-            $token = $_REQUEST['token'];
-            $_SESSION['token'][$this->tokenSessionName] = $_REQUEST['token'];
+            $token = $_REQUEST[self::SESSION_TOKEN_STRING];
+            $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName] = $_REQUEST[self::SESSION_TOKEN_STRING];
             return $token;
         } else {
-            if (!empty($_SESSION['token'][$this->tokenSessionName]) && isTokenCorrect(
-                    $_SESSION['token'][$this->tokenSessionName],
+            if (!empty($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]) && isTokenCorrect(
+                    $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName],
                     $this->pidsArray['PEOPLE']
                 )) {
                 #Token is in session and is correct
-                $token = $_SESSION['token'][$this->tokenSessionName];
+                $token = $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName];
                 return $token;
             }
         }
         return null;
     }
 
-    public function getAwsCredentialsServerVars()
+    public function getCredentialsServerVars($type)
     {
-        if (file_exists("/app001/credentials/Harmonist-Hub/" . $this->getPidsArray()['PROJECTS'] . "_aws_s3.php")) {
-            require_once "/app001/credentials/Harmonist-Hub/" . $this->getPidsArray()['PROJECTS'] . "_aws_s3.php";
-        }
-    }
-
-    public function getEncryptionCredentialsServerVars()
-    {
-        if (file_exists("/app001/credentials/Harmonist-Hub/" . $this->getPidsArray()['PROJECTS'] . "_down_crypt.php")) {
-            require_once "/app001/credentials/Harmonist-Hub/" . $this->getPidsArray()['PROJECTS'] . "_down_crypt.php";
+        if (file_exists(self::CREDENTIALS_PATH. $this->getPidsArray()['PROJECTS'] . constant("self::CREDENTIALS_".strtoupper($type)."_FILENAME"))) {
+            require_once self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] .  constant("self::CREDENTIALS_".strtoupper($type)."_FILENAME");
         }
     }
 }
