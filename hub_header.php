@@ -25,7 +25,7 @@ if($isAdmin) {
     $numberOfAdminRequest = $module->escape(numberOfAdminRequest($request_admin));
 }
 
-$hubData = new HubData($module, $settings['hub_name'].$pidsArray['PROJECTS'], $token, $pidsArray);
+$hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
 $current_user = $hubData->getCurrentUser();
 $name = $current_user['firstname'].' '.$current_user['lastname'];
 $person_region = $hubData->getPersonRegion();

@@ -25,8 +25,8 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                                'credentials' => $credentials
                            ]);
 
-        if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION['token'][$settings['hub_name'] . $pidsArray['PROJECTS']]) && isTokenCorrect(
-                $_SESSION['token'][$settings['hub_name'] . $pidsArray['PROJECTS']],
+        if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && isTokenCorrect(
+                $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']],
                 $pidsArray['PEOPLE']
             )) {
             $RecordSetSOP = \REDCap::getData(

@@ -510,8 +510,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         if (!$this->securityHandler) {
             $this->securityHandler = new SecurityHandler($this,(int)$_GET['pid']);
         }
-        $this->securityHandler->setRequestOption($_REQUEST['option']);
-        $this->securityHandler->setRequestToken($_REQUEST['token']);
+        $this->securityHandler->setRequestOption($_REQUEST[SecurityHandler::SESSION_OPTION_STRING]);
+        $this->securityHandler->setRequestToken($_REQUEST[SecurityHandler::SESSION_TOKEN_STRING]);
         $this->securityHandler->setRequestUrl($_REQUEST);
 
         return $this->securityHandler;

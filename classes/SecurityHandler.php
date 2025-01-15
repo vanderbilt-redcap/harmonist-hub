@@ -45,15 +45,20 @@ class SecurityHandler
         $this->requestToken = $requestToken;
     }
 
-    public function setRequestOption($requestOption): void
+    public function getRequestUrl(): array
     {
-        $this->requestOption = $requestOption;
+        return $this->requestUrl;
     }
 
     public function setRequestUrl($requestUrl): void
     {
         $this->requestUrl = $requestUrl;
         self::setHasNoauthOnUrl();
+    }
+
+    public function setRequestOption($requestOption): void
+    {
+        $this->requestOption = $requestOption;
     }
 
     public function getRequestOption(): ?string
