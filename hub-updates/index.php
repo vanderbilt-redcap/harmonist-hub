@@ -131,7 +131,7 @@ $oldValues = $printDataAll[1];
                         success_message = "R";
                     }
                 } else {
-                    success_message = "U";
+                    success_message = "L";
                 }
 
                 $.ajax({

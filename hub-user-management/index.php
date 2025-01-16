@@ -28,7 +28,7 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
     <script type="text/javascript" src="<?=$module->getUrl('js/selectAll.js')?>"></script>
     <script>
         $(document).ready(function () {
-            $(function () {
+           $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
             });
 
@@ -139,6 +139,7 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
             });
 
             $('#add_user_management, #remove_user_management, #change_user_management, #change_user_single_management, #remove_user_single_management').submit(function (event) {
+                $("#hubUsersSpinner").dialog({modal:true, width:400});
                 let url = <?=json_encode($module->getUrl('hub-user-management/user_management_AJAX.php'))?>;
                 let id = $(this).attr('id');
                 let option = id.replace('_management','');
@@ -171,6 +172,7 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
                     success: function (result) {
                         var message = jQuery.parseJSON(result)['message'];
                         window.location = getMessageLetterUrl(window.location.href, message);
+                        $("#hubUsersSpinner").dialog('close');
                     }
                 });
                 return false;
@@ -421,6 +423,13 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
             <a onclick="checkData('change_user_single');" class="btn btn-primary" name="btnConfirm">Change Role</a>
         </div>
     </form>
+</div>
+<div style="display:none" title="Updating..." id="hubUsersSpinner">
+    <div style="padding-top: 20px">
+        <div class="alert alert-success">
+            <em class="fa fa-spinner fa-spin"></em> Please wait until the process finishes.
+        </div>
+    </div>
 </div>
 </body>
 </html>
