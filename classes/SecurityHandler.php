@@ -74,7 +74,7 @@ class SecurityHandler
     public function setHasNoauthOnUrl(): void
     {
         $this->hasNoauth = true;
-        if(!array_key_exists('NOAUTH', $this->requestUrl)){
+        if (!array_key_exists('NOAUTH', $this->requestUrl)) {
             $this->hasNoauth = false;
         }
     }
@@ -147,8 +147,8 @@ class SecurityHandler
             return null;
         }
 
-        $token = self::isREDCapUserToken();
-        $this->token = !is_null($token) ? $token : self::isUrlTokenCorrect();
+        $token = self::getREDCapUserToken();
+        $this->token = !is_null($token) ? $token : self::getToken();
         $this->logOut = false;
         return $this->token;
     }
@@ -159,7 +159,10 @@ class SecurityHandler
         if (!array_key_exists(self::SESSION_TOKEN_STRING, $this->requestUrl) && !array_key_exists(
                 'request',
                 $this->requestUrl
-            ) && !empty($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]) && !array_key_exists(self::SESSION_OPTION_STRING, $this->requestUrl)) {
+            ) && !empty($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]) && !array_key_exists(
+                self::SESSION_OPTION_STRING,
+                $this->requestUrl
+            )) {
             #Login page
             return false;
         } else {
@@ -189,14 +192,22 @@ class SecurityHandler
         $this->logOut = true;
     }
 
-    public function isREDCapUserToken(): ?string
+    public function getREDCapUserToken(): ?string
     {
         $this->isAuthorized = self::isAuthorizedPage();
         #We check user first than token to ensure the hub refreshes to that user's account. Just in case someone tries to log in with someone else's token.
         if (
-            ($this->isAuthorized && defined("USERID") && !empty(getToken(USERID, $this->pidsArray['PEOPLE'])))
+            ($this->isAuthorized && defined("USERID") && !empty(
+                self::getTokenByUserId(
+                    USERID,
+                    $this->pidsArray['PEOPLE']
+                )
+                ))
             ||
-            (!$this->isAuthorized && defined("USERID") && !array_key_exists(self::SESSION_TOKEN_STRING, $this->requestUrl) && !array_key_exists(
+            (!$this->isAuthorized && defined("USERID") && !array_key_exists(
+                    self::SESSION_TOKEN_STRING,
+                    $this->requestUrl
+                ) && !array_key_exists(
                     'request',
                     $this->requestUrl
                 ) && ((array_key_exists('option', $this->requestUrl) && $this->getRequestOption() === 'dnd')))
@@ -204,27 +215,31 @@ class SecurityHandler
             #If it's an Authorized page, user is logged in REDCap and user has a token
             #If it's a NOAUTH page, user is logged in REDCap and token is not in url and is Downloads page
             $_SESSION[self::SESSION_TOKEN_STRING] = [];
-            $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName] = getToken(USERID, $this->pidsArray['PEOPLE']);
+            $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName] = self::getTokenByUserId(
+                USERID,
+                $this->pidsArray['PEOPLE']
+            );
             $token = $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName];
             return $token;
         }
         return null;
     }
 
-    public function isUrlTokenCorrect(): ?string
+    public function getToken(): ?string
     {
-        if (array_key_exists(self::SESSION_TOKEN_STRING, $this->requestUrl) && !empty($this->requestUrl[self::SESSION_TOKEN_STRING]) && isTokenCorrect(
-                $this->requestUrl[self::SESSION_TOKEN_STRING],
-                $this->pidsArray['PEOPLE']
+        if (array_key_exists(
+                self::SESSION_TOKEN_STRING,
+                $this->requestUrl
+            ) && !empty($this->requestUrl[self::SESSION_TOKEN_STRING]) && self::isTokenCorrect(
+                $this->requestUrl[self::SESSION_TOKEN_STRING]
             )) {
             #Token is in url and is correct
             $token = $this->requestUrl[self::SESSION_TOKEN_STRING];
             $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName] = $this->requestUrl[self::SESSION_TOKEN_STRING];
             return $token;
         } else {
-            if (!empty($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]) && isTokenCorrect(
-                    $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName],
-                    $this->pidsArray['PEOPLE']
+            if (!empty($_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]) && self::isTokenCorrect(
+                    $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName]
                 )) {
                 #Token is in session and is correct
                 $token = $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName];
@@ -234,13 +249,60 @@ class SecurityHandler
         return null;
     }
 
+    function getTokenByUserId($userid): ?string
+    {
+        $people = REDCap::getData(
+            $this->pidsArray['PEOPLE'],
+            'json-array',
+            null,
+            array('access_token'),
+            null,
+            null,
+            false,
+            false,
+            false,
+            "[redcap_name] = '" . $userid . "'"
+        )[0];
+        if (!empty($people)) {
+            return $people['access_token'];
+        }
+        return null;
+    }
+
+    public function isTokenCorrect($token)
+    {
+        $people = REDCap::getData(
+            $this->pidsArray['PEOPLE'],
+            'json-array',
+            null,
+            array('token_expiration_d'),
+            null,
+            null,
+            false,
+            false,
+            false,
+            "[access_token] = '" . $token . "'"
+        )[0];
+        if (!empty($people)) {
+            if (strtotime($people['token_expiration_d']) > strtotime(date('Y-m-d'))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function getCredentialsServerVars($type)
     {
-        if (file_exists(self::CREDENTIALS_PATH. $this->getPidsArray()['PROJECTS'] . constant("self::CREDENTIALS_".strtoupper($type)."_FILENAME"))) {
-            require_once self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] .  constant("self::CREDENTIALS_".strtoupper($type)."_FILENAME");
+        if (file_exists(
+            self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
+                "self::CREDENTIALS_" . strtoupper($type) . "_FILENAME"
+            )
+        )) {
+            require_once self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
+                    "self::CREDENTIALS_" . strtoupper($type) . "_FILENAME"
+                );
         }
     }
 }
 
 ?>
-

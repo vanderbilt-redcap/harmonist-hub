@@ -214,28 +214,6 @@ function convertDigit($number, $base) {
     }
 }
 
-/**
- * Function that checks if the token is correct or not
- * @param $token
- * @return bool
- */
-function isTokenCorrect($token,$pidPeople){
-    $people = \REDCap::getData($pidPeople, 'json-array', null,array('token_expiration_d'),null,null,false,false,false,"[access_token] = '".$token."'")[0];
-    if(!empty($people)){
-        if(strtotime($people['token_expiration_d']) > strtotime(date('Y-m-d'))){
-            return true;
-        }
-    }
-    return false;
-}
-
-function getToken($userid,$pidPeople){
-    $people = \REDCap::getData($pidPeople, 'json-array', null,array('access_token'),null,null,false,false,false,"[redcap_name] = '".$userid."'")[0];
-    if(!empty($people)){
-        return $people['access_token'];
-    }
-}
-
 function getReqAssocConceptLink($module, $pidsArray, $assoc_concept, $option=""){
     if(!empty($assoc_concept)){
         $concepts = \REDCap::getData($pidsArray['HARMONIST'], 'json-array', array('record_id' => $assoc_concept),array('concept_id','concept_title'))[0];
