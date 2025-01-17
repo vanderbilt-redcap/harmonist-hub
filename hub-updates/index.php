@@ -142,6 +142,7 @@ $oldValues = $printDataAll[1];
                         alert(xhr.responseText);
                     },
                     success: function (result) {
+                        $("#hubUdatesSpinner").dialog('close');
                         var status = jQuery.parseJSON(result)['status'];
                         window.location = getMessageLetterUrl(window.location.href, success_message);
                     }
@@ -153,7 +154,7 @@ $oldValues = $printDataAll[1];
         function changeFormUrlPDF(id) {
             $('update_text').text('');
             $('#update_text').hide();
-
+            $("#hubUdatesSpinner").dialog({modal:true, width:400});
             if (id == "btnDownloadPDF" || id == "btnUploadPDF") {
                 var url = <?=json_encode($module->getUrl('hub-updates/generate_pdf.php'))?>;
                 var option = $('#option').val();
@@ -176,6 +177,7 @@ $oldValues = $printDataAll[1];
                         },
                         success: function (result) {
                             $('#update_text').show();
+                            $("#hubUdatesSpinner").dialog('close');
                         }
                     });
                 } else {
@@ -492,6 +494,13 @@ if (!empty($allUpdates)) { ?>
 </div>
 <div id="dialogWarning" title="WARNING!" style="display:none;">
     <p>No fields selected.</p>
+</div>
+<div style="display:none" title="Updating..." id="hubUdatesSpinner">
+    <div style="padding-top: 20px">
+        <div class="alert alert-success">
+            <em class="fa fa-spinner fa-spin"></em> Please wait until the process finishes.
+        </div>
+    </div>
 </div>
 </body>
 </html>
