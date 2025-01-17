@@ -199,8 +199,7 @@ class SecurityHandler
         if (
             ($this->isAuthorized && defined("USERID") && !empty(
                 self::getTokenByUserId(
-                    USERID,
-                    $this->pidsArray['PEOPLE']
+                    USERID
                 )
                 ))
             ||
@@ -216,8 +215,7 @@ class SecurityHandler
             #If it's a NOAUTH page, user is logged in REDCap and token is not in url and is Downloads page
             $_SESSION[self::SESSION_TOKEN_STRING] = [];
             $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName] = self::getTokenByUserId(
-                USERID,
-                $this->pidsArray['PEOPLE']
+                USERID
             );
             $token = $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName];
             return $token;
