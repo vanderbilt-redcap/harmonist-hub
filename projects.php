@@ -38,21 +38,12 @@ if(!$isCron) {
 
     if(ENVIRONMENT != "DEV" && file_exists("/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php")) {
         require_once "/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php";
-        error_log("IeDEA HUB: Inside credentials.");
-        $textProjects = "";
-        if(empty($secret_key)){
-            $textProjects = "IeDEA HUB: downloads empty key. ";
-        }
-        if(empty($secret_iv)){
-            $textProjects = "IeDEA HUB: downloads empty iv.";
-        }
-
-        \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS",$textProjects);
     }else{
         if(file_exists("/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php")){
             \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS","File exists");
         }else{
-            \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS","File path failed: ".$project_id_main);
+            \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS","File path failed: 
+            project_id_main:".$project_id_main.", project_id:".$project_id.", GET:".$_GET['pid']);
         }
 
     }

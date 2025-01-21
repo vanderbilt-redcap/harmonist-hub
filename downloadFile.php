@@ -3,16 +3,6 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once "projects.php";
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
-$text = "";
-if(empty($secret_key)){
-    $text = "IeDEA HUB: downloads empty key. ";
-}
-if(empty($secret_iv)){
-    $text = "IeDEA HUB: downloads empty iv.";
-}
-
-\REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS DOWNLOADS",$text);
-
 $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 
 $exploded = array();
