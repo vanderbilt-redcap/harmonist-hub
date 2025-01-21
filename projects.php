@@ -18,16 +18,16 @@ include_once(__DIR__ . "/classes/UserEditConditions.php");
 REDCapManagement::getEnvironment();
 
 if(!$isCron) {
+    if($module == null) {
+        $module = $this;
+    }
+
     #Mapper Project
-    $hub_mapper = $this->getProjectSetting('hub-mapper');
+    $hub_mapper = $module->getProjectSetting('hub-mapper');
     $project_id_main = ($hub_mapper != '') ? $hub_mapper : (int)$_GET['pid'];
 
     #Get Projects ID's
     $pidsArray = REDCapManagement::getPIDsArray($project_id_main);
-
-    if($module == null) {
-        $module = $this;
-    }
 
     if(APP_PATH_WEBROOT[0] == '/'){
         $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
