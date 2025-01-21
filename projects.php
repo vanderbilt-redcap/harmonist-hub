@@ -48,7 +48,10 @@ if(!$isCron) {
         }
 
         \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS",$textProjects);
+    }else{
+        \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS","File path failed");
     }
+
 
     $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 

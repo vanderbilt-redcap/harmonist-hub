@@ -143,7 +143,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 if(empty($secret_iv)){
                     $text_files .= "iv empty";
                 }
-                \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS FOLLOWING",$text_files);
+//                \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS FOLLOWING",$text_files);
                 $gd_files .= "</ol>";
 
 
