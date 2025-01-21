@@ -38,6 +38,13 @@ if(!$isCron) {
 
     if(ENVIRONMENT != "DEV" && file_exists("/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php")) {
         require_once "/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php";
+        error_log("IeDEA HUB: Inside credentials.");
+        if(empty($secret_key)){
+            error_log("IeDEA HUB: empty key.");
+        }
+        if(empty($secret_iv)){
+            error_log("IeDEA HUB: empty iv.");
+        }
     }
 
     $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];

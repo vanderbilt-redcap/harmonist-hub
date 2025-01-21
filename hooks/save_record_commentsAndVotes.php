@@ -137,7 +137,10 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                     $gd_files .= "<li>".getFileLink($this, $pidsArray['PROJECTS'], $comment['extra_revfile2'],'',0,$secret_key,$secret_iv,$people['record_id'],"")."</li>";
                 }
                 if(empty($secret_key)){
-                    $gd_files .= "ENVIRONMENT: ".ENVIRONMENT;
+                    $gd_files .= "key empty<br>";
+                }
+                if(empty($secret_iv)){
+                    $gd_files .= "iv empty";
                 }
                 $gd_files .= "</ol>";
 
