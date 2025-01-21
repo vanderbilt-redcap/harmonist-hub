@@ -3,6 +3,13 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once "projects.php";
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
+if(empty($secret_key)){
+    error_log("IeDEA HUB: downloads empty key.");
+}
+if(empty($secret_iv)){
+    error_log("IeDEA HUB: downloads empty iv.");
+}
+
 $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 
 $exploded = array();
