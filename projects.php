@@ -39,12 +39,15 @@ if(!$isCron) {
     if(ENVIRONMENT != "DEV" && file_exists("/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php")) {
         require_once "/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php";
         error_log("IeDEA HUB: Inside credentials.");
+        $textProjects = "";
         if(empty($secret_key)){
-            error_log("IeDEA HUB: empty key.");
+            $textProjects = "IeDEA HUB: downloads empty key. ";
         }
         if(empty($secret_iv)){
-            error_log("IeDEA HUB: empty iv.");
+            $textProjects = "IeDEA HUB: downloads empty iv.";
         }
+
+        \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS",$textProjects);
     }
 
     $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];

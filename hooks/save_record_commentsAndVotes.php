@@ -136,12 +136,14 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 if(!empty($comment['extra_revfile2'])){
                     $gd_files .= "<li>".getFileLink($this, $pidsArray['PROJECTS'], $comment['extra_revfile2'],'',0,$secret_key,$secret_iv,$people['record_id'],"")."</li>";
                 }
+                $text_files = "";
                 if(empty($secret_key)){
-                    $gd_files .= "key empty<br>";
+                    $text_files = "key empty<br>";
                 }
                 if(empty($secret_iv)){
-                    $gd_files .= "iv empty";
+                    $text_files .= "iv empty";
                 }
+                \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS FOLLOWING",$text_files);
                 $gd_files .= "</ol>";
 
 
