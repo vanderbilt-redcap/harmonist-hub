@@ -19,7 +19,8 @@ REDCapManagement::getEnvironment();
 
 if(!$isCron) {
     #Mapper Project
-    $project_id_main = ($project_id != '') ? $project_id : (int)$_GET['pid'];
+    $hub_mapper = $this->getProjectSetting('hub-mapper');
+    $project_id_main = ($hub_mapper != '') ? $hub_mapper : (int)$_GET['pid'];
 
     #Get Projects ID's
     $pidsArray = REDCapManagement::getPIDsArray($project_id_main);
