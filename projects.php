@@ -49,7 +49,12 @@ if(!$isCron) {
 
         \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS",$textProjects);
     }else{
-        \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS","File path failed");
+        if(file_exists("/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php")){
+            \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS","File exists");
+        }else{
+            \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","TESTING KEYS PROJECTS","File path failed: ".$project_id_main);
+        }
+
     }
 
 
