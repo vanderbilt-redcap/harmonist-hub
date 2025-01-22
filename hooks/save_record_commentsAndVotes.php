@@ -138,6 +138,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 }
                 $gd_files .= "</ol>";
 
+
                 /*** GROUP DISCUSION ***/
                 $text = "";
                 if ($comment['author_revision_y'] == '1' && $comment['revision_counter'] != '') {
