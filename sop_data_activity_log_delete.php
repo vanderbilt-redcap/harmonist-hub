@@ -5,9 +5,9 @@ require_once dirname(__FILE__) . "/classes/HubData.php";
 $module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION");
 $module->getSecurityHandler()->getCredentialsServerVars("AWS");
 
-$deleteCode = $_REQUEST['del'];
-$file_name = $_REQUEST['file_name'];
-$current_user = $_REQUEST['current_user'];
+$deleteCode = $module->escape($_REQUEST['del']);
+$file_name = $module->escape($_REQUEST['file_name']);
+$current_user = $module->escape($_REQUEST['current_user']);
 $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS'],$module->getUrl('hub/aws/AWS_deleteFile.php'))."&code=".$deleteCode;
 ?>
 

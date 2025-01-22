@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . "/classes/HubData.php";
 
 $module->getSecurityHandler()->getCredentialsServerVars("AWS");
 
-$request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
+$request_DU = $module->escape(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null));
 krsort($request_DU);
 ArrayFunctions::array_sort_by_column($request_DU,'responsecomplete_ts',SORT_DESC);
 
