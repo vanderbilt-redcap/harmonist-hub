@@ -724,7 +724,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Data Request Uploads
-                    <a href="<?=$module->geturl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."option=lgd&record=".$record;?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->geturl("index.php")."&NOAUTH&option=lgd&record=".$record;?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <div id="collapse_dataReqUp" class="panel-collapse" aria-expanded="true">
