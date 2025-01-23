@@ -3,7 +3,6 @@
 <script type="text/javascript" src="<?=$module->getUrl('js/jquery-ui.min.js')?>"></script>
 <script type="text/javascript" src="<?=$module->getUrl('bootstrap-3.3.7/js/bootstrap.min.js')?>"></script>
 
-<script type="text/javascript" src="<?=$module->getUrl('js/jquery.tablesorter.min.js')?>"></script>
 <script type="text/javascript" src="<?=$module->getUrl('js/sortable.min.js')?>"></script>
 
 <script type="text/javascript" src="<?=$module->getUrl('js/jquery.dataTables.min.js')?>"></script>
