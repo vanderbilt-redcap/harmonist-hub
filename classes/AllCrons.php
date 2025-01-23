@@ -18,7 +18,7 @@ class AllCrons
                 foreach ($downloaders as $down) {
                     if($peopleDown == null) {
                         $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
-                        $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
+                        $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDownData['person_region']),array('region_code'))[0]['region_code'];
                     }else{
                         $region_codeDown = "TT";
                         $peopleDownData = $peopleDown[$down];
@@ -742,7 +742,7 @@ class AllCrons
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
             $reminder_num = $settings['downloadreminder_dur'];
             $messageArray[$settings['downloadreminder_dur']] += 1;
-        } else if (strtotime($expired_date_reminder2) == strtotime(date('Y-m-d'))) {
+        } else {
             $subject = $settings['hub_name'] . " Data Request for " . $concept_id . " download expires on " . $expired_date_delete;
             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
                 "<div>This is a reminder that you have not downloaded the dataset that was submitted to secure cloud storage by&nbsp;<strong>" . $name_uploader . "</strong> from&nbsp;<strong>" . $region_code_uploader . "</strong> in response to your data request \"" . $concept_title . "\" for concept&nbsp;<b>" . $concept_id . "</b>, <i>Draft ID: " . $sop['record_id'] . "</i>. The upload was received at " . $date_time . " Eastern US Time (ET). </div><br/>" .
