@@ -75,7 +75,10 @@ class AllCrons
         $messageArray = array();
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
         if(strtotime($expired_date) >= strtotime(date('Y-m-d'))) {
-            if(!array_key_exists('emails_sent_y___1', $upload) || $upload['emails_sent_y___1'] !== "1") {
+            error_log("IEDEA - UPLOAD record_id: ".$upload['record_id']);
+            error_log("IEDEA - emails_sent_y___1: ".$upload['emails_sent_y___1']);
+            if(!array_key_exists('emails_sent_y___1', $upload) || $upload['emails_sent_y___1'] !== "1" || empty($upload['emails_sent_y___1'])) {
+                error_log("IEDEA - Not sent, send email");
                 if($email) {
                     //Save data on project
                     $Proj = new \Project($pidsArray['DATAUPLOAD']);
@@ -96,7 +99,7 @@ class AllCrons
                     foreach ($downloaders as $down) {
                         if ($peopleDown == null) {
                             $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
-                            $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
+                            $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDownData['person_region']),array('region_code'))[0]['region_code'];
                         } else {
                             $region_codeDown = "TT";
                             $peopleDownData = $peopleDown[$down];
@@ -126,6 +129,7 @@ class AllCrons
                 $expire_date = date('Y-m-d', strtotime($date_time . $extra_days));
 
                 if ($email && $people['email'] !== "") {
+                    error_log("IEDEA - Email Uploader");
                     $subject = "Successful " . $settings['hub_name'] . " data upload for " . $concept_id;
                     $message = "<div>Dear " . $firstname . ",</div><br/><br/>" .
                         "<div>Thank you for submitting your dataset to secure cloud storage in response to <strong><a href='" . $module->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['PROJECTS'] . "&option=sop&record=" . $upload['data_assoc_request'] . "' target='_blank'>" . $concept_id . "</a></strong> on <b>" . $date_time . "</b> Eastern US Time (ET). </div><br/>" .
@@ -140,6 +144,7 @@ class AllCrons
                 }
                 #Data Downloaders email
                 if ($downloadersOrdered !== "") {
+                    error_log("IEDEA - Email Downloader");
                     $date = new \DateTime($upload['responsecomplete_ts']);
                     $date->modify("+1 hours");
                     $date_time = $date->format("Y-m-d H:i");
