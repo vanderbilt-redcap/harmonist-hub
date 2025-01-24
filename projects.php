@@ -34,7 +34,9 @@ if(!$isCron) {
     }
     define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
     define('APP_PATH_PLUGIN',APP_PATH_WEBROOT_FULL."external_modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
-    define('APP_PATH_MODULE',APP_PATH_WEBROOT_FULL."modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
+    $versionsByPrefix = $module->getEnabledModules($_GET['pid']);
+    $app_path_module = APP_PATH_WEBROOT_FULL."modules/harmonist-hub_".$versionsByPrefix['harmonist-hub'];
+    define('APP_PATH_MODULE',$app_path_module);
     define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
     if(ENVIRONMENT != "DEV" && file_exists("/app001/credentials/Harmonist-Hub/" . $project_id_main . "_down_crypt.php")) {
