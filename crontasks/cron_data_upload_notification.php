@@ -9,7 +9,10 @@ $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
 
 $days_expiration = intval($settings['uploadnotification_dur']);
 $extra_days = ' + ' . $days_expiration . " days";
-error_log("IEDEA - DATAUPLOAD: ".$pidsArray['DATAUPLOAD']);
+
+if($pidsArray['DATAUPLOAD'] == "70621"){
+    error_log("IEDEA - DATAUPLOAD: ".$pidsArray['DATAUPLOAD']);
+}
 error_log("IEDEA - request_DU: ".json_encode($request_DU));
 foreach ($request_DU as $upload) {
     $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $upload['data_assoc_request']));
