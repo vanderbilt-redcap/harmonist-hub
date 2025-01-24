@@ -113,6 +113,7 @@ $oldValues = $printDataAll[1];
             });
 
             $('#data_confirmation').submit(function (event) {
+                $("#hubUdatesSpinner").dialog({modal:true, width:400});
                 var redcap_csrf_token = <?=json_encode($module->getCSRFToken())?>;
                 var option = $('#option').val();
                 var success_message = "";
