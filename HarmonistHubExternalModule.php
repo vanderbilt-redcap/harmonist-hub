@@ -297,6 +297,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 }
             }
         }
+        error_log("IEDEA - cronMethod: ".$cronAttributes['cron_name']);
         //Perform cron actions here
         if (APP_PATH_WEBROOT[0] == '/') {
             $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
@@ -304,8 +305,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
         $isCron = true;
         foreach ($this->getProjectsWithModuleEnabled() as $project_id) {
-            $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
             error_log("IEDEA - project_id:".$project_id);
+            $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
             error_log("IEDEA - hub_mapper:".$hub_mapper);
             if (is_numeric($project_id) && $project_id == $hub_mapper) {
                 $disable_crons = $this->getProjectSetting('disable-crons', $project_id);
