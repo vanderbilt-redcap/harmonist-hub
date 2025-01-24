@@ -305,7 +305,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $isCron = true;
         foreach ($this->getProjectsWithModuleEnabled() as $project_id) {
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
-            if($hub_mapper == "203280"){
+            if($hub_mapper == "203280" || $hub_mapper == 203280){
                 error_log("IEDEA - project_id:".$project_id);
                 error_log("IEDEA - ".$project_id. "= 203280");
             }
