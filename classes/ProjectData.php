@@ -415,56 +415,92 @@ class ProjectData
         $projects_array_hooks = REDCapManagement::getProjectsHooksArray();
         foreach ($projects_array as $index => $name) {
             if ($projects_array_hooks[$index] == '1' && is_numeric($pidsArray[$name])) {
-                if (!$module->isModuleEnabled("harmonist-hub", $pidsArray[$name])) {
-                    if ($saveSettings) {
-                        $module->enableModule($pidsArray[$name], "harmonist-hub");
-                        REDCap::logEvent(
-                            "Hub Updates: harmonist-hub EM enabled on  " . $name . " (PID #" . $pidsArray[$name] . ")",
-                            "The module has been enabled on the project.",
-                            null,
-                            null,
-                            null,
-                            $pidsArray[$name]
-                        );
-                        REDCap::logEvent(
-                            "Hub Updates: harmonist-hub EM enabled on  " . $name . " (PID #" . $pidsArray[$name] . ")",
-                            "The module has been enabled on the project.",
-                            null,
-                            null,
-                            null,
-                            $pid
-                        );
-                    } else {
-                        return false;
-                    }
+                $enableHarmonistHubModule = self::enableHarmonistHubModule($module, $pidsArray[$name], $name, $pid, $saveSettings);
+                if(!$enableHarmonistHubModule) {
+                   return false;
                 }
 
-                $mapper = $module->getProjectSetting('hub-mapper', $pidsArray[$name]);
-                if (empty($mapper)) {
-                    if ($saveSettings) {
-                        $module->setProjectSetting('hub-mapper', $pid, $pidsArray[$name]);
-                        REDCap::logEvent(
-                            "Hub Updates: hub-mapper setting has been created on  " . $name . " (PID #" . $pidsArray[$name] . ")",
-                            "The setting has been created on the project.",
-                            null,
-                            null,
-                            null,
-                            $pidsArray[$name]
-                        );
-                        REDCap::logEvent(
-                            "Hub Updates: hub-mapper setting has been created  " . $name . " (PID #" . $pidsArray[$name] . ")",
-                            "The setting has been created on the project.",
-                            null,
-                            null,
-                            null,
-                            $pid
-                        );
-                    } else {
-                        return false;
-                    }
+                $saveHubMapperSetting = self::saveHubMapperSetting($module, $pidsArray[$name], $name, $pid, $saveSettings);
+                if(!$saveHubMapperSetting) {
+                    return false;
                 }
+
             }
         }
+
+        #CHECK MAP PROJECT
+        $saveHubMapperSetting = self::saveHubMapperSetting(
+            $module,
+            $pidsArray['PROJECTS'],
+            "PROJECTS",
+            $pid,
+            $saveSettings
+        );
+        if (!$saveHubMapperSetting) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function saveHubMapperSetting($module, $pidConstant, $constant, $pid, $saveSettings):bool
+    {
+        $mapper = $module->getProjectSetting('hub-mapper', $pidConstant);
+        if (empty($mapper)) {
+            if ($saveSettings) {
+                $module->setProjectSetting('hub-mapper', $pid, $pidConstant);
+                REDCap::logEvent(
+                    "Hub Updates: hub-mapper setting has been created on  " . $constant . " (PID #" . $pidConstant . ")",
+                    "The setting has been created on the project.",
+                    null,
+                    null,
+                    null,
+                    $pidConstant
+                );
+                if($pid != $pidConstant) {
+                    REDCap::logEvent(
+                        "Hub Updates: hub-mapper setting has been created on " . $constant . " (PID #" . $pidConstant . ")",
+                        "The setting has been created on the project.",
+                        null,
+                        null,
+                        null,
+                        $pid
+                    );
+                }
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static function enableHarmonistHubModule($module, $pidConstant, $constant, $pid, $saveSettings):bool
+    {
+         if (!$module->isModuleEnabled("harmonist-hub", $pidConstant)){
+             if ($saveSettings) {
+                 $module->enableModule($pidConstant, "harmonist-hub");
+                 REDCap::logEvent(
+                     "Hub Updates: harmonist-hub EM enabled on  " . $constant . " (PID #" . $$pidConstant . ")",
+                     "The module has been enabled on the project.",
+                     null,
+                     null,
+                     null,
+                     $pidConstant
+                 );
+                 if ($pid != $pidConstant) {
+                     REDCap::logEvent(
+                         "Hub Updates: harmonist-hub EM enabled on  " . $constant . " (PID #" . $pidConstant . ")",
+                         "The module has been enabled on the project.",
+                         null,
+                         null,
+                         null,
+                         $pid
+                     );
+                 }
+             } else{
+                 return false;
+             }
+         }
         return true;
     }
 }
