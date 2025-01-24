@@ -74,9 +74,16 @@ class AllCrons
     {
         $messageArray = array();
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
-        if(strtotime($expired_date) >= strtotime(date('Y-m-d'))) {
+        if($upload['record_id'] == "720"){
+            error_log("IEDEA - UPLOAD PID: ".$pidsArray['PROJECTS']);
             error_log("IEDEA - UPLOAD record_id: ".$upload['record_id']);
-            error_log("IEDEA - emails_sent_y___1: ".$upload['emails_sent_y___1']);
+            error_log("IEDEA - UPLOAD expired_date: ".$expired_date);
+            error_log("IEDEA - UPLOAD extra_days: ".$extra_days);
+            error_log("IEDEA - UPLOAD responsecomplete_ts: ".$upload['responsecomplete_ts']);
+            error_log("IEDEA - UPLOAD emails_sent_y___1: ".$upload['emails_sent_y___1']);
+        }
+        if(strtotime($expired_date) >= strtotime(date('Y-m-d'))) {
+
             if(!array_key_exists('emails_sent_y___1', $upload) || $upload['emails_sent_y___1'] !== "1" || empty($upload['emails_sent_y___1'])) {
                 error_log("IEDEA - Not sent, send email");
                 if($email) {
