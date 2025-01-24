@@ -306,7 +306,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         error_log("IEDEA - cron_name: ".$cronAttributes['cron_name']);
         foreach ($this->getProjectsWithModuleEnabled() as $project_id) {
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
-            error_log("IEDEA - project_id =  mapper: ".$project_id."".$hub_mapper);
+            error_log("IEDEA - project_id =  mapper: ".$project_id." = ".$hub_mapper);
             if (is_numeric($project_id) && $project_id == $hub_mapper) {
                 $disable_crons = $this->getProjectSetting('disable-crons', $project_id);
                 if (!$disable_crons) {
