@@ -263,7 +263,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function cronMethod($cronAttributes)
     {
-        error_log("IEDEA - cronMethod: ".$cronAttributes['cron_name']);
         //Only perform actions between 12am and 6am for crons that update at night
         if ($cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
             $hourRange = 6;
@@ -305,9 +304,11 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
         $isCron = true;
         foreach ($this->getProjectsWithModuleEnabled() as $project_id) {
-            error_log("IEDEA - project_id:".$project_id);
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
-            error_log("IEDEA - hub_mapper:".$hub_mapper);
+            if($hub_mapper == "203280"){
+                error_log("IEDEA - project_id:".$project_id);
+                error_log("IEDEA - ".$project_id. "= 203280");
+            }
             if (is_numeric($project_id) && $project_id == $hub_mapper) {
                 $disable_crons = $this->getProjectSetting('disable-crons', $project_id);
                 error_log("IEDEA - disable_crons:".$disable_crons);
