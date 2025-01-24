@@ -22,7 +22,7 @@ if($sop !="") {
         $research_contact = $people['firstname'] . ' ' . $people['lastname']." (<a href='mailto:".$people['email']."'>".$people['email']."</a>)";
     }
 
-    $RecordSetPeopleDC = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('firstname','lastname','email'))[0];
+    $peopleDC = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('firstname','lastname','email'))[0];
     $data_contact = "<em>None</em>";
     if($peopleDC != ''){
         $data_contact = $peopleDC['firstname'] . ' ' . $peopleDC['lastname']." (<a href='mailto:".$peopleDC['email']."'>".$peopleDC['email']."</a>)";
