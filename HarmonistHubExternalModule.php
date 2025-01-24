@@ -304,11 +304,11 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
         $isCron = true;
         foreach ($this->getProjectsWithModuleEnabled() as $project_id) {
+            error_log("IEDEA - project_id:".$project_id);
             $hub_mapper = $this->getProjectSetting('hub-mapper', $project_id);
-            if($hub_mapper == "203280" || $hub_mapper == 203280){
-                error_log("IEDEA - project_id:".$project_id);
-                error_log("IEDEA - ".$project_id. "= 203280");
-            }
+            error_log("IEDEA - cron_name:".$cronAttributes['cron_name']);
+            error_log("IEDEA - ".$project_id. "= 203280");
+
             if (is_numeric($project_id) && $project_id == $hub_mapper) {
                 $disable_crons = $this->getProjectSetting('disable-crons', $project_id);
                 error_log("IEDEA - disable_crons:".$disable_crons);
