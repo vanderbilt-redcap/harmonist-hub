@@ -618,10 +618,10 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                         <?php
                         if($sop['sop_downloaders'] != "") {
                             $downloaders = explode(',', $sop['sop_downloaders']);
-                            $number_downloaders = count($downloaders);
                             $downloaders_list = "";
                             $downloadersOrdered = array();
                             foreach ($downloaders as $down) {
+                                $down = trim($down);
                                 $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down),array('firstname','lastname','email','person_region'))[0];
                                 $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDown['person_region']),array('region_code'))[0]['region_code'];
 
@@ -630,7 +630,6 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                                 $downloadersOrdered[$down]['region_code'] = "(" . $region_codeDown . ")";
                             }
                             ArrayFunctions::array_sort_by_column($downloadersOrdered,'name');
-
                             $count = 0;
                             foreach ($downloadersOrdered as $downO) {
                                 $downO = $module->escape($downO);
