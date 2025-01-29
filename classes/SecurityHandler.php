@@ -32,6 +32,7 @@ class SecurityHandler
         $this->module = $module;
         $this->projectId = $projectId;
         $this->pidsArray = self::getPidsArray();
+        print_array($this->pidsArray);
         $this->settings = self::getSettingsData();
         $this->tokenSessionName = $this->hubName . $this->pidsArray['PROJECTS'];
     }
