@@ -12,25 +12,20 @@ define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
 
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
-print_array("IN0");
+
 $pid = $module->getSecurityHandler()->getProjectId();
-print_array("IN00");
 $option = $module->getSecurityHandler()->getRequestOption();
 $is_authorized_and_has_rights = false;
-print_array("IN");
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
-    print_array("IN2");
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
     if ($settings['deactivate_datahub___1'] != "1" && !empty(
         $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()]
         )) {
-        print_array("IN3");
         $is_authorized_and_has_rights = true;
         if ($option === 'lge') {
             include('sop_data_activity_log_delete.php');
         } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
-            print_array($pidsArray);
             include('sop_retrieve_data.php');
         }
     }
