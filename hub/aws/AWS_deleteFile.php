@@ -113,9 +113,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
                             "<div>The dataset you submitted to secure cloud storage in response to <strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted successfully at your request and will not be available for future downloads.</div><br/>" .
                             "<div>The following reason was logged for this deletion: <strong>" . $deletion_rs . "</strong></div><br/>" .
-                            "<div>To replace the deleted dataset, log in to the " . $settings['hub_name'] . " Hub and select <strong>Submit Data on the <a href='" . $module->getUrl(
-                                APP_PATH_PLUGIN . "/index.php"
-                            ) . "&NOAUTH&option=dat" . "' target='_blank'>Data page</a></strong>.</div><br/>" .
+                            "<div>To replace the deleted dataset, log in to the " . $settings['hub_name'] . " Hub and select <strong>Submit Data on the <a href='" . $module->getUrl("index.php") . "&NOAUTH&option=dat" . "' target='_blank'>Data page</a></strong>.</div><br/>" .
                             "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
                         sendEmail(
                             $peopleUp['email'],
@@ -132,9 +130,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         $message = "<div>Dear " . $peopleUp['firstname'] . ",</div><br/><br/>" .
                             "<div>The dataset you submitted to secure cloud storage in response to <strong>\"" . $concept_id . ": " . $concept_title . "\"</strong> <em>(Draft ID: " . $sop['record_id'] . ")</em>, on " . $date_time . " Eastern US Time (ET) has been deleted by " . $delete_user_fullname . " and will not be available for future downloads.</div><br/>" .
                             "<div>The following reason was logged for this deletion: <strong>" . $deletion_rs . "</strong></div><br/>" .
-                            "<div>To replace the deleted dataset, log in to the " . $settings['hub_name'] . " Hub and select <strong>Submit Data on the <a href='" . $module->getUrl(
-                                APP_PATH_PLUGIN . "/index.php"
-                            ) . "&NOAUTH&option=dat" . "' target='_blank'>Data page</a></strong>.</div><br/>" .
+                            "<div>To replace the deleted dataset, log in to the " . $settings['hub_name'] . " Hub and select <strong>Submit Data on the <a href='" . $module->getUrl("index.php") . "&NOAUTH&option=dat" . "' target='_blank'>Data page</a></strong>.</div><br/>" .
                             "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
                         sendEmail(
                             $peopleUp['email'],
