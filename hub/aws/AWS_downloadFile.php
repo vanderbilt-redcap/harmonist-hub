@@ -19,14 +19,14 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
         $record_id = $exploded['id'];
         $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
 
-        print_array("record_id:".$record_id);
         $credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
         $s3 = new S3Client([
                                'version' => 'latest',
                                'region' => 'us-east-2',
                                'credentials' => $credentials
                            ]);
-
+        print_array($aws_key);
+        print_array($aws_secret);
         if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && $module->getSecurityHandler()->isTokenCorrect(
                 $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
             )) {
