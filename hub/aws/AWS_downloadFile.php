@@ -21,6 +21,8 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
         print_array("record_id: ".$record_id);
         print_array("k: ".$aws_key);
         print_array("s: ".$aws_secret);
+        print_array("sk: ".$secret_key);
+        print_array("ss: ".$secret_iv);
         $credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
         $s3 = new S3Client([
                                'version' => 'latest',
