@@ -4,11 +4,13 @@ use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
 include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php");
-
+print_array("INSIDE");
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
+    print_array("isAuthorizedPage");
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
     if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1") {
+        print_array("deactivate_datadown___1");
         require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
         require_once ($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
 
@@ -29,6 +31,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
         if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && $module->getSecurityHandler()->isTokenCorrect(
                 $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
             )) {
+            print_array("IN1");
             $RecordSetSOP = \REDCap::getData(
                 $pidsArray['SOP'],
                 'array',
@@ -47,6 +50,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         $current_user,
                         $array_userid
                     )) !== false)) {
+                print_array("IN2");
                 try {
                     #Get the object
                     $result = $s3->getObject(array(
