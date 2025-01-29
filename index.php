@@ -12,7 +12,7 @@ define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
 
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
-
+print_array("IN0");
 $pid = $module->getSecurityHandler()->getProjectId();
 $option = $module->getSecurityHandler()->getRequestOption();
 $is_authorized_and_has_rights = false;
