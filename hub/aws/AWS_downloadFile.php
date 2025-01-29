@@ -25,6 +25,12 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                                'credentials' => $credentials
                            ]);
 
+        print_array("record_id: ".$request_DU['record_id']);
+        print_array("deleted_y: ".$request_DU['deleted_y']);
+        print_array("isTokenCorrect: ".isTokenCorrect(
+                        $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
+                    ));
+        print_array("SESSION: ".$_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]);
         if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && isTokenCorrect(
                 $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
             )) {
