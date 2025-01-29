@@ -9,17 +9,18 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
     if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1") {
-        print_array("BEFORE");
+        print_array($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
+        print_array($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
         require_once($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
         require_once($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
-        print_array($secret_key);
+
         $code = getCrypt($_REQUEST['code'], "d", $secret_key, $secret_iv);
         $exploded = array();
         parse_str($code, $exploded);
 
         $record_id = $exploded['id'];
         $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
-
+        print_array("record_id: ".$record_id);
         $credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
         $s3 = new S3Client([
                                'version' => 'latest',
