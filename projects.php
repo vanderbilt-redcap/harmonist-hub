@@ -40,7 +40,9 @@ if(!$isCron) {
     define('APP_PATH_MODULE',$app_path_module);
     define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
-    require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
+    $encrypt_path = $module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION");
+    if($encrypt_path != null)
+        require_once ($encrypt_path);
 
     $settings = $module->getSecurityHandler()->getSettingsData($pidsArray['SETTINGS']);
 
