@@ -25,7 +25,9 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                                'credentials' => $credentials
                            ]);
 
-        print_array("record_id: ".$request_DU['record_id']);
+        print_array("record_id: ".$record_id);
+        print_array("DATAUPLOAD PID: ".$pidsArray['DATAUPLOAD']);
+        print_array("record_id DU: ".$request_DU['record_id']);
         print_array("deleted_y: ".$request_DU['deleted_y']);
         print_array("isTokenCorrect: ".$module->getSecurityHandler()->isTokenCorrect(
                         $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
