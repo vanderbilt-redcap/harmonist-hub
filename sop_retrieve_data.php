@@ -2,7 +2,9 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
 
+print_array("BEFORE getCredentialsServerVars");
 $module->getSecurityHandler()->getCredentialsServerVars("AWS");
+print_array("AFTER getCredentialsServerVars");
 
 $request_DU = $module->escape(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null));
 krsort($request_DU);
@@ -18,6 +20,7 @@ foreach ($request_DU as $down){
     }
     array_push($array_downloads_by_concept[$down['data_assoc_concept']][$down['data_assoc_request']],$down);
 }
+print_array("AFTER request_DU");
 ?>
 <!DOCTYPE html>
 <html lang="en">
