@@ -107,7 +107,6 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                     $delete_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $current_user))[0];
                     $delete_user_fullname = $delete_user['firstname'] . " " . $delete_user['lastname'];
                     $delete_user_name = $delete_user['firstname'];
-                    $token = $module->getSecurityHandler()->getTokenSession();
                     $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
 
                     if ($current_user == $request_DU['data_upload_person']) {
