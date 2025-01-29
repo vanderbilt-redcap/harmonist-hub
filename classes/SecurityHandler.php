@@ -82,7 +82,7 @@ class SecurityHandler
     public function isAuthorizedPage(): bool
     {
         $this->isAuthorized = false;
-        if (($this->requestOption == 'dnd' || $this->requestOption == 'lge') && !$this->hasNoauth) {
+        if (($this->requestOption == 'dnd' || $this->requestOption == 'lge' || $this->requestOption == '') && !$this->hasNoauth) {
             if ($this->projectId == $this->getPidsArray()['DATADOWNLOADUSERS']) {
                 $this->isAuthorized = true;
             }
