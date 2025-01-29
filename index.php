@@ -26,6 +26,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
         if ($option === 'lge') {
             include('sop_data_activity_log_delete.php');
         } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
+            print_array($pidsArray);
             include('sop_retrieve_data.php');
         }
     }
