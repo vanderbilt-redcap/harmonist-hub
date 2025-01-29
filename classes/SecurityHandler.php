@@ -28,6 +28,7 @@ class SecurityHandler
 
     public function __construct(HarmonistHubExternalModule $module, $projectId)
     {
+        print_array("CONSTRUCT");
         $this->module = $module;
         $this->projectId = $projectId;
         $this->pidsArray = self::getPidsArray();
