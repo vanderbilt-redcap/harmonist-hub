@@ -128,7 +128,9 @@ class SecurityHandler
                 $settings
             );
 
-            $this->hubName = $this->settings['hub_name'];
+            if(!empty($this->settings['hub_name'])){
+                $this->hubName = $this->settings['hub_name'];
+            }
         }
         if ($this->isAuthorized) {
             $this->token = self::getTokenSession();
