@@ -9,9 +9,10 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
     if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1") {
+        print_array("BEFORE");
         require_once($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
         require_once($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
-
+        print_array($secret_key);
         $code = getCrypt($_REQUEST['code'], "d", $secret_key, $secret_iv);
         $exploded = array();
         parse_str($code, $exploded);
