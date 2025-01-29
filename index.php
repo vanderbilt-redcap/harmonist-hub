@@ -14,6 +14,7 @@ $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
 print_array("IN0");
 $pid = $module->getSecurityHandler()->getProjectId();
+print_array("IN00");
 $option = $module->getSecurityHandler()->getRequestOption();
 $is_authorized_and_has_rights = false;
 print_array("IN");
