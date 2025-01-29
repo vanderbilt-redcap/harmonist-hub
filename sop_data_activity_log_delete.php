@@ -1,25 +1,13 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
-if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php")) {
-    require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_aws_s3.php";
-}
 
-if(file_exists("/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_down_crypt.php")) {
-    require_once "/app001/credentials/Harmonist-Hub/" . $pidsArray['PROJECTS'] . "_down_crypt.php";
-}
+require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
+require_once ($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
 
-$hubData = new HubData($module, $settings['hub_name'].$pidsArray['PROJECTS'], $token, $pidsArray);
-$current_user = $hubData->getCurrentUser();
-$name = $current_user['firstname'].' '.$current_user['lastname'];
-$person_region = $hubData->getPersonRegion();
-$isAdmin = $current_user['is_admin'];
-if($settings['hub_name'] !== ""){
-    $hub_projectname = $settings['hub_name'];
-}
-$deleteCode = $_REQUEST['del'];
-$file_name = $_REQUEST['file_name'];
-$current_user = $_REQUEST['current_user'];
+$deleteCode = $module->escape($_REQUEST['del']);
+$file_name = $module->escape($_REQUEST['file_name']);
+$current_user = $module->escape($_REQUEST['current_user']);
 $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS'],$module->getUrl('hub/aws/AWS_deleteFile.php'))."&code=".$deleteCode;
 ?>
 

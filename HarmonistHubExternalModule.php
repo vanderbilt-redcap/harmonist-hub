@@ -15,6 +15,7 @@ include_once(__DIR__ . "/classes/ArrayFunctions.php");
 include_once(__DIR__ . "/classes/ProjectData.php");
 include_once(__DIR__ . "/classes/CopyJSON.php");
 include_once(__DIR__ . "/classes/HubUpdates.php");
+include_once(__DIR__ . "/classes/SecurityHandler.php");
 include_once(__DIR__ . "/functions.php");
 
 require_once(dirname(__FILE__) . "/vendor/autoload.php");
@@ -369,168 +370,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         }
     }
 
-    function compareDataDictionaries()
-    {
-        $projects_array = REDCapManagement::getProjectConstantsArrayWithoutDeactivatedProjects();
-        $var_replace_type = array(0 => "additions", 1 => "changed", 3 => "missing");
-
-        foreach ($var_replace_type as $type) {
-            ${$type} = array();
-            ${"alert_text_" . $type} = "";
-        }
-        foreach ($projects_array as $index => $constant) {
-            $metadata = array();
-            $metadata["destination"] = REDCap::getDataDictionary(constant("IEDEA_" . $constant), 'array', false);
-            $metadata["origin"] = $this->dataDictionaryCSVToMetadataArray(
-                $this->framework->getModulePath() . "csv/" . $constant . ".csv"
-            );
-
-            $iedea_contant = constant("IEDEA_" . $constant);
-            $deletionRegEx = "/___delete$/";
-
-            foreach ($var_replace_type as $type) {
-                ${$type}[$iedea_contant] = array();
-            }
-
-            $fieldList = array();
-            $indexedMetadata = array();
-            $choices = array();
-            foreach ($metadata as $type => $metadataRows) {
-                $choices[$type] = REDCapManagement::getChoices(json_decode($metadata[$type], true));
-                $fieldList[$type] = array();
-                $indexedMetadata[$type] = array();
-                foreach ($metadataRows as $row) {
-                    $fieldList[$type][$row['field_name']] = $row['select_choices_or_calculations'];
-                    $indexedMetadata[$type][$row['field_name']] = $row;
-                }
-            }
-
-            $metadataFields = REDCapManagement::getMetadataFieldsToScreen();
-            foreach ($fieldList["origin"] as $field => $choiceStr) {
-                if (!isset($fieldList["destination"][$field])) {
-                    array_push($missing[$iedea_contant], $field);
-                    if (!preg_match($deletionRegEx, $field)) {
-                        array_push($additions[$iedea_contant], $field);
-                    }
-                } else {
-                    if ($choices["origin"][$field] && $choices["destination"][$field] && !REDCapManagement::arraysEqual(
-                            $choices["origin"][$field],
-                            $choices["destination"][$field]
-                        )) {
-                        array_push($missing[$iedea_contant], $field);
-                        array_push($changed[$iedea_contant], $field);
-                    } else {
-                        foreach ($metadataFields as $metadataField) {
-                            if (REDCapManagement::hasMetadataChanged(
-                                $indexedMetadata["origin"][$field][$metadataField],
-                                $indexedMetadata["destination"][$field][$metadataField],
-                                $metadataField
-                            )) {
-                                array_push($missing[$iedea_contant], $field);
-                                array_push($changed[$iedea_contant], $field);
-                                break; // metadataFields loop
-                            }
-                        }
-                    }
-                }
-            }
-
-            foreach ($var_replace_type as $type) {
-                if (empty(${$type}[$iedea_contant])) {
-                    unset(${$type}[$iedea_contant]);
-                }
-            }
-        }
-
-        if (count($additions) + count($changed) > 0) {
-            foreach ($projects_array as $index => $constant) {
-                foreach ($var_replace_type as $type) {
-                    $iedea_constant = constant("IEDEA_" . $constant);
-                    if (!empty(${$type}[$iedea_constant])) {
-                        $title = $this->framework->getProject($iedea_constant)->getTitle();
-                        ${"alert_text_" . $type} .= "<ul><li>" . $title . ": <strong>" . implode(
-                                ", ",
-                                ${$type}[$iedea_constant]
-                            ) . "</strong></li></ul>";
-                    }
-                }
-            }
-
-            echo "<script>var missing = " . json_encode($missing) . ";</script>\n";
-            echo "<div id='metadataWarning' class='install-metadata-box install-metadata-box-danger'>
-                        <i class='fa fa-exclamation-circle' aria-hidden='true'></i> An upgrade in your Data Dictionary exists. <a href='javascript:;' onclick='installMetadata(missing," . json_encode(
-                    $this->getUrl("installMetadata.php?NOAUTH&pid=" . $pidsArray['PROJECTS'])
-                ) . ")'>Click here to install.</a>
-                        <ul><li>The following fields will be added: " . (empty($alert_text_additions) ? "<i>None</i>" : $alert_text_additions) . "</li>
-                        <li>The following fields will be changed: " . (empty($alert_text_changed) ? "<i>None</i>" : $alert_text_changed) . "</li></ul>
-                    </div>";
-        }
-    }
-
-    function compareRepeatingForms()
-    {
-        $projects_array_repeatable = REDCapManagement::getProjectsRepeatableArray();
-        $projects_array = REDCapManagement::getProjectConstantsArrayWithoutDeactivatedProjects();
-
-        $alert = array();
-        foreach ($projects_array as $index => $constant) {
-            $project_id = constant("IEDEA_" . $constant);
-            $alert[$project_id] = array();
-            foreach ($projects_array_repeatable[$index] as $repeat_event) {
-                if ($repeat_event['status'] == 1) {
-                    $found = false;
-                    $q = $this->query(
-                        "SELECT b.event_id FROM  redcap_events_arms a LEFT JOIN redcap_events_metadata b ON(a.arm_id = b.arm_id) where a.project_id = ?",
-                        [$project_id]
-                    );
-                    while ($row = $q->fetch_assoc()) {
-                        $event_id = $row['event_id'];
-                        $qEvent = $this->query(
-                            "SELECT custom_repeat_form_label FROM  redcap_events_repeat where  event_id= ? AND form_name=?",
-                            [$event_id, $repeat_event['instrument']]
-                        );
-                        if ($qEvent->num_rows > 0) {
-                            $found = true;
-                            while ($row_event = $qEvent->fetch_assoc()) {
-                                if ($repeat_event['params'] != $row_event['custom_repeat_form_label']) {
-                                    #params are different add new ones
-                                    $alert[$project_id][$repeat_event['instrument']] = $repeat_event['params'];
-                                }
-                            }
-                        }
-                    }
-                    if (!$found) {
-                        #New Instrument
-                        $alert[$project_id][$repeat_event['instrument']] = $repeat_event['params'];
-                    }
-                }
-            }
-            if (empty($alert[$project_id])) {
-                unset($alert[$project_id]);
-            }
-        }
-
-        if (count($alert) > 0) {
-            echo "<script>var forms = " . json_encode($alert) . ";</script>\n";
-            echo "<div id='formsWarning' class='install-metadata-box install-metadata-box-danger'>
-                        <i class='fa fa-exclamation-circle' aria-hidden='true'></i> New Repeatable Forms were found <a href='javascript:;' onclick='installRepeatingForms(forms," . json_encode(
-                    $this->getUrl("installRepeatingForms.php") . "&NOAUTH&pid=" . $pidsArray['PROJECTS']
-                ) . ")'>Click here to install.</a>";
-            foreach ($alert as $project_id => $repeat) {
-                $title = $this->framework->getProject($project_id)->getTitle();
-                echo "<ul>
-                        <li><em>" . $title . "</em></li>";
-                foreach ($repeat as $instrument => $params) {
-                    echo "<ul>
-                        <li><strong>" . $instrument . "</strong>: " . $params . "</li>
-                        </ul>";
-                }
-                echo "</ul>";
-            }
-            echo "</div>";
-        }
-    }
-
     function dataDictionaryCSVToMetadataArray($csvFilePath, $returnType = null)
     {
         $dd_column_var = array(
@@ -663,6 +502,18 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $property->setAccessible(true);
 
         return $property->setValue($this, $value);
+    }
+
+    public function getSecurityHandler(): SecurityHandler
+    {
+        if (!$this->securityHandler) {
+            $this->securityHandler = new SecurityHandler($this,(int)$_GET['pid']);
+        }
+        $this->securityHandler->setRequestOption($this->escape($_REQUEST[SecurityHandler::SESSION_OPTION_STRING]));
+        $this->securityHandler->setRequestToken($this->escape($_REQUEST[SecurityHandler::SESSION_TOKEN_STRING]));
+        $this->securityHandler->setRequestUrl($this->escape($_REQUEST));
+
+        return $this->securityHandler;
     }
 }
 ?>
