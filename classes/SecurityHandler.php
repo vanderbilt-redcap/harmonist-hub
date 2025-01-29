@@ -296,9 +296,9 @@ class SecurityHandler
                 "self::CREDENTIALS_" . strtoupper($type) . "_FILENAME"
             )
         )) {
-            include self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
+            require_once (self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
                     "self::CREDENTIALS_" . strtoupper($type) . "_FILENAME"
-                );
+                ));
         }
     }
 }
