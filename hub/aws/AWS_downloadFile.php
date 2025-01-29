@@ -4,12 +4,10 @@ use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
 include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php");
-print_array("AWS");
+
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
-    print_array("isAuthorizedPage");
     $settings = $module->getSecurityHandler()->getSettingsData();
     if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1") {
-        print_array("deactivate_datadown___1");
         $module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION");
         $module->getSecurityHandler()->getCredentialsServerVars("AWS");
 
