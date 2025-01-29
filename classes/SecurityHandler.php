@@ -292,11 +292,11 @@ class SecurityHandler
     public function getCredentialsServerVars($type):string
     {
         if (file_exists(
-            self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
+            dirname(__FILE__) . self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
                 "self::CREDENTIALS_" . strtoupper($type) . "_FILENAME"
             )
         )) {
-            return self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
+            return dirname(__FILE__) . self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
                     "self::CREDENTIALS_" . strtoupper($type) . "_FILENAME"
                 );
         }
