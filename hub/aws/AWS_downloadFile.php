@@ -18,6 +18,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
 
         $record_id = $exploded['id'];
         $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
+        print_array($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
         print_array("record_id: ".$record_id);
         print_array("k: ".$aws_key);
         print_array("s: ".$aws_secret);
