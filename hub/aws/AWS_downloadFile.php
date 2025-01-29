@@ -25,12 +25,10 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                                'region' => 'us-east-2',
                                'credentials' => $credentials
                            ]);
-        print_array($aws_key);
-        print_array($aws_secret);
+
         if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && $module->getSecurityHandler()->isTokenCorrect(
                 $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
             )) {
-            print_array("IN1");
             $RecordSetSOP = \REDCap::getData(
                 $pidsArray['SOP'],
                 'array',
@@ -49,7 +47,6 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         $current_user,
                         $array_userid
                     )) !== false)) {
-                print_array("IN2");
                 try {
                     #Get the object
                     $result = $s3->getObject(array(
