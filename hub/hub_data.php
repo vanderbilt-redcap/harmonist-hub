@@ -33,9 +33,20 @@ $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($Record
 $open_data_calls = 0;
 if(!empty($request_dataCall)) {
     foreach ($request_dataCall as $sop) {
+        print_array("****************");
+        print_array("record_id: ".$sop['record_id']);
+        print_array("sop_active: ".$sop['sop_active']);
+        print_array("sop_finalize_y:");
+        print_array($sop['sop_finalize_y']);
+        print_array("sop_closed_y: ".$sop['sop_closed_y']);
+        print_array("data_response_status:");
+        print_array($sop['data_response_status']);
+        print_array("current user person_region: ".$current_user['person_region']);
         if ($sop['sop_closed_y'] != "1" && is_array($sop['data_response_status'])) {
+            print_array("INSIDE");
             if(array_key_exists($current_user['person_region'],$sop['data_response_status']) && ($sop['data_response_status'][$current_user['person_region']] == "0" || $sop['data_response_status'][$current_user['person_region']] == "1" || $sop['data_response_status'][$current_user['person_region']] == "")){
                 $open_data_calls++;
+                print_array("......open_data_calls++");
             }
         }
     }

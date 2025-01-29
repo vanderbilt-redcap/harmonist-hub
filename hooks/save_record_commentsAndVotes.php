@@ -26,13 +26,15 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $arrayCV[$record][$event_id]['response_regioncode'] = $regions['region_code'];
     }
 
+    error_log("IEDEA - before save record #".$record);
+
     $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
     $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'])[0];
     if(!empty($request)){
         $all_votes_completed = true;
         foreach ($request['responding_region'] as $instanceId => $resp_region){
             if($resp_region == $comment['response_region']){
-
+                error_log("IEDEA - resp_region: ".$resp_region);
                 $array_repeat_instances = array();
                 $aux = array();
                 $aux['responding_region'] = $comment['response_region'];
@@ -53,6 +55,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 $event_id_RM = $Proj->firstEventId;
                 $array_repeat_instances[$comment['request_id']]['repeat_instances'][$event_id_RM]['dashboard_voting_status'][$instanceId] = $aux;
                 $results = \REDCap::saveData($pidsArray['RMANAGER'], 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+                error_log("IEDEA - results: ".json_encode($results));
                 break;
             }
 
