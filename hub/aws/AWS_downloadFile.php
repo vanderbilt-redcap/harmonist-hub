@@ -26,18 +26,9 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                                'credentials' => $credentials
                            ]);
 
-        print_array("record_id: ".$record_id);
-        print_array("DATAUPLOAD PID: ".$pidsArray['DATAUPLOAD']);
-        print_array("record_id DU: ".$request_DU['record_id']);
-        print_array("deleted_y: ".$request_DU['deleted_y']);
-        print_array("isTokenCorrect: ".$module->getSecurityHandler()->isTokenCorrect(
-                        $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
-                    ));
-        print_array("SESSION: ".$_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]);
         if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && $module->getSecurityHandler()->isTokenCorrect(
                 $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
             )) {
-            print_array("INSIDE 1");
             $RecordSetSOP = \REDCap::getData(
                 $pidsArray['SOP'],
                 'array',
@@ -56,7 +47,6 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         $current_user,
                         $array_userid
                     )) !== false)) {
-                print_array("INSIDE 2");
                 try {
                     #Get the object
                     $result = $s3->getObject(array(
