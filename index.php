@@ -16,12 +16,15 @@ $hub_profile = $module->getProjectSetting('hub-profile');
 $pid = $module->getSecurityHandler()->getProjectId();
 $option = $module->getSecurityHandler()->getRequestOption();
 $is_authorized_and_has_rights = false;
+print_array("IN");
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
+    print_array("IN2");
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
     if ($settings['deactivate_datahub___1'] != "1" && !empty(
         $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()]
         )) {
+        print_array("IN3");
         $is_authorized_and_has_rights = true;
         if ($option === 'lge') {
             include('sop_data_activity_log_delete.php');
