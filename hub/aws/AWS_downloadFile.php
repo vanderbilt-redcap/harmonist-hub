@@ -12,6 +12,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
         require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
         require_once ($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
 
+        print_array($secret_iv);
         $code = getCrypt($_REQUEST['code'], "d", $secret_key, $secret_iv);
         $exploded = array();
         parse_str($code, $exploded);
