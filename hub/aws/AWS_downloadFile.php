@@ -18,9 +18,8 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
 
         $record_id = $exploded['id'];
         $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
-        print_array($secret_key);
-        print_array($secret_iv);
-        print_array($record_id);
+
+        print_array("record_id:".$record_id);
         $credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
         $s3 = new S3Client([
                                'version' => 'latest',
