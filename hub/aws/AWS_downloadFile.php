@@ -28,6 +28,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
         if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && isTokenCorrect(
                 $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
             )) {
+            print_array("INSIDE 1");
             $RecordSetSOP = \REDCap::getData(
                 $pidsArray['SOP'],
                 'array',
@@ -46,6 +47,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         $current_user,
                         $array_userid
                     )) !== false)) {
+                print_array("INSIDE 2");
                 try {
                     #Get the object
                     $result = $s3->getObject(array(
