@@ -2,7 +2,9 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
 
-require_once ($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
+require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
+
+print_array($secret_iv);
 
 $request_DU = $module->escape(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null));
 krsort($request_DU);
