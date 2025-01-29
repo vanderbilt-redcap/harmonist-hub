@@ -289,16 +289,16 @@ class SecurityHandler
         return false;
     }
 
-    public function getCredentialsServerVars($type)
+    public function getCredentialsServerVars($type):string
     {
         if (file_exists(
             self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
                 "self::CREDENTIALS_" . strtoupper($type) . "_FILENAME"
             )
         )) {
-            require_once (self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
+            return self::CREDENTIALS_PATH . $this->getPidsArray()['PROJECTS'] . constant(
                     "self::CREDENTIALS_" . strtoupper($type) . "_FILENAME"
-                ));
+                );
         }
     }
 }
