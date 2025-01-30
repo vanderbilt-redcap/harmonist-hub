@@ -112,9 +112,19 @@ class HubUpdates
 
     public static function compareSQL($sqlOld, $sqlNew): array
     {
+        $originalPid = null;
+        $newPid = null;
         foreach (['/project_id\s=\s(\d+)/', '/project_id=(\d+)/', '/\[data-table:(.*?)\]/'] as $pattern) {
             preg_match_all($pattern, $sqlOld, $matchOld);
             preg_match_all($pattern, $sqlNew['sql'], $matchNew);
+
+            if(is_numeric($matchOld[1][0])){
+                $originalPid = $matchOld[1][0];
+            }
+            if(is_numeric($matchNew[1][0])){
+                $newPid = $matchNew[1][0];
+            }
+
             //Change pids in Admins SQL (NEW) to match the old and check for changes again
             foreach ($matchOld[0] as $index => $slqPid) {
                 if (!empty($matchNew[0][$index])) {
@@ -123,6 +133,10 @@ class HubUpdates
                         $pattern_replace = "/\[data-table:" . $matchNew[1][$index] . "\]/";
                     }
                     $sqlNew['sql'] = preg_replace($pattern_replace, $slqPid, $sqlNew['sql'], 1);
+                    #We ensure we are making the changes but keeping the original PID
+                    if($originalPid != $newPid && $originalPid != null && $newPid != null){
+                        $sqlNew['sql'] = str_replace($newPid, $originalPid, $sqlNew['sql']);
+                    }
                 }
             }
         }
