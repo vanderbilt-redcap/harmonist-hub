@@ -308,7 +308,8 @@ if (!empty($allUpdates)) { ?>
                     <a data-toggle="collapse" href="#collapse<?= $constant ?>" id="<?= 'table_' . $constant ?>"
                        class="label label-as-badge-square ">
                         <strong><?php
-                            echo "<span class='table_name'>" . $printData[$constant]['title'] . "</span>"; ?></strong>
+                            $title = $module->framework->getProject($pidsArray[$constant])->getTitle();
+                            echo "<span class='table_name'>" . $title . "</span>"; ?></strong>
                     </a>
                     <form method="POST"
                           action="<?= $module->getUrl('hub-updates/generate_pdf.php') . '&constant=' . $constant ?>"
