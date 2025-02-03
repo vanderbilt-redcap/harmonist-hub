@@ -8,12 +8,12 @@ $record_id = htmlentities($_REQUEST['record'],ENT_QUOTES);
 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" => $record_id));
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
-$dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module, $pidsArray['DATAMODEL']);
+$dataTable = getTablesInfo($module, $pidsArray['DATAMODEL']);
 $tableHtml = "";
 if(!empty($dataTable)) {
     # Get selected rows
-    $tableHtml = \Vanderbilt\HarmonistHubExternalModule\generateTablesHTML_pdf($module, $pidsArray['CODELIST'], $dataTable,$sop['sop_tablefields']);
-    $requested_tables = \Vanderbilt\HarmonistHubExternalModule\generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
+    $tableHtml = generateTablesHTML_pdf($module, $pidsArray, $dataTable,$sop['sop_tablefields']);
+    $requested_tables = generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
 }
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
