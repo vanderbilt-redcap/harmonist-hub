@@ -18,13 +18,6 @@ if($module->getSecurityHandler()->isAuthorizedPage() && $is_authorized_and_has_r
     $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
 }
 
-$request_admin = "";
-if($isAdmin) {
-    $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER']);
-    ArrayFunctions::array_sort_by_column($request_admin, 'requestopen_ts');
-    $numberOfAdminRequest = $module->escape(numberOfAdminRequest($request_admin));
-}
-
 $hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
 $current_user = $hubData->getCurrentUser();
 $name = $current_user['firstname'].' '.$current_user['lastname'];
@@ -32,6 +25,13 @@ $person_region = $hubData->getPersonRegion();
 $isAdmin = $current_user['is_admin'];
 if($settings['hub_name'] !== ""){
     $hub_projectname = $settings['hub_name'];
+}
+
+$request_admin = "";
+if($isAdmin) {
+    $request_admin = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER']);
+    ArrayFunctions::array_sort_by_column($request_admin, 'requestopen_ts');
+    $numberOfAdminRequest = $module->escape(numberOfAdminRequest($request_admin));
 }
 
 #Hide/Show Projects Tab
