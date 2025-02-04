@@ -11,7 +11,7 @@ function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $actio
 
         REDCapManagement::getEnvironment();
         $environment = "";
-        if (defined('ENVIRONMENT') && (ENVIRONMENT == 'DEV' || ENVIRONMENT == 'TEST')) {
+        if (ENVIRONMENT == 'TEST') {
             $environment = " " . ENVIRONMENT;
         }
 
