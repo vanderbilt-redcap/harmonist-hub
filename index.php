@@ -12,8 +12,9 @@ define('APP_PATH_WEBROOT_ALL', APP_PATH_WEBROOT_FULL . $APP_PATH_WEBROOT_ALL);
 
 $hub_projectname = $module->getProjectSetting('hub-projectname');
 $hub_profile = $module->getProjectSetting('hub-profile');
-
+error_log("IEDEA - INDEX: ".__DIR__);
 $pid = $module->getSecurityHandler()->getProjectId();
+error_log("IEDEA - INDEX2 ".__DIR__);
 $option = $module->getSecurityHandler()->getRequestOption();
 $is_authorized_and_has_rights = false;
 if ($module->getSecurityHandler()->isAuthorizedPage()) {

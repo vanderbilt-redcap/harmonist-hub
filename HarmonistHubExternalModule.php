@@ -509,7 +509,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     public function getSecurityHandler(): SecurityHandler
     {
         if (!$this->securityHandler) {
-            error_log(__DIR__ . "/classes/SecurityHandler.php");
+            error_log("IEDEA - path: ".__DIR__ . "/classes/SecurityHandler.php");
             $this->securityHandler = new SecurityHandler($this,(int)$_GET['pid']);
         }
         $this->securityHandler->setRequestOption($this->escape($_REQUEST[SecurityHandler::SESSION_OPTION_STRING]));
