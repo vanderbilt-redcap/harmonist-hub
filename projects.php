@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-error_log("IEDEA - projects: ".__DIR__);
+
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
