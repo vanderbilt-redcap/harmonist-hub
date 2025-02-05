@@ -46,11 +46,13 @@ class ProjectData
                                     if ($value != "" && (!is_array($value) || (is_array($value) && !empty($value)))) {
                                         $datarepeat[$field_name][$instance] = $value;
                                         $count = 0;
-                                        foreach ($filterLogic as $filterkey => $filtervalue) {
-                                            if ($value == $filtervalue && $field_name == $filterkey) {
-                                                $found[$count] = true;
+                                        if(is_array($filterLogic)) {
+                                            foreach ($filterLogic as $filterkey => $filtervalue) {
+                                                if ($value == $filtervalue && $field_name == $filterkey) {
+                                                    $found[$count] = true;
+                                                }
+                                                $count++;
                                             }
-                                            $count++;
                                         }
                                     }
                                     if (ProjectData::isCheckbox($field_name, $project_id) && $value[1] !== "") {
