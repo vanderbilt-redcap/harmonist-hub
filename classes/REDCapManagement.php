@@ -83,9 +83,12 @@ class REDCapManagement {
         $projects_array = array_merge(self::getProjectsConstantsArray(),self::getSurveyConstantsArray());
         $pidsArray = array();
         foreach ($projects_array as $constant){
-            $pid = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='".$constant."'")[0]['project_id'];
-            if($pid !== ""){
-                $pidsArray[$constant] = $pid;
+            $pid_array = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='".$constant."'");
+            if(!empty($pid_array) && is_array($pid_array) && is_array($pid_array[0]) && array_key_exists('project_id', $pid_array[0])){
+                $pid = $pid_array[0]['project_id'];
+                if($pid !== ""){
+                    $pidsArray[$constant] = $pid;
+                }
             }
         }
         $pidsArray['PROJECTS'] = $project_id;
