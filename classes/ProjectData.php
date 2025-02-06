@@ -46,7 +46,7 @@ class ProjectData
                                     if ($value != "" && (!is_array($value) || (is_array($value) && !empty($value)))) {
                                         $datarepeat[$field_name][$instance] = $value;
                                         $count = 0;
-                                        if(is_array($filterLogic)) {
+                                        if(is_array($filterLogic) && !empty($filterLogic)) {
                                             foreach ($filterLogic as $filterkey => $filtervalue) {
                                                 if ($value == $filtervalue && $field_name == $filterkey) {
                                                     $found[$count] = true;
@@ -81,11 +81,13 @@ class ProjectData
                     $array[$index] = $data;
                     foreach ($data as $fname => $fvalue) {
                         $count = 0;
-                        foreach ($filterLogic as $filterkey => $filtervalue) {
-                            if ($fvalue == $filtervalue && $fname == $filterkey) {
-                                $found[$count] = true;
+                        if(is_array($filterLogic) && !empty($filterLogic)) {
+                            foreach ($filterLogic as $filterkey => $filtervalue) {
+                                if ($fvalue == $filtervalue && $fname == $filterkey) {
+                                    $found[$count] = true;
+                                }
+                                $count++;
                             }
-                            $count++;
                         }
                     }
                 }
