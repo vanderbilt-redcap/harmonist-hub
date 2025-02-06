@@ -1443,7 +1443,9 @@ function generateRequestedTablesList_pdf($dataTable,$fieldsSelected){
  * @param $dataTable, Tables and Variables information
  * @return string, the html content
  */
-function generateTablesHTML_steps($pidCodeList,$dataTable){
+function generateTablesHTML_steps($pidsArray,$dataTable){
+    $pidCodeList = $pidsArray['CODELIST'];
+    $desUrl = APP_PATH_WEBROOT_FULL."external_modules/?prefix=data-model-browser&page=browser&NOAUTH&pid=".$pidsArray['DES'];
     $tableHtml = "";
     foreach ($dataTable as $data) {
         if (!empty($data['record_id'])) {
@@ -1460,7 +1462,7 @@ function generateTablesHTML_steps($pidCodeList,$dataTable){
 
                     $record_varname_header = empty($id) ? $data['record_id'] . '_1' : $data['record_id'] . '_' . $id;
 
-                    $htmlHeader = '<div class="panel panel-default preview" style="display:none;" record_id="'. $record_varname_header .'"><div class="panel-heading" style="display:none;" record_id="'. $record_varname_header .'" parent_table_header="'.$data['record_id'].'"><span style="font-size:16px"><strong><a href="http://redcap.vumc.org/plugins/iedea/des/index.php?tid='.$data['record_id'].'&page=variables"  name="anchor_'.$data['record_id'].'" target="_blank" style="text-decoration:none" class="label label-as-badge des-'.$data['table_category'].'">'.$data["table_name"].'</span></a> '.$table_draft_text.'</strong> - '.$data['table_definition'];
+                    $htmlHeader = '<div class="panel panel-default preview" style="display:none;" record_id="'. $record_varname_header .'"><div class="panel-heading" style="display:none;" record_id="'. $record_varname_header .'" parent_table_header="'.$data['record_id'].'"><span style="font-size:16px"><strong><a href="'.$desUrl.'&tid='.$data['record_id'].'&option=variables"  name="anchor_'.$data['record_id'].'" target="_blank" style="text-decoration:none" class="label label-as-badge des-'.$data['table_category'].'">'.$data["table_name"].'</span></a> '.$table_draft_text.'</strong> - '.$data['table_definition'];
                     if (array_key_exists('text_top', $data) && !empty($data['text_top']) && $data['text_top'] != ""){
                         $htmlHeader .= '<div  style="border-color: white;font-style: italic;display:none" parent_table_header="'. $data['record_id'] .'">'.$data["text_top"].'</div>';
                     }
@@ -1490,7 +1492,7 @@ function generateTablesHTML_steps($pidCodeList,$dataTable){
                 if ($data['variable_status'][$id] != "2") {
                     #We add the Content rows
                     $tableHtml .= '<tr record_id="' . $record_varname_id . '" style="' . $variable_status . 'display:none;">
-                            <td style="padding: 5px"><a href="http://redcap.vumc.org/plugins/iedea/des/index.php?tid=' . $data['record_id'] . '&vid=' . $id . '&page=variableInfo" target="_blank" style="text-decoration:none">' . $record_varname . '</a></td>
+                            <td style="padding: 5px"><a href="'.$desUrl.'&tid='.$data['record_id'].'&vid=' . $id . '&option=variableInfo" target="_blank" style="text-decoration:none">' . $record_varname . '</a></td>
                             <td style="width:160px;padding: 5px">';
 
 
@@ -1547,7 +1549,9 @@ function generateTablesHTML_steps($pidCodeList,$dataTable){
  * @param $fieldsSelected, the selected fields
  * @return string, the html content
  */
-function generateTablesHTML_pdf($module, $pidCodeList, $dataTable,$fieldsSelected){
+function generateTablesHTML_pdf($module, $pidsArray, $dataTable,$fieldsSelected){
+    $pidCodeList = $pidsArray['CODELIST'];
+    $desUrl = APP_PATH_WEBROOT_FULL."external_modules/?prefix=data-model-browser&page=browser&NOAUTH&pid=".$pidsArray['DES'];
     $fieldsSelected = explode(',',$fieldsSelected);
     $tableHtml = "";
     $table_counter = 0;
@@ -1590,7 +1594,7 @@ function generateTablesHTML_pdf($module, $pidCodeList, $dataTable,$fieldsSelecte
                         }
                         $table_counter++;
 
-                        $htmlHeader = $breakLine.'<p style="'.$table_draft.'"><span style="font-size:16px"><strong><a href="http://redcap.vumc.org/plugins/iedea/des/index.php?tid='.$data['record_id'].'&page=variables" name="anchor_'.$data['record_id'].'" target="_blank" style="text-decoration:none">'.$data["table_name"].'</a></span> '.$table_draft_text.'</strong> - '.$data['table_definition'].'</p>';
+                        $htmlHeader = $breakLine.'<p style="'.$table_draft.'"><span style="font-size:16px"><strong><a href="'.$desUrl.'&tid='.$data['record_id'].'&option=variables" name="anchor_'.$data['record_id'].'" target="_blank" style="text-decoration:none">'.$data["table_name"].'</a></span> '.$table_draft_text.'</strong> - '.$data['table_definition'].'</p>';
                         if (array_key_exists('text_top', $data) && !empty($data['text_top']) && $data['text_top'] != ""){
                             $htmlHeader .= '<div  style="border-color: white;font-style: italic">'.$data["text_top"].'</div>';
                         }
@@ -1618,7 +1622,7 @@ function generateTablesHTML_pdf($module, $pidCodeList, $dataTable,$fieldsSelecte
 
                     #We add the Content rows
                     $tableHtml .='<tr record_id="'.$data["record_id"].'" '.$variable_status.'>
-                                <td style="padding: 5px"><a href="http://redcap.vumc.org/plugins/iedea/des/index.php?tid='.$data['record_id'].'&vid='.$id.'&page=variableInfo" target="_blank" style="text-decoration:none">'.$record_varname.'</a></td>
+                                <td style="padding: 5px"><a href="'.$desUrl.'tid='.$data['record_id'].'&vid='.$id.'&option=variableInfo" target="_blank" style="text-decoration:none">'.$record_varname.'</a></td>
                                 <td style="width:160px;padding: 5px">';
 
                     $dataFormat = $dataTable['data_format_label'][$data['data_format'][$id]];

@@ -29,7 +29,7 @@ $dataTable = getTablesInfo($module, $pidsArray['DATAMODEL']);
 $tableHtml = "";
 if(!empty($dataTable)) {
     # Get selected rows
-    $tableHtml = generateTablesHTML_pdf($module, $pidsArray['CODELIST'], $dataTable,$sop['sop_tablefields']);
+    $tableHtml = generateTablesHTML_pdf($module, $pidsArray, $dataTable,$sop['sop_tablefields']);
     $requested_tables = generateRequestedTablesList_pdf($dataTable,$sop['sop_tablefields']);
 
     $dataTable = getTablesInfo($module, $pidsArray['DATAMODEL']);

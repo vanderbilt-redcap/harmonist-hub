@@ -46,6 +46,10 @@ class REDCapManagement {
         return ['METRICS', 'SETTINGS', 'PEOPLE', 'HARMONIST', 'COMMENTSVOTES', 'RMANAGER', 'DATAUPLOAD', 'DATADOWNLOAD', 'EXTRAOUTPUTS', 'REGIONS', 'SOP', 'DATAMODEL'];
     }
 
+    public static function getExtraConstantsArray(){
+        return ['DES'];
+    }
+
     public static function getProjectConstantsArrayWithoutDeactivatedProjects(){
         $projects_array = self::getProjectsConstantsArray();
         $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];

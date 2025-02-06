@@ -1,12 +1,15 @@
+<?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+?>
 <div id="loader" style="display:none;"></div>
 
-<?PHP
-$dataTable = \Vanderbilt\HarmonistHubExternalModule\getTablesInfo($module, $pidsArray['DATAMODEL']);
+<?php
+$dataTable = getTablesInfo($module, $pidsArray['DATAMODEL']);
 $tableHtml = "";
 if(!empty($dataTable)) {
     # Get selected rows
-    $tableHtml = \Vanderbilt\HarmonistHubExternalModule\generateTablesHTML_steps($pidsArray['CODELIST'], $dataTable);
-    $requested_tables = \Vanderbilt\HarmonistHubExternalModule\generateRequestedTablesList($dataTable);
+    $tableHtml = generateTablesHTML_steps($pidsArray, $dataTable);
+    $requested_tables = generateRequestedTablesList($dataTable);
 }
 
 #FIRST PAGE
