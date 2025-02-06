@@ -80,7 +80,7 @@ class REDCapManagement {
     }
 
     public static function getPIDsArray($project_id, $option = ""){
-        $projects_array = array_merge(self::getProjectsConstantsArray(),self::getSurveyConstantsArray());
+        $projects_array = array_merge(self::getProjectsConstantsArray(),self::getSurveyConstantsArray(), self::getExtraConstantsArray());
         $pidsArray = array();
         foreach ($projects_array as $constant){
             $pid_array = \REDCap::getData($project_id, 'json-array', null,array('project_id'),null,null,false,false,false,"[project_constant]='".$constant."'");
