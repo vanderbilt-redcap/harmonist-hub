@@ -28,9 +28,11 @@ class ProjectData
         }
         foreach ($records as $record => $record_array) {
             $count = 0;
-            foreach ($filterLogic as $filterkey => $filtervalue) {
-                $found[$count] = false;
-                $count++;
+            if(is_array($filterLogic) && !empty($filterLogic)) {
+                foreach ($filterLogic as $filterkey => $filtervalue) {
+                    $found[$count] = false;
+                    $count++;
+                }
             }
             foreach ($record_array as $event => $data) {
                 if ($event == 'repeat_instances') {
