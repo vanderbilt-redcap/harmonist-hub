@@ -3,10 +3,6 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 require_once "projects.php";
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
-$encrypt_path = $module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION");
-if($encrypt_path != null)
-    require_once ($encrypt_path);
-
 $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 $exploded = array();
 parse_str($code, $exploded);
