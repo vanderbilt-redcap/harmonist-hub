@@ -13,7 +13,6 @@ use ReflectionClass;
 include_once(__DIR__ . "/classes/REDCapManagement.php");
 include_once(__DIR__ . "/classes/ArrayFunctions.php");
 include_once(__DIR__ . "/classes/ProjectData.php");
-include_once(__DIR__ . "/classes/CopyJSON.php");
 include_once(__DIR__ . "/classes/HubUpdates.php");
 include_once(__DIR__ . "/classes/SecurityHandler.php");
 include_once(__DIR__ . "/functions.php");
@@ -313,7 +312,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 if (!$disable_crons) {
                     #Get Projects ID's
                     $pidsArray = REDCapManagement::getPIDsArray($project_id, "cron");
-                    if (!empty($pidsArray) && is_array($pidsArray) && $pidsArray['SETTINGS'] !== "") {
+                    if (!empty($pidsArray) && is_array($pidsArray) && is_numeric($pidsArray['SETTINGS'])) {
                         $settings = REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
                         if (!empty($settings)) {
                             try {
@@ -333,8 +332,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                                     include("crontasks/cron_req_finalized_notification.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_publications') {
                                     include("crontasks/cron_publications.php");
-                                } elseif ($cronAttributes['cron_name'] == 'cron_json') {
-                                    include("crontasks/cron_json.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
                                     include("crontasks/cron_upload_pending_data_set_data.php");
                                 }

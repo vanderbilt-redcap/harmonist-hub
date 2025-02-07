@@ -87,16 +87,19 @@ class AllCrons
                 }
 
                 $downloaders_list = "";
+                $downloadersOrdered = array();
                 if ($sop['sop_downloaders'] !== "") {
                     $downloaders = explode(',', $sop['sop_downloaders']);
                     $number_downloaders = count($downloaders);
                     $messageArray['numDownloaders'] = $number_downloaders;
 
-                    $downloadersOrdered = array();
                     foreach ($downloaders as $down) {
                         if ($peopleDown == null) {
                             $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
-                            $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDownData['person_region']),array('region_code'))[0]['region_code'];
+                            $region_codeDown = null;
+                            if(!empty($peopleDownData['person_region'])) {
+                                $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDownData['person_region']), array('region_code'))[0]['region_code'];
+                            }
                         } else {
                             $region_codeDown = "TT";
                             $peopleDownData = $peopleDown[$down];
@@ -139,7 +142,7 @@ class AllCrons
 
                 }
                 #Data Downloaders email
-                if ($downloadersOrdered !== "") {
+                if (is_array($downloadersOrdered) && !empty($downloadersOrdered)) {
                     $date = new \DateTime($upload['responsecomplete_ts']);
                     $date->modify("+1 hours");
                     $date_time = $date->format("Y-m-d H:i");
@@ -698,13 +701,6 @@ class AllCrons
         return $message;
     }
 
-    public static function runCronJson($module, $pidsArray, $settings, $email = false)
-    {
-        CopyJSON::hasJsoncopyBeenUpdated($module, '0a', $settings, $pidsArray);
-        CopyJSON::hasJsoncopyBeenUpdated($module, '0b', $settings, $pidsArray);
-        CopyJSON::hasJsoncopyBeenUpdated($module, '0c', $settings, $pidsArray);
-    }
-
     public static function sendEmailToday($upload, $extra_days_delete, $extra_days, $extra_days2)
     {
         $today = date('Y-m-d');
@@ -721,11 +717,13 @@ class AllCrons
 
     public static function getDownloadersOrdered($down, $downloadersOrdered, $peopleDown, $region_codeDown)
     {
-        $downloadersOrdered[$down]['name'] = $peopleDown['firstname'] . " " . $peopleDown['lastname'];
-        $downloadersOrdered[$down]['email'] = $peopleDown['email'];
-        $downloadersOrdered[$down]['region_code'] = "(" . $region_codeDown . ")";
-        $downloadersOrdered[$down]['id'] = $peopleDown['record_id'];
-        $downloadersOrdered[$down]['firstname'] = $peopleDown['firstname'];
+        if(is_array($peopleDown) && !empty($peopleDown)) {
+            $downloadersOrdered[$down]['name'] = $peopleDown['firstname'] . " " . $peopleDown['lastname'];
+            $downloadersOrdered[$down]['email'] = $peopleDown['email'];
+            $downloadersOrdered[$down]['region_code'] = "(" . $region_codeDown . ")";
+            $downloadersOrdered[$down]['id'] = $peopleDown['record_id'];
+            $downloadersOrdered[$down]['firstname'] = $peopleDown['firstname'];
+        }
 
         return $downloadersOrdered;
     }
