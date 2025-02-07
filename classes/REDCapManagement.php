@@ -511,14 +511,14 @@ class REDCapManagement {
 
     public static function getEnvironment(){
         if(!defined("ENVIRONMENT")) {
-            if (preg_match("/vanderbilt.edu/i", SERVER_NAME) || preg_match("/vumc.org/i", SERVER_NAME)) {
+            if (preg_match("/vumc.org/i", SERVER_NAME)) {
                 #Other institutions
                 define("ENVIRONMENT", "PROD");
             } else {
-                if (SERVER_NAME == "redcap.vanderbilt.edu" || SERVER_NAME == "redcap.vumc.org") {
+                if (SERVER_NAME == "redcap.vumc.org") {
                     define("ENVIRONMENT", "PROD");
                 } else {
-                    if (SERVER_NAME == "redcaptest.vanderbilt.edu" || SERVER_NAME == "redcaptest.vumc.org") {
+                    if (SERVER_NAME == "redcaptest.vumc.org") {
                         define("ENVIRONMENT", "TEST");
                     } else {
                         define("ENVIRONMENT", "DEV");
