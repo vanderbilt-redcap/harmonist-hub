@@ -61,7 +61,7 @@ foreach ($projects_array as $index=>$name){
             $module->addProjectToList($project_id_new, $rowtype['event_id'], 1, 'deactivate_toolkit', 1);
         }else if($hub_profile == 'all'){
             #We show everything
-            if(SERVER_NAME == 'redcap.vanderbilt.edu' || SERVER_NAME == "redcap.vumc.org") {
+            if(SERVER_NAME == "redcap.vumc.org") {
                 #We send an email with a list of things to set up only in the Vardebilt server
                 $subject = "Data Toolkit activation request for " . $hub_projectname . " Hub";
                 $message = "<div>Dear Administrator,</div><br/>" .
