@@ -312,7 +312,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 if (!$disable_crons) {
                     #Get Projects ID's
                     $pidsArray = REDCapManagement::getPIDsArray($project_id, "cron");
-                    if (!empty($pidsArray) && is_array($pidsArray) && $pidsArray['SETTINGS'] !== "") {
+                    if (!empty($pidsArray) && is_array($pidsArray) && is_numeric($pidsArray['SETTINGS'])) {
                         $settings = REDCap::getData($pidsArray['SETTINGS'], 'json-array', null)[0];
                         if (!empty($settings)) {
                             try {
