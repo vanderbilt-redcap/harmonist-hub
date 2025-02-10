@@ -456,7 +456,9 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                     </table>
                 </div>
             </div>
-
+<?php
+print_array($_SESSION['token']);
+?>
             <div class="modal fade" id="modal-publications-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
                 <form class="form-horizontal" action="" method="post" id='dataPubForm'>
                     <div class="modal-dialog" role="document">
