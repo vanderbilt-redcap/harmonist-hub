@@ -78,8 +78,6 @@ if($hub_projectname != '' && $hub_profile != ''){
                 }
 
                 $token = $module->getSecurityHandler()->getTokenSession();
-                print_array($option);
-                print_array($_SESSION['token']);
 
                 if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'dfq'){
                     //No header
