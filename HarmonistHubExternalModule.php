@@ -149,18 +149,14 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             #Depending on the project we add one hook or another
             if ($project_id == $pidsArray['SOP']) {
                 include_once("hooks/save_record_SOP.php");
-            } else {
-                if ($project_id == $pidsArray['RMANAGER']) {
-                    include_once("hooks/save_record_requestManager.php");
-                } else {
-                    if ($project_id == $pidsArray['COMMENTSVOTES']) {
-                        include_once("hooks/save_record_commentsAndVotes.php");
-                    } else {
-                        if ($project_id == $pidsArray['SOPCOMMENTS']) {
-                            include_once("hooks/save_record_SOP_comments.php");
-                        }
-                    }
-                }
+            } else if ($project_id == $pidsArray['RMANAGER']) {
+                include_once("hooks/save_record_requestManager.php");
+            } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
+                include_once("hooks/save_record_commentsAndVotes.php");
+            } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
+                include_once("hooks/save_record_SOP_comments.php");
+            } else if ($project_id == $pidsArray['HARMONIST']) {
+                include_once("hooks/save_record_concept_sheet.php");
             }
             echo '<script>';
             include_once("js/iframe.js");
