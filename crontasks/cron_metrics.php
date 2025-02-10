@@ -57,13 +57,13 @@ foreach ($publications as $outputs) {
         foreach ($outputs['output_type'] as $index => $output_type) {
             if ($output_type == '1') {
                 $number_publications++;
-                if ($outputs['output_year'][$index] == $date->format('Y')) {
+                if (is_array($outputs['output_year']) && array_key_exists($index,$outputs['output_year']) && $outputs['output_year'][$index] == $date->format('Y')) {
                     $number_publications_year++;
                 }
             } else {
                 if ($output_type == '2') {
                     $number_abstracts++;
-                    if ($outputs['output_year'][$index] == $date->format('Y')) {
+                    if (is_array($outputs['output_year']) && array_key_exists($index,$outputs['output_year']) && $outputs['output_year'][$index] == $date->format('Y')) {
                         $number_abstracts_year++;
                     }
                 }
