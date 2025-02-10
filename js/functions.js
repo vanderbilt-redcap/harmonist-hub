@@ -1220,6 +1220,7 @@ function selectTag(value){
 }
 
 function runPubsCron(url){
+    console.log(url)
     $('#pubsSpinner').show();
     $('#btndataPubForm').attr('disabled','disabled');
     $.ajax({
