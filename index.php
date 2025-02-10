@@ -15,8 +15,7 @@ $hub_profile = $module->getProjectSetting('hub-profile');
 
 $pid = $module->getSecurityHandler()->getProjectId();
 $option = $module->getSecurityHandler()->getRequestOption();
-print_array($option);
-print_array($_SESSION['token']);
+
 $is_authorized_and_has_rights = false;
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
@@ -79,6 +78,8 @@ if($hub_projectname != '' && $hub_profile != ''){
                 }
 
                 $token = $module->getSecurityHandler()->getTokenSession();
+                print_array($option);
+                print_array($_SESSION['token']);
 
                 if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'dfq'){
                     //No header
