@@ -86,6 +86,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                 ?>
                 <div class="container" style="margin: 0 auto;float:none;min-height: 900px;">
                     <?php
+                    print_array($_SESSION['token']);
                     if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'map' )
                     {
                         include('map/index.php');
