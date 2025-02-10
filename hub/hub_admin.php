@@ -458,7 +458,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             </div>
 
             <div class="modal fade" id="modal-publications-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
-                <form class="form-horizontal" action="" method="post" id='dataPubForm'>
+<!--                <form class="form-horizontal" action="" method="post" id='dataPubForm'>-->
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -478,12 +478,12 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <a type="submit" onclick="runPubsCron('<?=$module->getUrl('crontasks/cron_publications.php')?>')" class="btn btn-default btn-success" id='btndataPubForm'>Continue</a>
+                                <a href="#" onclick="runPubsCron('<?=$module->getUrl('crontasks/cron_publications.php')?>')" class="btn btn-default btn-success" id='btndataPubForm'>Continue</a>
                                 <a href="#" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</a>
                             </div>
                         </div>
                     </div>
-                </form>
+<!--                </form>-->
             </div>
         </div>
 
