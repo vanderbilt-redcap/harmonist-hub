@@ -53,7 +53,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
     ?>
     <div class="pull-right">
-        <p><a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mts"?>">View Hub Statistics</a> | <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=mra&type=a")?>">View Archived Requests</a></p>
+        <p><a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mts"?>">View Hub Statistics</a> | <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&NOAUTH&option=mra&type=a")?>">View Archived Requests</a></p>
     </div>
 </div>
 <div class="container">
