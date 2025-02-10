@@ -1233,7 +1233,7 @@ function runPubsCron(url){
             $('#pubsSpinner').hide();
             $('#btndataPubForm').removeAttr('disabled');
             $('#modal-publications-confirmation').hide();
-            // window.location.href = getMessageLetterUrl(window.location.href, "P");
+            window.location.href = getMessageLetterUrl(window.location.href, "P");
         }
     });
 }
