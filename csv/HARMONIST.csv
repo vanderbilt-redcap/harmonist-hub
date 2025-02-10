@@ -1,4 +1,4 @@
-"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+﻿"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
 record_id,concept_sheet,,text,"Record ID",,,,,,,,,,,,,
 header_txt,concept_sheet,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Concept ID & Title</h3></div>",,,,,,,,,,,,,
 active_y,concept_sheet,,radio,"<div style=""color:black; text-align:center; border: 1px #d35400; background-color: #e67e22; padding:6px; max-width:800px;"">Active Concept?</div>","Y, Yes|N, No",,,,,,,,RH,,,,
@@ -15,8 +15,8 @@ concept_word,concept_sheet,,file,"Concept Sheet Word File (DOC)
 datasop_file,concept_sheet,,file,"Data Request Document (or other Associated File)",,,,,,,,,,,,,
 contact_txt,concept_sheet,,descriptive,"<div style=""color:white; text-align:center; border: 1px #3498db; background-color: #2980b9;""><h3 style=""margin:0px; padding:10px"">Contact Person</h3></div>",,,,,,,,,,,,,
 contact_note,concept_sheet,,descriptive,"The person(s) listed here will receive the quarterly ""request for status update"" emails. This person is the most suited to receive these emails and may or may not be the actual concept lead. Concept lead(s) and other co-investigators should be listed on the next form.",,,,,,,,,,,,,
-contact_link,concept_sheet,,sql,"Contact Person","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,,,,,
-contact2_link,concept_sheet,,sql,"Secondary Contact Person","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,,,,,
+contact_link,concept_sheet,,sql,"Contact Person","SELECT a.record, CONCAT_WS(' ', CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'), CONCAT('< ' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value FROM [data-table:2128] a WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,,,,,
+contact2_link,concept_sheet,,sql,"Secondary Contact Person","SELECT a.record, CONCAT_WS(' ', CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'), CONCAT('< ' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value FROM [data-table:2128] a WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,,,,,
 contact_emailonly,concept_sheet,,text,"Additional Email-only Contact 
 <div style=""font-weight:lighter; font-style:italic"">(not linked to Harmonist Hub)</div>",,,email,,,,,,,,,,
 details_txt,concept_sheet,,descriptive,"<div style=""color:white; text-align:center; border: 1px #1abc9c; background-color: #16a085;""><h3 style=""margin:0px; padding:10px"">Concept Details</h3></div>",,,,,,,,,,,,,
@@ -27,6 +27,7 @@ wg2_link,concept_sheet,,sql,"Secondary Working Group<span style=""font-weight:li
 wg3_link,concept_sheet,,sql,"Third Working Group<span style=""font-weight:lighter; font-style:italic"">","SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=2129 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
 wg4_link,concept_sheet,,sql,"Fourth Working Group<span style=""font-weight:lighter; font-style:italic"">","SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM redcap_data a WHERE a.project_id=2129 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
 lead_region,concept_sheet,,sql,"Research Group of Concept Leader","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=2127 GROUP BY a.record  ORDER BY value",,,,,,,,,,,,
+concept_member_selection,concept_sheet,,notes,"<div class=""rich-text-field-label""><p>Selection of Writing Group Members</p> <p><span style=""font-weight: normal;""><em>(Entered manually or piped in from H2: Requests during concept sheet record creation)</em></span></p></div>",,,,,,,,,,,,,
 people_txt,participants,,descriptive,"<div style=""color:white; text-align:center; border: 1px #3498db; background-color: #2980b9;""><h3 style=""margin:0px; padding:10px"">Key Participant or Author</h3></div>",,,,,,,,,,,,,
 person_role,participants,,dropdown,"Role in Project","1, Concept Lead (or co-Lead) | 2, Senior Author | 3, Statistician | 4, Data Manager | 5, Investigator/Regional Representative | 6, Other",,,,,,,,,,,,
 person_link,participants,,sql,"Person (SQL link to Persons Project)","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,,,,,
@@ -83,3 +84,176 @@ doc_description,linked_documents,,notes,"Description
 <div style=""font-weight:lighter;font-style:italic"">(optional) Provide a brief description of the document. This text will be displayed on the Hub interface.</div>",,,,,,,,,LV,,,,
 doc_file,linked_documents,,file,"File Upload
 <div style=""font-weight:lighter;font-style:italic"">Use a ZIP to combine multiple files</div>",,,,,,,,,LV,,,,
+cmember_instructions_txt,writing_group_core,,descriptive,"<div class=""rich-text-field-label""><p><span style=""font-weight: normal;"">You are adding/editing an <span style=""font-weight: bold;"">additional co-author or participant </span>on the mailing list for the following project.</span></p> <p style=""padding-left: 40px;""><span style=""font-weight: normal; color: #0679c6;""><strong>[concept_id]: </strong>[concept_title] </span></p> <p style=""padding-left: 40px;""><span style=""color: #0679c6;"">Contact:<span style=""font-weight: normal;""> [contact_link]</span></span></p></div>",,,,,,,,,,,,,
+cmember_guidance_txt,writing_group_core,,descriptive,"<div class=""rich-text-field-label""><p>Guidance from Concept Lead about writing group member selection (if applicable):<br><span style=""font-weight: normal;"">[concept_member_selection]</span></p></div>",,,,,,,,,,,,,
+cmember_txt,writing_group_core,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none;""><colgroup><col style=""width: 60%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: left;"">Writing Group Member</td> <td style=""border-color: #ecf0f1; text-align: left;"">This Person is not a Hub Member</td> </tr> </tbody> </table></div>",descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none;""><colgroup><col style=""width: 60%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td>{cmember_link}</td> <td style=""vertical-align: middle;"">{cmember_nh}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+cmember_txtnh,writing_group_core,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 33.3491%;""><col style=""width: 33.3491%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td>First Name</td> <td>Last Name</td> <td>E-mail Address</td> </tr> <tr style=""height: 40px;""> <td>{cmember_firstname}</td> <td>{cmember_lastname}</td> <td>{cmember_email}</td> </tr> </tbody> </table></div>",,,,,,,"[cmember_nh(1)] = '1'",,,,,,
+cmember_role,writing_group_core,,dropdown,"<div class=""rich-text-field-label""><p>Role of Writing Group Member</p></div>","1, Lead team | 2, Harmonist rep | 3, SAWG rep | 4, AYANI Data Center rep | 10, Appeal slot | 11, Expert contributor | 12, External collaborator | 13, Protocol chair | 98, Admin support (non-author) | 99, Other",,,,,,,,LV,,,,
+cmember_link,writing_group_core,,sql,"Writing Group Member","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[cmember_nh(1)] != ""1""",,,,,,
+cmember_nh,writing_group_core,,checkbox,"This person is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+cmember_firstname,writing_group_core,,text,"First Name",,,,,,,,,,,,,
+cmember_lastname,writing_group_core,,text,"Last Name",,,,,,,,,,,,,
+cmember_email,writing_group_core,,text,"E-mail Address",,,email,,,,,,,,,,
+cmember_notes,writing_group_core,,notes,"<div class=""rich-text-field-label""><p>Notes<br><em><span style=""font-weight: normal;"">(optional)</span></em></p></div>",,,,,,,,,,,,," @HIDDEN-SURVEY"
+gmember_instructions_txt,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><p><span style=""font-weight: normal;"">Please identify up to </span>FOUR (4)<span style=""font-weight: normal;""> </span>co-authors for your region <span style=""font-weight: normal;"">who will serve as contributors and regional representatives on the following project.</span></p> <p style=""padding-left: 40px;""><span style=""font-weight: normal; color: #0679c6;""><strong>[concept_id]: </strong>[concept_title] </span></p> <p style=""padding-left: 40px;""><span style=""color: #0679c6;"">Contact:<span style=""font-weight: normal;""> [contact_link]</span></span></p> <p><span style=""font-weight: normal;"">List them </span>in the order in which they are to appear on the byline/masthead <span style=""font-weight: normal;"">or in a collaborator list. In the case of abstracts or papers where authorship is limited, Concept Leads will include regional co-authors in the byline/masthead in the priority order provided by the region up to the allowable number.</span></p></div>",,,,,,,,,,,,,
+gmember_guidance_txt,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><p>Guidance from Concept Lead about writing group member selection (if applicable):<br><span style=""font-weight: normal;"">[concept_member_selection]</span></p></div>",,,,,,,,,,,,,
+gmember_role,writing_group_by_research_group,,sql,"Research Group","SELECT a.record, CONCAT( max(if(a.field_name = 'region_name', a.value, NULL)), ' (', max(if(a.field_name = 'region_code', a.value, NULL)), ') ' ) as value FROM [data-table:795] a WHERE a.project_id=795 GROUP BY a.record ORDER BY value",,,,,,,,,,,,
+gmember_error1,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><div class=""red"" style=""text-align: center;"">Please <strong>erase the value in the dropdown</strong>, otherwise that person will be added instead.</div> <div class=""red"" style=""text-align: center;"">If you need to update the name or e-mail listed in the Hub Member drop down, please contact your Hub Administrator. Completing the author information will not update their information in the Hub.</div></div>",,,,,,,"[gmember_link_1] != """" and [gmember_nh_1(1)] = '1'",,,,,,
+gmember_txt_1,writing_group_by_research_group,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: left;"">Author<br>Order</td> <td style=""border-color: #ecf0f1; text-align: left;""> Author Name</td> <td style=""border-color: #ecf0f1; text-align: left;"">This Author is not a Hub Member</td> </tr> </tbody> </table></div>",descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none; margin-left: auto; margin-right: auto;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: center;"">1</td> <td style=""border-color: #ecf0f1;"">{gmember_link_1}</td> <td style=""border-color: #ecf0f1;"">{gmember_nh_1}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+gmember_txtnh_1,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 30%;""><col style=""width: 30%;""><col style=""width: 30%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">First Name</td> <td style=""border-color: #ecf0f1;"">Last Name</td> <td style=""border-color: #ecf0f1;"">E-mail Address</td> </tr> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">{gmember_firstname_1}</td> <td style=""border-color: #ecf0f1;"">{gmember_lastname_1}</td> <td style=""border-color: #ecf0f1;"">{gmember_email_1}</td> </tr> </tbody> </table></div>",,,,,,,"[gmember_nh_1(1)] = '1'",,,,,,
+gmember_txt_2,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none; margin-left: auto; margin-right: auto;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: center;"">2</td> <td style=""border-color: #ecf0f1;"">{gmember_link_2}</td> <td style=""border-color: #ecf0f1;"">{gmember_nh_2}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+gmember_txtnh_2,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 30%;""><col style=""width: 30%;""><col style=""width: 30%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">First Name</td> <td style=""border-color: #ecf0f1;"">Last Name</td> <td style=""border-color: #ecf0f1;"">E-mail Address</td> </tr> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">{gmember_firstname_2}</td> <td style=""border-color: #ecf0f1;"">{gmember_lastname_2}</td> <td style=""border-color: #ecf0f1;"">{gmember_email_2}</td> </tr> </tbody> </table></div>",,,,,,,"[gmember_nh_2(1)] = '1'",,,,,,
+gmember_txt_3,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none; margin-left: auto; margin-right: auto;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: center;"">3</td> <td style=""border-color: #ecf0f1;"">{gmember_link_3}</td> <td style=""border-color: #ecf0f1;"">{gmember_nh_3}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+gmember_txtnh_3,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 30%;""><col style=""width: 30%;""><col style=""width: 30%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">First Name</td> <td style=""border-color: #ecf0f1;"">Last Name</td> <td style=""border-color: #ecf0f1;"">E-mail Address</td> </tr> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">{gmember_firstname_3}</td> <td style=""border-color: #ecf0f1;"">{gmember_lastname_3}</td> <td style=""border-color: #ecf0f1;"">{gmember_email_3}</td> </tr> </tbody> </table></div>",,,,,,,"[gmember_nh_3(1)] = '1'",,,,,,
+gmember_txt_4,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none; margin-left: auto; margin-right: auto;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: center;"">4</td> <td style=""border-color: #ecf0f1;"">{gmember_link_4}</td> <td style=""border-color: #ecf0f1;"">{gmember_nh_4}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+gmember_txtnh_4,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 30%;""><col style=""width: 30%;""><col style=""width: 30%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">First Name</td> <td style=""border-color: #ecf0f1;"">Last Name</td> <td style=""border-color: #ecf0f1;"">E-mail Address</td> </tr> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">{gmember_firstname_4}</td> <td style=""border-color: #ecf0f1;"">{gmember_lastname_4}</td> <td style=""border-color: #ecf0f1;"">{gmember_email_4}</td> </tr> </tbody> </table></div>",,,,,,,"[gmember_nh_4(1)] = '1'",,,,,,
+gmember_txt_5,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none; margin-left: auto; margin-right: auto;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: center;"">5</td> <td style=""border-color: #ecf0f1;"">{gmember_link_5}</td> <td style=""border-color: #ecf0f1;"">{gmember_nh_5}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+gmember_txtnh_5,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 30%;""><col style=""width: 30%;""><col style=""width: 30%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">First Name</td> <td style=""border-color: #ecf0f1;"">Last Name</td> <td style=""border-color: #ecf0f1;"">E-mail Address</td> </tr> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">{gmember_firstname_5}</td> <td style=""border-color: #ecf0f1;"">{gmember_lastname_5}</td> <td style=""border-color: #ecf0f1;"">{gmember_email_5}</td> </tr> </tbody> </table></div>",,,,,,,"[gmember_nh_5(1)] = '1'",,,,,,
+gmember_txt_6,writing_group_by_research_group,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: left;"">Author<br>Order</td> <td style=""border-color: #ecf0f1; text-align: left;""> Author Name</td> <td style=""border-color: #ecf0f1; text-align: left;"">This Author is not a Hub Member</td> </tr> </tbody> </table></div>",descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none; margin-left: auto; margin-right: auto;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: center;"">6</td> <td style=""border-color: #ecf0f1;"">{gmember_link_6}</td> <td style=""border-color: #ecf0f1;"">{gmember_nh_6}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+gmember_txtnh_6,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 30%;""><col style=""width: 30%;""><col style=""width: 30%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">First Name</td> <td style=""border-color: #ecf0f1;"">Last Name</td> <td style=""border-color: #ecf0f1;"">E-mail Address</td> </tr> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">{gmember_firstname_6}</td> <td style=""border-color: #ecf0f1;"">{gmember_lastname_6}</td> <td style=""border-color: #ecf0f1;"">{gmember_email_6}</td> </tr> </tbody> </table></div>",,,,,,,"[gmember_nh_6(1)] = '1'",,,,,,
+gmember_txt_7,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none; margin-left: auto; margin-right: auto;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: center;"">7</td> <td style=""border-color: #ecf0f1;"">{gmember_link_7}</td> <td style=""border-color: #ecf0f1;"">{gmember_nh_7}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+gmember_txtnh_7,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 30%;""><col style=""width: 30%;""><col style=""width: 30%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">First Name</td> <td style=""border-color: #ecf0f1;"">Last Name</td> <td style=""border-color: #ecf0f1;"">E-mail Address</td> </tr> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">{gmember_firstname_7}</td> <td style=""border-color: #ecf0f1;"">{gmember_lastname_7}</td> <td style=""border-color: #ecf0f1;"">{gmember_email_7}</td> </tr> </tbody> </table></div>",,,,,,,"[gmember_nh_7(1)] = '1'",,,,,,
+gmember_txt_8,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none; margin-left: auto; margin-right: auto;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: center;"">8</td> <td style=""border-color: #ecf0f1;"">{gmember_link_8}</td> <td style=""border-color: #ecf0f1;"">{gmember_nh_8}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+gmember_txtnh_8,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 30%;""><col style=""width: 30%;""><col style=""width: 30%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">First Name</td> <td style=""border-color: #ecf0f1;"">Last Name</td> <td style=""border-color: #ecf0f1;"">E-mail Address</td> </tr> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">{gmember_firstname_8}</td> <td style=""border-color: #ecf0f1;"">{gmember_lastname_8}</td> <td style=""border-color: #ecf0f1;"">{gmember_email_8}</td> </tr> </tbody> </table></div>",,,,,,,"[gmember_nh_8(1)] = '1'",,,,,,
+gmember_txt_9,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none; margin-left: auto; margin-right: auto;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: center;"">9</td> <td style=""border-color: #ecf0f1;"">{gmember_link_9}</td> <td style=""border-color: #ecf0f1;"">{gmember_nh_9}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+gmember_txtnh_9,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 30%;""><col style=""width: 30%;""><col style=""width: 30%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">First Name</td> <td style=""border-color: #ecf0f1;"">Last Name</td> <td style=""border-color: #ecf0f1;"">E-mail Address</td> </tr> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">{gmember_firstname_9}</td> <td style=""border-color: #ecf0f1;"">{gmember_lastname_9}</td> <td style=""border-color: #ecf0f1;"">{gmember_email_9}</td> </tr> </tbody> </table></div>",,,,,,,"[gmember_nh_9(1)] = '1'",,,,,,
+gmember_txt_10,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 40px; border: none; margin-left: auto; margin-right: auto;""><colgroup><col style=""width: 10%;""><col style=""width: 50%;""><col style=""width: 40%;""></colgroup> <tbody> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1; text-align: center;"">10</td> <td style=""border-color: #ecf0f1;"">{gmember_link_10}</td> <td style=""border-color: #ecf0f1;"">{gmember_nh_10}</td> </tr> </tbody> </table></div>",,,,,,,,,,,,,
+gmember_txtnh_10,writing_group_by_research_group,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 100%; height: 60px; border: none;""><colgroup><col style=""width: 10%;""><col style=""width: 30%;""><col style=""width: 30%;""><col style=""width: 30%;""></colgroup> <tbody> <tr style=""height: 20px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">First Name</td> <td style=""border-color: #ecf0f1;"">Last Name</td> <td style=""border-color: #ecf0f1;"">E-mail Address</td> </tr> <tr style=""height: 40px;""> <td style=""border-color: #ecf0f1;""> </td> <td style=""border-color: #ecf0f1;"">{gmember_firstname_10}</td> <td style=""border-color: #ecf0f1;"">{gmember_lastname_10}</td> <td style=""border-color: #ecf0f1;"">{gmember_email_10}</td> </tr> </tbody> </table></div>",,,,,,,"[gmember_nh_10(1)] = '1'",,,,,,
+gmember_link_1,writing_group_by_research_group,,sql,"Member 1 - Hub Link","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[gmember_nh_1(1)] != '1'",,,,,,
+gmember_link_2,writing_group_by_research_group,,sql,"Member 2 - Hub Link","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[gmember_nh_2(1)] != '1'",,,,,,
+gmember_link_3,writing_group_by_research_group,,sql,"Member 3 - Hub Link","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[gmember_nh_3(1)] != '1'",,,,,,
+gmember_link_4,writing_group_by_research_group,,sql,"Member 4 - Hub Link","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[gmember_nh_4(1)] != '1'",,,,,,
+gmember_link_5,writing_group_by_research_group,,sql,"Member 5 - Hub Link","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[gmember_nh_5(1)] != '1'",,,,,,
+gmember_link_6,writing_group_by_research_group,,sql,"Member 6 - Hub Link","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[gmember_nh_6(1)] != '1'",,,,,,
+gmember_link_7,writing_group_by_research_group,,sql,"Member 7 - Hub Link","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[gmember_nh_7(1)] != '1'",,,,,,
+gmember_link_8,writing_group_by_research_group,,sql,"Member 8 - Hub Link","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[gmember_nh_8(1)] != '1'",,,,,,
+gmember_link_9,writing_group_by_research_group,,sql,"Member 9 - Hub Link","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[gmember_nh_9(1)] != '1'",,,,,,
+gmember_link_10,writing_group_by_research_group,,sql,"Member 10 - Hub Link","SELECT a.record,
+	CONCAT_WS(' ',
+		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
+WHERE a.project_id=798
+GROUP BY a.record 
+ORDER BY value",,,,,,"[gmember_nh_10(1)] != '1'",,,,,,
+gmember_nh_1,writing_group_by_research_group,,checkbox,"This author is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+gmember_nh_2,writing_group_by_research_group,,checkbox,"This author is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+gmember_nh_3,writing_group_by_research_group,,checkbox,"This author is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+gmember_nh_4,writing_group_by_research_group,,checkbox,"This author is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+gmember_nh_5,writing_group_by_research_group,,checkbox,"This author is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+gmember_nh_6,writing_group_by_research_group,,checkbox,"This author is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+gmember_nh_7,writing_group_by_research_group,,checkbox,"This author is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+gmember_nh_8,writing_group_by_research_group,,checkbox,"This author is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+gmember_nh_9,writing_group_by_research_group,,checkbox,"This author is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+gmember_nh_10,writing_group_by_research_group,,checkbox,"This author is not a Hub Member","1, Add contact information",,,,,,,,,,,,
+gmember_firstname_1,writing_group_by_research_group,,text,"Member 1 - First Name",,,,,,,,,,,,,
+gmember_firstname_2,writing_group_by_research_group,,text,"Member 2 - First Name",,,,,,,,,,,,,
+gmember_firstname_3,writing_group_by_research_group,,text,"Member 3 - First Name",,,,,,,,,,,,,
+gmember_firstname_4,writing_group_by_research_group,,text,"Member 4 - First Name",,,,,,,,,,,,,
+gmember_firstname_5,writing_group_by_research_group,,text,"Member 5 - First Name",,,,,,,,,,,,,
+gmember_firstname_6,writing_group_by_research_group,,text,"Member 6 - First Name",,,,,,,,,,,,,
+gmember_firstname_7,writing_group_by_research_group,,text,"Member 7 - First Name",,,,,,,,,,,,,
+gmember_firstname_8,writing_group_by_research_group,,text,"Member 8 - First Name",,,,,,,,,,,,,
+gmember_firstname_9,writing_group_by_research_group,,text,"Member 9 - First Name",,,,,,,,,,,,,
+gmember_firstname_10,writing_group_by_research_group,,text,"Member 10 - First Name",,,,,,,,,,,,,
+gmember_lastname_1,writing_group_by_research_group,,text,"Member 1 - Last Name",,,,,,,,,,,,,
+gmember_lastname_2,writing_group_by_research_group,,text,"Member 2 - Last Name",,,,,,,,,,,,,
+gmember_lastname_3,writing_group_by_research_group,,text,"Member 3 - Last Name",,,,,,,,,,,,,
+gmember_lastname_4,writing_group_by_research_group,,text,"Member 4 - Last Name",,,,,,,,,,,,,
+gmember_lastname_5,writing_group_by_research_group,,text,"Member 5 - Last Name",,,,,,,,,,,,,
+gmember_lastname_6,writing_group_by_research_group,,text,"Member 6 - Last Name",,,,,,,,,,,,,
+gmember_lastname_7,writing_group_by_research_group,,text,"Member 7 - Last Name",,,,,,,,,,,,,
+gmember_lastname_8,writing_group_by_research_group,,text,"Member 8 - Last Name",,,,,,,,,,,,,
+gmember_lastname_9,writing_group_by_research_group,,text,"Member 9 - Last Name",,,,,,,,,,,,,
+gmember_lastname_10,writing_group_by_research_group,,text,"Member 10 - Last Name",,,,,,,,,,,,,
+gmember_email_1,writing_group_by_research_group,,text,"Member 1 - Email Address",,,email,,,,,,,,,,
+gmember_email_2,writing_group_by_research_group,,text,"Member 2 - Email Address",,,email,,,,,,,,,,
+gmember_email_3,writing_group_by_research_group,,text,"Member 3 - Email Address",,,email,,,,,,,,,,
+gmember_email_4,writing_group_by_research_group,,text,"Member 4 - Email Address",,,email,,,,,,,,,,
+gmember_email_5,writing_group_by_research_group,,text,"Member 5 - Email Address",,,email,,,,,,,,,,
+gmember_email_6,writing_group_by_research_group,,text,"Member 6 - Email Address",,,email,,,,,,,,,,
+gmember_email_7,writing_group_by_research_group,,text,"Member 7 - Email Address",,,email,,,,,,,,,,
+gmember_email_8,writing_group_by_research_group,,text,"Member 8 - Email Address",,,email,,,,,,,,,,
+gmember_email_9,writing_group_by_research_group,,text,"Member 9 - Email Address",,,email,,,,,,,,,,
+gmember_email_10,writing_group_by_research_group,,text,"Member 10 - Email Address",,,email,,,,,,,,,,
