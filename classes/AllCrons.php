@@ -896,7 +896,7 @@ class AllCrons
                 }
 
                 $comment_vote = "";
-                $versionsByPrefix = $module->getEnabledModules($_GET['pid']);
+                $versionsByPrefix = $module->getEnabledModules($pidsArray['PROJECTS']);
                 $app_path_module = APP_PATH_WEBROOT_FULL."modules/harmonist-hub_".$versionsByPrefix['harmonist-hub'];
                 if($comment['pi_vote'] != ''){
                     if ($comment['pi_vote'] == "1") {

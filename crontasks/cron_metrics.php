@@ -53,16 +53,20 @@ $number_publications_year = 0;
 $number_abstracts = 0;
 $number_abstracts_year = 0;
 foreach ($publications as $outputs) {
-    foreach ($outputs['output_type'] as $index => $output_type) {
-        if ($output_type == '1') {
-            $number_publications++;
-            if ($outputs['output_year'][$index] == $date->format('Y')) {
-                $number_publications_year++;
-            }
-        } else if ($output_type == '2') {
-            $number_abstracts++;
-            if ($outputs['output_year'][$index] == $date->format('Y')) {
-                $number_abstracts_year++;
+    if(is_array($outputs) && array_key_exists("output_type", $outputs)) {
+        foreach ($outputs['output_type'] as $index => $output_type) {
+            if ($output_type == '1') {
+                $number_publications++;
+                if ($outputs['output_year'][$index] == $date->format('Y')) {
+                    $number_publications_year++;
+                }
+            } else {
+                if ($output_type == '2') {
+                    $number_abstracts++;
+                    if ($outputs['output_year'][$index] == $date->format('Y')) {
+                        $number_abstracts_year++;
+                    }
+                }
             }
         }
     }
@@ -170,25 +174,28 @@ $number_votes_completed_after_duedate = 0;
 $completerequests = 0;
 $numregions = count($regions);
 $completed_requests_by_all_regions = array();
-foreach ($requests as $request) {
-    $votecount = 0;
-    foreach ($regions as $region) {
-        $instance = $region['record_id'];
-
-        if ($request['region_vote_status'][$instance] != "") {
-            $votecount++;
-            $request_date = date("Y-m-d", strtotime($request['region_close_ts'][$instance]));
-            if (strtotime($request['due_d']) <= strtotime($request_date)) {
-                //if vote submitted before or on due date
-                $number_votes_completed_before_duedate++;
-            } else {
-                $number_votes_completed_after_duedate++;
+if(is_array($requests) && !empty($requests)) {
+    foreach ($requests as $request) {
+        $votecount = 0;
+        foreach ($regions as $region) {
+            $instance = $region['record_id'];
+            if(array_key_exists("region_vote_status", $request) && is_array($request['region_vote_status'])) {
+                if (array_key_exists($instance, $request['region_vote_status']) && $request['region_vote_status'][$instance] != "") {
+                    $votecount++;
+                    $request_date = date("Y-m-d", strtotime($request['region_close_ts'][$instance]));
+                    if (strtotime($request['due_d']) <= strtotime($request_date)) {
+                        //if vote submitted before or on due date
+                        $number_votes_completed_before_duedate++;
+                    } else {
+                        $number_votes_completed_after_duedate++;
+                    }
+                }
             }
-        }
 
-        if ($votecount == $numregions) {
-            $completerequests++; //if the number of votes (vote count) equals the number of voting regions, then this request is complete, so increment complete counter
-            array_push($completed_requests_by_all_regions, $request['request_id']);
+            if ($votecount == $numregions) {
+                $completerequests++; //if the number of votes (vote count) equals the number of voting regions, then this request is complete, so increment complete counter
+                array_push($completed_requests_by_all_regions, $request['request_id']);
+            }
         }
     }
 }
