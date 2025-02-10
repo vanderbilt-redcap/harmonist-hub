@@ -140,4 +140,5 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $results = \Records::saveData($pidsArray['SETTINGS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
     \Records::addRecordToRecordListCache($pidsArray['SETTINGS'], 1, $event_id);
 }
+session_start();
 ?>
