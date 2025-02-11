@@ -5,8 +5,8 @@ require_once(dirname(dirname(__FILE__))."/classes/SecurityHandler.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 
+$this->securityHandler = new SecurityHandler($this, $project_id);
 $aws_credentials = $this->getSecurityHandler()->getCredentialsServerVars("AWS");
-
 // If the URL exists, then we have the credentials in the server and can continue
 if($aws_credentials != null) {
     require_once ($aws_credentials);

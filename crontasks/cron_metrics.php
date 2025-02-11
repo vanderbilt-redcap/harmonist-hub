@@ -53,7 +53,7 @@ $number_publications_year = 0;
 $number_abstracts = 0;
 $number_abstracts_year = 0;
 foreach ($publications as $outputs) {
-    if(is_array($outputs) && array_key_exists("output_type", $outputs)) {
+    if(is_array($outputs) && array_key_exists("output_type", $outputs) && is_array($outputs["output_type"])) {
         foreach ($outputs['output_type'] as $index => $output_type) {
             if ($output_type == '1') {
                 $number_publications++;
@@ -159,9 +159,12 @@ $comments_revision = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array',
 #get unique values from matrix column request_id (unique request ids)
 $revisions = 0;
 foreach ($comments_revision as $comment) {
-    $approval_y = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']),array('approval_y'))[0]['approval_y'];
-    if ($approval_y == '1') {
-        $revisions++;
+    $approval_data = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']),array('approval_y'));
+    if($approval_data != null){
+        $approval_y = $approval_data[0]['approval_y'];
+        if ($approval_y == '1') {
+            $revisions++;
+        }
     }
 }
 $arrayMetrics[0]['revisions'] = $revisions;

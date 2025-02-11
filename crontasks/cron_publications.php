@@ -46,8 +46,8 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     }
 
                     $file = '';
-                    if ($concept['output_file'][$index] != "") {
-                        $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $pidsArray['PROJECTS'], $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                    if (array_key_exists('output_file',$concept) && is_array($concept['output_file']) && array_key_exists($index,$concept['output_file']) && $concept['output_file'][$index] != "") {
+                        $file = getFileLink($moduleAux, $pidsArray['PROJECTS'], $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
                     }
 
                     $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "",$index);

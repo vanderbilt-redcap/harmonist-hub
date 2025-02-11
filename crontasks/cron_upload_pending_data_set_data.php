@@ -11,6 +11,7 @@ use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 use REDCap;
 
+$this->securityHandler = new SecurityHandler($this, $project_id);
 $aws_credentials = $this->getSecurityHandler()->getCredentialsServerVars("AWS");
 if($aws_credentials != null) {
     require_once ($aws_credentials);
