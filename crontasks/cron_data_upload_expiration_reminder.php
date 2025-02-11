@@ -18,22 +18,23 @@ $extra_days_delete = ' + ' . $days_expiration_delete . " days";
 
 if(is_array($request_DU) && array_key_exists('SOP',$pidsArray) && is_numeric($pidsArray['SOP'])) {
     foreach ($request_DU as $upload) {
-        $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $upload['data_assoc_request'])
-        );
-        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP, $pidsArray['SOP'])[0];
+        $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $upload['data_assoc_request']));
+        if(!empty($RecordSetSOP)) {
+            $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP, $pidsArray['SOP'])[0];
 
-        $message = AllCrons::runCronDataUploadExpirationReminder(
-            $this,
-            $pidsArray,
-            $upload,
-            $sop,
-            null,
-            $extra_days_delete,
-            $extra_days,
-            $extra_days2,
-            $settings,
-            true
-        );
+            $message = AllCrons::runCronDataUploadExpirationReminder(
+                $this,
+                $pidsArray,
+                $upload,
+                $sop,
+                null,
+                $extra_days_delete,
+                $extra_days,
+                $extra_days2,
+                $settings,
+                true
+            );
+        }
     }
 }
 
