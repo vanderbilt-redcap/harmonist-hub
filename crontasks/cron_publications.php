@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ ."/../projects.php");
+require_once dirname(dirname(__FILE__))."/projects.php";
 
 $isAdmin = false;
 if(array_key_exists('isAdmin', $_REQUEST) && ($_REQUEST['isAdmin'] == '1')){
