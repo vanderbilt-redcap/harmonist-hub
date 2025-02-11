@@ -25,6 +25,11 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $pubtext4 = empty($settings['pubtext4']) ? "Site" : $settings['pubtext4'];
     $pubtext5 = empty($settings['pubtext5']) ? "Multi" : $settings['pubtext5'];
 
+    if(empty($current_user)){
+        #we are on cron, there's no user
+        $current_user = null;
+    }
+
     if (!empty($concepts)) {
         $table_array['data'] = array();
         $records = 0;
@@ -94,7 +99,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
             $file = '';
             if ($output['output_file'] != "") {
-                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $pidsArray['PROJECTS'], $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                $file = getFileLink($moduleAux, $pidsArray['PROJECTS'], $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
             }
 
             $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
@@ -121,7 +126,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
     #create and save file with json
     $filename = "jsoncopy_file_publications_" . date("YmdsH") . ".txt";
-    $storedName = date("YmdsH") . "_pid" . $pidsArray['SETTINGS'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6) . ".txt";
+    $storedName = date("YmdsH") . "_pid" . $pidsArray['SETTINGS'] . "_" . getRandomIdentifier(6) . ".txt";
 
     $file = fopen(EDOC_PATH . $storedName, "wb");
     fwrite($file, json_encode($table_array, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_PRETTY_PRINT));
