@@ -10,6 +10,7 @@ class Model
     private $module;
     private $projectId;
     private $pidsArray = [];
+    private $isAdmin;
 
     public function __construct(HarmonistHubExternalModule $module, $projectId)
     {
@@ -26,6 +27,18 @@ class Model
             }
         }
         return $this->pidsArray;
+    }
+
+    public function isAdmin(): bool
+    {
+        $this->isAdmin = false;
+        if (defined('USERID')) {
+            $UserRights = REDCap::getUserRights(USERID)[USERID];
+            if ($UserRights['user_rights'] == '1') {
+                $this->isAdmin = true;
+            }
+        }
+        return $this->isAdmin;
     }
 
     public  function getProjectInfoArrayRepeatingInstruments($records, $project_id, $filterLogic = null, $option = null): array

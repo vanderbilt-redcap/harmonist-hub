@@ -12,6 +12,7 @@ class ConceptModel extends Model
     private $module;
     private $projectId;
     private $pidsArray = [];
+    private $isAdmin;
     private $concept;
     private $conceptData;
 
@@ -21,6 +22,7 @@ class ConceptModel extends Model
         $this->projectId = $projectId;
         parent::__construct($module,$projectId);
         $this->pidsArray = $this->getPidsArray();
+        $this->isAdmin = $this->isAdmin();
     }
 
     public function fetchConcept($recordId): Concept
@@ -33,6 +35,15 @@ class ConceptModel extends Model
             $this->concept = new Concept($this->conceptData, $this->pidsArray);
         }
         return $this->concept;
+    }
+
+    public function canUserEdit($current_user){
+        if(!empty($this->concept)) {
+            if ($this->concept->getContactLink() == $current_user || $this->concept->getContact2Link() == $current_user || $this->isAdmin) {
+                return true;
+            }
+        }
+        return false;
     }
 
      public function getConceptData(): array

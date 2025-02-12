@@ -55,6 +55,7 @@ class WritingGroupModel extends Model
                 }
                 if($saveData){
                     $writingGroupMember->setRole($researchGroupName);
+                    $writingGroupMember->setEditLink($this->fetchSurveyLink("writing_group_by_research_group",$this->instance));
                     $this->writingGroupMember[] = $writingGroupMember;
                 }
             }
@@ -74,6 +75,7 @@ class WritingGroupModel extends Model
                     $writingGroupMember = self::fetchNotHubMember('cmember', $instance);
                 }
                 $writingGroupMember->setRole($cmemberRole[$this->concept['cmember_role'][$instance]]);
+                $writingGroupMember->setEditLink($this->fetchSurveyLink("writing_group_core",$instance));
                 $this->writingGroupMember[] = $writingGroupMember;
             }
         }
@@ -110,6 +112,13 @@ class WritingGroupModel extends Model
         $writingGroupMember->setName($this->concept[$variableName.'_firstname'.$researchGroupVar][$instance].' '.$this->concept[$variableName.'_lastname'.$researchGroupVar][$instance]);
         $writingGroupMember->setEmail($this->concept[$variableName.'_email'.$researchGroupVar][$instance]);
         return $writingGroupMember;
+    }
+
+    public function fetchSurveyLink($surveyName,$instance):string
+    {
+        $passthru_link = $this->module->resetSurveyAndGetCodes($this->pidsArray['HARMONIST'], $this->concept['record_id'], $surveyName, "",$instance);
+        $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$this->module->escape($passthru_link['hash']);
+        return $survey_link;
     }
 }
 

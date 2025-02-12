@@ -396,6 +396,10 @@ $export_name = "concepts_".$date->format('Y-m-d H:i:s');
             <tbody>
             <?php
                 foreach ($writingGroupMemberList as $writingGroupMember) {
+                    $edit = "";
+                    if($module->getConceptModel()->canUserEdit($current_user['record_id'])){
+                        $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_writing_group\',\'redcap-edit-frame\',\'' . $writingGroupMember->getEditLink() . '\');"><em class="fa fa-pencil"></em></a>';
+                    }
                     echo "<tr wg_id=".$concept->getWgLink().">
                         <td>".$concept->getTags()."</td>
                         <td>".$concept->getWgLink()."</td>
@@ -403,7 +407,7 @@ $export_name = "concepts_".$date->format('Y-m-d H:i:s');
                         <td>".$writingGroupMember->getName()."</td>
                         <td>".$writingGroupMember->getEmail()."</td>
                         <td>".$writingGroupMember->getRole()."</td>
-                        <td></td>
+                        <td>".$edit."</td>
                         </tr>";
                 }
             ?>

@@ -12,6 +12,7 @@ class Concept
     private $activeY;
     private $conceptTitle;
     private $contactLink;
+    private $contact2Link;
     private $workingGroup;
     private $startDate;
     private $status;
@@ -146,6 +147,11 @@ class Concept
         return $this->contactLink;
     }
 
+    public function getContact2Link(): string
+    {
+        return $this->contact2Link;
+    }
+
     public function getWgLink(): string
     {
         return $this->wgLink;
@@ -171,6 +177,7 @@ class Concept
         $this->activeY = $conceptData['active_y'];
         $this->conceptTitle = $conceptData['concept_title'];
         $this->contactLink = $conceptData['contact_link'];
+        $this->contact2Link = $conceptData['contact2_link'];
         $this->wgLink = $conceptData['wg_link'];
         $this->wg2Link = $conceptData['wg2_link'];
         $this->revisedY = $conceptData['revised_y'][0];

@@ -10,11 +10,7 @@ class WritingGroupMember
     private $name;
     private $email;
     private $role;
-
-    public function __construct()
-    {
-
-    }
+    private $editLink;
 
     public function getName(): string
     {
@@ -42,6 +38,16 @@ class WritingGroupMember
     public function setRole($role): void
     {
         $this->role = $role;
+    }
+
+    public function getEditLink()
+    {
+        return $this->editLink;
+    }
+
+    public function setEditLink($editLink): void
+    {
+        $this->editLink = $editLink;
     }
 }
 
