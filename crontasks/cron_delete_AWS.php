@@ -7,6 +7,7 @@ use Aws\S3\Exception\S3Exception;
 
 $aws_credentials = "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
 if (file_exists($aws_credentials)){
+    $this->securityHandler = new SecurityHandler($this, $project_id);
     require_once ($aws_credentials);
     $credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
     $s3 = new S3Client([
