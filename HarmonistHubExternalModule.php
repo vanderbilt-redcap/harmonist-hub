@@ -15,6 +15,7 @@ include_once(__DIR__ . "/classes/ArrayFunctions.php");
 include_once(__DIR__ . "/classes/ProjectData.php");
 include_once(__DIR__ . "/classes/HubUpdates.php");
 include_once(__DIR__ . "/classes/SecurityHandler.php");
+include_once(__DIR__ . "/classes/ConceptModel.php");
 include_once(__DIR__ . "/functions.php");
 
 require_once(dirname(__FILE__) . "/vendor/autoload.php");
@@ -513,6 +514,22 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $this->securityHandler->setRequestUrl($this->escape($_REQUEST));
 
         return $this->securityHandler;
+    }
+
+    public function getWritingGroupModel(): WritingGroupModel
+    {
+        if (!$this->writingGroupModel) {
+            $this->writingGroupModel = new WritingGroupModel($this,(int)$_GET['pid']);
+        }
+        return $this->writingGroupModel;
+    }
+
+    public function getConceptModel(): ConceptModel
+    {
+        if (!$this->conceptModel) {
+            $this->conceptModel = new ConceptModel($this,(int)$_GET['pid']);
+        }
+        return $this->conceptModel;
     }
 }
 ?>
