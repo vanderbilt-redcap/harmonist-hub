@@ -5,103 +5,111 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use phpDocumentor\Reflection\Types\Boolean;
 use REDCap;
 
-include_once(__DIR__ . "/WritingGroup.php");
+include_once (__DIR__ . "/../autoload.php");;
 
-class WritingGroupModel
+class WritingGroupModel extends Model
 {
     private $module;
     private $projectId;
+    private $concept;
+    private $instance;
     private $pidsArray = [];
-    private $writingGroup = [];
+    private $writingGroupMember = [];
 
-    public function __construct(HarmonistHubExternalModule $module, $projectId)
+    public function __construct(HarmonistHubExternalModule $module, $projectId, $concept, $instance)
     {
         $this->module = $module;
         $this->projectId = $projectId;
-        $this->pidsArray = self::getPidsArray();
+        $this->concept = $concept;
+        $this->instance = $instance;
+        parent::__construct($module,$projectId);
+        $this->pidsArray = $this->getPidsArray();
     }
 
-    public function getPidsArray(): array
+    public function fecthAllWritingGroup():array
     {
-        if (empty($this->pidsArray)) {
-            $hub_mapper = $this->module->getProjectSetting('hub-mapper', $this->projectId);
-            if ($hub_mapper !== "") {
-                $this->pidsArray = REDCapManagement::getPIDsArray($hub_mapper, $this->projectId);
-            }
-        }
-        return $this->pidsArray;
+        self::fecthWritingGroupCore();
+        self::fecthWritingGroupByResearchGroup();
+        return $this->writingGroupMember;
     }
 
-    public function fecthAllWritingGroup($concept, $researchGroup):array
+    public function fecthWritingGroupByResearchGroup():void
     {
-        self::fecthWritingGroupCore($concept);
-        self::fecthWritingGroupByResearchGroup($concept, $researchGroup);
-        print_array($this->writingGroup);
-        return $this->writingGroup;
-    }
-
-    public function fecthWritingGroupByResearchGroup($concept, $researchGroup):void
-    {
-        if(is_array($concept) && array_key_exists('gmember_role', $concept)){
+        if(is_array($this->concept) && array_key_exists('gmember_role', $this->concept)){
             $authorshipLimit = \REDCap::getData($this->pidsArray['SETTINGS'], 'json-array', array('record_id' => 1),array('authorship_limit'))[0]['authorship_limit'];
+            $researchGroupName = \REDCap::getData($this->pidsArray['REGIONS'], 'json-array', array('record_id' => $this->instance),array('region_name'))[0]['region_name'];
             for($i = 1; $i < ((int)$authorshipLimit+1) ; $i++){
-                $writingGroup = new WrittingGroup();
                 $saveData = false;
-                if($concept['gmember_nh_'.$i][$researchGroup] != 1){
+                if($this->isHubContact('gmember_nh_'.$i, $this->instance)){
                     #Hub Contact
-                    if(is_array($concept['gmember_link_'.$i]) && array_key_exists($researchGroup, $concept['gmember_link_'.$i]) && !empty($concept['gmember_link_'.$i][$researchGroup])) {
+                    if(!$this->isDataEmpty('gmember_link_'.$i, $this->instance)) {
                         $saveData = true;
-                        $writingGroup = self::saveHubContact($writingGroup, $concept['gmember_link_' . $i][$researchGroup]);
+                        $writingGroupMember = self::fetchHubContact($this->concept['gmember_link_' . $i][$this->instance]);
                     }
                 }else{
                      #Not a Hub Member
-                     if(is_array($concept['gmember_firstname_'.$i]) && array_key_exists($researchGroup, $concept['gmember_firstname_'.$i]) && !empty($concept['gmember_firstname_'.$i][$researchGroup])) {
+                     if(!$this->isDataEmpty('gmember_firstname_'.$i, $this->instance)) {
                          $saveData = true;
-                         $writingGroup = self::saveNotHubMember($writingGroup, $concept, 'gmember', $researchGroup);
+                         $writingGroupMember = self::fetchNotHubMember( 'gmember', $this->instance, "_".$i);
                      }
                 }
                 if($saveData){
-                    $researchGroupName = \REDCap::getData($this->pidsArray['REGION'], 'json-array', array('record_id' => $researchGroup),array('region_name'))[0];
-                    $writingGroup->setRole($researchGroupName);
-                    $this->writingGroup[] = $writingGroup;
+                    $writingGroupMember->setRole($researchGroupName);
+                    $this->writingGroupMember[] = $writingGroupMember;
                 }
-
             }
         }
     }
 
-    public function fecthWritingGroupCore($concept):void
+    public function fecthWritingGroupCore():void
     {
-        if(is_array($concept) && array_key_exists('cmember_role', $concept)){
+        if(is_array($this->concept) && array_key_exists('cmember_role', $this->concept)){
             $cmemberRole = $this->module->getChoiceLabels('cmember_role', $this->pidsArray['HARMONIST']);
-            foreach($concept['cmember_role'] as $instance => $role){
-                $writingGroup = new WrittingGroup();
-                if($concept['cmember_nh'][$instance] != 1){
+            foreach($this->concept['cmember_role'] as $instance => $role){
+                if($this->isHubContact('cmember_nh', $instance)){
                     #Hub Contact
-                    $writingGroup = self::saveHubContact($writingGroup, $concept['cmember_link'][$instance]);
+                    $writingGroupMember = self::fetchHubContact($this->concept['cmember_link'][$instance]);
                 }else{
                     #Not a Hub Member
-                    $writingGroup = self::saveNotHubMember($writingGroup, $concept, 'cmember', $instance);
+                    $writingGroupMember = self::fetchNotHubMember('cmember', $instance);
                 }
-                $writingGroup->setRole($cmemberRole[$concept['cmember_role'][$instance]]);
-                $this->writingGroup[] = $writingGroup;
+                $writingGroupMember->setRole($cmemberRole[$this->concept['cmember_role'][$instance]]);
+                $this->writingGroupMember[] = $writingGroupMember;
             }
         }
     }
 
-    public function saveHubContact($writingGroup,$recordId):WrittingGroup
+    public function isHubContact($variable, $instance):bool
     {
-        $contactData = \REDCap::getData($this->pidsArray['PEOPLE'], 'json-array', array('record_id' => $recordId),array('email','firstname','lastname'))[0];
-        $writingGroup->setName($contactData['firstname'].' '.$contactData['lastname']);
-        $writingGroup->setEmail($contactData['email']);
-        return $writingGroup;
+        if($this->concept[$variable][$instance] != 1){
+            return true;
+        }
+        return false;
     }
 
-    public function saveNotHubMember($writingGroup, $concept, $variableName, $instance):WrittingGroup
+    public function isDataEmpty($variable, $instance):bool
     {
-        $writingGroup->setName($concept[$variableName.'_firstname'][$instance].' '.$concept[$variableName.'_lastname'][$instance]);
-        $writingGroup->setEmail($concept[$variableName.'_email'][$instance]);
-        return $writingGroup;
+        if(is_array($this->concept[$variable]) && array_key_exists($this->instance, $this->concept[$variable]) && !empty($this->concept[$variable][$instance])){
+            return false;
+        }
+        return true;
+    }
+
+    public function fetchHubContact($recordId):WritingGroupMember
+    {
+        $writingGroupMember = new WritingGroupMember();
+        $contactData = \REDCap::getData($this->pidsArray['PEOPLE'], 'json-array', array('record_id' => $recordId),array('email','firstname','lastname'))[0];
+        $writingGroupMember->setName($contactData['firstname'].' '.$contactData['lastname']);
+        $writingGroupMember->setEmail($contactData['email']);
+        return $writingGroupMember;
+    }
+
+    public function fetchNotHubMember($variableName, $instance, $researchGroupVar = ""):WritingGroupMember
+    {
+        $writingGroupMember = new WritingGroupMember();
+        $writingGroupMember->setName($this->concept[$variableName.'_firstname'.$researchGroupVar][$instance].' '.$this->concept[$variableName.'_lastname'.$researchGroupVar][$instance]);
+        $writingGroupMember->setEmail($this->concept[$variableName.'_email'.$researchGroupVar][$instance]);
+        return $writingGroupMember;
     }
 }
 

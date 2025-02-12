@@ -5,7 +5,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use phpDocumentor\Reflection\Types\Boolean;
 use REDCap;
 
-class WrittingGroup
+class WritingGroupMember
 {
     private $name;
     private $email;

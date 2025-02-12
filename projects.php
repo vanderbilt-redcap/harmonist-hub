@@ -7,13 +7,7 @@ use ExternalModules\ExternalModules;
 require_once (__DIR__ . '/vendor/autoload.php');
 include_once(__DIR__ . "/email.php");
 include_once(__DIR__ . "/functions.php");
-include_once(__DIR__ . "/classes/REDCapManagement.php");
-include_once(__DIR__ . "/classes/ArrayFunctions.php");
-include_once(__DIR__ . "/classes/ProjectData.php");
-include_once(__DIR__ . "/classes/HubData.php");
-include_once(__DIR__ . "/classes/ExcelFunctions.php");
-include_once(__DIR__ . "/classes/UserEditConditions.php");
-include_once(__DIR__ . "/classes/SecurityHandler.php");
+include_once (__DIR__ . "/autoload.php");
 
 REDCapManagement::getEnvironment();
 

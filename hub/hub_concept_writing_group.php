@@ -1,11 +1,14 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ . "/../classes/WritingGroupModel.php");
 
-$record = htmlentities($_REQUEST['record'],ENT_QUOTES);
-$concept = $module->getConceptModel()->fetchConcept($record);
-//print_array($module->getConceptModel()->getConceptData());
-$writingGroup = $module->getwritingGroupModel()->fecthAllWritingGroup($module->getConceptModel()->getConceptData(),$current_user['person_region']);
+global $date;
+$recordId = htmlentities($_REQUEST['record'], ENT_QUOTES);
+$concept = $module->getConceptModel()->fetchConcept($recordId);
+$writingGroupMember = new WritingGroupModel($module, $pid, $module->getConceptModel()->getConceptData(),$current_user['person_region']);
+$writingGroupMemberList = $writingGroupMember->fecthAllWritingGroup();
+
+$date = new \DateTime();
+$export_name = "concepts_".$date->format('Y-m-d H:i:s');
 ?>
 <script language="JavaScript">
     //To filter the data
@@ -13,23 +16,18 @@ $writingGroup = $module->getwritingGroupModel()->fecthAllWritingGroup($module->g
         function( settings, data, dataIndex ) {
             var wg = $('#selectWorkingGroup').val();
             var tags = $('#selectTags').val();
-            var active = $('#concept_active').is(':checked');
-            $('#concept_active').val($('#concept_active').is(':checked'));
+            var column_tags = data[0];
             var column_wg = data[1];
-            var column_tags = data[2];
-            var column_active = data[3];
-            var column_wg2 = data[4];
+            var column_wg2 = data[2];
 
-            if((active == true && column_active == 'Y') || active == false){
-                if((wg != '' && (column_wg == wg || column_wg2 == wg)) || wg == ''){
-                    if(tags == ''){
-                        return true;
-                    }else if((tags != '')){
-                        var tags_col = column_tags.split(",")
-                        for (var row in tags_col){
-                            if(tags_col[row] == tags){
-                                return true;
-                            }
+            if((wg != '' && (column_wg == wg || column_wg2 == wg)) || wg == ''){
+                if(tags == ''){
+                    return true;
+                }else if((tags != '')){
+                    var tags_col = column_tags.split(",")
+                    for (var row in tags_col){
+                        if(tags_col[row] == tags){
+                            return true;
                         }
                     }
                 }
@@ -229,23 +227,37 @@ $writingGroup = $module->getwritingGroupModel()->fecthAllWritingGroup($module->g
         $('#sortable_table_filter').appendTo( '#options_wrapper' );
         $('#sortable_table_filter').attr( 'style','float: left;padding-left: 90px;padding-top: 5px;' );
         $('.dt-buttons').attr( 'style','float: left;' );
+
+        //we hide the columns that we use only as filters
+        var column_tag = sortable_table.column(0);
+        column_tag.visible(false);
+        var column_wg = sortable_table.column(1);
+        column_wg.visible(false);
+        var column_wg2 = sortable_table.column(2);
+        column_wg2.visible(false);
+
+        //when any of the filters is called upon change datatable data
+        $('#selectWorkingGroup, #concept_active, #selectTags').change( function() {
+            var table = $('#sortable_table').DataTable();
+            table.draw();
+        } );
     });
 </script>
 <div class="container">
     <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;display: none;" id="succMsgContainer">If you've made any changes, they have been saved.</div>
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$record?>">< Back to Concept</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$recordId?>">< Back to Concept</a>
     </div>
     <?php if($concept != "") {?>
     <h3 class="concepts-title-title"><?=$concept->getConceptId().": Writing Group"?></h3>
 
     <?php if($isAdmin || $harmonist_perm_edit_concept){
-        $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $record, "concept_sheet", "");
+        $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $recordId, "concept_sheet", "");
         $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash'])."&modal=modal";
 
-        $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$record,ENT_QUOTES);
+        $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$recordId,ENT_QUOTES);
 
-        $survey_queue_link = \REDCap::getSurveyQueueLink($record);
+        $survey_queue_link = \REDCap::getSurveyQueueLink($recordId);
         ?>
         <div class="btn-group hidden-xs pull-right">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -372,6 +384,9 @@ $writingGroup = $module->getwritingGroupModel()->fecthAllWritingGroup($module->g
         <table class="table table_requests sortable-theme-bootstrap concepts-table" data-sortable id="sortable_table">
             <thead>
                 <tr>
+                    <th class="sorted_class" data-sorted="true">Tags</th>
+                    <th class="sorted_class" data-sorted="true">Working Group</th>
+                    <th class="sorted_class" data-sorted="true">Working Group 2</th>
                     <th class="sorted_class" data-sorted="true" data-sorted-direction="descending">Name</th>
                     <th class="sorted_class" data-sorted="true">Email</th>
                     <th class="sorted_class" data-sorted="true">Role</th>
@@ -380,19 +395,23 @@ $writingGroup = $module->getwritingGroupModel()->fecthAllWritingGroup($module->g
             </thead>
             <tbody>
             <?php
-//                $module->getWrittingGroupModel()->fecthWritingGroupData($concept);
+                foreach ($writingGroupMemberList as $writingGroupMember) {
+                    echo "<tr wg_id=".$concept->getWgLink().">
+                        <td>".$concept->getTags()."</td>
+                        <td>".$concept->getWgLink()."</td>
+                        <td>".$concept->getWg2Link()."</td>
+                        <td>".$writingGroupMember->getName()."</td>
+                        <td>".$writingGroupMember->getEmail()."</td>
+                        <td>".$writingGroupMember->getRole()."</td>
+                        <td></td>
+                        </tr>";
+                }
             ?>
-                <tr>
-                    <td>Eva</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
             </tbody>
         </table>
     </div>
 
 <?php }else{ ?>
-    <div class="alert alert-warning fade in col-md-12"><em>Concept #<?=$record?> is not available at this time.</em></div>
+    <div class="alert alert-warning fade in col-md-12"><em>Concept #<?=$recordId?> is not available at this time.</em></div>
 <?php } ?>
 

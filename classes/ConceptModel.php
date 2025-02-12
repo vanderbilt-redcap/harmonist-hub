@@ -5,9 +5,9 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use phpDocumentor\Reflection\Types\Boolean;
 use REDCap;
 
-include_once(__DIR__ . "/Concept.php");
+include_once (__DIR__ . "/../autoload.php");
 
-class ConceptModel
+class ConceptModel extends Model
 {
     private $module;
     private $projectId;
@@ -19,26 +19,16 @@ class ConceptModel
     {
         $this->module = $module;
         $this->projectId = $projectId;
-        $this->pidsArray = self::getPidsArray();
+        parent::__construct($module,$projectId);
+        $this->pidsArray = $this->getPidsArray();
     }
 
-    public function getPidsArray(): array
-    {
-        if (empty($this->pidsArray)) {
-            $hub_mapper = $this->module->getProjectSetting('hub-mapper', $this->projectId);
-            if ($hub_mapper !== "") {
-                $this->pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-            }
-        }
-        return $this->pidsArray;
-    }
-
-    public function fetchConcept($record): Concept
+    public function fetchConcept($recordId): Concept
     {
         if(!empty($this->pidsArray['HARMONIST'])) {
-            $RecordSetTable = \REDCap::getData($this->pidsArray['HARMONIST'], 'array', array('record_id' => $record));
+            $RecordSetTable = \REDCap::getData($this->pidsArray['HARMONIST'], 'array', array('record_id' => $recordId));
             $this->conceptData = $this->module->escape(
-                ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->pidsArray['HARMONIST'])[0]
+               $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->pidsArray['HARMONIST'])[0]
             );
             $this->concept = new Concept($this->conceptData, $this->pidsArray);
         }
