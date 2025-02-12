@@ -25,9 +25,10 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $pubtext4 = empty($settings['pubtext4']) ? "Site" : $settings['pubtext4'];
     $pubtext5 = empty($settings['pubtext5']) ? "Multi" : $settings['pubtext5'];
 
-    if(empty($current_user)){
+    $user_record = $current_user['record_id'];
+    if(empty($user_record)){
         #we are on cron, there's no user
-        $current_user = null;
+        $user_record = null;
     }
 
     if (!empty($concepts)) {
@@ -51,8 +52,8 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     }
 
                     $file = '';
-                    if (array_key_exists('output_file',$concept) && is_array($concept['output_file']) && array_key_exists($index,$concept['output_file']) && $concept['output_file'][$index] != "") {
-                        $file = getFileLink($moduleAux, $pidsArray['PROJECTS'], $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                    if (array_key_exists('output_file',$concept) && is_array($concept['output_file']) && array_key_exists($index,$concept['output_file']) && $concept['output_file'][$index] !== "") {
+                        $file = getFileLink($moduleAux, $pidsArray['PROJECTS'], $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $user_record, "");
                     }
 
                     $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "",$index);
@@ -60,13 +61,22 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
                     $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
+                    $badge = "";
+                    if(is_array($concept['output_type']) && array_key_exists($index,$concept['output_type']) && !empty($concept['output_type'][$index]) && array_key_exists($concept['output_type'][$index], $abstracts_publications_type)) {
+                        $badge = $abstracts_publications_badge[$concept['output_type'][$index]];
+                    }
+                    $authors = "";
+                    if(is_array($concept['output_authors']) && array_key_exists($index,$concept['output_authors'])) {
+                        $authors = $concept['output_authors'][$index];
+                    }
+
                     $table_aux = array();
                     $table_aux['concept'] = '<a href="' . $moduleAux->getUrl('index.php') .'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']. '">' . htmlentities($concept['concept_id']) . '</a>';
                     $table_aux['year'] = '<strong>' . htmlentities($concept['output_year'][$index]) . '</strong>';
                     $table_aux['region'] = '<span class="badge badge-pill badge-draft">'.$pubtext3.'</span>';
                     $table_aux['conf'] = htmlentities($concept['output_venue'][$index]);
                     $table_aux['type'] = htmlentities($abstracts_publications_type[$concept['output_type'][$index]]);
-                    $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$concept['output_type'][$index]] . '">' . htmlentities($abstracts_publications_type[$concept['output_type'][$index]]) . '</span><span style="display:none">.</span> <strong>' . htmlentities($concept['output_title'][$index]) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($concept['output_authors'][$index]) . '</span>';
+                    $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . htmlentities($badge) . '</span><span style="display:none">.</span> <strong>' . htmlentities($concept['output_title'][$index]) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($authors) . '</span>';
                     $table_aux['available'] = $available;
                     $table_aux['file'] = $file;
                     $table_aux['edit'] = $edit;
@@ -99,7 +109,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
             $file = '';
             if ($output['output_file'] != "") {
-                $file = getFileLink($moduleAux, $pidsArray['PROJECTS'], $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                $file = getFileLink($moduleAux, $pidsArray['PROJECTS'], $output['output_file'], '1', '', $secret_key, $secret_iv, $user_record, "");
             }
 
             $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
