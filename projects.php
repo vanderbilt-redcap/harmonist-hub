@@ -17,6 +17,9 @@ include_once(__DIR__ . "/classes/SecurityHandler.php");
 
 REDCapManagement::getEnvironment();
 
+$secret_key = "";
+$secret_iv = "";
+
 if(!$isCron) {
     if($module == null) {
         $module = $this;
@@ -39,8 +42,6 @@ if(!$isCron) {
     define('APP_PATH_MODULE',$app_path_module);
     define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
-    $secret_key = "";
-    $secret_iv = "";
     $encrypt_path = $module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION");
     if($encrypt_path != null)
         require_once ($encrypt_path);

@@ -4,16 +4,14 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 include_once(__DIR__ . "/../projects.php");
 require_once(dirname(dirname(__FILE__)) . "/classes/AllCrons.php");
-require_once(dirname(dirname(__FILE__))."/classes/SecurityHandler.php");
 
 use Aws\Credentials\Credentials;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 use REDCap;
 
-$this->securityHandler = new SecurityHandler($this, $project_id);
-$aws_credentials = $this->getSecurityHandler()->getCredentialsServerVars("AWS");
-if($aws_credentials != null) {
+$aws_credentials = "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
+if (file_exists($aws_credentials)){
     require_once ($aws_credentials);
     $credentials = new Credentials($aws_key, $aws_secret);
     $s3 = new S3Client([
