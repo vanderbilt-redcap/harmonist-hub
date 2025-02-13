@@ -39,7 +39,7 @@ $export_name = "concepts_".$date->format('Y-m-d H:i:s');
     $(document).ready(function() {
         Sortable.init();
         //double pagination (top & bottom)
-        var table = $('#sortable_table').DataTable({"pageLength": 50,dom: "<'row'<'col-sm-3'l><'col-sm-4'f><'col-sm-5'p>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>", "order": [0, "desc"]});
+        var table = $('#sortable_table').DataTable({"pageLength": 50,dom: "<'row'<'col-sm-3'l><'col-sm-4'f><'col-sm-5'p>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>", "order": [3, "asc"]});
         var docname = <?=json_encode($export_name)?>;
         new $.fn.dataTable.Buttons( table, {
             "buttons": [
@@ -384,13 +384,13 @@ $export_name = "concepts_".$date->format('Y-m-d H:i:s');
         <table class="table table_requests sortable-theme-bootstrap concepts-table" data-sortable id="sortable_table">
             <thead>
                 <tr>
-                    <th class="sorted_class" data-sorted="true">Tags</th>
-                    <th class="sorted_class" data-sorted="true">Working Group</th>
-                    <th class="sorted_class" data-sorted="true">Working Group 2</th>
+                    <th class="sorted_class">Tags</th>
+                    <th class="sorted_class">Working Group</th>
+                    <th class="sorted_class">Working Group 2</th>
                     <th class="sorted_class" data-sorted="true" data-sorted-direction="descending">Name</th>
-                    <th class="sorted_class" data-sorted="true">Email</th>
-                    <th class="sorted_class" data-sorted="true">Role</th>
-                    <th class="sorted_class" data-sorted="true">Actions</th>
+                    <th class="sorted_class" >Email</th>
+                    <th class="sorted_class">Role</th>
+                    <th class="sorted_class">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -404,15 +404,33 @@ $export_name = "concepts_".$date->format('Y-m-d H:i:s');
                         <td>".$concept->getTags()."</td>
                         <td>".$concept->getWgLink()."</td>
                         <td>".$concept->getWg2Link()."</td>
-                        <td>".$writingGroupMember->getName()."</td>
-                        <td>".$writingGroupMember->getEmail()."</td>
-                        <td>".$writingGroupMember->getRole()."</td>
-                        <td>".$edit."</td>
+                        <td style='width: 25%'>".$writingGroupMember->getName()."</td>
+                        <td style='width: 30%'><a href='mailto:".$writingGroupMember->getEmail()."'>".$writingGroupMember->getEmail()."</a></td>
+                        <td style='width: 15%'>".$writingGroupMember->getRole()."</td>
+                        <td style='width: 5%'>".$edit."</td>
                         </tr>";
                 }
             ?>
             </tbody>
         </table>
+    </div>
+    <!-- MODAL WRITING GROUP-->
+    <div class="modal fade" id="hub_edit_writing_group" tabindex="-1" role="dialog" aria-labelledby="Codes">
+        <div class="modal-dialog" role="document" style="width: 800px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="edit_title">Edit Member</h4>
+                </div>
+                <div class="modal-body">
+                    <iframe class="commentsform" id="redcap-edit-frame" message="E" name="redcap-edit-frame" src="" style="border: none;height: 810px;width: 100%;"></iframe>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 <?php }else{ ?>
