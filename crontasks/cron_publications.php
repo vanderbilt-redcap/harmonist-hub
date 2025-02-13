@@ -25,11 +25,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $pubtext4 = empty($settings['pubtext4']) ? "Site" : $settings['pubtext4'];
     $pubtext5 = empty($settings['pubtext5']) ? "Multi" : $settings['pubtext5'];
 
-    $user_record = $current_user['record_id'];
-    if(empty($user_record)){
-        #we are on cron, there's no user
-        $user_record = null;
-    }
+    $user_record = empty($current_user) ? null : $current_user['record_id'];
 
     if (!empty($concepts)) {
         $table_array['data'] = array();
@@ -62,12 +58,23 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
                     $badge = "";
-                    if(is_array($concept['output_type']) && array_key_exists($index,$concept['output_type']) && !empty($concept['output_type'][$index]) && array_key_exists($concept['output_type'][$index], $abstracts_publications_type)) {
-                        $badge = $abstracts_publications_badge[$concept['output_type'][$index]];
+                    $output_type = "";
+                    if(is_array($concept['output_type']) && array_key_exists($index,$concept['output_type']) && !empty($concept['output_type'][$index])) {
+                        if(array_key_exists($concept['output_type'][$index], $abstracts_publications_badge)){
+                            $badge = $abstracts_publications_badge[$concept['output_type'][$index]];
+                        }
+                        if(array_key_exists($concept['output_type'][$index], $abstracts_publications_type)){
+                            $output_type = htmlentities($abstracts_publications_type[$concept['output_type'][$index]]);
+                        }
                     }
+
                     $authors = "";
                     if(is_array($concept['output_authors']) && array_key_exists($index,$concept['output_authors'])) {
                         $authors = $concept['output_authors'][$index];
+                    }
+                    $title = "";
+                    if(is_array($concept['output_title']) && array_key_exists($index,$concept['output_title'])) {
+                        $title = $concept['output_title'][$index];
                     }
 
                     $table_aux = array();
@@ -75,8 +82,8 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     $table_aux['year'] = '<strong>' . htmlentities($concept['output_year'][$index]) . '</strong>';
                     $table_aux['region'] = '<span class="badge badge-pill badge-draft">'.$pubtext3.'</span>';
                     $table_aux['conf'] = htmlentities($concept['output_venue'][$index]);
-                    $table_aux['type'] = htmlentities($abstracts_publications_type[$concept['output_type'][$index]]);
-                    $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . htmlentities($badge) . '</span><span style="display:none">.</span> <strong>' . htmlentities($concept['output_title'][$index]) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($authors) . '</span>';
+                    $table_aux['type'] = $output_type;
+                    $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . $output_type . '</span><span style="display:none">.</span> <strong>' . htmlentities($title) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($authors) . '</span>';
                     $table_aux['available'] = $available;
                     $table_aux['file'] = $file;
                     $table_aux['edit'] = $edit;
@@ -116,13 +123,32 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$moduleAux->escape($passthru_link['hash']);
             $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
+            $output_type = "";
+            $badge = "";
+            if(!empty($output['output_type'])) {
+                if(array_key_exists($output['output_type'], $abstracts_publications_badge)){
+                    $badge = $abstracts_publications_badge[$output['output_type']];
+                }
+                if(array_key_exists($output['output_type'], $abstracts_publications_type)){
+                    $output_type = htmlentities($abstracts_publications_type[$output['output_type']]);
+                }
+            }
+            $authors = "";
+            if(is_array($output['output_authors']) && array_key_exists($index,$output['output_authors'])) {
+                $authors = $output['output_authors'][$index];
+            }
+            $title = "";
+            if(is_array($output['output_title']) && array_key_exists($index,$output['output_title'])) {
+                $title = $output['output_title'][$index];
+            }
+
             $table_aux = array();
             $table_aux['concept'] = '<i>None</i>';
             $table_aux['year'] = htmlentities($output['output_year']);
             $table_aux['region'] = $type;
             $table_aux['conf'] = htmlentities($output['output_venue']);
-            $table_aux['type'] = htmlentities($abstracts_publications_type[$output['output_type']]);
-            $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$output['output_type']] . '">' . htmlentities($abstracts_publications_type[$output['output_type']]) . '</span><span style="display:none">.</span> <strong>' . htmlentities($output['output_title']) . '</strong><span style="display:none">.</span> </br><span class=n"abstract_text">' . htmlentities($output['output_authors']) . '</span>';
+            $table_aux['type'] = $output_type;
+            $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . $output_type . '</span><span style="display:none">.</span> <strong>' . htmlentities($title) . '</strong><span style="display:none">.</span> </br><span class=n"abstract_text">' . htmlentities($authors) . '</span>';
             $table_aux['available'] = $available;
             $table_aux['file'] = $file;
             $table_aux['edit'] = $edit;
