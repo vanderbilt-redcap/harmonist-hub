@@ -8,7 +8,7 @@ $writingGroupMember = new WritingGroupModel($module, $pid, $module->getConceptMo
 $writingGroupMemberList = $writingGroupMember->fecthAllWritingGroup();
 
 $date = new \DateTime();
-$docName = "concept_".$concept->getConceptId()."_writing_group_".$date->format('Y-m-d H:i:s');
+$docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_group_".$date->format('Y-m-d H:i:s');
 ?>
 <script language="JavaScript">
     //To filter the data
