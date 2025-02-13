@@ -511,6 +511,15 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         return $this->securityHandler;
     }
 
+    public function getMessageHandler(): MessageHandler
+    {
+        if (!$this->messageHandler) {
+            $this->messageHandler = new MessageHandler();
+        }
+
+        return $this->messageHandler;
+    }
+
     public function getConceptModel(): ConceptModel
     {
         if (!$this->conceptModel) {

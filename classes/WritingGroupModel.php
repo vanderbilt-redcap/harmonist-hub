@@ -5,7 +5,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use phpDocumentor\Reflection\Types\Boolean;
 use REDCap;
 
-include_once (__DIR__ . "/../autoload.php");;
+include_once (__DIR__ . "/../autoload.php");
 
 class WritingGroupModel extends Model
 {
@@ -15,13 +15,15 @@ class WritingGroupModel extends Model
     private $instance;
     private $pidsArray = [];
     private $writingGroupMember = [];
+    private $authorshipLimit;
 
-    public function __construct(HarmonistHubExternalModule $module, $projectId, $concept, $instance)
+    public function __construct(HarmonistHubExternalModule $module, $projectId, $concept, $instance, $authorshipLimit)
     {
         $this->module = $module;
         $this->projectId = $projectId;
         $this->concept = $concept;
         $this->instance = $instance;
+        $this->authorshipLimit = $authorshipLimit;
         parent::__construct($module,$projectId);
         $this->pidsArray = $this->getPidsArray();
     }
@@ -36,9 +38,8 @@ class WritingGroupModel extends Model
     public function fecthWritingGroupByResearchGroup():void
     {
         if(is_array($this->concept) && array_key_exists('gmember_role', $this->concept)){
-            $authorshipLimit = \REDCap::getData($this->pidsArray['SETTINGS'], 'json-array', array('record_id' => 1),array('authorship_limit'))[0]['authorship_limit'];
             $researchGroupName = \REDCap::getData($this->pidsArray['REGIONS'], 'json-array', array('record_id' => $this->instance),array('region_name'))[0]['region_name'];
-            for($i = 1; $i < ((int)$authorshipLimit+1) ; $i++){
+            for($i = 1; $i < ((int)$this->authorshipLimit+1) ; $i++){
                 $saveData = false;
                 if($this->isHubContact('gmember_nh_'.$i, $this->instance)){
                     #Hub Contact

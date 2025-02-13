@@ -30,7 +30,7 @@ class Concept
         $this->hydrateConcept($conceptData);
     }
 
-    public function createWorkingGroup(): void
+    public function fetchWorkingGroup(): void
     {
         if (!empty($this->wgLink)) {
             $wgroup = \REDCap::getData($this->pidsArray['GROUP'], 'json-array', array('record_id' => $this->wgLink))[0];
@@ -51,12 +51,12 @@ class Concept
         }
     }
 
-    public function createStartDate(): void
+    public function fetchStartDate(): void
     {
         $this->startDate = (empty($this->ecApprovalD))? "<em>Not specified</em>" : $this->ecApprovalD;
     }
 
-    public function createStatus(): void
+    public function fetchStatus(): void
     {
         if($this->activeY == "Y"){
             $active = "Active";
@@ -74,7 +74,7 @@ class Concept
         $this->status = '<span class="label label-as-badge '.$activeColorButton.'">'.$active.'</span> '.$revised;
     }
 
-    public function createContact(): void
+    public function fetchContact(): void
     {
         $this->contact = "<em>Not specified</em>";
         if (!empty($this->contactLink)) {
@@ -91,16 +91,6 @@ class Concept
                 $this->contact = $nameConcept;
             }
         }
-    }
-
-    public function createTags(){
-        $tags = "";
-        foreach ($this->conceptTags as $tag=>$value){
-            if($value == 1) {
-                $tags .= $tag.",";
-            }
-        }
-        $this->tags = htmlspecialchars($tags,ENT_QUOTES);
     }
 
     public function getTags(): string
@@ -183,11 +173,10 @@ class Concept
         $this->revisedY = $conceptData['revised_y'][0];
         $this->ecApprovalD = $conceptData['ec_approval_d'];
         $this->conceptTags = $conceptData['concept_tags'];
-        $this->createWorkingGroup();
-        $this->createStartDate();
-        $this->createStatus();
-        $this->createContact();
-        $this->createTags();
+        $this->fetchWorkingGroup();
+        $this->fetchStartDate();
+        $this->fetchStatus();
+        $this->fetchContact();
     }
 }
 
