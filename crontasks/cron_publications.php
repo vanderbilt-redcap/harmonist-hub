@@ -120,8 +120,11 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
 
             $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
-            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$moduleAux->escape($passthru_link['hash']);
-            $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
+            $edit = "";
+            if(is_array($passthru_link) && array_key_exists('hash', $passthru_link)) {
+                $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$moduleAux->escape($passthru_link['hash']);
+                $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
+            }
 
             $output_type = "";
             $badge = "";
