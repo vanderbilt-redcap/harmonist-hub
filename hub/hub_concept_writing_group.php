@@ -108,8 +108,6 @@ $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_
         $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash'])."&modal=modal";
 
         $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$recordId,ENT_QUOTES);
-
-        $survey_queue_link = \REDCap::getSurveyQueueLink($recordId);
         ?>
         <div class="btn-group hidden-xs pull-right">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -119,28 +117,19 @@ $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_
                 <li><a href="<?=$gotoredcap?>" target="_blank">Go to REDCap</a></li>
             </ul>
         </div>
-
-        <script>
-            function refreshModal(id,link){
-                $('#'+id).attr('src', '');
-                document.getElementById(id).contentWindow.location.reload(); //Reloads the Iframe
-                $('#'+id).attr('src', link);
-            }
-        </script>
-
     <?php } ?>
     <p class="hub-title concepts-title-title" style="font-weight: normal"><?=$concept->getConceptTitle()?></p>
 
     <table class="table table_requests sortable-theme-bootstrap" data-sortable>
         <div class="row request">
             <div class="col-md-2 col-sm-12"><strong>Working Group:</strong></div>
-            <div class="col-md-6 col-sm-12"><?=$concept->getWorkingGroup()?> </div>
+            <div class="col-md-6 col-sm-12"><?=$concept->getWorkingGroup();?> </div>
             <div class="col-md-4"><strong>Start Date: </strong><?=$concept->getStartDate();?> </span></div>
         </div>
         <div class="row request">
             <div class="col-md-2 col-sm-12"><strong>Contact:</strong> </div>
-            <div class="col-md-6 col-sm-12"><?=$concept->getContact()?></div>
-            <div class="col-md-4"><strong>Status: </strong><?=$concept->getStatus()?></div>
+            <div class="col-md-6 col-sm-12"><?=$concept->getContact();?></div>
+            <div class="col-md-4"><strong>Status: </strong><?=$concept->getStatus();?></div>
         </div>
     </table>
         <div style="float:right;padding-bottom:10px;">

@@ -3,9 +3,10 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 
 use phpDocumentor\Reflection\Types\Boolean;
+use PhpParser\Node\Expr\AssignOp\Mod;
 use REDCap;
 
-class Concept
+class Concept extends Model
 {
     private $pidsArray;
     private $conceptId;
@@ -23,9 +24,36 @@ class Concept
     private $ecApprovalD;
     private $conceptTags;
     private $tags;
+    private $outputType;
+    private $participantsComplete;
+    private $participants;
+    private $personLink = [];
+    private $personRole;
+    private $personOther = [];
+    private $adminUpdate;
+    private $adminStatus;
+    private $adminupdateD;
+    private $updateD;
+    private $projectStatus;
+    private $conceptFile;
+    private $outputYear;
+    private $outputTitle;
+    private $outputDescription;
+    private $outputVenue;
+    private $outputPmcid;
+    private $outputCitation;
+    private $outputFile;
+    private $outputUrl;
+    private $outputAuthors;
+    private $docFile;
+    private $docTitle;
+    private $docDescription;
+    private $dochiddenY;
+    private $docuploadDt;
 
-    public function __construct($conceptData, $pidsArray)
+    public function __construct($conceptData, $module, $pidsArray)
     {
+        $this->module = $module;
         $this->pidsArray = $pidsArray;
         $this->hydrateConcept($conceptData);
     }
@@ -82,15 +110,299 @@ class Concept
             if (!empty($personInfo)) {
                 $nameConcept = '<a href="mailto:'.$personInfo['email'].'">'.$personInfo['firstname'] . ' ' . $personInfo['lastname'];
                 if(!empty($person_info['person_region'])){
-                    $person_region = \REDCap::getData($this->pidsArray['REGIONS'], 'json-array', array('record_id' => $personInfo['person_region']))[0];
-                    if(!empty($person_region)){
-                        $nameConcept .= " (".$person_region['region_code'].")";
+                    $personRegion = \REDCap::getData($this->pidsArray['REGIONS'], 'json-array', array('record_id' => $personInfo['person_region']))[0];
+                    if(!empty($personRegion)){
+                        $nameConcept .= " (".$personRegion['region_code'].")";
                     }
                 }
                 $nameConcept .= '</a>';
                 $this->contact = $nameConcept;
             }
         }
+    }
+
+    public function fetchParticipants(): void
+    {
+        $this->participants = "<em>Not specified</em>";
+        if(!empty($this->participantsComplete) && is_array($this->participantsComplete)) {
+            $participantList = "";
+            foreach ($this->participantsComplete as $id => $participant) {
+                $RecordSetParticipant = \REDCap::getData($this->pidsArray['PEOPLE'], 'array', array('record_id' => $this->personLink[$id]));
+                $participantInfo = $this->module->escape($this->getProjectInfoArrayRepeatingInstruments($RecordSetParticipant,$this->pidsArray['PEOPLE'])[0]);
+                if (!empty($participantInfo)) {
+                    #get the label from the drop down menu
+                    $participantList .= '<div><a href="mailto:' . $participantInfo['email'] . '">' . $participantInfo['firstname'] . ' ' . $participantInfo['lastname'] . '</a> (' . htmlspecialchars($this->module->getChoiceLabels('person_role', $this->pidsArray['HARMONIST'])[$this->personRole[$id]],ENT_QUOTES). ')</div>';
+                } else {
+                    $participantList .= '<div>' . htmlspecialchars($this->personOther[$id],ENT_QUOTES) . '</div>';
+                }
+            }
+            $this->participants = $participantList;
+        }
+    }
+
+    public function fetchTags(): void
+    {
+        $this->tags = '<div style="display: inline-block;padding:0 5px 5px 5px"><em>None</em></div>';
+        $conceptTagsLabels = $this->module->getChoiceLabels('concept_tags', $this->pidsArray['HARMONIST']);
+        $tagData = "";
+        foreach ($this->conceptTags as $tag=>$value){
+            if($value == 1) {
+                $tagData .= '<div style="display: inline-block;padding:0 5px 5px 5px"><span class="label label-as-badge badge-draft"> ' . $conceptTagsLabels[$tag].'</span></div>';
+            }
+        }
+        if(!empty($tagData)){
+            $this->tags = $tagData;
+        }
+    }
+
+    public function getOutputDescription()
+    {
+        return $this->outputDescription;
+    }
+
+    public function setOutputDescription($outputDescription): void
+    {
+        $this->outputDescription = $outputDescription;
+    }
+
+    public function getOutputTitle()
+    {
+        return $this->outputTitle;
+    }
+
+    public function setOutputTitle($outputTitle): void
+    {
+        $this->outputTitle = $outputTitle;
+    }
+
+    public function setOutputAuthors($outputAuthors): void
+    {
+        $this->outputAuthors = $outputAuthors;
+    }
+
+    public function getOutputAuthors()
+    {
+        return $this->outputAuthors;
+    }
+
+    public function getConceptFile()
+    {
+        return $this->conceptFile;
+    }
+
+    public function setConceptFile($conceptFile): void
+    {
+        $this->conceptFile = $conceptFile;
+    }
+
+    public function getOutputYear()
+    {
+        return $this->outputYear;
+    }
+
+    public function setOutputYear($outputYear): void
+    {
+        $this->outputYear = $outputYear;
+    }
+
+    public function getOutputVenue()
+    {
+        return $this->outputVenue;
+    }
+
+    public function setOutputVenue($outputVenue): void
+    {
+        $this->outputVenue = $outputVenue;
+    }
+
+    public function getOutputPmcid()
+    {
+        return $this->outputPmcid;
+    }
+
+    public function setOutputPmcid($outputPmcid): void
+    {
+        $this->outputPmcid = $outputPmcid;
+    }
+
+    public function getOutputCitation()
+    {
+        return $this->outputCitation;
+    }
+
+    public function setOutputCitation($outputCitation): void
+    {
+        $this->outputCitation = $outputCitation;
+    }
+
+    public function getOutputFile()
+    {
+        return $this->outputFile;
+    }
+
+    public function setOutputFile($outputFile): void
+    {
+        $this->outputFile = $outputFile;
+    }
+
+    public function getOutputUrl()
+    {
+        return $this->outputUrl;
+    }
+
+    public function setOutputUrl($outputUrl): void
+    {
+        $this->outputUrl = $outputUrl;
+    }
+
+    public function getDocFile()
+    {
+        return $this->docFile;
+    }
+
+    public function gsetDocFile($docFile): void
+    {
+        $this->docFile = $docFile;
+    }
+
+    public function getDocTitle()
+    {
+        return $this->docTitle;
+    }
+
+    public function setDocTitle($docTitle): void
+    {
+        $this->docTitle = $docTitle;
+    }
+
+    public function getDocDescription()
+    {
+        return $this->docDescription;
+    }
+
+    public function setDocDescription($docDescription): void
+    {
+        $this->docDescription = $docDescription;
+    }
+
+    public function getDochiddenY()
+    {
+        return $this->dochiddenY;
+    }
+
+    public function setDochiddenY($dochiddenY): void
+    {
+        $this->dochiddenY = $dochiddenY;
+    }
+
+    public function getDocuploadDt()
+    {
+        return $this->docuploadDt;
+    }
+
+    public function setDocuploadDt($docuploadDt): void
+    {
+        $this->docuploadDt = $docuploadDt;
+    }
+
+    public function getProjectStatus()
+    {
+        return $this->projectStatus;
+    }
+
+    public function setProjectStatus($projectStatus): void
+    {
+        $this->projectStatus = $projectStatus;
+    }
+
+    public function getAdminUpdate()
+    {
+        return $this->adminUpdate;
+    }
+
+    public function setAdminUpdate($adminUpdate): void
+    {
+        $this->adminUpdate = $adminUpdate;
+    }
+
+    public function getAdminupdateD()
+    {
+        return $this->adminupdateD;
+    }
+
+    public function setAdminupdateD($adminupdateD): void
+    {
+        $this->adminupdateD = $adminupdateD;
+    }
+
+    public function getUpdateD()
+    {
+        return $this->updateD;
+    }
+
+    public function setUpdateD($updateD): void
+    {
+        $this->updateD = $updateD;
+    }
+
+    public function getAdminStatus()
+    {
+        return $this->adminStatus;
+    }
+
+    public function setAdminStatus($adminStatus): void
+    {
+        $this->adminStatus = $adminStatus;
+    }
+
+    public function getOutputType()
+    {
+        return $this->outputType;
+    }
+
+    public function setOutputType($outputType): void
+    {
+        $this->outputType = $outputType;
+    }
+
+    public function getParticipantsComplete()
+    {
+        return $this->participantsComplete;
+    }
+
+    public function setParticipantsComplete($participantsComplete): void
+    {
+        $this->participantsComplete = $participantsComplete;
+    }
+
+    public function getParticipants()
+    {
+        return $this->participants;
+    }
+
+    public function setParticipants($participants): void
+    {
+        $this->participants = $participants;
+    }
+
+    public function getPersonLink(): array
+    {
+        return $this->personLink;
+    }
+
+    public function setPersonLink(array $personLink): void
+    {
+        $this->personLink = $personLink;
+    }
+
+    public function getPersonOther(): array
+    {
+        return $this->personOther;
+    }
+
+    public function setPersonOther(array $personOther): void
+    {
+        $this->personOther = $personOther;
     }
 
     public function getTags(): string
@@ -173,10 +485,38 @@ class Concept
         $this->revisedY = $conceptData['revised_y'][0];
         $this->ecApprovalD = $conceptData['ec_approval_d'];
         $this->conceptTags = $conceptData['concept_tags'];
+        $this->participantsComplete = $conceptData['participants_complete'];
+        $this->personLink = $conceptData['person_link'];
+        $this->personRole = $conceptData['person_role'];
+        $this->personOther = $conceptData['person_lother'];
+        $this->conceptTags = $conceptData['concept_tags'];
+        $this->adminUpdate = $conceptData['admin_update'];
+        $this->adminupdateD = $conceptData['adminupdate_d'];
+        $this->adminStatus = $conceptData['admin_status'];
+        $this->updateD = $conceptData['update_d'];
+        $this->projectStatus = $conceptData['project_status'];
+        $this->conceptFile = $conceptData['concept_file'];
+        $this->outputYear = $conceptData['output_year'];
+        $this->outputTitle = $conceptData['output_title'];
+        $this->outputDescription = $conceptData['output_description'];
+        $this->outputType = $conceptData['output_type'];
+        $this->outputVenue = $conceptData['output_venue'];
+        $this->outputPmcid = $conceptData['output_pmcid'];
+        $this->outputCitation = $conceptData['output_citation'];
+        $this->outputFile = $conceptData['output_file'];
+        $this->outputUrl = $conceptData['output_url'];
+        $this->outputAuthors = $conceptData['output_authors'];
+        $this->docFile = $conceptData['doc_file'];
+        $this->docTitle = $conceptData['doc_title'];
+        $this->docDescription = $conceptData['doc_description'];
+        $this->dochiddenY = $conceptData['dochidden_y'];
+        $this->docuploadDt = $conceptData['docupload_dt'];
         $this->fetchWorkingGroup();
         $this->fetchStartDate();
         $this->fetchStatus();
         $this->fetchContact();
+        $this->fetchParticipants();
+        $this->fetchTags();
     }
 }
 

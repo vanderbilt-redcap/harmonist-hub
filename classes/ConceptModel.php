@@ -32,7 +32,7 @@ class ConceptModel extends Model
             $this->conceptData = $this->module->escape(
                $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->pidsArray['HARMONIST'])[0]
             );
-            $this->concept = new Concept($this->conceptData, $this->pidsArray);
+            $this->concept = new Concept($this->conceptData, $this->module, $this->pidsArray);
         }
         return $this->concept;
     }
