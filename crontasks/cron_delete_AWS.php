@@ -23,7 +23,7 @@ if (file_exists($aws_credentials)){
 
     foreach ($request_DU as $upload) {
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
-        $message = AllCrons::runCronDeleteAws(
+        AllCrons::runCronDeleteAws(
             $this,
             $pidsArray,
             null,
@@ -33,7 +33,6 @@ if (file_exists($aws_credentials)){
             $settings,
             true
         );
-        array_push($messageArray, $message);
     }
 
     #Delete tokens expired on H18 Data Toolkit
@@ -41,7 +40,7 @@ if (file_exists($aws_credentials)){
     $today = strtotime(date("Y-m-d"));
     foreach ($securityTokens as $token) {
         if (strtotime($token['tokenexpiration_ts']) <= $today) {
-            $this->query("DELETE FROM " . \Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['DATATOOLUPLOADSECURITY']) . " WHERE project_id = ? AND field_name=? AND value = ?", [$pidsArray['DATATOOLUPLOADSECURITY'], "record_id", $token["record_id"]]);
+            $this->query("DELETE FROM " . getDataTable($pidsArray['DATATOOLUPLOADSECURITY']) . " WHERE project_id = ? AND field_name=? AND value = ?", [$pidsArray['DATATOOLUPLOADSECURITY'], "record_id", $token["record_id"]]);
             \Records::deleteRecordFromRecordListCache($pidsArray['DATATOOLUPLOADSECURITY'], $token["record_id"], 1);
 
             #Logs
