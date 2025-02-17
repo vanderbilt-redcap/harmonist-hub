@@ -30,8 +30,8 @@ class WritingGroupModel extends Model
 
     public function fecthAllWritingGroup():array
     {
-        self::fecthWritingGroupCore();
-        self::fecthWritingGroupByResearchGroup();
+        $this->fecthWritingGroupCore();
+        $this->fecthWritingGroupByResearchGroup();
         return $this->writingGroupMember;
     }
 
@@ -45,13 +45,13 @@ class WritingGroupModel extends Model
                     #Hub Contact
                     if(!$this->isDataEmpty('gmember_link_'.$i, $this->instance)) {
                         $saveData = true;
-                        $writingGroupMember = self::fetchHubContact($this->concept['gmember_link_' . $i][$this->instance]);
+                        $writingGroupMember = $this->fetchHubContact($this->concept['gmember_link_' . $i][$this->instance]);
                     }
                 }else{
                      #Not a Hub Member
                      if(!$this->isDataEmpty('gmember_firstname_'.$i, $this->instance)) {
                          $saveData = true;
-                         $writingGroupMember = self::fetchNotHubMember( 'gmember', $this->instance, "_".$i);
+                         $writingGroupMember = $this->fetchNotHubMember( 'gmember', $this->instance, "_".$i);
                      }
                 }
                 if($saveData){
@@ -70,10 +70,10 @@ class WritingGroupModel extends Model
             foreach($this->concept['cmember_role'] as $instance => $role){
                 if($this->isHubContact('cmember_nh', $instance)){
                     #Hub Contact
-                    $writingGroupMember = self::fetchHubContact($this->concept['cmember_link'][$instance]);
+                    $writingGroupMember = $this->fetchHubContact($this->concept['cmember_link'][$instance]);
                 }else{
                     #Not a Hub Member
-                    $writingGroupMember = self::fetchNotHubMember('cmember', $instance);
+                    $writingGroupMember = $this->fetchNotHubMember('cmember', $instance);
                 }
                 $writingGroupMember->setRole($cmemberRole[$this->concept['cmember_role'][$instance]]);
                 $writingGroupMember->setEditLink($this->fetchSurveyLink("writing_group_core",$instance));

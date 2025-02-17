@@ -30,9 +30,6 @@ $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_
         let docName = <?=json_encode($docName)?>;
         let canEdit = <?=json_encode($module->getConceptModel()->canUserEdit($current_user['record_id']))?>;
         let columns = [0, 1, 2];
-        if(canEdit){
-            columns = [0, 1, 2, 4];
-        }
 
         Sortable.init();
         //double pagination (top & bottom)
@@ -55,7 +52,7 @@ $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_
                         extend: 'print',
                         text: '<i class="fa fa-print"></i> Print',
                         exportOptions: {
-                            columns: [0, 1, 2],
+                            columns: columns,
                             stripHtml: false
                         }
                     }
@@ -167,24 +164,20 @@ $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_
                     <th class="sorted_class" >Email</th>
                     <th class="sorted_class">Role</th>
                     <th class="sorted_class">Actions</th>
-                    <th class="sorted_class">Edit Link</th>
                 </tr>
             </thead>
             <tbody>
             <?php
                 foreach ($writingGroupMemberList as $writingGroupMember) {
                     $edit = "";
-                    $editLink = "";
                     if($module->getConceptModel()->canUserEdit($current_user['record_id'])){
                         $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_writing_group\',\'redcap-edit-frame\',\'' . $writingGroupMember->getEditLink() . '\');"><em class="fa fa-pencil"></em></a>';
-                        $editLink = $writingGroupMember->getEditLink();
                     }
                     echo "<tr>
                         <td style='width: 25%'>".$writingGroupMember->getName()."</td>
                         <td style='width: 30%'><a href='mailto:".$writingGroupMember->getEmail()."'>".$writingGroupMember->getEmail()."</a></td>
                         <td style='width: 15%'>".$writingGroupMember->getRole()."</td>
                         <td style='width: 5%'>".$edit."</td>
-                        <td style='width: 5%'>".$editLink."</td>
                         </tr>";
                 }
             ?>

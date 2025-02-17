@@ -12,6 +12,7 @@ class Concept extends Model
     private $conceptId;
     private $activeY;
     private $conceptTitle;
+    private $conceptTags;
     private $contactLink;
     private $contact2Link;
     private $workingGroup;
@@ -22,7 +23,6 @@ class Concept extends Model
     private $wg2Link;
     private $revisedY;
     private $ecApprovalD;
-    private $conceptTags;
     private $tags;
     private $outputType;
     private $participantsComplete;
@@ -50,6 +50,7 @@ class Concept extends Model
     private $docDescription;
     private $dochiddenY;
     private $docuploadDt;
+    private $datasopFile;
 
     public function __construct($conceptData, $module, $pidsArray)
     {
@@ -153,6 +154,16 @@ class Concept extends Model
         if(!empty($tagData)){
             $this->tags = $tagData;
         }
+    }
+
+    public function getDatasopFile()
+    {
+        return $this->datasopFile;
+    }
+
+    public function setDatasopFile($datasopFile): void
+    {
+        $this->datasopFile = $datasopFile;
     }
 
     public function getOutputDescription()
@@ -474,22 +485,31 @@ class Concept extends Model
         return $this->ecApprovalD;
     }
 
+    public function getConceptTags()
+    {
+        return $this->conceptTags;
+    }
+
+    public function setConceptTags($conceptTags): void
+    {
+        $this->conceptTags = $conceptTags;
+    }
+
     private function hydrateConcept($conceptData){
         $this->conceptId = $conceptData['concept_id'];
         $this->activeY = $conceptData['active_y'];
         $this->conceptTitle = $conceptData['concept_title'];
+        $this->conceptTags = $conceptData['concept_tags'];
         $this->contactLink = $conceptData['contact_link'];
         $this->contact2Link = $conceptData['contact2_link'];
         $this->wgLink = $conceptData['wg_link'];
         $this->wg2Link = $conceptData['wg2_link'];
         $this->revisedY = $conceptData['revised_y'][0];
         $this->ecApprovalD = $conceptData['ec_approval_d'];
-        $this->conceptTags = $conceptData['concept_tags'];
         $this->participantsComplete = $conceptData['participants_complete'];
         $this->personLink = $conceptData['person_link'];
         $this->personRole = $conceptData['person_role'];
         $this->personOther = $conceptData['person_lother'];
-        $this->conceptTags = $conceptData['concept_tags'];
         $this->adminUpdate = $conceptData['admin_update'];
         $this->adminupdateD = $conceptData['adminupdate_d'];
         $this->adminStatus = $conceptData['admin_status'];
@@ -511,6 +531,7 @@ class Concept extends Model
         $this->docDescription = $conceptData['doc_description'];
         $this->dochiddenY = $conceptData['dochidden_y'];
         $this->docuploadDt = $conceptData['docupload_dt'];
+        $this->datasopFile = $conceptData['datasop_file'];
         $this->fetchWorkingGroup();
         $this->fetchStartDate();
         $this->fetchStatus();

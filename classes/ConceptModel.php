@@ -13,6 +13,7 @@ class ConceptModel extends Model
     private $projectId;
     private $pidsArray = [];
     private $isAdmin;
+    private $allConcepts;
     private $concept;
     private $conceptData;
 
@@ -28,13 +29,37 @@ class ConceptModel extends Model
     public function fetchConcept($recordId): Concept
     {
         if(!empty($this->pidsArray['HARMONIST'])) {
-            $RecordSetTable = \REDCap::getData($this->pidsArray['HARMONIST'], 'array', array('record_id' => $recordId));
-            $this->conceptData = $this->module->escape(
-               $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->pidsArray['HARMONIST'])[0]
-            );
+             if(empty($this->allConcepts)) {
+                 $RecordSetTable = \REDCap::getData(
+                     $this->pidsArray['HARMONIST'],
+                     'array',
+                     array('record_id' => $recordId)
+                 );
+                 $this->conceptData = $this->module->escape(
+                     $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->pidsArray['HARMONIST'])[0]
+                 );
+             }else{
+                 foreach($this->allConcepts as $concept) {
+                     if($concept['record_id'] == $recordId) {
+                         $this->conceptData = $concept;
+                         break;
+                     }
+                 }
+             }
             $this->concept = new Concept($this->conceptData, $this->module, $this->pidsArray);
         }
         return $this->concept;
+    }
+
+    public function fetchAllConcepts(): array
+    {
+        if(!empty($this->pidsArray['HARMONIST'])) {
+            $RecordSetTable = \REDCap::getData($this->pidsArray['HARMONIST'], 'array', null);
+            $this->allConcepts = $this->module->escape(
+                $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->pidsArray['HARMONIST'])
+            );
+        }
+        return $this->allConcepts;
     }
 
     public function canUserEdit($current_user){

@@ -2,8 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 $wg_type = $_REQUEST['type'];
 $concepts_table = "";
-$RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
-$concepts = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps,$pidsArray['HARMONIST']));
+$concepts = $module->getConceptModel()->fetchAllConcepts();
 if (!empty($concepts)) {
     $concepts_table .= '<table class="table table_requests sortable-theme-bootstrap concepts-table" data-sortable id="sortable_table">'.
         '<colgroup>'.
@@ -24,30 +23,32 @@ if (!empty($concepts)) {
         '<th class="sorting_disabled" data-sortable="false">Concept</th>'.
         '</tr></thead><tbody>';
 
-    foreach ($concepts as $concept) {
-        $id_people = $concept['contact_link'];
+    foreach ($concepts as $conceptData) {
+        $recordId = $conceptData['record_id'];
+        $concept = $module->getConceptModel()->fetchConcept($recordId);
+        $id_people = $concept->getContactLink();
         $name = "";
         if(!empty($id_people)){
             $name = getPeopleName($pidsArray['PEOPLE'], $id_people);
         }
         $tags = "";
-        foreach ($concept['concept_tags'] as $tag=>$value){
+        foreach ($concept->getConceptTags() as $tag=>$value){
             if($value == 1) {
                 $tags .= $tag.",";
             }
         }
-        $concepts_table .= '<tr wg_id="'.$concept['wg_link'].'">'.
-            '<td style="" data-order="'.$concept['concept_id'].'"><strong>' . $concept['concept_id'].'</strong></td>' .
-            '<td>' . $concept['wg_link'].'</td>' .
-            '<td>' . htmlspecialchars($tags,ENT_QUOTES).'</td>' .
-            '<td>' . $concept['active_y'].'</td>' .
-            '<td>' . $concept['wg2_link'].'</td>' .
+        $concepts_table .= '<tr wg_id="'.$concept->getWgLink().'">'.
+            '<td style="" data-order="'.$concept->getConceptId().'"><strong>' . $concept->getConceptId().'</strong></td>' .
+            '<td>' . $concept->getWgLink().'</td>' .
+            '<td>' . $tags.'</td>' .
+            '<td>' . $concept->getActiveY().'</td>' .
+            '<td>' . $concept->getWg2Link().'</td>' .
             '<td style="">' . htmlspecialchars($name,ENT_QUOTES). '</td>' .
-            '<td><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$concept['record_id'].'">' . $concept['concept_title'] . '</a></td>' ;
+            '<td><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$recordId.'">' . $concept->getConceptTitle() . '</a></td>' ;
 
         #Only check if they are final
         $row = "";
-        $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $concept['record_id']));
+        $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $recordId));
         $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
         if(!empty($sop["status"]) && in_array('1',$sop["status"]) && !empty($sop["pdf_file"])) {
             #SOP Files from Builder SOP project
@@ -55,12 +56,12 @@ if (!empty($concepts)) {
         }
         if(empty($row['doc_name'])){
             #SOP Files from Concept Sheets project
-            $edoc_data = $concept["datasop_file"];
+            $edoc_data = $concept->getDatasopFile();
         }
 
         $file_concept ='';
-        if($concept["concept_file"] != ""){
-            $file_concept = getFileLink($module, $pidsArray['PROJECTS'], $concept["concept_file"],'1','', $secret_key, $secret_iv, $current_user['record_id'],"");
+        if($concept->getConceptFile() != ""){
+            $file_concept = getFileLink($module, $pidsArray['PROJECTS'], $concept->getConceptFile(),'1','', $secret_key, $secret_iv, $current_user['record_id'],"");
         }
         $concepts_table .= '<td style="text-align: center;">'.$file_concept.'</td>';
 
