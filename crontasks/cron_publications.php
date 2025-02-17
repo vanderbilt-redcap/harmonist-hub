@@ -27,6 +27,11 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
     $user_record = empty($current_user) ? null : $current_user['record_id'];
 
+    if(!isset($secret_key) || !isset($secret_iv)){
+        $secret_key = "";
+        $secret_iv = "";
+    }
+
     if (!empty($concepts)) {
         $table_array['data'] = array();
         $records = 0;
