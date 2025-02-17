@@ -371,7 +371,8 @@ class AllCrons
      */
     public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $sop, $expired_date, $settings)
     {
-        if((!array_key_exists('deleted_y',$upload) || $upload['deleted_y'] != "1") && strtotime($expired_date) <= strtotime(date('Y-m-d'))){
+        if((!array_key_exists('deleted_y',$upload) || $upload['deleted_y'] != "1") && strtotime($expired_date) <= strtotime(date('Y-m-d'))
+        && isset($upload['data_upload_bucket']) && isset($upload['data_upload_folder']) && isset($upload['data_upload_zip'])){
             try {
                 #Delete the object
                 $result = $s3->deleteObject(array(
