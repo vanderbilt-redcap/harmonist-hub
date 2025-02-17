@@ -23,7 +23,7 @@ class ConceptModel extends Model
         $this->projectId = $projectId;
         parent::__construct($module,$projectId);
         $this->pidsArray = $this->getPidsArray();
-        $this->isAdmin = $this->isAdmin();
+//        $this->isAdmin = $this->isAdmin();
     }
 
     public function fetchConcept($recordId): Concept
@@ -64,7 +64,7 @@ class ConceptModel extends Model
 
     public function canUserEdit($current_user){
         if(!empty($this->concept)) {
-            if ($this->concept->getContactLink() == $current_user || $this->concept->getContact2Link() == $current_user || $this->isAdmin) {
+            if ($this->concept->getContactLink() == $current_user || $this->concept->getContact2Link() == $current_user || $this->isHarmonistAdmin($current_user)) {
                 return true;
             }
         }

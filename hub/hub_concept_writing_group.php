@@ -6,6 +6,7 @@ $recordId = htmlentities($_REQUEST['record'], ENT_QUOTES);
 $concept = $module->getConceptModel()->fetchConcept($recordId);
 $writingGroupMember = new WritingGroupModel($module, $pid, $module->getConceptModel()->getConceptData(),$current_user['person_region'], $settings['authorship_limit']);
 $writingGroupMemberList = $writingGroupMember->fecthAllWritingGroup();
+$canUserEdit =$module->getConceptModel()->canUserEdit($current_user['record_id']);
 
 $date = new \DateTime();
 $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_group_".$date->format('Y-m-d H:i:s');
@@ -163,22 +164,28 @@ $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_
                     <th class="sorted_class" data-sorted="true" data-sorted-direction="descending">Name</th>
                     <th class="sorted_class" >Email</th>
                     <th class="sorted_class">Role</th>
+                    <?php if($canUserEdit){?>
                     <th class="sorted_class">Actions</th>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
             <?php
+            error_reporting(E_ALL);
+            ini_set('display_errors', 1);
                 foreach ($writingGroupMemberList as $writingGroupMember) {
                     $edit = "";
-                    if($module->getConceptModel()->canUserEdit($current_user['record_id'])){
+                    if($canUserEdit){
                         $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_writing_group\',\'redcap-edit-frame\',\'' . $writingGroupMember->getEditLink() . '\');"><em class="fa fa-pencil"></em></a>';
                     }
                     echo "<tr>
                         <td style='width: 25%'>".$writingGroupMember->getName()."</td>
                         <td style='width: 30%'><a href='mailto:".$writingGroupMember->getEmail()."'>".$writingGroupMember->getEmail()."</a></td>
-                        <td style='width: 15%'>".$writingGroupMember->getRole()."</td>
-                        <td style='width: 5%'>".$edit."</td>
-                        </tr>";
+                        <td style='width: 15%'>".$writingGroupMember->getRole()."</td>";
+                    if($canUserEdit) {
+                        echo "<td style='width: 5%'>" . $edit . "</td>";
+                    }
+                        echo "</tr>";
                 }
             ?>
             </tbody>
