@@ -7,9 +7,9 @@ use REDCap;
 
 class Model
 {
-    private $module;
-    private $projectId;
-    private $pidsArray = [];
+    protected $module;
+    protected $projectId;
+    protected $pidsArray = [];
     private $isHarmonistAdmin;
 
     public function __construct(HarmonistHubExternalModule $module, $projectId)
@@ -21,22 +21,25 @@ class Model
     public function getPidsArray(): array
     {
         if (empty($this->pidsArray)) {
-            $hub_mapper = $this->module->getProjectSetting('hub-mapper', $this->projectId);
-            if ($hub_mapper !== "") {
-                $this->pidsArray = REDCapManagement::getPIDsArray($hub_mapper, $this->projectId);
+            $hubMapper = $this->module->getProjectSetting('hub-mapper', $this->projectId);
+            if ($hubMapper !== "") {
+                $this->pidsArray = REDCapManagement::getPIDsArray($hubMapper, $this->projectId);
             }
         }
         return $this->pidsArray;
     }
 
-    public function isHarmonistAdmin($current_user): bool
+    public function isHarmonistAdmin($currentUser): bool
     {
         $this->isHarmonistAdmin = false;
-        if (isset($current_user) && isset($this->isHarmonistAdmin)) {
-            $harmonistadminY = $this->module->escape(
-                \REDCap::getData($this->pidsArray['PEOPLE'], 'json-array', ['record_id' => $current_user], ['harmonistadmin_y']
-                )[0]['harmonistadmin_y']
-            );
+        if (isset($currentUser) && isset($this->isHarmonistAdmin)) {
+            $params = [
+                'project_id' => $this->pidsArray['PEOPLE'],
+                'return_format' => 'json-array',
+                'records' => [$currentUser],
+                'fields'=> ['harmonistadmin_y']
+            ];
+            $harmonistadminY = $this->module->escape(\REDCap::getData($params)[0]['harmonistadmin_y']);
             if ($harmonistadminY == "1") {
                 $this->isHarmonistAdmin = true;
             }
@@ -44,65 +47,65 @@ class Model
         return $this->isHarmonistAdmin;
     }
 
-    public  function getProjectInfoArrayRepeatingInstruments($records, $project_id, $filterLogic = null, $option = null): array
+    public  function getProjectInfoArrayRepeatingInstruments($records, $projectId, $filterLogic = null, $option = null): array
     {
-        $array = array();
-        $found = array();
+        $array = [];
+        $found = [];
         $index = 0;
         if (is_array($filterLogic) && $filterLogic != null) {
-            foreach ($filterLogic as $filterkey => $filtervalue) {
+            foreach ($filterLogic as $filterkey => $filterValue) {
                 array_push($found, false);
             }
         }
-        foreach ($records as $record => $record_array) {
+        foreach ($records as $record => $recordArray) {
             $count = 0;
             if(is_array($filterLogic) && !empty($filterLogic)) {
-                foreach ($filterLogic as $filterkey => $filtervalue) {
+                foreach ($filterLogic as $filterkey => $filterValue) {
                     $found[$count] = false;
                     $count++;
                 }
             }
-            foreach ($record_array as $event => $data) {
+            foreach ($recordArray as $event => $data) {
                 if ($event == 'repeat_instances') {
-                    foreach ($data as $eventarray) {
-                        $datarepeat = array();
-                        foreach ($eventarray as $instrument => $instrumentdata) {
+                    foreach ($data as $eventArray) {
+                        $dataRepeat = [];
+                        foreach ($eventArray as $instrument => $instrumentData) {
                             $count = 0;
-                            foreach ($instrumentdata as $instance => $instancedata) {
-                                foreach ($instancedata as $field_name => $value) {
-                                    if (!empty($array[$index]) && !array_key_exists($field_name, $array[$index])) {
-                                        $array[$index][$field_name] = array();
+                            foreach ($instrumentData as $instance => $instanceData) {
+                                foreach ($instanceData as $fieldName => $value) {
+                                    if (!empty($array[$index]) && !array_key_exists($fieldName, $array[$index])) {
+                                        $array[$index][$fieldName] = [];
                                     }
                                     if ($value != "" && (!is_array($value) || (is_array($value) && !empty($value)))) {
-                                        $datarepeat[$field_name][$instance] = $value;
+                                        $dataRepeat[$fieldName][$instance] = $value;
                                         $count = 0;
                                         if(is_array($filterLogic) && !empty($filterLogic)) {
-                                            foreach ($filterLogic as $filterkey => $filtervalue) {
-                                                if ($value == $filtervalue && $field_name == $filterkey) {
+                                            foreach ($filterLogic as $filterkey => $filterValue) {
+                                                if ($value == $filterValue && $fieldName == $filterkey) {
                                                     $found[$count] = true;
                                                 }
                                                 $count++;
                                             }
                                         }
                                     }
-                                    if (ProjectData::isCheckbox($field_name, $project_id) && $value[1] !== "") {
-                                        $array[$index][$field_name][$instance] = $value[1];
+                                    if (ProjectData::isCheckbox($fieldName, $projectId) && $value[1] !== "") {
+                                        $array[$index][$fieldName][$instance] = $value[1];
                                     }
                                 }
                                 $count++;
                             }
                         }
-                        foreach ($datarepeat as $field => $datai) {
+                        foreach ($dataRepeat as $field => $datai) {
                             #check if non repeatable value is empty and add repeatable value
                             #empty value or checkboxes
                             if ($array[$index][$field] == "" || (is_array(
                                         $array[$index][$field]
                                     ) && empty($array[$index][$field]))) {
-                                $array[$index][$field] = $datarepeat[$field];
+                                $array[$index][$field] = $dataRepeat[$field];
                             } else {
                                 if (is_array($datai) && $option == "json") {
                                     #only for the JSON format
-                                    $array[$index][$field] = $datarepeat[$field];
+                                    $array[$index][$field] = $dataRepeat[$field];
                                 }
                             }
                         }
@@ -122,14 +125,14 @@ class Model
                     }
                 }
             }
-            $found_total = true;
+            $foundTotal = true;
             foreach ($found as $fname => $fvalue) {
                 if ($fvalue == false) {
-                    $found_total = false;
+                    $foundTotal = false;
                     break;
                 }
             }
-            if (!$found_total && $filterLogic != null) {
+            if (!$foundTotal && $filterLogic != null) {
                 unset($array[$index]);
             }
 

@@ -10,7 +10,7 @@ if ($module->getUser()->isSuperUser()) {
     #DEBBUG CODE HERE TO TEST DIRECTLY THINGS IN THE SERVERS
 
     print_array();
-    getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_favicon'],'favicon');
+    getFile($module,$settings['hub_logo_favicon'],'favicon');
 }
 ?>
 

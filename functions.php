@@ -62,7 +62,7 @@ function getCrypt($string, $action = 'e',$secret_key="",$secret_iv="" ) {
     return $output;
 }
 
-function getFile($module, $project_id, $edoc, $type){
+function getFile($module, $edoc, $type){
     $file = "#";
     if($edoc != ""){
         $q = $module->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);

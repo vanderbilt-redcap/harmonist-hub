@@ -48,7 +48,12 @@ if (!empty($concepts)) {
 
         #Only check if they are final
         $row = "";
-        $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $recordId));
+        $params = [
+            'project_id' => $pidsArray['SOP'],
+            'return_format' => 'array',
+            'records' => [$recordId]
+        ];
+        $RecordSetSOP = \REDCap::getData($params);
         $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
         if(!empty($sop["status"]) && in_array('1',$sop["status"]) && !empty($sop["pdf_file"])) {
             #SOP Files from Builder SOP project
@@ -89,7 +94,7 @@ if(array_key_exists('message', $_REQUEST)){
     }
 }
 
-$img = getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'src');
+$img = getFile($module, $settings['hub_logo_pdf'],'src');
 
 ?>
 <script language="JavaScript">
@@ -433,7 +438,11 @@ $img = getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'src')
                 <select class="form-control" name="selectWorkingGroup" id="selectWorkingGroup">
                     <option value="">Select All</option>
                     <?php
-                    $wgroups = \REDCap::getData($pidsArray['GROUP'], 'json-array', null);
+                    $params = [
+                        'project_id' => $pidsArray['GROUP'],
+                        'return_format' => 'json-array'
+                    ];
+                    $wgroups = \REDCap::getData($params);
                     ArrayFunctions::array_sort_by_column($wgroups,'group_abbr');
                     if (!empty($wgroups)) {
                         foreach ($wgroups as $wg) {

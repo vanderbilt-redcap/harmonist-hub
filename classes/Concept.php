@@ -8,7 +8,6 @@ use REDCap;
 
 class Concept extends Model
 {
-    private $pidsArray;
     private $conceptId;
     private $activeY;
     private $conceptTitle;
@@ -54,106 +53,13 @@ class Concept extends Model
 
     public function __construct($conceptData, $module, $pidsArray)
     {
-        $this->module = $module;
-        $this->pidsArray = $pidsArray;
+        parent::__construct($module,$pidsArray['PROJECTS']);
         $this->hydrateConcept($conceptData);
     }
 
-    public function fetchWorkingGroup(): void
-    {
-        if (!empty($this->wgLink)) {
-            $wgroup = \REDCap::getData($this->pidsArray['GROUP'], 'json-array', array('record_id' => $this->wgLink))[0];
-        }
-
-        if (!empty($this->wg2Link)) {
-            $wgroup2 = \REDCap::getData($this->pidsArray['GROUP'], 'json-array', array('record_id' =>  $this->wg2Link))[0];
-        }
-
-        $this->workingGroup = "<em>Not specified</em>";
-        if(!empty($wgroup['group_name'])){
-            $groupNameTotal = $wgroup['group_name'];
-            if(!empty($wgroup2['group_name'])){
-                $this->workingGroup = $groupNameTotal.', '.$wgroup2['group_name'];
-            }
-        }else  if(!empty($wgroup2['group_name'])){
-            $this->workingGroup = $wgroup2['group_name'];
-        }
-    }
-
-    public function fetchStartDate(): void
-    {
-        $this->startDate = (empty($this->ecApprovalD))? "<em>Not specified</em>" : $this->ecApprovalD;
-    }
-
-    public function fetchStatus(): void
-    {
-        if($this->activeY == "Y"){
-            $active = "Active";
-            $activeColorButton = "text-button-approved";
-        }else{
-            $active = "Inactive";
-            $activeColorButton = "text-button-error";
-        }
-
-        $revised = "";
-        if($this->revisedY == '1'){
-            $revised = '<span class="label label-as-badge badge-revised">Revised</span>';
-        }
-
-        $this->status = '<span class="label label-as-badge '.$activeColorButton.'">'.$active.'</span> '.$revised;
-    }
-
-    public function fetchContact(): void
-    {
-        $this->contact = "<em>Not specified</em>";
-        if (!empty($this->contactLink)) {
-            $personInfo = \REDCap::getData($this->pidsArray['PEOPLE'], 'json-array', array('record_id' => $this->contactLink))[0];
-            if (!empty($personInfo)) {
-                $nameConcept = '<a href="mailto:'.$personInfo['email'].'">'.$personInfo['firstname'] . ' ' . $personInfo['lastname'];
-                if(!empty($person_info['person_region'])){
-                    $personRegion = \REDCap::getData($this->pidsArray['REGIONS'], 'json-array', array('record_id' => $personInfo['person_region']))[0];
-                    if(!empty($personRegion)){
-                        $nameConcept .= " (".$personRegion['region_code'].")";
-                    }
-                }
-                $nameConcept .= '</a>';
-                $this->contact = $nameConcept;
-            }
-        }
-    }
-
-    public function fetchParticipants(): void
-    {
-        $this->participants = "<em>Not specified</em>";
-        if(!empty($this->participantsComplete) && is_array($this->participantsComplete)) {
-            $participantList = "";
-            foreach ($this->participantsComplete as $id => $participant) {
-                $RecordSetParticipant = \REDCap::getData($this->pidsArray['PEOPLE'], 'array', array('record_id' => $this->personLink[$id]));
-                $participantInfo = $this->module->escape($this->getProjectInfoArrayRepeatingInstruments($RecordSetParticipant,$this->pidsArray['PEOPLE'])[0]);
-                if (!empty($participantInfo)) {
-                    #get the label from the drop down menu
-                    $participantList .= '<div><a href="mailto:' . $participantInfo['email'] . '">' . $participantInfo['firstname'] . ' ' . $participantInfo['lastname'] . '</a> (' . htmlspecialchars($this->module->getChoiceLabels('person_role', $this->pidsArray['HARMONIST'])[$this->personRole[$id]],ENT_QUOTES). ')</div>';
-                } else {
-                    $participantList .= '<div>' . htmlspecialchars($this->personOther[$id],ENT_QUOTES) . '</div>';
-                }
-            }
-            $this->participants = $participantList;
-        }
-    }
-
-    public function fetchTags(): void
-    {
-        $this->tags = '<div style="display: inline-block;padding:0 5px 5px 5px"><em>None</em></div>';
-        $conceptTagsLabels = $this->module->getChoiceLabels('concept_tags', $this->pidsArray['HARMONIST']);
-        $tagData = "";
-        foreach ($this->conceptTags as $tag=>$value){
-            if($value == 1) {
-                $tagData .= '<div style="display: inline-block;padding:0 5px 5px 5px"><span class="label label-as-badge badge-draft"> ' . $conceptTagsLabels[$tag].'</span></div>';
-            }
-        }
-        if(!empty($tagData)){
-            $this->tags = $tagData;
-        }
+    public function fetchConceptFile($edoc,$currentUserId,$secret_key,$secret_iv){
+         $file = new File($edoc, $this->module,$currentUserId,$secret_key,$secret_iv);
+         return $file;
     }
 
     public function getDatasopFile()
@@ -532,12 +438,138 @@ class Concept extends Model
         $this->dochiddenY = $conceptData['dochidden_y'];
         $this->docuploadDt = $conceptData['docupload_dt'];
         $this->datasopFile = $conceptData['datasop_file'];
-        $this->fetchWorkingGroup();
-        $this->fetchStartDate();
-        $this->fetchStatus();
-        $this->fetchContact();
-        $this->fetchParticipants();
-        $this->fetchTags();
+        $this->decoratorWorkingGroup();
+        $this->decoratorStartDate();
+        $this->decoratorStatus();
+        $this->decoratorContact();
+        $this->decoratorParticipants();
+        $this->decoratorTags();
+    }
+
+    private function decoratorWorkingGroup(): void
+    {
+        if (!empty($this->wgLink)) {
+            $params = [
+                'project_id' => $this->getPidsArray()['GROUP'],
+                'return_format' => 'json-array',
+                'records' => [$this->wgLink],
+                'fields' => ['group_name']
+            ];
+            $wgroup = \REDCap::getData($params)[0];
+        }
+
+        if (!empty($this->wg2Link)) {
+            $params = [
+                'project_id' => $this->getPidsArray()['GROUP'],
+                'return_format' => 'json-array',
+                'records' => [$this->wg2Link],
+                'fields'=> ['group_name']
+            ];
+            $wgroup2 = \REDCap::getData($params)[0];
+        }
+
+        $this->workingGroup = "<em>Not specified</em>";
+        if(!empty($wgroup['group_name'])){
+            $groupNameTotal = $wgroup['group_name'];
+            if(!empty($wgroup2['group_name'])){
+                $this->workingGroup = $groupNameTotal.', '.$wgroup2['group_name'];
+            }
+        }else  if(!empty($wgroup2['group_name'])){
+            $this->workingGroup = $wgroup2['group_name'];
+        }
+    }
+
+    public function decoratorStartDate(): void
+    {
+        $this->startDate = (empty($this->ecApprovalD))? "<em>Not specified</em>" : $this->ecApprovalD;
+    }
+
+    private function decoratorStatus(): void
+    {
+        if($this->activeY == "Y"){
+            $active = "Active";
+            $activeColorButton = "text-button-approved";
+        }else{
+            $active = "Inactive";
+            $activeColorButton = "text-button-error";
+        }
+
+        $revised = "";
+        if($this->revisedY == '1'){
+            $revised = '<span class="label label-as-badge badge-revised">Revised</span>';
+        }
+
+        $this->status = '<span class="label label-as-badge '.$activeColorButton.'">'.$active.'</span> '.$revised;
+    }
+
+    private function decoratorContact(): void
+    {
+        $this->contact = "<em>Not specified</em>";
+        if (!empty($this->contactLink)) {
+            $params = [
+                'project_id' => $this->getPidsArray()['PEOPLE'],
+                'return_format' => 'json-array',
+                'records' => [$this->contactLink],
+                'fields'=> ['email','firstname','lastname','person_region']
+            ];
+            $personInfo = \REDCap::getData($params)[0];
+            if (!empty($personInfo)) {
+                $nameConcept = '<a href="mailto:'.$personInfo['email'].'">'.$personInfo['firstname'] . ' ' . $personInfo['lastname'];
+                if(!empty($person_info['person_region'])){
+                    $params = [
+                        'project_id' => $this->getPidsArray()['REGIONS'],
+                        'return_format' => 'json-array',
+                        'records' => [$personInfo['person_region']],
+                        'fields'=> ['region_code']
+                    ];
+                    $personRegion = \REDCap::getData($params)[0];
+                    if(!empty($personRegion)){
+                        $nameConcept .= " (".$personRegion['region_code'].")";
+                    }
+                }
+                $nameConcept .= '</a>';
+                $this->contact = $nameConcept;
+            }
+        }
+    }
+
+    private function decoratorParticipants(): void
+    {
+        $this->participants = "<em>Not specified</em>";
+        if(!empty($this->participantsComplete) && is_array($this->participantsComplete)) {
+            $participantList = "";
+            foreach ($this->participantsComplete as $id => $participant) {
+                $params = [
+                    'project_id' => $this->getPidsArray()['PEOPLE'],
+                    'return_format' => 'array',
+                    'records' => [$this->personLink[$id]]
+                ];
+                $RecordSetParticipant = \REDCap::getData($params);
+                $participantInfo = $this->module->escape($this->getProjectInfoArrayRepeatingInstruments($RecordSetParticipant,$this->pidsArray['PEOPLE'])[0]);
+                if (!empty($participantInfo)) {
+                    #get the label from the drop down menu
+                    $participantList .= '<div><a href="mailto:' . $participantInfo['email'] . '">' . $participantInfo['firstname'] . ' ' . $participantInfo['lastname'] . '</a> (' . htmlspecialchars($this->module->getChoiceLabels('person_role', $this->pidsArray['HARMONIST'])[$this->personRole[$id]],ENT_QUOTES). ')</div>';
+                } else {
+                    $participantList .= '<div>' . htmlspecialchars($this->personOther[$id],ENT_QUOTES) . '</div>';
+                }
+            }
+            $this->participants = $participantList;
+        }
+    }
+
+    private function decoratorTags(): void
+    {
+        $this->tags = '<div style="display: inline-block;padding:0 5px 5px 5px"><em>None</em></div>';
+        $conceptTagsLabels = $this->module->getChoiceLabels('concept_tags', $this->pidsArray['HARMONIST']);
+        $tagData = "";
+        foreach ($this->conceptTags as $tag=>$value){
+            if($value == 1) {
+                $tagData .= '<div style="display: inline-block;padding:0 5px 5px 5px"><span class="label label-as-badge badge-draft"> ' . $conceptTagsLabels[$tag].'</span></div>';
+            }
+        }
+        if(!empty($tagData)){
+            $this->tags = $tagData;
+        }
     }
 }
 

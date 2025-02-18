@@ -197,33 +197,22 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
     </div>
 
 <?php } ?>
-
-
     <div class="panel panel-default" style="margin-bottom: 40px">
         <div class="panel-heading" style="height: 38px">
             <h3 class="panel-title">
                 <a data-toggle="collapse" href="#collapse_concept">Concept Sheet</a>
                 <?php
-                #Concept Files
                 if(!empty($concept->getConceptFile())){
-                    $q = $module->query("SELECT doc_name,stored_name,file_extension FROM redcap_edocs_metadata WHERE doc_id = ?",[$concept->getConceptFile()]);
-                    $row_concept_file = $q->fetch_assoc();
-                    if(!empty($row_concept_file['doc_name'])) {
-                        $extension = ($row_concept_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
-                        $pdf_path = $module->getUrl("loadPDF.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&edoc=".$concept->getConceptFile()."#page=1&zoom=100";
-
-                        $file_icon = getFileLink($module, $pidsArray['PROJECTS'], $concept->getConceptFile(),'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
-                        $download_link = $module->getUrl("downloadFile.php")."&NOAUTH&code=".getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept->getConceptFile()."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv);
-                        ?>
-                        <span style="float: right;padding-right: 15px;"><?=$file_icon;?></span>
-                        <a href="<?=$download_link?>" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>
-                <?php }
-                }?>
+                    $conceptFile = $concept->fetchConceptFile($concept->getConceptFile(),$current_user['record_id'],$secret_key,$secret_iv);
+                    echo '<span style="float: right;padding-right: 15px;">'.$conceptFile->getIcon().'</span>
+                          <a href="'.$conceptFile->getDownloadLink().'" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>';
+                 }
+                ?>
             </h3>
         </div>
         <div id="collapse_concept" class="table-responsive panel-collapse collapse in" aria-expanded="true">
-            <?php if(!empty($row_concept_file['doc_name'])) {?>
-            <iframe class="commentsform" id="redcap-frame" src="<?=$pdf_path?>" style="border: none;width: 100%;height: 500px;"></iframe>
+            <?php if(!empty($concept->getConceptFile())) {?>
+            <iframe class="commentsform" id="redcap-frame" src="<?=$conceptFile->getPdfPath()?>" style="border: none;width: 100%;height: 500px;"></iframe>
             <?php }else{?>
                 <table class="table table-hover table-bordered table-list table-font-size">
                     <tbody>
@@ -275,7 +264,12 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                     );
                 }
                 while ($rowConcept = db_fetch_assoc($q)){
-                    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$rowConcept['record']);
+                    $params = [
+                        'project_id' => $pidsArray['SOP'],
+                        'return_format' => 'array',
+                        'filterLogic' => "[sop_concept_id] = ".$rowConcept['record']
+                    ];
+                    $RecordSetSOP = \REDCap::getData($params);
                     $data_requests_old = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
                     if(empty($data_requests_old)){
                         echo getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$rowConcept['record'],"1");
@@ -309,7 +303,12 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                     <col>
                 </colgroup>
                 <?php
-                $uploads = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$recordId);
+                $params = [
+                    'project_id' => $pidsArray['DATAUPLOAD'],
+                    'return_format' => 'json-array',
+                    'filterLogic' => "[data_assoc_concept] = ".$recordId
+                ];
+                $uploads = \REDCap::getData($params);
                 if(!empty($uploads)){?>
 
                 <thead>
@@ -324,10 +323,22 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                 <tbody>
                 <?php
                 foreach ($uploads as $up){
-                    $people = $module->escape(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $up['data_upload_person']))[0]);
+                    $params = [
+                        'project_id' => $pidsArray['PEOPLE'],
+                        'return_format' => 'json-array',
+                        'records' => [$up['data_upload_person']],
+                        'fields'=> ['firstname','lastname','email']
+                    ];
+                    $people = $module->escape(\REDCap::getData($params)[0]);
                     $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
-                    $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $up['data_upload_region']),array('region_code'))[0]['region_code'];
+                    $params = [
+                        'project_id' => $pidsArray['REGIONS'],
+                        'return_format' => 'json-array',
+                        'records' => [$up['data_upload_region']],
+                        'fields'=> ['region_code']
+                    ];
+                    $region_code = \REDCap::getData($params);[0]['region_code'];
 
                     $status = '<span class="badge label-updated">Available</span>';
                     if($up['deleted_y'] == '1'){
@@ -579,7 +590,11 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
         <div id="collapse3" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                 <?php
-                $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null);
+                $params = [
+                    'project_id' => $pidsArray['RMANAGER'],
+                    'return_format' => 'array'
+                ];
+                $RecordSetRM = \REDCap::getData($params);
                 $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],array('approval_y' => "1",'assoc_concept' => $recordId));
                 if(!empty($request)){
                     echo getArchiveHeader('Status');

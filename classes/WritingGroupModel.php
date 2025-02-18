@@ -9,23 +9,23 @@ include_once (__DIR__ . "/../autoload.php");
 
 class WritingGroupModel extends Model
 {
-    private $module;
-    private $projectId;
     private $concept;
     private $instance;
-    private $pidsArray = [];
     private $writingGroupMember = [];
     private $authorshipLimit;
 
     public function __construct(HarmonistHubExternalModule $module, $projectId, $concept, $instance, $authorshipLimit)
     {
-        $this->module = $module;
-        $this->projectId = $projectId;
         $this->concept = $concept;
         $this->instance = $instance;
         $this->authorshipLimit = $authorshipLimit;
         parent::__construct($module,$projectId);
-        $this->pidsArray = $this->getPidsArray();
+    }
+
+    public function fecthWritingGroupFileName($hubName):string
+    {
+        $date = new \DateTime();
+        return $hubName."_concept_".$this->concept['concept_id']."_writing_group_".$date->format('Y-m-d H:i:s');
     }
 
     public function fecthAllWritingGroup():array
@@ -35,10 +35,16 @@ class WritingGroupModel extends Model
         return $this->writingGroupMember;
     }
 
-    public function fecthWritingGroupByResearchGroup():void
+    private function fecthWritingGroupByResearchGroup():void
     {
         if(is_array($this->concept) && array_key_exists('gmember_role', $this->concept)){
-            $researchGroupName = \REDCap::getData($this->pidsArray['REGIONS'], 'json-array', array('record_id' => $this->instance),array('region_name'))[0]['region_name'];
+            $params = [
+                'project_id' => $this->getPidsArray()['REGIONS'],
+                'return_format' => 'json-array',
+                'records' => [$this->instance],
+                'fields'=> ['region_name']
+            ];
+            $researchGroupName = \REDCap::getData($params)[0]['region_name'];
             for($i = 1; $i < ((int)$this->authorshipLimit+1) ; $i++){
                 $saveData = false;
                 if($this->isHubContact('gmember_nh_'.$i, $this->instance)){
@@ -63,10 +69,10 @@ class WritingGroupModel extends Model
         }
     }
 
-    public function fecthWritingGroupCore():void
+    private function fecthWritingGroupCore():void
     {
         if(is_array($this->concept) && array_key_exists('cmember_role', $this->concept)){
-            $cmemberRole = $this->module->getChoiceLabels('cmember_role', $this->pidsArray['HARMONIST']);
+            $cmemberRole = $this->module->getChoiceLabels('cmember_role', $this->getPidsArray()['HARMONIST']);
             foreach($this->concept['cmember_role'] as $instance => $role){
                 if($this->isHubContact('cmember_nh', $instance)){
                     #Hub Contact
@@ -82,7 +88,7 @@ class WritingGroupModel extends Model
         }
     }
 
-    public function isHubContact($variable, $instance):bool
+    private function isHubContact($variable, $instance):bool
     {
         if($this->concept[$variable][$instance] != 1){
             return true;
@@ -90,7 +96,7 @@ class WritingGroupModel extends Model
         return false;
     }
 
-    public function isDataEmpty($variable, $instance):bool
+    private function isDataEmpty($variable, $instance):bool
     {
         if(is_array($this->concept[$variable]) && array_key_exists($this->instance, $this->concept[$variable]) && !empty($this->concept[$variable][$instance])){
             return false;
@@ -98,16 +104,22 @@ class WritingGroupModel extends Model
         return true;
     }
 
-    public function fetchHubContact($recordId):WritingGroupMember
+    private function fetchHubContact($recordId):WritingGroupMember
     {
         $writingGroupMember = new WritingGroupMember();
-        $contactData = \REDCap::getData($this->pidsArray['PEOPLE'], 'json-array', array('record_id' => $recordId),array('email','firstname','lastname'))[0];
+        $params = [
+            'project_id' => $this->getPidsArray()['PEOPLE'],
+            'return_format' => 'json-array',
+            'records' => [$recordId],
+            'fields'=> ['email','firstname','lastname']
+        ];
+        $contactData = \REDCap::getData($params)[0];
         $writingGroupMember->setName($contactData['firstname'].' '.$contactData['lastname']);
         $writingGroupMember->setEmail($contactData['email']);
         return $writingGroupMember;
     }
 
-    public function fetchNotHubMember($variableName, $instance, $researchGroupVar = ""):WritingGroupMember
+    private function fetchNotHubMember($variableName, $instance, $researchGroupVar = ""):WritingGroupMember
     {
         $writingGroupMember = new WritingGroupMember();
         $writingGroupMember->setName($this->concept[$variableName.'_firstname'.$researchGroupVar][$instance].' '.$this->concept[$variableName.'_lastname'.$researchGroupVar][$instance]);
@@ -115,9 +127,9 @@ class WritingGroupModel extends Model
         return $writingGroupMember;
     }
 
-    public function fetchSurveyLink($surveyName,$instance):string
+    private function fetchSurveyLink($surveyName,$instance):string
     {
-        $passthru_link = $this->module->resetSurveyAndGetCodes($this->pidsArray['HARMONIST'], $this->concept['record_id'], $surveyName, "",$instance);
+        $passthru_link = $this->module->resetSurveyAndGetCodes($this->getPidsArray()['HARMONIST'], $this->concept['record_id'], $surveyName, "",$instance);
         $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$this->module->escape($passthru_link['hash']);
         return $survey_link;
     }

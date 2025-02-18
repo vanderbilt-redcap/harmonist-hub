@@ -9,9 +9,6 @@ include_once (__DIR__ . "/../autoload.php");
 
 class ConceptModel extends Model
 {
-    private $module;
-    private $projectId;
-    private $pidsArray = [];
     private $isAdmin;
     private $allConcepts;
     private $concept;
@@ -19,50 +16,43 @@ class ConceptModel extends Model
 
     public function __construct(HarmonistHubExternalModule $module, $projectId)
     {
-        $this->module = $module;
-        $this->projectId = $projectId;
         parent::__construct($module,$projectId);
-        $this->pidsArray = $this->getPidsArray();
-//        $this->isAdmin = $this->isAdmin();
     }
 
     public function fetchConcept($recordId): Concept
     {
-        if(!empty($this->pidsArray['HARMONIST'])) {
-             if(empty($this->allConcepts)) {
-                 $RecordSetTable = \REDCap::getData(
-                     $this->pidsArray['HARMONIST'],
-                     'array',
-                     array('record_id' => $recordId)
-                 );
-                 $this->conceptData = $this->module->escape(
-                     $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->pidsArray['HARMONIST'])[0]
-                 );
-             }else{
-                 foreach($this->allConcepts as $concept) {
-                     if($concept['record_id'] == $recordId) {
-                         $this->conceptData = $concept;
-                         break;
-                     }
-                 }
-             }
-            $this->concept = new Concept($this->conceptData, $this->module, $this->pidsArray);
+        if(!empty($this->getPidsArray()['HARMONIST'])) {
+            $params = [
+                'project_id' => $this->getPidsArray()['HARMONIST'],
+                'return_format' => 'array',
+                'records' => [$recordId]
+            ];
+            $RecordSetTable = REDCap::getData($params);
+            $this->conceptData = $this->module->escape(
+             $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])[0]
+            );
+            $this->concept = new Concept($this->conceptData, $this->module, $this->getPidsArray());
         }
         return $this->concept;
     }
 
     public function fetchAllConcepts(): array
     {
-        if(!empty($this->pidsArray['HARMONIST'])) {
-            $RecordSetTable = \REDCap::getData($this->pidsArray['HARMONIST'], 'array', null);
+        if(!empty($this->getPidsArray()['HARMONIST'])) {
+            $params = [
+                'project_id' => $this->getPidsArray()['HARMONIST'],
+                'return_format' => 'array'
+            ];
+            $RecordSetTable = REDCap::getData($params);
             $this->allConcepts = $this->module->escape(
-                $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->pidsArray['HARMONIST'])
+                $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])
             );
         }
         return $this->allConcepts;
     }
 
-    public function canUserEdit($current_user){
+    public function canUserEdit($current_user):bool
+    {
         if(!empty($this->concept)) {
             if ($this->concept->getContactLink() == $current_user || $this->concept->getContact2Link() == $current_user || $this->isHarmonistAdmin($current_user)) {
                 return true;

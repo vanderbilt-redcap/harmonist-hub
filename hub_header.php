@@ -63,7 +63,7 @@ if($isAdmin) {
                 if($settings['hub_logo'] != ""){
                     $textStyleNoLogo = ""; ?>
                     <a href="<?=$indexUrl.'&NOAUTH'?>" style="text-decoration: none;float:left">
-                        <img src='<?=\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo'], 'src');?>' style='max-width:250px;height:40px;' class='wiki_logo_img' alt="<?=$hub_projectname?> Logo">
+                        <img src='<?=getFile($module, $settings['hub_logo'], 'src');?>' style='max-width:250px;height:40px;' class='wiki_logo_img' alt="<?=$hub_projectname?> Logo">
                     </a>
                 <?php } ?>
                     <?php if(empty($token) || array_key_exists('sout', $_REQUEST) || $settings['hub_logo'] == ""){ ?>

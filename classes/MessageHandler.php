@@ -2,18 +2,14 @@
 
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-use phpDocumentor\Reflection\Types\Boolean;
 use REDCap;
-
 
 class MessageHandler
 {
+    const UPDATE_MESSAGE = 'U';
+    const SAVE_MESSAGE = 'S';
+    const NEW_MEMBER_MESSAGE = 'N';
     private $message = "";
-
-    public function __construct()
-    {
-
-    }
 
     public function fetchMessage($type, $message_type)
     {
@@ -28,11 +24,11 @@ class MessageHandler
     public function fetchWritingGroupMessage($message_type)
     {
         switch ($message_type) {
-            case 'U':
+            case UPDATE_MESSAGE:
                 return "The writing group member data has been updated.";
-            case 'S':
+            case SAVE_MESSAGE:
                 return "The writing group member data has been saved.";
-            case 'N':
+            case NEW_MEMBER_MESSAGE:
                 return "The writing group new member has been added.";
         }
     }

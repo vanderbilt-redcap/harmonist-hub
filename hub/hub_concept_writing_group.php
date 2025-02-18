@@ -7,9 +7,7 @@ $concept = $module->getConceptModel()->fetchConcept($recordId);
 $writingGroupMember = new WritingGroupModel($module, $pid, $module->getConceptModel()->getConceptData(),$current_user['person_region'], $settings['authorship_limit']);
 $writingGroupMemberList = $writingGroupMember->fecthAllWritingGroup();
 $canUserEdit =$module->getConceptModel()->canUserEdit($current_user['record_id']);
-
-$date = new \DateTime();
-$docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_group_".$date->format('Y-m-d H:i:s');
+$docName = $writingGroupMember->fecthWritingGroupFileName($settings['hub_name']);
 ?>
 <script language="JavaScript">
     //To filter the data
@@ -69,8 +67,6 @@ $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_
             var column_actions = sortable_table.column(3);
             column_actions.visible(false);
         }
-        var column_edit_link = sortable_table.column(4);
-        column_edit_link.visible(false);
 
         $('#sortable_table_filter').appendTo( '#options_wrapper' );
         $('#sortable_table_filter').attr( 'style','float: left;padding-left: 90px;padding-top: 5px;' );
@@ -144,7 +140,13 @@ $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_
                     <option value="">Select All</option>
                     <?php
                     $cmemberRole = $module->getChoiceLabels('cmember_role', $pidsArray['HARMONIST']);
-                    $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array',null, null, ['region_name'],null, false, false, false, "[showregion_y] = 1");
+                    $params = [
+                        'project_id' => $pidsArray['REGIONS'],
+                        'return_format' => 'json-array',
+                        'filterLogic' => "[showregion_y] = 1",
+                        'events' => ['region_name']
+                    ];
+                    $regions = \REDCap::getData($params);
                     foreach ($regions as $region){
                         array_push($cmemberRole,$region['region_name']);
                     }
@@ -200,9 +202,8 @@ $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_
                     <h4 class="modal-title" id="edit_title">Edit Member</h4>
                 </div>
                 <div class="modal-body">
-                    <iframe class="commentsform" id="redcap-edit-frame" message="U" name="redcap-edit-frame" src="" style="border: none;height: 810px;width: 100%;"></iframe>
+                    <iframe id="redcap-edit-frame" message="U" name="redcap-edit-frame" src="" style="border: none;height: 810px;width: 100%;"></iframe>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
@@ -215,13 +216,11 @@ $docName = $settings['hub_name']."_concept_".$concept->getConceptId()."_writing_
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">New Concept</h4>
+                    <h4 class="modal-title">New Member</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" value="0" id="comment_loaded">
-                    <iframe class="commentsform" id="redcap-new-frame" name="redcap-new-frame" message="N" src="<?=$module->getSurveyLinkNewInstance("writing_group_core", $recordId, $pidsArray['HARMONIST']);?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                    <iframe id="redcap-new-frame" name="redcap-new-frame" message="N" src="<?=$module->getSurveyLinkNewInstance("writing_group_core", $recordId, $pidsArray['HARMONIST']);?>" style="border: none;height: 810px;width: 100%;"></iframe>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
