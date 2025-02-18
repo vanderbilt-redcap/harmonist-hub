@@ -520,10 +520,13 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         return $this->messageHandler;
     }
 
-    public function getConceptModel(): ConceptModel
+    public function getConceptModel($projectId = null): ConceptModel
     {
         if (!$this->conceptModel) {
-            $this->conceptModel = new ConceptModel($this,(int)$_GET['pid']);
+            if($projectId == null) {
+                $projectId = (int)$_GET['pid'];
+            }
+            $this->conceptModel = new ConceptModel($this,$projectId);
         }
         return $this->conceptModel;
     }
