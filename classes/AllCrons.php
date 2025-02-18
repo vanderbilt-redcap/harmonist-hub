@@ -18,6 +18,7 @@ class AllCrons
                 foreach ($downloaders as $down) {
                     if($peopleDown == null && isset($down)) {
                         $region_codeDown = null;
+                        $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down));
                         if(isset($peopleDownData)) {
                             $peopleDownData = $peopleDownData[0];
                             if(array_key_exists('person_region', $peopleDownData)) {
