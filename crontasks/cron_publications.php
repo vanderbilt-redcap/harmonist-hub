@@ -81,12 +81,20 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     if(is_array($concept['output_title']) && array_key_exists($index,$concept['output_title'])) {
                         $title = $concept['output_title'][$index];
                     }
+                    $venue = "";
+                    if(is_array($concept['output_venue']) && array_key_exists($index,$concept['output_venue'])) {
+                        $venue = htmlentities($concept['output_venue'][$index]);
+                    }
+                    $year = "";
+                    if(is_array($concept['output_year']) && array_key_exists($index,$concept['output_year'])) {
+                        $year = htmlentities($concept['output_year'][$index]);
+                    }
 
                     $table_aux = array();
                     $table_aux['concept'] = '<a href="' . $moduleAux->getUrl('index.php') .'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']. '">' . htmlentities($concept['concept_id']) . '</a>';
-                    $table_aux['year'] = '<strong>' . htmlentities($concept['output_year'][$index]) . '</strong>';
+                    $table_aux['year'] = '<strong>' . $year . '</strong>';
                     $table_aux['region'] = '<span class="badge badge-pill badge-draft">'.$pubtext3.'</span>';
-                    $table_aux['conf'] = htmlentities($concept['output_venue'][$index]);
+                    $table_aux['conf'] = $venue;
                     $table_aux['type'] = $output_type;
                     $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . $output_type . '</span><span style="display:none">.</span> <strong>' . htmlentities($title) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($authors) . '</span>';
                     $table_aux['available'] = $available;
