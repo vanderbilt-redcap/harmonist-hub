@@ -26,7 +26,7 @@ if (file_exists($aws_credentials)){
         AllCrons::runCronDeleteAws(
             $this,
             $pidsArray,
-            null,
+            $s3,
             $upload,
             array('sop_downloaders' => '1,2'),
             $expired_date,
