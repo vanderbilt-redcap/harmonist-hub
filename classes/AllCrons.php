@@ -21,8 +21,8 @@ class AllCrons
                         $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down));
                         if(isset($peopleDownData)) {
                             $peopleDownData = $peopleDownData[0];
-                            if(array_key_exists('person_region', $peopleDownData)) {
-                                $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDownData[0]['person_region']),array('region_code'));
+                            if(array_key_exists('person_region', $peopleDownData) && isset($peopleDownData['person_region'])) {
+                                $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDownData['person_region']),array('region_code'));
                                 if(isset($region_codeDown)) {
                                     $region_codeDown = $region_codeDown[0]['region_code'];
                                 }
@@ -70,7 +70,6 @@ class AllCrons
                         if (!$email_sent) {
                             #Not downloaded any file
                             $messageArray = AllCrons::sendExpReminder($module, $pidsArray, $sop, $down, $upload, $expired_date['reminder'], $expired_date['reminder2'], $expired_date['delete'], $name_uploader, $region_code_uploader, $concept_id, $concept_title, $date_time, $settings, $email, $messageArray);
-                            $messageArray['notdownloaded'] += 1;
                         }
                     }
                 }
@@ -495,7 +494,6 @@ class AllCrons
                 "A summary report for the dataset is also available on that page.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
             $reminder_num = $settings['downloadreminder_dur'];
-            $messageArray[$settings['downloadreminder_dur']] += 1;
         } else {
             $subject = $settings['hub_name'] . " Data Request for " . $concept_id . " download expires on " . $expired_date_delete;
             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
@@ -506,7 +504,6 @@ class AllCrons
                 "<div>This is the final reminder for this dataset.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
             $reminder_num = $settings['downloadreminder2_dur'];
-            $messageArray[$settings['downloadreminder2_dur']] += 1;
         }
 
         if ($email) {
