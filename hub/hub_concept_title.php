@@ -203,7 +203,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                 <a data-toggle="collapse" href="#collapse_concept">Concept Sheet</a>
                 <?php
                 if(!empty($concept->getConceptFile())){
-                    $conceptFile = $concept->fetchConceptFile($concept->getConceptFile(),$current_user['record_id'],$secret_key,$secret_iv);
+                    $conceptFile = $concept->createConceptFile($concept->getConceptFile(),$current_user['record_id'],$secret_key,$secret_iv);
                     echo '<span style="float: right;padding-right: 15px;">'.$conceptFile->getIcon().'</span>
                           <a href="'.$conceptFile->getDownloadLink().'" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>';
                  }

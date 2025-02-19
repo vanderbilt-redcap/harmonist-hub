@@ -18,7 +18,7 @@ class File
     private $docName;
     private $currentUserId;
 
-    public function __construct($edoc,$module,$currentUserId=null,$secret_key=null,$secret_iv=null)
+    public function __construct($edoc, $module, $currentUserId = null, $secret_key = null, $secret_iv = null)
     {
         $this->module = $module;
         $this->currentUserId = $currentUserId;
@@ -67,8 +67,9 @@ class File
         $this->downloadLink = $downloadLink;
     }
 
-    private function fetchFile($edoc){
-        if(isset($edoc) && is_numeric($edoc)) {
+    private function fetchFile($edoc)
+    {
+        if (isset($edoc) && is_numeric($edoc)) {
             $q = $this->module->query(
                 "SELECT stored_name,doc_name,doc_size,mime_type,file_extension FROM redcap_edocs_metadata WHERE doc_id=?",
                 [$edoc]
@@ -77,40 +78,51 @@ class File
                 $this->edoc = $edoc;
                 $this->storedName = $row['stored_name'];
                 $this->docName = $row['doc_name'];
-                $this->icon = $this->hydrateFaIcon($row['file_extension']);
-                $this->fileSize = $this->hydrateSizeFormat($row['doc_size']);
-                $this->downloadLink = $this->hydrateDownloadLink();
-                $this->pdfPath = $this->hydratePdfPath();
+                $this->icon = $this->getFontAwesomeIcon($row['file_extension']);
+                $this->fileSize = $this->getSizeFormat($row['doc_size']);
+                $this->downloadLink = $this->getDownloadLinkUrl();
+                $this->pdfPath = $this->getPdfPathUrl();
             }
         }
     }
 
-    private function hydrateFaIcon($fileExtension){
+    private function getFontAwesomeIcon($fileExtension)
+    {
         $icon = "fa-file-o";
-        if(strtolower($fileExtension) == '.pdf' || strtolower($fileExtension) == 'pdf'){
+        if (strtolower($fileExtension) == '.pdf' || strtolower($fileExtension) == 'pdf') {
             $icon = "fa-file-pdf-o";
-        }else if(strtolower($fileExtension) == '.doc' || strtolower($fileExtension) == 'doc' ||
-            strtolower($fileExtension) == '.docx' || strtolower($fileExtension) == 'docx'){
-            $icon = "fa-file-word-o";
-        }else if(strtolower($fileExtension) == '.pptx' || strtolower($fileExtension) == 'pptx' ||
-            strtolower($fileExtension) == '.ppt' || strtolower($fileExtension) == 'ppt'){
-            $icon = "fa-file-powerpoint-o";
-        }else if(strtolower($fileExtension) == '.xlsx' || strtolower($fileExtension) == 'xlsx'){
-            $icon = "fa-file-excel-o";
-        }else if(strtolower($fileExtension) == '.html' || strtolower($fileExtension) == 'html'){
-            $icon = "fa-file-code-o";
-        }else if(strtolower($fileExtension) == '.png' || strtolower($fileExtension) == 'png' ||
-            strtolower($fileExtension) == '.jpeg' || strtolower($fileExtension) == 'jpeg' ||
-            strtolower($fileExtension) == '.gif' || strtolower($fileExtension) == 'gif' ||
-            strtolower($fileExtension) == '.tiff' || strtolower($fileExtension) == 'tiff' ||
-            strtolower($fileExtension) == '.bmp' || strtolower($fileExtension) == 'bmp' ||
-            strtolower($fileExtension) == '.jpg' || strtolower($fileExtension) == 'jpg'){
-            $icon = "fa-file-image-o";
+        } else {
+            if (strtolower($fileExtension) == '.doc' || strtolower($fileExtension) == 'doc' ||
+                strtolower($fileExtension) == '.docx' || strtolower($fileExtension) == 'docx') {
+                $icon = "fa-file-word-o";
+            } else {
+                if (strtolower($fileExtension) == '.pptx' || strtolower($fileExtension) == 'pptx' ||
+                    strtolower($fileExtension) == '.ppt' || strtolower($fileExtension) == 'ppt') {
+                    $icon = "fa-file-powerpoint-o";
+                } else {
+                    if (strtolower($fileExtension) == '.xlsx' || strtolower($fileExtension) == 'xlsx') {
+                        $icon = "fa-file-excel-o";
+                    } else {
+                        if (strtolower($fileExtension) == '.html' || strtolower($fileExtension) == 'html') {
+                            $icon = "fa-file-code-o";
+                        } else {
+                            if (strtolower($fileExtension) == '.png' || strtolower($fileExtension) == 'png' ||
+                                strtolower($fileExtension) == '.jpeg' || strtolower($fileExtension) == 'jpeg' ||
+                                strtolower($fileExtension) == '.gif' || strtolower($fileExtension) == 'gif' ||
+                                strtolower($fileExtension) == '.tiff' || strtolower($fileExtension) == 'tiff' ||
+                                strtolower($fileExtension) == '.bmp' || strtolower($fileExtension) == 'bmp' ||
+                                strtolower($fileExtension) == '.jpg' || strtolower($fileExtension) == 'jpg') {
+                                $icon = "fa-file-image-o";
+                            }
+                        }
+                    }
+                }
+            }
         }
-        return "<i class='fa ".$icon."' aria-hidden='true'></i> ";
+        return "<i class='fa " . $icon . "' aria-hidden='true'></i> ";
     }
 
-    private function hydrateSizeFormat($bytes, $precision = 2)
+    private function getSizeFormat($bytes, $precision = 2)
     {
         $units = array('B', 'KB', 'MB', 'GB', 'TB');
 
@@ -126,15 +138,22 @@ class File
             ) . " " . $units[$pow] . ")</span>";
     }
 
-    private function hydrateDownloadLink(){
-        return $this->module->getUrl("downloadFile.php")."&NOAUTH&code=".getCrypt(
-            "sname=".$this->storedName."&file=". urlencode($this->docName)."&edoc=".$this->edoc."&pid=".$this->currentUserId,'e',$this->secret_key,$this->secret_iv
-        );
+    private function getDownloadLinkUrl()
+    {
+        return $this->module->getUrl("downloadFile.php") . "&NOAUTH&code=" . getCrypt(
+                "sname=" . $this->storedName . "&file=" . urlencode(
+                    $this->docName
+                ) . "&edoc=" . $this->edoc . "&pid=" . $this->currentUserId,
+                'e',
+                $this->secret_key,
+                $this->secret_iv
+            );
     }
-    private function hydratePdfPath(){
-        return $this->module->getUrl("loadPDF.php")."&NOAUTH&edoc=".$this->edoc."#page=1&zoom=100";
+
+    private function getPdfPathUrl()
+    {
+        return $this->module->getUrl("loadPDF.php") . "&NOAUTH&edoc=" . $this->edoc . "#page=1&zoom=100";
     }
 }
 
 ?>
-

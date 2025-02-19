@@ -10,7 +10,6 @@ class Model
     protected $module;
     protected $projectId;
     protected $pidsArray = [];
-    private $isHarmonistAdmin;
 
     public function __construct(HarmonistHubExternalModule $module, $projectId)
     {
@@ -29,22 +28,22 @@ class Model
         return $this->pidsArray;
     }
 
-    public function isHarmonistAdmin($currentUser): bool
+    public static function isHarmonistAdmin($currentUser, $peoplePid, $module): bool
     {
-        $this->isHarmonistAdmin = false;
-        if (isset($currentUser) && isset($this->isHarmonistAdmin)) {
+        $isHarmonistAdmin = false;
+        if (isset($currentUser)) {
             $params = [
-                'project_id' => $this->pidsArray['PEOPLE'],
+                'project_id' => $peoplePid,
                 'return_format' => 'json-array',
                 'records' => [$currentUser],
                 'fields'=> ['harmonistadmin_y']
             ];
-            $harmonistadminY = $this->module->escape(\REDCap::getData($params)[0]['harmonistadmin_y']);
+            $harmonistadminY = $module->escape(\REDCap::getData($params)[0]['harmonistadmin_y']);
             if ($harmonistadminY == "1") {
-                $this->isHarmonistAdmin = true;
+                $isHarmonistAdmin = true;
             }
         }
-        return $this->isHarmonistAdmin;
+        return $isHarmonistAdmin;
     }
 
     public  function getProjectInfoArrayRepeatingInstruments($records, $projectId, $filterLogic = null, $option = null): array
@@ -139,5 +138,10 @@ class Model
             $index++;
         }
         return $array;
+    }
+
+    public function getModule(): array
+    {
+        return $this->module;
     }
 }

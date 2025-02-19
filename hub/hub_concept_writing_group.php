@@ -6,7 +6,7 @@ $recordId = htmlentities($_REQUEST['record'], ENT_QUOTES);
 $concept = $module->getConceptModel()->fetchConcept($recordId);
 $writingGroupMember = new WritingGroupModel($module, $pid, $module->getConceptModel()->getConceptData(),$current_user['person_region'], $settings['authorship_limit']);
 $writingGroupMemberList = $writingGroupMember->fecthAllWritingGroup();
-$canUserEdit =$module->getConceptModel()->canUserEdit($current_user['record_id']);
+$canUserEdit = $concept->canUserEdit($current_user['record_id']);
 $docName = $writingGroupMember->fecthWritingGroupFileName($settings['hub_name']);
 ?>
 <script language="JavaScript">
@@ -27,7 +27,7 @@ $docName = $writingGroupMember->fecthWritingGroupFileName($settings['hub_name'])
     );
     $(document).ready(function() {
         let docName = <?=json_encode($docName)?>;
-        let canEdit = <?=json_encode($module->getConceptModel()->canUserEdit($current_user['record_id']))?>;
+        let canEdit = <?=json_encode($canUserEdit)?>;
         let columns = [0, 1, 2];
 
         Sortable.init();
