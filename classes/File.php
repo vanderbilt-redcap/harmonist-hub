@@ -74,15 +74,15 @@ class File
                 "SELECT stored_name,doc_name,doc_size,mime_type,file_extension FROM redcap_edocs_metadata WHERE doc_id=?",
                 [$edoc]
             );
-            while ($row = $q->fetch_assoc()) {
-                $this->edoc = $edoc;
-                $this->storedName = $row['stored_name'];
-                $this->docName = $row['doc_name'];
-                $this->icon = $this->getFontAwesomeIcon($row['file_extension']);
-                $this->fileSize = $this->getSizeFormat($row['doc_size']);
-                $this->downloadLink = $this->getDownloadLinkUrl();
-                $this->pdfPath = $this->getPdfPathUrl();
-            }
+            $row = $q->fetch_array();
+            $this->edoc = $edoc;
+            $this->storedName = $row['stored_name'];
+            $this->docName = $row['doc_name'];
+            $this->icon = $this->getFontAwesomeIcon($row['file_extension']);
+            $this->fileSize = $this->getSizeFormat($row['doc_size']);
+            $this->downloadLink = $this->getDownloadLinkUrl();
+            $this->pdfPath = $this->getPdfPathUrl();
+
         }
     }
 
