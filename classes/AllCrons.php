@@ -428,7 +428,7 @@ class AllCrons
                 sendEmail($peopleUp['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $upload['data_upload_person'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
 
                 #to downloaders
-                if ($sop['sop_downloaders'] != "") {
+                if ($sop['sop_downloaders'] !== "") {
                     $downloaders = explode(',', $sop['sop_downloaders']);
                     $downloadersOrdered = array();
                     foreach ($downloaders as $down) {
