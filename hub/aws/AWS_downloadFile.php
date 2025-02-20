@@ -19,6 +19,8 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
         $record_id = $exploded['id'];
         $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
 
+        error_log("break point 1 - before credentials, ".time());
+
         $credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
         $s3 = new S3Client([
                                'version' => 'latest',
@@ -48,12 +50,13 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         $array_userid
                     )) !== false)) {
                 try {
+                    error_log("break point 2 - before get File Object, ".time());
                     #Get the object
                     $result = $s3->getObject(array(
                                                  'Bucket' => $request_DU['data_upload_bucket'],
                                                  'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip']
                                              ));
-
+                    error_log("break point 3 - after get File Object, ".time());
                     $persondown = \REDCap::getData(
                         $pidsArray['PEOPLE'],
                         'json-array',
@@ -107,7 +110,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         true,
                         false
                     );
-
+                    error_log("break point 4 - after saving info on DATADOWNLOAD , ".time());
                     $date = new \DateTime($download_time);
                     $date->modify("+1 hours");
                     $download_time_et = $date->format("Y-m-d H:i");
@@ -169,6 +172,8 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         $pidsArray['DATADOWNLOAD']
                     );
 
+                    error_log("break point 5 - Email notification sent, ".time());
+
                     if ($request_DU['data_upload_person'] != $downloader) {
                         $peopleDown = \REDCap::getData(
                             $pidsArray['PEOPLE'],
@@ -193,13 +198,16 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                             "Dataset downloaded",
                             $pidsArray['DATADOWNLOAD']
                         );
+                        error_log("break point 6 - Email notification downloaders sent, ".time());
                     }
 
-
+                    error_log("break point 7 - before File headers, ".time());
                     #Display the object in the browser
                     header("Content-Type: {$result['ContentType']}");
                     header('Content-Disposition: attachment; filename="' . $request_DU['data_upload_zip'] . '"');
+                    error_log("break point 8 - after File headers, ".time());
                     echo $result['Body'];
+                    error_log("break point 9 - after printing body, ".time());
                 } catch (S3Exception $e) {
                     echo $e->getMessage() . "\n";
                 }
