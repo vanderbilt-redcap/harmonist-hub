@@ -29,7 +29,6 @@ if (file_exists($aws_credentials)){
             $pidsArray,
             $s3,
             $upload,
-            array('sop_downloaders' => '1,2'),
             $expired_date,
             $settings,
             true
