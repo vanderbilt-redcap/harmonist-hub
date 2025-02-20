@@ -377,7 +377,7 @@ class AllCrons
      * @param $settings array Hub settings for this Harmonist instance
      * @return array|string
      */
-    public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $sop, $expired_date, $settings)
+    public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $expired_date, $settings)
     {
         if((!array_key_exists('deleted_y',$upload) || $upload['deleted_y'] != "1") && strtotime($expired_date) <= strtotime(date('Y-m-d'))
         && isset($upload['data_upload_bucket']) && isset($upload['data_upload_folder']) && isset($upload['data_upload_zip'])){
@@ -410,6 +410,9 @@ class AllCrons
 
                 $peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
                 $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array('region_code'))[0]['region_code'];
+
+                $RecordSetSOP = new \Plugin\RecordSet($pidsArray['SOP'], array('record_id' => $upload['data_assoc_request']));
+                $sop = $RecordSetSOP->getDetails()[0];
 
                 $date = new \DateTime($upload['responsecomplete_ts']);
                 $date->modify("+1 hours");
