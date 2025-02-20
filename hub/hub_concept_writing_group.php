@@ -3,11 +3,11 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 global $date;
 $recordId = htmlentities($_REQUEST['record'], ENT_QUOTES);
-$concept = $module->getConceptModel()->fetchConcept($recordId);
-$writingGroupMember = new WritingGroupModel($module, $pid, $module->getConceptModel()->getConceptData(),$current_user['person_region'], $settings['authorship_limit']);
-$writingGroupMemberList = $writingGroupMember->fecthAllWritingGroup();
+$concept = $module->getConceptModel()->fetchConcept($recordId, $settings['authorship_limit']);
+$writingGroupMember = new WritingGroupModel($module, $pid, $concept,$current_user['person_region']);
+$writingGroupMemberList = $writingGroupMember->fetchAllWritingGroup();
 $canUserEdit = $concept->canUserEdit($current_user['record_id']);
-$docName = $writingGroupMember->fecthWritingGroupFileName($settings['hub_name']);
+$docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name']);
 ?>
 <script language="JavaScript">
     //To filter the data

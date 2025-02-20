@@ -8,6 +8,7 @@ use REDCap;
 
 class Concept extends Model
 {
+    private $recordId;
     private $conceptId;
     private $activeY;
     private $conceptTitle;
@@ -50,11 +51,27 @@ class Concept extends Model
     private $dochiddenY;
     private $docuploadDt;
     private $datasopFile;
+    private $conceptData;
+    private $authorshipLimit;
+    private $gmember_role;
+    private $gmember_nh;
+    private $gmember_link;
+    private $gmember_firstname;
+    private $gmember_lastname;
+    private $gmember_email;
+    private $cmember_role;
+    private $cmember_nh;
+    private $cmember_link;
+    private $cmember_firstname;
+    private $cmember_lastname;
+    private $cmember_email;
 
-    public function __construct($conceptData, $module, $pidsArray)
+    public function __construct($conceptData, HarmonistHubExternalModule $module, $pidsArray, $authorshipLimit)
     {
         parent::__construct($module, $pidsArray['PROJECTS']);
-        $this->hydrateConcept($conceptData);
+        $this->conceptData = $conceptData;
+        $this->authorshipLimit = $authorshipLimit;
+        $this->hydrateConcept();
     }
 
     public function createConceptFile($edoc, $currentUserId, $secret_key, $secret_iv)
@@ -71,6 +88,26 @@ class Concept extends Model
             return true;
         }
         return false;
+    }
+
+    public function getRecordId()
+    {
+        return $this->recordId;
+    }
+
+    public function setRecordId($recordId): void
+    {
+        $this->recordId = $recordId;
+    }
+
+    public function getAuthorshipLimit()
+    {
+        return $this->authorshipLimit;
+    }
+
+    public function setAuthorshipLimit($authorshipLimit): void
+    {
+        $this->authorshipLimit = $authorshipLimit;
     }
 
     public function getDatasopFile()
@@ -413,50 +450,176 @@ class Concept extends Model
         $this->conceptTags = $conceptTags;
     }
 
-    private function hydrateConcept($conceptData)
+    public function getGmemberRole()
     {
-        $this->conceptId = $conceptData['concept_id'];
-        $this->activeY = $conceptData['active_y'];
-        $this->conceptTitle = $conceptData['concept_title'];
-        $this->conceptTags = $conceptData['concept_tags'];
-        $this->contactLink = $conceptData['contact_link'];
-        $this->contact2Link = $conceptData['contact2_link'];
-        $this->wgLink = $conceptData['wg_link'];
-        $this->wg2Link = $conceptData['wg2_link'];
-        $this->revisedY = $conceptData['revised_y'][0];
-        $this->ecApprovalD = $conceptData['ec_approval_d'];
-        $this->participantsComplete = $conceptData['participants_complete'];
-        $this->personLink = $conceptData['person_link'];
-        $this->personRole = $conceptData['person_role'];
-        $this->personOther = $conceptData['person_lother'];
-        $this->adminUpdate = $conceptData['admin_update'];
-        $this->adminupdateD = $conceptData['adminupdate_d'];
-        $this->adminStatus = $conceptData['admin_status'];
-        $this->updateD = $conceptData['update_d'];
-        $this->projectStatus = $conceptData['project_status'];
-        $this->conceptFile = $conceptData['concept_file'];
-        $this->outputYear = $conceptData['output_year'];
-        $this->outputTitle = $conceptData['output_title'];
-        $this->outputDescription = $conceptData['output_description'];
-        $this->outputType = $conceptData['output_type'];
-        $this->outputVenue = $conceptData['output_venue'];
-        $this->outputPmcid = $conceptData['output_pmcid'];
-        $this->outputCitation = $conceptData['output_citation'];
-        $this->outputFile = $conceptData['output_file'];
-        $this->outputUrl = $conceptData['output_url'];
-        $this->outputAuthors = $conceptData['output_authors'];
-        $this->docFile = $conceptData['doc_file'];
-        $this->docTitle = $conceptData['doc_title'];
-        $this->docDescription = $conceptData['doc_description'];
-        $this->dochiddenY = $conceptData['dochidden_y'];
-        $this->docuploadDt = $conceptData['docupload_dt'];
-        $this->datasopFile = $conceptData['datasop_file'];
+        return $this->gmember_role;
+    }
+
+    public function setGmemberRole($gmember_role): void
+    {
+        $this->gmember_role = $gmember_role;
+    }
+
+    public function getGmemberNh()
+    {
+        return $this->gmember_nh;
+    }
+
+    public function setGmemberNh($gmember_nh): void
+    {
+        $this->gmember_nh = $gmember_nh;
+    }
+
+    public function getGmemberLink()
+    {
+        return $this->gmember_link;
+    }
+
+    public function setGmemberLink($gmember_link): void
+    {
+        $this->gmember_link = $gmember_link;
+    }
+
+    public function getGmemberFirstname()
+    {
+        return $this->gmember_firstname;
+    }
+
+    public function setGmemberFirstname($gmember_firstname): void
+    {
+        $this->gmember_firstname = $gmember_firstname;
+    }
+
+    public function getGmemberLastname()
+    {
+        return $this->gmember_lastname;
+    }
+
+    public function setGmemberLastname($gmember_lastname): void
+    {
+        $this->gmember_lastname = $gmember_lastname;
+    }
+
+    public function getGmemberEmail()
+    {
+        return $this->gmember_email;
+    }
+
+    public function setGmemberEmail($gmember_email): void
+    {
+        $this->gmember_email = $gmember_email;
+    }
+
+    public function getCmemberRole()
+    {
+        return $this->cmember_role;
+    }
+
+    public function setCmemberRole($cmember_role): void
+    {
+        $this->cmember_role = $cmember_role;
+    }
+
+    public function getCmemberNh()
+    {
+        return $this->cmember_nh;
+    }
+
+    public function setCmemberNh($cmember_nh): void
+    {
+        $this->cmember_nh = $cmember_nh;
+    }
+
+    public function getCmemberLink()
+    {
+        return $this->cmember_link;
+    }
+
+    public function setCmemberLink($cmember_link): void
+    {
+        $this->cmember_link = $cmember_link;
+    }
+
+    public function getCmemberFirstname()
+    {
+        return $this->cmember_firstname;
+    }
+
+    public function setCmemberFirstname($cmember_firstname): void
+    {
+        $this->cmember_firstname = $cmember_firstname;
+    }
+
+    public function getCmemberLastname()
+    {
+        return $this->cmember_lastname;
+    }
+
+    public function setCmemberLastname($cmember_lastname): void
+    {
+        $this->cmember_lastname = $cmember_lastname;
+    }
+
+    public function getCmemberEmail()
+    {
+        return $this->cmember_email;
+    }
+
+    public function setCmemberEmail($cmember_email): void
+    {
+        $this->cmember_email = $cmember_email;
+    }
+
+    private function hydrateConcept()
+    {
+        $this->recordId = $this->conceptData['record_id'];
+        $this->conceptId = $this->conceptData['concept_id'];
+        $this->activeY = $this->conceptData['active_y'];
+        $this->conceptTitle = $this->conceptData['concept_title'];
+        $this->conceptTags = $this->conceptData['concept_tags'];
+        $this->contactLink = $this->conceptData['contact_link'];
+        $this->contact2Link = $this->conceptData['contact2_link'];
+        $this->wgLink = $this->conceptData['wg_link'];
+        $this->wg2Link = $this->conceptData['wg2_link'];
+        $this->revisedY = $this->conceptData['revised_y'][0];
+        $this->ecApprovalD = $this->conceptData['ec_approval_d'];
+        $this->participantsComplete = $this->conceptData['participants_complete'];
+        $this->personLink = $this->conceptData['person_link'];
+        $this->personRole = $this->conceptData['person_role'];
+        $this->personOther = $this->conceptData['person_lother'];
+        $this->adminUpdate = $this->conceptData['admin_update'];
+        $this->adminupdateD = $this->conceptData['adminupdate_d'];
+        $this->adminStatus = $this->conceptData['admin_status'];
+        $this->updateD = $this->conceptData['update_d'];
+        $this->projectStatus = $this->conceptData['project_status'];
+        $this->conceptFile = $this->conceptData['concept_file'];
+        $this->outputYear = $this->conceptData['output_year'];
+        $this->outputTitle = $this->conceptData['output_title'];
+        $this->outputDescription = $this->conceptData['output_description'];
+        $this->outputType = $this->conceptData['output_type'];
+        $this->outputVenue = $this->conceptData['output_venue'];
+        $this->outputPmcid = $this->conceptData['output_pmcid'];
+        $this->outputCitation = $this->conceptData['output_citation'];
+        $this->outputFile = $this->conceptData['output_file'];
+        $this->outputUrl = $this->conceptData['output_url'];
+        $this->outputAuthors = $this->conceptData['output_authors'];
+        $this->docFile = $this->conceptData['doc_file'];
+        $this->docTitle = $this->conceptData['doc_title'];
+        $this->docDescription = $this->conceptData['doc_description'];
+        $this->dochiddenY = $this->conceptData['dochidden_y'];
+        $this->docuploadDt = $this->conceptData['docupload_dt'];
+        $this->datasopFile = $this->conceptData['datasop_file'];
         $this->decorateWorkingGroup();
         $this->decorateStartDate();
         $this->decorateStatus();
         $this->decorateContact();
         $this->decorateParticipants();
         $this->decorateTags();
+
+        if($this->authorshipLimit != null) {
+            $this->decorateWritingGroupCore();
+            $this->decorateWritingGroupByResearchGroup();
+        }
     }
 
     private function decorateWorkingGroup(): void
@@ -592,6 +755,26 @@ class Concept extends Model
         }
         if (!empty($tagData)) {
             $this->tags = $tagData;
+        }
+    }
+
+    private function decorateWritingGroupCore(): void{
+        $this->cmember_role = $this->conceptData['cmember_role'];
+        $this->cmember_nh = $this->conceptData['cmember_nh'];
+        $this->cmember_link = $this->conceptData['cmember_link'];
+        $this->cmember_firstname = $this->conceptData['cmember_firstname'];
+        $this->cmember_lastname = $this->conceptData['cmember_lastname'];
+        $this->cmember_email = $this->conceptData['cmember_email'];
+    }
+
+    private function decorateWritingGroupByResearchGroup(): void{
+        $this->gmember_role = $this->conceptData['gmember_role'];
+        for($i = 1; $i < ((int)$this->authorshipLimit+1) ; $i++){
+            $this->gmember_nh[$i] = $this->conceptData['gmember_nh_'.$i];
+            $this->gmember_link[$i] = $this->conceptData['gmember_link_'.$i];
+            $this->gmember_firstname[$i] = $this->conceptData['gmember_firstname_'.$i];
+            $this->gmember_lastname[$i] = $this->conceptData['gmember_lastname_'.$i];
+            $this->gmember_email[$i] = $this->conceptData['gmember_email_'.$i];
         }
     }
 }

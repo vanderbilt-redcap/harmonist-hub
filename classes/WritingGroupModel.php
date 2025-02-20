@@ -9,99 +9,85 @@ include_once (__DIR__ . "/../autoload.php");
 
 class WritingGroupModel extends Model
 {
-    private $concept;
+    private Concept $concept;
     private $instance;
     private $writingGroupMember = [];
-    private $authorshipLimit;
 
-    public function __construct(HarmonistHubExternalModule $module, $projectId, $concept, $instance, $authorshipLimit)
+    public function __construct(HarmonistHubExternalModule $module, $projectId, Concept $concept, $instance)
     {
         $this->concept = $concept;
         $this->instance = $instance;
-        $this->authorshipLimit = $authorshipLimit;
         parent::__construct($module,$projectId);
     }
 
-    public function fecthWritingGroupFileName($hubName):string
+    public function fetchWritingGroupFileName($hubName):string
     {
         $date = new \DateTime();
-        return $hubName."_concept_".$this->concept['concept_id']."_writing_group_".$date->format('Y-m-d H:i:s');
+        return $hubName."_concept_".$this->concept->getConceptId()."_writing_group_".$date->format('Y-m-d H:i:s');
     }
 
-    public function fecthAllWritingGroup():array
+    public function fetchAllWritingGroup():array
     {
-        $this->fecthWritingGroupCore();
-        $this->fecthWritingGroupByResearchGroup();
+        $this->fetchWritingGroupCore();
+        $this->fetchWritingGroupByResearchGroup();
         return $this->writingGroupMember;
     }
 
-    private function fecthWritingGroupByResearchGroup():void
+    private function fetchWritingGroupByResearchGroup():void
     {
-        if(is_array($this->concept) && array_key_exists('gmember_role', $this->concept)){
-            $params = [
-                'project_id' => $this->getPidsArray()['REGIONS'],
-                'return_format' => 'json-array',
-                'records' => [$this->instance],
-                'fields'=> ['region_name']
-            ];
-            $researchGroupName = \REDCap::getData($params)[0]['region_name'];
-            for($i = 1; $i < ((int)$this->authorshipLimit+1) ; $i++){
-                $saveData = false;
-                if($this->isHubContact('gmember_nh_'.$i, $this->instance)){
-                    #Hub Contact
-                    if(!$this->isDataEmpty('gmember_link_'.$i, $this->instance)) {
-                        $saveData = true;
-                        $writingGroupMember = $this->fetchHubContact($this->concept['gmember_link_' . $i][$this->instance]);
-                    }
-                }else{
-                     #Not a Hub Member
-                     if(!$this->isDataEmpty('gmember_firstname_'.$i, $this->instance)) {
-                         $saveData = true;
-                         $writingGroupMember = $this->fetchNotHubMember( 'gmember', $this->instance, "_".$i);
-                     }
+        $params = [
+            'project_id' => $this->getPidsArray()['REGIONS'],
+            'return_format' => 'json-array',
+            'records' => [$this->instance],
+            'fields'=> ['region_name']
+        ];
+        $researchGroupName = \REDCap::getData($params)[0]['region_name'];
+        for($i = 1; $i < ((int)$this->concept->getAuthorshipLimit()+1) ; $i++){
+            $saveData = false;
+            if($this->isHubContact($this->concept->getGmemberNh()[$i], $this->instance)){
+                #Hub Contact
+                if(!empty($this->concept->getGmemberLink()[$i][$this->instance])) {
+                    $saveData = true;
+                    $writingGroupMember = $this->fetchHubContact($this->concept->getGmemberLink()[$i][$this->instance]);
                 }
-                if($saveData){
-                    $writingGroupMember->setRole($researchGroupName);
-                    $writingGroupMember->setEditLink($this->fetchSurveyLink("writing_group_by_research_group",$this->instance));
-                    $this->writingGroupMember[] = $writingGroupMember;
-                }
+            }else{
+                 #Not a Hub Member
+                 if(!empty($this->concept->getGmemberFirstname()[$i][$this->instance])) {
+                     $saveData = true;
+                     $writingGroupMember = $this->fetchNotHubMember( 'gmember', $this->instance, $i);
+                 }
             }
-        }
-    }
-
-    private function fecthWritingGroupCore():void
-    {
-        if(is_array($this->concept) && array_key_exists('cmember_role', $this->concept)){
-            $cmemberRole = $this->module->getChoiceLabels('cmember_role', $this->getPidsArray()['HARMONIST']);
-            foreach($this->concept['cmember_role'] as $instance => $role){
-                if($this->isHubContact('cmember_nh', $instance)){
-                    #Hub Contact
-                    $writingGroupMember = $this->fetchHubContact($this->concept['cmember_link'][$instance]);
-                }else{
-                    #Not a Hub Member
-                    $writingGroupMember = $this->fetchNotHubMember('cmember', $instance);
-                }
-                $writingGroupMember->setRole($cmemberRole[$this->concept['cmember_role'][$instance]]);
-                $writingGroupMember->setEditLink($this->fetchSurveyLink("writing_group_core",$instance));
+            if($saveData){
+                $writingGroupMember->setRole($researchGroupName);
+                $writingGroupMember->setEditLink($this->fetchSurveyLink("writing_group_by_research_group",$this->instance));
                 $this->writingGroupMember[] = $writingGroupMember;
             }
         }
     }
 
+    private function fetchWritingGroupCore():void
+    {
+        $cmemberRole = $this->module->getChoiceLabels('cmember_role', $this->getPidsArray()['HARMONIST']);
+        foreach($this->concept->getCmemberRole() as $instance => $role){
+            if($this->isHubContact($this->concept->getCmemberNh(), $instance)){
+                #Hub Contact
+                $writingGroupMember = $this->fetchHubContact($this->concept->getCmemberLink()[$instance]);
+            }else{
+                #Not a Hub Member
+                $writingGroupMember = $this->fetchNotHubMember('cmember', $instance);
+            }
+            $writingGroupMember->setRole($cmemberRole[$role]);
+            $writingGroupMember->setEditLink($this->fetchSurveyLink("writing_group_core",$instance));
+            $this->writingGroupMember[] = $writingGroupMember;
+        }
+    }
+
     private function isHubContact($variable, $instance):bool
     {
-        if($this->concept[$variable][$instance] != 1){
+        if($variable[$instance] != 1){
             return true;
         }
         return false;
-    }
-
-    private function isDataEmpty($variable, $instance):bool
-    {
-        if(is_array($this->concept[$variable]) && array_key_exists($this->instance, $this->concept[$variable]) && !empty($this->concept[$variable][$instance])){
-            return false;
-        }
-        return true;
     }
 
     private function fetchHubContact($recordId):WritingGroupMember
@@ -122,14 +108,18 @@ class WritingGroupModel extends Model
     private function fetchNotHubMember($variableName, $instance, $researchGroupVar = ""):WritingGroupMember
     {
         $writingGroupMember = new WritingGroupMember();
-        $writingGroupMember->setName($this->concept[$variableName.'_firstname'.$researchGroupVar][$instance].' '.$this->concept[$variableName.'_lastname'.$researchGroupVar][$instance]);
-        $writingGroupMember->setEmail($this->concept[$variableName.'_email'.$researchGroupVar][$instance]);
+
+        $firstName = (empty($researchGroupVar)) ? call_user_func(array( $this->concept, "get".ucfirst($variableName)."Firstname"))[$instance] : call_user_func(array( $this->concept, "get".ucfirst($variableName)."Firstname"))[$researchGroupVar][$instance];
+        $lastName = (empty($researchGroupVar)) ? call_user_func(array( $this->concept, "get".ucfirst($variableName)."Lastname"))[$instance] : call_user_func(array( $this->concept, "get".ucfirst($variableName)."Lastname"))[$researchGroupVar][$instance];
+        $email = (empty($researchGroupVar)) ? call_user_func(array( $this->concept, "get".ucfirst($variableName)."Lastname"))[$instance] : call_user_func(array( $this->concept, "get".ucfirst($variableName)."Lastname"))[$researchGroupVar][$instance];
+        $writingGroupMember->setName($firstName.' '.$lastName);
+        $writingGroupMember->setEmail($email);
         return $writingGroupMember;
     }
 
     private function fetchSurveyLink($surveyName,$instance):string
     {
-        $passthru_link = $this->module->resetSurveyAndGetCodes($this->getPidsArray()['HARMONIST'], $this->concept['record_id'], $surveyName, "",$instance);
+        $passthru_link = $this->module->resetSurveyAndGetCodes($this->getPidsArray()['HARMONIST'], $this->concept->getRecordId(), $surveyName, "",$instance);
         $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$this->module->escape($passthru_link['hash']);
         return $survey_link;
     }

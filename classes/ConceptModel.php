@@ -18,7 +18,7 @@ class ConceptModel extends Model
         parent::__construct($module, $projectId);
     }
 
-    public function fetchConcept($recordId): Concept
+    public function fetchConcept($recordId, $authorshipLimit = null): Concept
     {
         if (!empty($this->getPidsArray()['HARMONIST'])) {
             $params = [
@@ -30,7 +30,7 @@ class ConceptModel extends Model
             $this->conceptData = $this->module->escape(
                 $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])[0]
             );
-            $this->concept = new Concept($this->conceptData, $this->module, $this->getPidsArray());
+            $this->concept = new Concept($this->conceptData, $this->module, $this->getPidsArray(), $authorshipLimit);
         }
         return $this->concept;
     }
