@@ -173,8 +173,6 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
             </thead>
             <tbody>
             <?php
-            error_reporting(E_ALL);
-            ini_set('display_errors', 1);
                 foreach ($writingGroupMemberList as $writingGroupMember) {
                     $edit = "";
                     if($canUserEdit){

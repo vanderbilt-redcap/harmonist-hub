@@ -111,7 +111,7 @@ class WritingGroupModel extends Model
 
         $firstName = (empty($researchGroupVar)) ? call_user_func(array( $this->concept, "get".ucfirst($variableName)."Firstname"))[$instance] : call_user_func(array( $this->concept, "get".ucfirst($variableName)."Firstname"))[$researchGroupVar][$instance];
         $lastName = (empty($researchGroupVar)) ? call_user_func(array( $this->concept, "get".ucfirst($variableName)."Lastname"))[$instance] : call_user_func(array( $this->concept, "get".ucfirst($variableName)."Lastname"))[$researchGroupVar][$instance];
-        $email = (empty($researchGroupVar)) ? call_user_func(array( $this->concept, "get".ucfirst($variableName)."Lastname"))[$instance] : call_user_func(array( $this->concept, "get".ucfirst($variableName)."Lastname"))[$researchGroupVar][$instance];
+        $email = (empty($researchGroupVar)) ? call_user_func(array( $this->concept, "get".ucfirst($variableName)."Email"))[$instance] : call_user_func(array( $this->concept, "get".ucfirst($variableName)."Email"))[$researchGroupVar][$instance];
         $writingGroupMember->setName($firstName.' '.$lastName);
         $writingGroupMember->setEmail($email);
         return $writingGroupMember;

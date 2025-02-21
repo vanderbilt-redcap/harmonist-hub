@@ -11,7 +11,6 @@ class ConceptModel extends Model
 {
     private $isAdmin;
     private $concept;
-    private $conceptData;
 
     public function __construct(HarmonistHubExternalModule $module, $projectId)
     {
@@ -27,10 +26,10 @@ class ConceptModel extends Model
                 'records' => [$recordId]
             ];
             $RecordSetTable = REDCap::getData($params);
-            $this->conceptData = $this->module->escape(
+            $conceptData = $this->module->escape(
                 $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])[0]
             );
-            $this->concept = new Concept($this->conceptData, $this->module, $this->getPidsArray(), $authorshipLimit);
+            $this->concept = new Concept($conceptData, $this->module, $this->getPidsArray(), $authorshipLimit);
         }
         return $this->concept;
     }
@@ -49,11 +48,6 @@ class ConceptModel extends Model
             );
         }
         return $allConcepts;
-    }
-
-    public function getConceptData(): array
-    {
-        return $this->conceptData;
     }
 }
 
