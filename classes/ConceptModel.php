@@ -9,9 +9,6 @@ include_once(__DIR__ . "/../autoload.php");
 
 class ConceptModel extends Model
 {
-    private $isAdmin;
-    private $concept;
-
     public function __construct(HarmonistHubExternalModule $module, $projectId)
     {
         parent::__construct($module, $projectId);
@@ -19,6 +16,7 @@ class ConceptModel extends Model
 
     public function fetchConcept($recordId, $authorshipLimit = null): Concept
     {
+        $concept = null;
         if (!empty($this->getPidsArray()['HARMONIST'])) {
             $params = [
                 'project_id' => $this->getPidsArray()['HARMONIST'],
@@ -29,9 +27,9 @@ class ConceptModel extends Model
             $conceptData = $this->module->escape(
                 $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])[0]
             );
-            $this->concept = new Concept($conceptData, $this->module, $this->getPidsArray(), $authorshipLimit);
+            $concept = new Concept($conceptData, $this->module, $this->getPidsArray(), $authorshipLimit);
         }
-        return $this->concept;
+        return $concept;
     }
 
     public function fetchAllConcepts(): array
