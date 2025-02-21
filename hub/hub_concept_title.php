@@ -501,7 +501,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
     <div class="panel panel-default" style="margin-bottom: 40px">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <a data-toggle="collapse" href="#collapse_publications">Linked Documents</a>
+                <a data-toggle="collapse" href="#collapse_linked_doc">Linked Documents</a>
                 <?php
                 $harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
                 $can_edit_linked_doc = UserEditConditions::canUserEditData($isAdmin, $current_user['record_id'], $concept->getContactLink(),$concept->getContact2Link(), $harmonist_perm);
@@ -533,7 +533,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
             </h3>
         </div>
 
-        <div id="collapse_publications" class="table-responsive panel-collapse collapse in" aria-expanded="true">
+        <div id="collapse_linked_doc" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="abstracts">
                 <?php
                 if(!empty($concept->getDocTitle())){
@@ -557,8 +557,8 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                     echo '</tr></thead>'.$header;
 
                     echo '<tbody>';
-                    foreach ($concept->getDochiddenY() as $linked_doc_instance => $doc_hidden_value){
-                        if($doc_hidden_value !== "1"){
+                    foreach ($concept->getDocuploadDt() as $linked_doc_instance => $value){
+                        if($concept->getDochiddenY()[$linked_doc_instance] !== "1"){
                             echo '<tr>';
                             echo '<td width="15%">'.$concept->getDocuploadDt()[$linked_doc_instance].'</td>';
                             echo '<td width="25%">'.$concept->getDocTitle()[$linked_doc_instance].'</td>';
