@@ -91,7 +91,7 @@ if($sop['sop_notes'] != ""){
 $second_page .= "<p><span style='font-size:16pt'><strong>5. List of Requested Tables</strong></span></p>";
 $second_page .= "<p><span style='font-size: 12pt'>".$requested_tables."</span></p>";
 
-$img = base64_encode(file_get_contents($module->getSafePath(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'pdf'))));
+$img = base64_encode(file_get_contents($module->getSafePath(getFile($module, $settings['hub_logo_pdf'],'pdf'))));
 
 $page_num = '<style>a{text-decoration: none;}</style>';
 

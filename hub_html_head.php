@@ -12,7 +12,7 @@ use function Vanderbilt\HarmonistHubExternalModule\getFile;
     <meta name="author" content="">
     <meta http-equiv="Cache-control" content="public">
     <meta name="theme-color" content="#fff">
-    <link rel="icon" type="image/x-icon" href="<?=getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_favicon'],'favicon')?>">
+    <link rel="icon" type="image/x-icon" href="<?=getFile($module, $settings['hub_logo_favicon'],'favicon')?>">
 
     <?php include_once("head_scripts.php");?>
 

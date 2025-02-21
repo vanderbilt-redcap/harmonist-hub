@@ -10,11 +10,7 @@ use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 use ReflectionClass;
 
-include_once(__DIR__ . "/classes/REDCapManagement.php");
-include_once(__DIR__ . "/classes/ArrayFunctions.php");
-include_once(__DIR__ . "/classes/ProjectData.php");
-include_once(__DIR__ . "/classes/HubUpdates.php");
-include_once(__DIR__ . "/classes/SecurityHandler.php");
+include_once (__DIR__ . "/autoload.php");
 include_once(__DIR__ . "/functions.php");
 
 require_once(dirname(__FILE__) . "/vendor/autoload.php");
@@ -509,6 +505,26 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $this->securityHandler->setRequestUrl($this->escape($_REQUEST));
 
         return $this->securityHandler;
+    }
+
+    public function getMessageHandler(): MessageHandler
+    {
+        if (!$this->messageHandler) {
+            $this->messageHandler = new MessageHandler();
+        }
+
+        return $this->messageHandler;
+    }
+
+    public function getConceptModel($projectId = null): ConceptModel
+    {
+        if (!$this->conceptModel) {
+            if($projectId == null) {
+                $projectId = (int)$_GET['pid'];
+            }
+            $this->conceptModel = new ConceptModel($this,$projectId);
+        }
+        return $this->conceptModel;
     }
 }
 ?>
