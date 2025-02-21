@@ -2,7 +2,12 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 
 $record = htmlentities($_REQUEST['record'],ENT_QUOTES);
-$RecordSetTable = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $record));
+$params = [
+        'project_id' => $pidsArray['HARMONIST'],
+        'records' => [$record],
+        'return_format' => 'array'
+];
+$RecordSetTable = \REDCap::getData($params);
 $concept = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable,$pidsArray['HARMONIST'])[0]);
 $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
@@ -647,8 +652,8 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     echo '</tr></thead>'.$header;
 
                     echo '<tbody>';
-                    foreach ($concept['docupload_dt'] as $linked_doc_instance => $doc_hidden_value){
-                        if($doc_hidden_value !== "1"){
+                    foreach ($concept['docupload_dt'] as $linked_doc_instance => $value){
+                        if($concept['dochidden_y'][$linked_doc_instance] !== "1"){
                             echo '<tr>';
                             echo '<td width="15%">'.$concept['docupload_dt'][$linked_doc_instance].'</td>';
                             echo '<td width="25%">'.$concept['doc_title'][$linked_doc_instance].'</td>';

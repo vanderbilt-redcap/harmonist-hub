@@ -57,8 +57,8 @@ class ProjectData
                                             }
                                         }
                                     }
-                                    if (is_array($array[$index][$field_name]) && array_key_exists($instance,$array[$index][$field_name]) &&
-                                        ProjectData::isCheckbox($field_name, $project_id) && is_array($value) && array_key_exists(1,$value) && $value[1] !== "") {
+                                    if (is_array($array[$index][$field_name]) &&
+                                        ProjectData::isCheckbox($field_name, $project_id) && is_array($value) && array_key_exists(1,$value)) {
                                         $array[$index][$field_name][$instance] = $value[1];
                                     }
                                 }
