@@ -46,6 +46,13 @@ class Model
         return $isHarmonistAdmin;
     }
 
+    public function fetchSurveyLink($projectId, $recordId, $surveyName,$instance):string
+    {
+        $passthru_link = $this->module->resetSurveyAndGetCodes($projectId, $recordId, $surveyName, "",$instance);
+        $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$this->module->escape($passthru_link['hash']);
+        return $survey_link;
+    }
+
     public  function getProjectInfoArrayRepeatingInstruments($records, $projectId, $filterLogic = null, $option = null): array
     {
         $array = [];
