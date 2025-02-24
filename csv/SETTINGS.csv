@@ -258,7 +258,7 @@ publications_lastupdate,backend_variables,"Publications Library",text,"Last Upda
 publications_json,backend_variables,,file,"Publications JSON File",,,,,,,,,,,,," @READONLY"
 writinggroup_opt,writing_group_management,"Writing Group Management Settings",radio,"Enable the Writing Group feature for your Hub?","0, Hide for all | 1, Show for admins only | 2, Show for all",,,,,,,,,,,,
 authorship_limit,writing_group_management,,text,"Authorship Limit per Research Group
-<div style=""font-weight:lighter;font-style:italic"">This will limit the number of writing group members that will be read and processed on the ""H1: Concept Sheets > Writing Group by Research Group"" form. Edit the REDCap form directly to hide unused fields. </div>",,,integer,0,10,,,,,,,,
+<div style=""font-weight:lighter;font-style:italic"">This will limit the number of writing group members that will be read and processed on the ""H1: Concept Sheets > Writing Group by Research Group"" form. Edit the REDCap form directly to hide unused fields. </div>",,,integer,0,10,,,,,,,," @DEFAULT='10'"
 mailinglist_y,writing_group_management,,yesno,"Utilize Mailing List configuration?
 <div style=""font-weight:lighter;font-style:italic"">Will your Hub will utilize a Mailing List integration (such as GroupVine) to create and manage writing group e-mail lists? Mailing List subscriptions are purchased separately and are not part of the Hub.</div>",,,,,,,,,,,,,
 mailinglist_type,writing_group_management,,dropdown,"Which Mailing List Integration will you be using?","1, GroupVine",,,,,,"[mailinglist_y] = '1'",,,,,,
