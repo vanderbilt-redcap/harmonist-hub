@@ -8,7 +8,7 @@ $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array("record_id" =
 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
 
 $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', array("record_id" => $sop['sop_concept_id']));
-$concept_title = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0]['concept_title'];
+$concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
 
 $date = new \DateTime();
 $sop_created_dt = $date->format('Y-m-d H:i:s');
@@ -16,7 +16,7 @@ $sop_created_dt = $date->format('Y-m-d H:i:s');
 $Proj = new \Project($pidsArray['SOP']);
 $event_id = $Proj->firstEventId;
 $record = $module->framework->addAutoNumberedRecord($pidsArray['SOP']);
-$sop_name = $record.". Data Request for ".$sop['sop_concept_id'].", ".$concept_title;
+$sop_name = $record.". Data Request for ".$concept['concept_id'].", ".$concept['concept_title'];
 
 $arraySOP[$record][$event_id]['sop_name'] = $sop_name;
 $arraySOP[$record][$event_id]['sop_status'] = "0";//DRAFT
@@ -33,6 +33,9 @@ $arraySOP[$record][$event_id]['sop_due_d'] = $sop['sop_due_d'];
 $arraySOP[$record][$event_id]['sop_creator'] = $sop['sop_creator'];
 $arraySOP[$record][$event_id]['sop_creator2'] = $sop['sop_creator2'];
 $arraySOP[$record][$event_id]['sop_datacontact'] = $sop['sop_datacontact'];
+$arraySOP[$record][$event_id]['sop_creator_org'] = $sop['sop_creator_org'];
+$arraySOP[$record][$event_id]['sop_creator2_org'] = $sop['sop_creator2_org'];
+$arraySOP[$record][$event_id]['sop_datacontact_org'] = $sop['sop_datacontact_org'];
 $arraySOP[$record][$event_id]['sop_extrapdf'] = $sop['sop_extrapdf'];
 $arraySOP[$record][$event_id]['sop_finalpdf'] = $sop['sop_finalpdf'];
 $arraySOP[$record][$event_id]['sop_downloaders'] = $sop['sop_downloaders'];
