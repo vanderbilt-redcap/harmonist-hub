@@ -112,7 +112,9 @@ class REDCapManagement {
                 1=>array('status'=>1,'instrument'=>'admin_update','params'=>'[adminupdate_d]'),
                 2=>array('status'=>1,'instrument'=>'project_update_survey','params'=>'[update_d]'),
                 3=>array('status'=>1,'instrument'=>'outputs','params'=>'[output_year], [output_type], [output_venue]'),
-                4=>array('status'=>1,'instrument'=>'linked_documents','params'=>'')
+                4=>array('status'=>1,'instrument'=>'linked_documents','params'=>''),
+                5=>array('status'=>1,'instrument'=>'writing_group_core','params'=>'[cauthor_firstname] [cauthor_lastname]'),
+                6=>array('status'=>1,'instrument'=>'writing_group_by_research_group','params'=>'[gmember_role]')
             ),
             3=>array(0=>array('status'=>1,'instrument'=>'dashboard_voting_status','params'=>'[responding_region]')),
             4=>array(0=>array('status'=>0,'instrument'=>'','params'=>'')),
@@ -157,7 +159,9 @@ class REDCapManagement {
                 2=>'admin_update',
                 3=>'quarterly_update_survey',
                 4=>'outputs',
-                5=>'linked_documents'
+                5=>'linked_documents',
+                6=>'writing_group_core',
+                7=>'writing_group_by_research_group'
             ),
             3=>array(
                 0=>'request',

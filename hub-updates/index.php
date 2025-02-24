@@ -221,6 +221,18 @@ if (!ProjectData::checkIfSurveysAreActivated($module, $pidsArray)) {
                 </div>
             </div>';
 }
+if (!ProjectData::checkIfMissingRepeatingInstruments($module, $pidsArray)) {
+    echo '<div class="container" style="margin-top: 10px">
+                <div class="alert alert-warning col-md-12">
+                <div>There are repeating instruments not enabled on their respective projects.</div>
+                <form method="POST" action="' . $module->getUrl(
+            'hub-updates/update_surveys_AJAX.php'
+        ) . '&redcap_csrf_token=' . $module->getCSRFToken() . '" class="" id="resolved_list">
+                    <div class="float-right"><button type="submit" name="option" value="update" class="btn btn-success" style="display: block;margin-right: 10px;">Enable</button></div>
+                </form>
+                </div>
+            </div>';
+}
 if (!ProjectData::checkIfModuleIsEnabledOnProjects($module, $pidsArray, (int)$_GET['pid'])) {
     echo '<div class="container" style="margin-top: 10px">
                 <div class="alert alert-warning col-md-12">
