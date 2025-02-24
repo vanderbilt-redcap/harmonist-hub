@@ -377,7 +377,44 @@ class ProjectData
         return true;
     }
 
-    public static function addSurvey($module, $project_id, $surveys, $constant, $pidsArray)
+    public static function checkIfMissingRepeatingInstruments($module, $pidsArray, $addRepeating = false){
+        $projectsArray = REDCapManagement::getProjectsConstantsArray();
+        $projectsArrayRepeatable = REDCapManagement::getProjectsRepeatableArray();
+         foreach ($projectsArrayRepeatable as $constant_id => $arrayData) {
+             $projectId = $pidsArray[$projectsArray[$constant_id]];
+              foreach ($arrayData as $repeatEvent) {
+                  if ($repeatEvent['status'] == 1 && self::doesInstrumentExist($module, $projectId, $repeatEvent['instrument'])) {
+                      $q = $module->query("SELECT b.event_id FROM redcap_events_arms a LEFT JOIN redcap_events_metadata b ON(a.arm_id = b.arm_id) where a.project_id = ?",[$projectId]);
+                      while ($row = $q->fetch_assoc()) {
+                          $eventId = $row['event_id'];
+                          $q_repeat_data = $module->query("SELECT event_id, form_name, custom_repeat_form_label FROM redcap_events_repeat WHERE event_id = ? AND form_name=?",[$eventId,$repeatEvent['instrument']]);
+                          if($q_repeat_data->num_rows == 0){
+                              if($addRepeating){
+                                $module->query("INSERT INTO redcap_events_repeat (event_id, form_name, custom_repeat_form_label) VALUES (?, ?, ?)",[$eventId,$repeatEvent['instrument'],$repeatEvent['params']]);
+                              }else{
+                                  return false;
+                              }
+                          }
+                      }
+                  }
+              }
+         }
+        return true;
+    }
+
+    private static function doesInstrumentExist($module, $projectId, $formName)
+    {
+        $q = $module->query(
+            "SELECT * FROM redcap_metadata WHERE project_id = ? and form_name = ?;",
+            [$projectId, $formName]
+        );
+        if ($q->num_rows > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function addSurvey($module, $project_id, $surveys, $constant, $pidsArray, $addSurvey = false)
     {
         $module->query("UPDATE redcap_projects SET surveys_enabled = ? WHERE project_id = ?", ["1", $project_id]);
         foreach ($surveys as $survey) {
