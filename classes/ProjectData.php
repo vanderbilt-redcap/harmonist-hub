@@ -58,7 +58,7 @@ class ProjectData
                                         }
                                     }
                                     if (is_array($array[$index][$field_name]) &&
-                                        ProjectData::isCheckbox($field_name, $project_id) && is_array($value) && array_key_exists(1,$value)) {
+                                        ProjectData::isCheckbox($field_name, $project_id) && is_array($value) && array_key_exists(1,$value) && !empty($value[1])) {
                                         $array[$index][$field_name][$instance] = $value[1];
                                     }
                                 }
