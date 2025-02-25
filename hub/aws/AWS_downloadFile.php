@@ -196,7 +196,6 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                             "Dataset downloaded",
                             $pidsArray['DATADOWNLOAD']
                         );
-                        error_log("break point 6 - Email notification downloaders sent, ".time());
                     }
 
                     #Download the object in the browser
