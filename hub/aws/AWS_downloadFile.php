@@ -26,10 +26,6 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                                'region' => 'us-east-2',
                                'credentials' => $credentials
                            ]);
-
-        // Register the stream wrapper from an S3Client object
-//        $s3->registerStreamWrapper();
-
         if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && $module->getSecurityHandler()->isTokenCorrect(
                 $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
             )) {
@@ -52,30 +48,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         $array_userid
                     )) !== false)) {
                 try {
-                    #Get the object
-//                    $result = $s3->getObject(array(
-//                                                 'Bucket' => $request_DU['data_upload_bucket'],
-//                                                 'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip']
-//                                             ));
-
-                    /*** TEST 0 ***/
-//                    $result = $s3->getObjectUrl($bucket, $key);
-//                    print_array($result);
-                    /******/
-//
-//                    /*** TEST 1 ***/
-//                    $result = $s3->getObject(array(
-//                                                 'Bucket' => $bucket,
-//                                                 'Key' => $key
-//                                             ));
-//                    header("Content-Type: {$result['ContentType']}");
-//                    header('Content-Disposition: attachment; filename="fake211.zip"');
-//                    echo $result['Body'];
-//                    $body = $result->get('Body');
-//                    $body->rewind();
-//                    /******/
-//
-//                    /*** TEST 2 ***/
+                    #Get the object as a link
                     $cmd = $s3->getCommand('GetObject', [
                         'Bucket' => $request_DU['data_upload_bucket'],
                         'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip'],
@@ -84,72 +57,6 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
 
                     $request = $s3->createPresignedRequest($cmd, '+15 min');
                     $presignedUrl = (string)$request->getUri();
-//                    echo $presignedUrl;
-                    header("Content-Type: application/zip, application/octet-stream");
-                    header('Content-Disposition: attachment; filename="'.$request_DU['data_upload_zip'].'"');
-                    header("Location: " . $presignedUrl);
-//                    /******/
-//
-//                    /*** TEST 3 ***/
-//                    $s3->registerStreamWrapper();
-//
-//                    try {
-//                        // Open a stream in read-only mode
-//                        $path = 's3://'.$bucket.'/'.$key;
-//                        if ($stream = fopen($path, 'r')) {
-//                            // While the stream is still open
-//                            if (($fp = @fopen($path, 'w')) !== false){
-//                                while (!feof($stream)) {
-//                                    // Read 1024 bytes from the stream
-//                                    fwrite($fp, fread($stream, 1024));
-//                                }
-//                                fclose($fp);
-//                            }
-//                            // Be sure to close the stream resource when you're done with it
-//                            fclose($stream);
-//                        }
-//                    } catch (S3Exception $e) {
-//                        echo $e->getMessage() . "\n";
-//                    }
-//
-//                    /*** TEST 4 ***/
-//                    $path = 's3://'.$bucket.'/'.$key;
-//                    $data = file_get_contents($path);
-//
-//                    try {
-//                        // Open a stream in read-only mode
-//                        if ($stream = fopen($path, 'r')) {
-//                            // While the stream is still open
-//                            while (!feof($stream)) {
-//                                // Read 1,024 bytes from the stream
-//                                echo fread($stream, 1024);
-//                            }
-//                            // Be sure to close the stream resource when you're done with it
-//                            fclose($stream);
-//                        }
-//                    } catch (S3Exception $e) {
-//                        echo $e->getMessage() . "\n";
-//                    }
-//                    /******/
-//
-//                    /*** TEST5 ***/
-//                    $path = 's3://'.$bucket.'/'.$key;
-//                    $data = file_get_contents($path);
-//
-//                    // Read a file using file_get_contents and handle errors properly.
-//                    /**
-//                     * Fetches the contents of a file.
-//                     *
-//                     * @return void
-//                     */
-//                    $content = file_get_contents( $path );
-//
-//                    if ( false !== $content ) {
-//                        echo esc_html( $content ); // Output the entire file content
-//                    } else {
-//                        echo esc_html( 'Unable to read the file.' ); // Handle error case
-//                    }
-                    /******/
 
                     $persondown = \REDCap::getData(
                         $pidsArray['PEOPLE'],
@@ -293,10 +200,10 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         error_log("break point 6 - Email notification downloaders sent, ".time());
                     }
 
-                    #Display the object in the browser
-//                    header("Content-Type: {$result['ContentType']}");
-//                    header('Content-Disposition: attachment; filename="' . $request_DU['data_upload_zip'] . '"');
-//                    echo $result['Body'];
+                    #Download the object in the browser
+                    header("Content-Type: application/zip, application/octet-stream");
+                    header('Content-Disposition: attachment; filename="'.$request_DU['data_upload_zip'].'"');
+                    header("Location: " . $presignedUrl);
                 } catch (S3Exception $e) {
                     echo $e->getMessage() . "\n";
                 }
