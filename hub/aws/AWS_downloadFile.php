@@ -91,6 +91,7 @@ include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php
 //                    echo $presignedUrl;
                     header("Content-Type: application/zip, application/octet-stream");
                     header('Content-Disposition: attachment; filename="fake500.zip"');
+                    header("Location: " . $presignedUrl);
 //                    /******/
 //
 //                    /*** TEST 3 ***/
