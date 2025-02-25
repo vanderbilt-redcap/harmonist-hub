@@ -6,20 +6,23 @@ include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
 include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php");
 
 //if ($module->getSecurityHandler()->isAuthorizedPage()) {
-    $pidsArray = $module->getSecurityHandler()->getPidsArray();
+//    $pidsArray = $module->getSecurityHandler()->getPidsArray();
 //    $settings = $module->getSecurityHandler()->getSettingsData();
 //    if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1") {
-        require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
+//        require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
         require_once ($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
+//
+//        $code = getCrypt($_REQUEST['code'], "d", $secret_key, $secret_iv);
+//        $exploded = array();
+//        parse_str($code, $exploded);
+//
+//        $record_id = $exploded['id'];
+//        $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
 
-        $code = getCrypt($_REQUEST['code'], "d", $secret_key, $secret_iv);
-        $exploded = array();
-        parse_str($code, $exploded);
-
-        $record_id = $exploded['id'];
-        $request_DU = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', array('record_id' => $record_id))[0];
-
-        error_log("break point 1 - before credentials, ".time());
+        $bucket = "shiny-app-test";
+        $key = "MR000/TT/fake236/fake236.zip";
+        $key = "MR000/TT/fake236/fake500.zip";
+//        $key = "MR000/TT/fake236/fake211.zip";
 
         $credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
         $s3 = new S3Client([
@@ -27,6 +30,9 @@ include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php
                                'region' => 'us-east-2',
                                'credentials' => $credentials
                            ]);
+
+        // Register the stream wrapper from an S3Client object
+//        $s3->registerStreamWrapper();
 
 //        if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && $module->getSecurityHandler()->isTokenCorrect(
 //                $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
@@ -50,13 +56,104 @@ include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php
 //                        $array_userid
 //                    )) !== false)) {
                 try {
-                    error_log("break point 2 - before get File Object, ".time());
                     #Get the object
-                    $result = $s3->getObject(array(
-                                                 'Bucket' => $request_DU['data_upload_bucket'],
-                                                 'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip']
-                                             ));
-                    error_log("break point 3 - after get File Object, ".time());
+//                    $result = $s3->getObject(array(
+//                                                 'Bucket' => $request_DU['data_upload_bucket'],
+//                                                 'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip']
+//                                             ));
+
+                    /*** TEST 0 ***/
+//                    $result = $s3->getObjectUrl($bucket, $key);
+//                    print_array($result);
+                    /******/
+//
+//                    /*** TEST 1 ***/
+//                    $result = $s3->getObject(array(
+//                                                 'Bucket' => $bucket,
+//                                                 'Key' => $key
+//                                             ));
+//                    header("Content-Type: {$result['ContentType']}");
+//                    header('Content-Disposition: attachment; filename="fake211.zip"');
+//                    echo $result['Body'];
+//                    $body = $result->get('Body');
+//                    $body->rewind();
+//                    /******/
+//
+//                    /*** TEST 2 ***/
+                    $cmd = $s3->getCommand('GetObject', [
+                        'Bucket' => $bucket,
+                        'Key' => $key,
+                        'ResponseContentDisposition' => 'attachment; filename="fake500.zip"'
+                    ]);
+
+                    $request = $s3->createPresignedRequest($cmd, '+15 min');
+                    $presignedUrl = (string)$request->getUri();
+                    echo $presignedUrl;
+//                    header("Content-Type: application/zip, application/octet-stream");
+//                    header('Content-Disposition: attachment; filename="fake500.zip"');
+//                    /******/
+//
+//                    /*** TEST 3 ***/
+//                    $s3->registerStreamWrapper();
+//
+//                    try {
+//                        // Open a stream in read-only mode
+//                        $path = 's3://'.$bucket.'/'.$key;
+//                        if ($stream = fopen($path, 'r')) {
+//                            // While the stream is still open
+//                            if (($fp = @fopen($path, 'w')) !== false){
+//                                while (!feof($stream)) {
+//                                    // Read 1024 bytes from the stream
+//                                    fwrite($fp, fread($stream, 1024));
+//                                }
+//                                fclose($fp);
+//                            }
+//                            // Be sure to close the stream resource when you're done with it
+//                            fclose($stream);
+//                        }
+//                    } catch (S3Exception $e) {
+//                        echo $e->getMessage() . "\n";
+//                    }
+//
+//                    /*** TEST 4 ***/
+//                    $path = 's3://'.$bucket.'/'.$key;
+//                    $data = file_get_contents($path);
+//
+//                    try {
+//                        // Open a stream in read-only mode
+//                        if ($stream = fopen($path, 'r')) {
+//                            // While the stream is still open
+//                            while (!feof($stream)) {
+//                                // Read 1,024 bytes from the stream
+//                                echo fread($stream, 1024);
+//                            }
+//                            // Be sure to close the stream resource when you're done with it
+//                            fclose($stream);
+//                        }
+//                    } catch (S3Exception $e) {
+//                        echo $e->getMessage() . "\n";
+//                    }
+//                    /******/
+//
+//                    /*** TEST5 ***/
+//                    $path = 's3://'.$bucket.'/'.$key;
+//                    $data = file_get_contents($path);
+//
+//                    // Read a file using file_get_contents and handle errors properly.
+//                    /**
+//                     * Fetches the contents of a file.
+//                     *
+//                     * @return void
+//                     */
+//                    $content = file_get_contents( $path );
+//
+//                    if ( false !== $content ) {
+//                        echo esc_html( $content ); // Output the entire file content
+//                    } else {
+//                        echo esc_html( 'Unable to read the file.' ); // Handle error case
+//                    }
+                    /******/
+
 //                    $persondown = \REDCap::getData(
 //                        $pidsArray['PEOPLE'],
 //                        'json-array',
@@ -110,7 +207,7 @@ include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php
 //                        true,
 //                        false
 //                    );
-                    error_log("break point 4 - after saving info on DATADOWNLOAD , ".time());
+
 //                    $date = new \DateTime($download_time);
 //                    $date->modify("+1 hours");
 //                    $download_time_et = $date->format("Y-m-d H:i");
@@ -172,7 +269,6 @@ include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php
 //                        $pidsArray['DATADOWNLOAD']
 //                    );
 
-                    error_log("break point 5 - Email notification sent, ".time());
 
 //                    if ($request_DU['data_upload_person'] != $downloader) {
 //                        $peopleDown = \REDCap::getData(
@@ -201,13 +297,11 @@ include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php
 //                        error_log("break point 6 - Email notification downloaders sent, ".time());
 //                    }
 
-                    error_log("break point 7 - before File headers, ".time());
+
                     #Display the object in the browser
-                    header("Content-Type: {$result['ContentType']}");
-                    header('Content-Disposition: attachment; filename="' . $request_DU['data_upload_zip'] . '"');
-                    error_log("break point 8 - after File headers, ".time());
-                    echo $result['Body'];
-                    error_log("break point 9 - after printing body, ".time());
+//                    header("Content-Type: {$result['ContentType']}");
+//                    header('Content-Disposition: attachment; filename="' . $request_DU['data_upload_zip'] . '"');
+//                    echo $result['Body'];
                 } catch (S3Exception $e) {
                     echo $e->getMessage() . "\n";
                 }
