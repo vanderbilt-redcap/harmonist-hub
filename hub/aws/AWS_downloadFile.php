@@ -52,7 +52,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                     $cmd = $s3->getCommand('GetObject', [
                         'Bucket' => $request_DU['data_upload_bucket'],
                         'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip'],
-                        'ResponseContentDisposition' => 'attachment; filename="fake500.zip"'
+                        'ResponseContentDisposition' => 'attachment; filename="'.$request_DU['data_upload_zip'].'"'
                     ]);
 
                     $request = $s3->createPresignedRequest($cmd, '+15 min');
