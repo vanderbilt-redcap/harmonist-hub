@@ -88,9 +88,9 @@ include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php
 
                     $request = $s3->createPresignedRequest($cmd, '+15 min');
                     $presignedUrl = (string)$request->getUri();
-                    echo $presignedUrl;
-//                    header("Content-Type: application/zip, application/octet-stream");
-//                    header('Content-Disposition: attachment; filename="fake500.zip"');
+//                    echo $presignedUrl;
+                    header("Content-Type: application/zip, application/octet-stream");
+                    header('Content-Disposition: attachment; filename="fake500.zip"');
 //                    /******/
 //
 //                    /*** TEST 3 ***/
