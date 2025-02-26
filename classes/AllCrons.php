@@ -411,7 +411,7 @@ class AllCrons
                 $peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
                 $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array('region_code'))[0]['region_code'];
 
-                $RecordSetSOP = new \Plugin\RecordSet($pidsArray['SOP'], array('record_id' => $upload['data_assoc_request']));
+                $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $upload['data_assoc_request']));
                 $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP, $pidsArray['SOP'])[0];
 
                 $date = new \DateTime($upload['responsecomplete_ts']);
