@@ -1562,7 +1562,7 @@ function generateTablesHTML_pdf($module, $pidsArray, $dataTable,$fieldsSelected)
             foreach ($fieldsSelected as $field) {
                 $recordID = explode("_",$field);
                 $field = $recordID[0];
-                $id = ($recordID[1] == '1')? '':$recordID[1];
+                $id = $recordID[1];
                 if ($data['record_id'] == $field) {
                     $record_varname = !array_key_exists($id,$data['variable_name'])?$data['variable_name']['']:$data['variable_name'][$id];
                     #We add the new Header table tags
@@ -1589,7 +1589,7 @@ function generateTablesHTML_pdf($module, $pidsArray, $dataTable,$fieldsSelected)
                         }
 
                         $breakLine = '';
-                        if($table_counter >0){
+                        if($table_counter > 0){
                             $breakLine = '<div style="page-break-before: always;"></div>';
                         }
                         $table_counter++;
