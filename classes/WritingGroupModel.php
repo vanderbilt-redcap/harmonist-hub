@@ -41,7 +41,7 @@ class WritingGroupModel extends Model
             'records' => [$this->instance],
             'fields'=> ['region_name']
         ];
-        $researchGroupName = \REDCap::getData($params)[0]['region_name'];
+        $researchGroupName = $this->concept->getGmemberRole();
         for($i = 1; $i < ((int)$this->concept->getAuthorshipLimit()+1) ; $i++){
             $saveData = false;
             if($this->isHubContact($this->concept->getGmemberNh()[$i], $this->instance)){
