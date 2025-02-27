@@ -21,7 +21,7 @@ class MessageHandler
         return $this->message;
     }
 
-    public function fetchWritingGroupMessage($message_type)
+    private function fetchWritingGroupMessage($message_type)
     {
         return "The writing group member data has been updated.";
 //        switch ($message_type) {
