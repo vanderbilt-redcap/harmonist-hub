@@ -44,7 +44,6 @@ class ConceptModel extends Model
             $allConcepts = $this->module->escape(
                 $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])
             );
-            print_array("fetchAllConcepts3");
         }
         return $allConcepts;
     }
