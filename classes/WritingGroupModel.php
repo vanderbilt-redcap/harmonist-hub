@@ -38,10 +38,10 @@ class WritingGroupModel extends Model
         $params = [
             'project_id' => $this->getPidsArray()['REGIONS'],
             'return_format' => 'json-array',
-            'records' => [$this->instance],
+            'records' => [$this->concept->getGmemberRole()],
             'fields'=> ['region_name']
         ];
-        $researchGroupName = $this->concept->getGmemberRole();
+        $researchGroupName = \REDCap::getData($params)[0]['region_name'];
         for($i = 1; $i < ((int)$this->concept->getAuthorshipLimit()+1) ; $i++){
             $saveData = false;
             if($this->isHubContact($this->concept->getGmemberNh()[$i], $this->instance)){
