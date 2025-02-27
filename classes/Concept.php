@@ -30,6 +30,7 @@ class Concept extends Model
     private $personLink = [];
     private $personRole;
     private $personOther = [];
+    private $projectUpdate;
     private $adminUpdate;
     private $adminStatus;
     private $adminupdateD;
@@ -290,6 +291,16 @@ class Concept extends Model
     public function setAdminUpdate($adminUpdate): void
     {
         $this->adminUpdate = $adminUpdate;
+    }
+
+    public function getProjectUpdate()
+    {
+        return $this->projectUpdate;
+    }
+
+    public function setProjectUpdate($projectUpdate): void
+    {
+        $this->projectUpdate = $projectUpdate;
     }
 
     public function getAdminupdateD()
@@ -590,6 +601,7 @@ class Concept extends Model
         $this->personRole = $this->conceptData['person_role'];
         $this->personOther = $this->conceptData['person_lother'];
         $this->adminUpdate = $this->conceptData['admin_update'];
+        $this->projectUpdate = $this->conceptData['project_update'];
         $this->adminupdateD = $this->conceptData['adminupdate_d'];
         $this->adminStatus = $this->conceptData['admin_status'];
         $this->updateD = $this->conceptData['update_d'];
