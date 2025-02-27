@@ -66,14 +66,14 @@ class Concept extends Model
     private $cmember_firstname;
     private $cmember_lastname;
     private $cmember_email;
-    private $allConcepts;
+    private $decorateConcept;
 
-    public function __construct($conceptData, HarmonistHubExternalModule $module, $pidsArray, $authorshipLimit = null, $allConcepts = null)
+    public function __construct($conceptData, HarmonistHubExternalModule $module, $pidsArray, $authorshipLimit = null, $decorateConcept = false)
     {
         parent::__construct($module, $pidsArray['PROJECTS']);
         $this->conceptData = $conceptData;
         $this->authorshipLimit = $authorshipLimit;
-        $this->allConcepts = $allConcepts;
+        $this->decorateConcept = $decorateConcept;
         $this->hydrateConcept();
     }
 
@@ -624,7 +624,7 @@ class Concept extends Model
         $this->docuploadDt = $this->conceptData['docupload_dt'];
         $this->datasopFile = $this->conceptData['datasop_file'];
 
-        if($this->allConcepts == null){
+        if(!$this->decorateConcept){
             $this->decorateWorkingGroup();
             $this->decorateStartDate();
             $this->decorateStatus();
