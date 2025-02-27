@@ -11,9 +11,7 @@ class ConceptModel extends Model
 {
     public function __construct(HarmonistHubExternalModule $module, $projectId)
     {
-        print_array("CONSTRUCT");
         parent::__construct($module, $projectId);
-        print_array("CONSTRUCT2");
     }
 
     public function fetchConcept($recordId, $authorshipLimit = null): Concept
@@ -35,19 +33,18 @@ class ConceptModel extends Model
     }
 
     public function fetchAllConcepts(): array
-    {print_array("fetchAllConcepts");
+    {
         $allConcepts = [];
         if (!empty($this->getPidsArray()['HARMONIST'])) {
-            print_array("fetchAllConcepts2");
             $params = [
                 'project_id' => $this->getPidsArray()['HARMONIST'],
                 'return_format' => 'array'
             ];
             $RecordSetTable = \REDCap::getData($params);
-            print_array("fetchAllConcepts3");
             $allConcepts = $this->module->escape(
                 $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])
             );
+            print_array("fetchAllConcepts3");
         }
         return $allConcepts;
     }
