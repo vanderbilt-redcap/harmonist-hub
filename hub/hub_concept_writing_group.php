@@ -28,7 +28,7 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
     $(document).ready(function() {
         let docName = <?=json_encode($docName)?>;
         let canEdit = <?=json_encode($canUserEdit)?>;
-        let columns = [0, 1, 2];
+        let columns = [0, 1, 2, 3];
 
         Sortable.init();
         //double pagination (top & bottom)
