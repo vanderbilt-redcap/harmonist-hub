@@ -12,7 +12,7 @@ class WritingGroupMember
     private $role;
     private $editLink;
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -21,7 +21,7 @@ class WritingGroupMember
     {
         $this->name = $name;
     }
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -30,7 +30,7 @@ class WritingGroupMember
     {
         $this->email = $email;
     }
-    public function getRole(): string
+    public function getRole(): ?string
     {
         return $this->role;
     }
