@@ -127,7 +127,9 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
         </div>
     </table>
         <div style="float:right;padding-bottom:10px;">
+            <?php if($canUserEdit){ ?>
             <a href="#" onclick="$('#hub_new_writing_group_member').modal('show');" class="btn btn-success btn-md"><span class="fa fa-plus"></span> Member</a>
+            <?php } ?>
         </div>
     <div class="optionSelect conceptSheets_optionMenu">
         <div style="float:left" id="options_wrapper"></div>
