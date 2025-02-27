@@ -10,13 +10,11 @@ include_once (__DIR__ . "/../autoload.php");
 class WritingGroupModel extends Model
 {
     private Concept $concept;
-    private $instance;
     private $writingGroupMember = [];
 
-    public function __construct(HarmonistHubExternalModule $module, $projectId, Concept $concept, $instance)
+    public function __construct(HarmonistHubExternalModule $module, $projectId, Concept $concept)
     {
         $this->concept = $concept;
-        $this->instance = $instance;
         parent::__construct($module,$projectId);
     }
 
@@ -35,43 +33,47 @@ class WritingGroupModel extends Model
 
     private function fetchWritingGroupByResearchGroup():void
     {
-        $params = [
-            'project_id' => $this->getPidsArray()['REGIONS'],
-            'return_format' => 'json-array',
-            'records' => [$this->concept->getGmemberRole()[$this->instance]],
-            'fields'=> ['region_name']
-        ];
-        print_array("fetchWritingGroupByResearchGroup");
-        print_array($this->concept->getGmemberRole()[$this->instance]);
-        $researchGroupName = \REDCap::getData($params)[0]['region_name'];
-        print_array("researchGroupName: ".$researchGroupName);
-        for($i = 1; $i < ((int)$this->concept->getAuthorshipLimit()+1) ; $i++){
-            $saveData = false;
-            if($this->isHubContact($this->concept->getGmemberNh()[$i], $this->instance)){
-                #Hub Contact
-                print_array("HUB");
-                print_array($this->concept->getGmemberLink()[$i][$this->instance]);
-                print_array($this->concept->getGmemberLink()[$i]);
-                print_array("i: ".$i);
-                print_array("instance: ".$this->instance);
-                if(!empty($this->concept->getGmemberLink()[$i][$this->instance])) {
-                    print_array("IN");
-                    $saveData = true;
-                    $writingGroupMember = $this->fetchHubContact($this->concept->getGmemberLink()[$i][$this->instance]);
+        $regions = \REDCap::getData($this->getPidsArray()['REGIONS'], 'json-array');
+        for ($i = 1; $i < ((int)$this->concept->getAuthorshipLimit() + 1); $i++) {
+            foreach ($regions as $region) {
+                $params = [
+                    'project_id' => $this->getPidsArray()['REGIONS'],
+                    'return_format' => 'json-array',
+                    'records' => [$region['record_id']],
+                    'fields' => ['region_name']
+                ];
+
+                $researchGroupName = \REDCap::getData($params)[0]['region_name'];
+                $region_id = $region['record_id'];
+                $saveData = false;
+                if ($this->isHubContact($this->concept->getGmemberNh()[$i], $region_id)) {
+                    #Hub Contact
+                    if (!empty($this->concept->getGmemberLink()[$i][$region_id])) {
+                        $saveData = true;
+                        $writingGroupMember = $this->fetchHubContact(
+                            $this->concept->getGmemberLink()[$i][$region_id]
+                        );
+                    }
+                } else {
+                    #Not a Hub Member
+                    if (!empty($this->concept->getGmemberFirstname()[$i][$region_id])) {
+                        $saveData = true;
+                        $writingGroupMember = $this->fetchNotHubMember('gmember', $region_id, $i);
+                    }
                 }
-            }else{
-                 #Not a Hub Member
-                print_array("Not a Hub Member");
-                 if(!empty($this->concept->getGmemberFirstname()[$i][$this->instance])) {
-                     print_array("IN");
-                     $saveData = true;
-                     $writingGroupMember = $this->fetchNotHubMember( 'gmember', $this->instance, $i);
-                 }
-            }
-            if($saveData){
-                $writingGroupMember->setRole($researchGroupName);
-                $writingGroupMember->setEditLink($this->fetchSurveyLink($this->pidsArray['HARMONIST'], $this->concept->getRecordId(), "writing_group_by_research_group",$this->instance));
-                $this->writingGroupMember[] = $writingGroupMember;
+                if ($saveData) {
+                    $writingGroupMember->setRole($researchGroupName);
+                    $writingGroupMember->setOrder($i);
+                    $writingGroupMember->setEditLink(
+                        $this->fetchSurveyLink(
+                            $this->pidsArray['HARMONIST'],
+                            $this->concept->getRecordId(),
+                            "writing_group_by_research_group",
+                            $region_id
+                        )
+                    );
+                    $this->writingGroupMember[] = $writingGroupMember;
+                }
             }
         }
     }

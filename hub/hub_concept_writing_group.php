@@ -4,7 +4,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 global $date;
 $recordId = htmlentities($_REQUEST['record'], ENT_QUOTES);
 $concept = $module->getConceptModel()->fetchConcept($recordId, $settings['authorship_limit']);
-$writingGroupMember = new WritingGroupModel($module, $pid, $concept,$current_user['person_region']);
+$writingGroupMember = new WritingGroupModel($module, $pid, $concept);
 $writingGroupMemberList = $writingGroupMember->fetchAllWritingGroup();
 $canUserEdit = $concept->canUserEdit($current_user['record_id']);
 $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name']);
@@ -168,6 +168,7 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
                     <th class="sorted_class" data-sorted="true" data-sorted-direction="descending">Name</th>
                     <th class="sorted_class" >Email</th>
                     <th class="sorted_class">Role</th>
+                    <th class="sorted_class">Order</th>
                     <?php if($canUserEdit){?>
                     <th class="sorted_class">Actions</th>
                     <?php } ?>
@@ -183,7 +184,8 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
                     echo "<tr>
                         <td style='width: 25%'>".$writingGroupMember->getName()."</td>
                         <td style='width: 30%'><a href='mailto:".$writingGroupMember->getEmail()."'>".$writingGroupMember->getEmail()."</a></td>
-                        <td style='width: 15%'>".$writingGroupMember->getRole()."</td>";
+                        <td style='width: 15%'>".$writingGroupMember->getRole()."</td>
+                        <td style='width: 15%'>".$writingGroupMember->getOrder()."</td>";
                     if($canUserEdit) {
                         echo "<td style='width: 5%'>" . $edit . "</td>";
                     }
