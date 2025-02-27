@@ -193,7 +193,7 @@ $pubtext5 = empty($settings['pubtext5']) ? "Multi" : $settings['pubtext5'];
         Sortable.init();
 
         var docname = <?=json_encode($export_name)?>;
-        var logo = <?=json_encode(\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'src'))?>;
+        var logo = <?=json_encode(getFile($module, $settings['hub_logo_pdf'],'src'))?>;
 
         new $.fn.dataTable.Buttons( table, {
             "buttons": [

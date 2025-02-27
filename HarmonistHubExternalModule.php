@@ -10,11 +10,7 @@ use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 use ReflectionClass;
 
-include_once(__DIR__ . "/classes/REDCapManagement.php");
-include_once(__DIR__ . "/classes/ArrayFunctions.php");
-include_once(__DIR__ . "/classes/ProjectData.php");
-include_once(__DIR__ . "/classes/HubUpdates.php");
-include_once(__DIR__ . "/classes/SecurityHandler.php");
+include_once (__DIR__ . "/autoload.php");
 include_once(__DIR__ . "/functions.php");
 
 require_once(dirname(__FILE__) . "/vendor/autoload.php");
@@ -149,18 +145,14 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             #Depending on the project we add one hook or another
             if ($project_id == $pidsArray['SOP']) {
                 include_once("hooks/save_record_SOP.php");
-            } else {
-                if ($project_id == $pidsArray['RMANAGER']) {
-                    include_once("hooks/save_record_requestManager.php");
-                } else {
-                    if ($project_id == $pidsArray['COMMENTSVOTES']) {
-                        include_once("hooks/save_record_commentsAndVotes.php");
-                    } else {
-                        if ($project_id == $pidsArray['SOPCOMMENTS']) {
-                            include_once("hooks/save_record_SOP_comments.php");
-                        }
-                    }
-                }
+            } else if ($project_id == $pidsArray['RMANAGER']) {
+                include_once("hooks/save_record_requestManager.php");
+            } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
+                include_once("hooks/save_record_commentsAndVotes.php");
+            } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
+                include_once("hooks/save_record_SOP_comments.php");
+            } else if ($project_id == $pidsArray['HARMONIST']) {
+                include_once("hooks/save_record_concept_sheet.php");
             }
             echo '<script>';
             include_once("js/iframe.js");
@@ -513,6 +505,26 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $this->securityHandler->setRequestUrl($this->escape($_REQUEST));
 
         return $this->securityHandler;
+    }
+
+    public function getMessageHandler(): MessageHandler
+    {
+        if (!$this->messageHandler) {
+            $this->messageHandler = new MessageHandler();
+        }
+
+        return $this->messageHandler;
+    }
+
+    public function getConceptModel($projectId = null): ConceptModel
+    {
+        if (!$this->conceptModel) {
+            if($projectId == null) {
+                $projectId = (int)$_GET['pid'];
+            }
+            $this->conceptModel = new ConceptModel($this,$projectId);
+        }
+        return $this->conceptModel;
     }
 }
 ?>

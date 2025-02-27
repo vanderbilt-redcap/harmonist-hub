@@ -1,95 +1,12 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$record = htmlentities($_REQUEST['record'],ENT_QUOTES);
-$params = [
-        'project_id' => $pidsArray['HARMONIST'],
-        'records' => [$record],
-        'return_format' => 'array'
-];
-$RecordSetTable = \REDCap::getData($params);
-$concept = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable,$pidsArray['HARMONIST'])[0]);
+$recordId = htmlentities($_REQUEST['record'], ENT_QUOTES);
+$concept = $module->getConceptModel()->fetchConcept($recordId);
+
 $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
-if(!empty($concept)) {
-    $active = ($concept['active_y'] == "Y") ? "<span style='color:#00e600;font-weight: bold'>Active</span>" : "<span style='color:grey'>Inactive</span>";
-
-    if($concept['active_y'] == "Y"){
-        $active = "Active";
-        $active_color_button = "text-button-approved";
-    }else{
-        $active = "Inactive";
-        $active_color_button = "text-button-error";
-    }
-
-    $id_people = $concept['contact_link'];
-    $name_concept = "<em>Not specified</em>";
-    if (!empty($id_people)) {
-        $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $id_people))[0];
-        $email = "";
-        if (!empty($person_info)) {
-            $name_concept = '<a href="mailto:'.$person_info['email'].'">'.$person_info['firstname'] . ' ' . $person_info['lastname'];
-            if(!empty($person_info['person_region'])){
-                $person_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $person_info['person_region']))[0];
-                if(!empty($person_region)){
-                    $name_concept .= " (".$person_region['region_code'].")";
-                }
-            }
-            $name_concept .= '</a>';
-            $email = $person_info['email'];
-        }
-    }
-    $id_workingGroup = $concept['wg_link'];
-    if (!empty($id_workingGroup)) {
-        $wgroup = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $id_workingGroup))[0];
-        $group_name = "";
-        if (!empty($wgroup)) {
-            $group_name = $wgroup['group_abbr'] . ' - ' . $wgroup['group_name'];
-        }
-    }
-
-    if (!empty($concept['wg2_link'])) {
-        $wgroup2 = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' =>  $concept['wg2_link']))[0];
-    }
-    $group_name_total = "<em>Not specified</em>";
-    if(!empty($wgroup['group_name'])){
-        $group_name_total = $wgroup['group_name'];
-        if(!empty($wgroup2['group_name'])){
-            $group_name_total = $group_name_total.', '.$wgroup2['group_name'];
-        }
-    }else  if(!empty($wgroup2['group_name'])){
-        $group_name_total = $wgroup2['group_name'];
-    }
-
-
-
-    #Concept Files
-    $q = $module->query("SELECT doc_name,stored_name,file_extension FROM redcap_edocs_metadata WHERE doc_id = ?",[$concept["concept_file"]]);
-    $row_concept_file = $q->fetch_assoc();
-
-    #Only check if they are final
-    $row_datasop_file = "";
-    if (!empty($concept["status"]) && in_array('1', $concept["status"]) && !empty($concept["pdf_file"])) {
-        #SOP Files from Builder SOP project
-        $RecordSop = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $concept['record_id']));
-        $pdf_file = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSop,$pidsArray['SOP'],'')[0]["pdf_file"];
-        $q = $module->query("SELECT doc_name,stored_name,file_extension FROM redcap_edocs_metadata WHERE doc_id = ?",[$pdf_file]);
-        $row_datasop_file = $q->fetch_assoc();
-    }
-    if (empty($row_datasop_file['doc_name'])) {
-        #SOP Files from Concept Sheets project
-        $q = $module->query("SELECT doc_name,stored_name,file_extension FROM redcap_edocs_metadata WHERE doc_id = ?",[$concept["datasop_file"]]);
-        $row_datasop_file = $q->fetch_assoc();
-    }
-    $start_date = (empty($concept['ec_approval_d']))? "<em>Not specified</em>" : $concept['ec_approval_d'];
-}
-
 $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? true : false;
-
-$revised = "";
-if($concept['revised_y'][0] == '1'){
-    $revised = '<span class="label label-as-badge badge-revised">Revised</span>';
-}
 ?>
 
 <script>
@@ -596,7 +513,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
     <div class="panel panel-default" style="margin-bottom: 40px">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <a data-toggle="collapse" href="#collapse_linked_doc">Linked Documents</a>
+                <a data-toggle="collapse" href="#collapse_publications">Linked Documents</a>
                 <?php
                 $harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
                 $can_edit_linked_doc = UserEditConditions::canUserEditData($isAdmin, $current_user['record_id'], $concept['contact_link'], $concept['contact2_link'], $harmonist_perm);
@@ -628,7 +545,7 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
             </h3>
         </div>
 
-        <div id="collapse_linked_doc" class="table-responsive panel-collapse collapse in" aria-expanded="true">
+        <div id="collapse_publications" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="abstracts">
                 <?php
                 if(!empty($concept['doc_title'])){
@@ -652,8 +569,8 @@ if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['admi
                     echo '</tr></thead>'.$header;
 
                     echo '<tbody>';
-                    foreach ($concept['docupload_dt'] as $linked_doc_instance => $value){
-                        if($concept['dochidden_y'][$linked_doc_instance] !== "1"){
+                    foreach ($concept['dochidden_y'] as $linked_doc_instance => $doc_hidden_value){
+                        if($doc_hidden_value !== "1"){
                             echo '<tr>';
                             echo '<td width="15%">'.$concept['docupload_dt'][$linked_doc_instance].'</td>';
                             echo '<td width="25%">'.$concept['doc_title'][$linked_doc_instance].'</td>';

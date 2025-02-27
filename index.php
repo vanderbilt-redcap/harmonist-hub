@@ -143,6 +143,10 @@ if($hub_projectname != '' && $hub_profile != ''){
                         {
                             include('hub/hub_concept_title.php');
                         }
+                        else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'cwg' )
+                        {
+                            include('hub/hub_concept_writing_group.php');
+                        }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'hub')
                         {
                             if(array_key_exists('record', $_REQUEST) && !empty($_REQUEST['record'])) {

@@ -51,7 +51,7 @@ $html_print = '<html><body>'
     .'<br/><br/><br/>'
     .'<div class="container-fluid"><div class="row"><div class="col-md-12"></div></div></div>'
     .'<div style="width: 995px;margin:0 auto"><table style="width: 100%;">'
-        .'<tr><td align="center"><img src="'.\Vanderbilt\HarmonistHubExternalModule\getFile($module, $pidsArray['PROJECTS'], $settings['hub_logo_pdf'],'src').'" style="width:200px;padding-bottom: 30px;" alt="Logo"></td></tr></table>'
+        .'<tr><td align="center"><img src="'.getFile($module, $settings['hub_logo_pdf'],'src').'" style="width:200px;padding-bottom: 30px;" alt="Logo"></td></tr></table>'
         .'<table style="width:995px;font-family:Calibri;font-size:12pt">'.$first_page
         .'<br/><br/><br/>'.$second_page
         .'<p><span style="font-size:16pt"><strong>6. Requested DES Tables</strong></span></p>'
