@@ -2,8 +2,6 @@
 
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-use phpDocumentor\Reflection\Types\Boolean;
-use PhpParser\Node\Expr\AssignOp\Mod;
 use REDCap;
 
 class Concept extends Model

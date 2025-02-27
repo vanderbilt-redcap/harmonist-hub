@@ -2,7 +2,6 @@
 
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-use phpDocumentor\Reflection\Types\Boolean;
 use REDCap;
 
 include_once(__DIR__ . "/../autoload.php");
