@@ -39,6 +39,7 @@ class ConceptModel extends Model
                 'project_id' => $this->getPidsArray()['HARMONIST'],
                 'return_format' => 'array'
             ];
+            print_array("0");
             $RecordSetTable = \REDCap::getData($params);
             print_array("1");
             $allConcepts = $this->module->escape(
