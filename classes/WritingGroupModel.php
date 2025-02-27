@@ -42,6 +42,7 @@ class WritingGroupModel extends Model
             'fields'=> ['region_name']
         ];
         print_array("fetchWritingGroupByResearchGroup");
+        print_array("getGmemberRole(): ".$this->concept->getGmemberRole());
         $researchGroupName = \REDCap::getData($params)[0]['region_name'];
         print_array("researchGroupName: ".$researchGroupName);
         for($i = 1; $i < ((int)$this->concept->getAuthorshipLimit()+1) ; $i++){
@@ -49,6 +50,9 @@ class WritingGroupModel extends Model
             if($this->isHubContact($this->concept->getGmemberNh()[$i], $this->instance)){
                 #Hub Contact
                 print_array("HUB");
+                print_array($this->concept->getGmemberLink()[$i][$this->instance]);
+                print_array("i: ".$i);
+                print_array("instance: ".$this->instance);
                 if(!empty($this->concept->getGmemberLink()[$i][$this->instance])) {
                     print_array("IN");
                     $saveData = true;
