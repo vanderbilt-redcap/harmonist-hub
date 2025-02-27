@@ -4,7 +4,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 global $date;
 $recordId = htmlentities($_REQUEST['record'], ENT_QUOTES);
 $concept = $module->getConceptModel()->fetchConcept($recordId, $settings['authorship_limit']);
-$writingGroupMember = new WritingGroupModel($module, $pid, $concept,$current_user['person_region']);
+$writingGroupMember = new WritingGroupModel($module, $pid, $concept);
 $writingGroupMemberList = $writingGroupMember->fetchAllWritingGroup();
 $canUserEdit = $concept->canUserEdit($current_user['record_id']);
 $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name']);
@@ -28,7 +28,7 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
     $(document).ready(function() {
         let docName = <?=json_encode($docName)?>;
         let canEdit = <?=json_encode($canUserEdit)?>;
-        let columns = [0, 1, 2];
+        let columns = [0, 1, 2, 3];
 
         Sortable.init();
         //double pagination (top & bottom)
@@ -127,7 +127,9 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
         </div>
     </table>
         <div style="float:right;padding-bottom:10px;">
+            <?php if($canUserEdit){ ?>
             <a href="#" onclick="$('#hub_new_writing_group_member').modal('show');" class="btn btn-success btn-md"><span class="fa fa-plus"></span> Member</a>
+            <?php } ?>
         </div>
     <div class="optionSelect conceptSheets_optionMenu">
         <div style="float:left" id="options_wrapper"></div>
@@ -166,6 +168,7 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
                     <th class="sorted_class" data-sorted="true" data-sorted-direction="descending">Name</th>
                     <th class="sorted_class" >Email</th>
                     <th class="sorted_class">Role</th>
+                    <th class="sorted_class">Order</th>
                     <?php if($canUserEdit){?>
                     <th class="sorted_class">Actions</th>
                     <?php } ?>
@@ -181,7 +184,8 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
                     echo "<tr>
                         <td style='width: 25%'>".$writingGroupMember->getName()."</td>
                         <td style='width: 30%'><a href='mailto:".$writingGroupMember->getEmail()."'>".$writingGroupMember->getEmail()."</a></td>
-                        <td style='width: 15%'>".$writingGroupMember->getRole()."</td>";
+                        <td style='width: 15%'>".$writingGroupMember->getRole()."</td>
+                        <td style='width: 15%'>".$writingGroupMember->getOrder()."</td>";
                     if($canUserEdit) {
                         echo "<td style='width: 5%'>" . $edit . "</td>";
                     }

@@ -30,6 +30,7 @@ class Concept extends Model
     private $personLink = [];
     private $personRole;
     private $personOther = [];
+    private $projectUpdate;
     private $adminUpdate;
     private $adminStatus;
     private $adminupdateD;
@@ -65,12 +66,14 @@ class Concept extends Model
     private $cmember_firstname;
     private $cmember_lastname;
     private $cmember_email;
+    private $decorateConcept;
 
-    public function __construct($conceptData, HarmonistHubExternalModule $module, $pidsArray, $authorshipLimit)
+    public function __construct($conceptData, HarmonistHubExternalModule $module, $pidsArray, $authorshipLimit = null, $decorateConcept = false)
     {
         parent::__construct($module, $pidsArray['PROJECTS']);
         $this->conceptData = $conceptData;
         $this->authorshipLimit = $authorshipLimit;
+        $this->decorateConcept = $decorateConcept;
         $this->hydrateConcept();
     }
 
@@ -288,6 +291,16 @@ class Concept extends Model
     public function setAdminUpdate($adminUpdate): void
     {
         $this->adminUpdate = $adminUpdate;
+    }
+
+    public function getProjectUpdate()
+    {
+        return $this->projectUpdate;
+    }
+
+    public function setProjectUpdate($projectUpdate): void
+    {
+        $this->projectUpdate = $projectUpdate;
     }
 
     public function getAdminupdateD()
@@ -588,6 +601,7 @@ class Concept extends Model
         $this->personRole = $this->conceptData['person_role'];
         $this->personOther = $this->conceptData['person_lother'];
         $this->adminUpdate = $this->conceptData['admin_update'];
+        $this->projectUpdate = $this->conceptData['project_update'];
         $this->adminupdateD = $this->conceptData['adminupdate_d'];
         $this->adminStatus = $this->conceptData['admin_status'];
         $this->updateD = $this->conceptData['update_d'];
@@ -609,12 +623,15 @@ class Concept extends Model
         $this->dochiddenY = $this->conceptData['dochidden_y'];
         $this->docuploadDt = $this->conceptData['docupload_dt'];
         $this->datasopFile = $this->conceptData['datasop_file'];
-        $this->decorateWorkingGroup();
-        $this->decorateStartDate();
-        $this->decorateStatus();
-        $this->decorateContact();
-        $this->decorateParticipants();
-        $this->decorateTags();
+
+        if(!$this->decorateConcept){
+            $this->decorateWorkingGroup();
+            $this->decorateStartDate();
+            $this->decorateStatus();
+            $this->decorateContact();
+            $this->decorateParticipants();
+            $this->decorateTags();
+        }
 
         if($this->authorshipLimit != null) {
             $this->decorateWritingGroupCore();
