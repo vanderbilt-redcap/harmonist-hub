@@ -25,9 +25,9 @@ if (!empty($concepts)) {
 
     foreach ($concepts as $conceptData) {
         $recordId = $conceptData['record_id'];
-        $concept = $module->getConceptModel()->fetchConcept($recordId);
-        $id_people = $concept->getContactLink();
-        $name = "";
+//        $concept = $module->getConceptModel()->fetchConcept($recordId);
+//        $id_people = $concept->getContactLink();
+//        $name = "";
 //        if(!empty($id_people)){
 //            $name = getPeopleName($pidsArray['PEOPLE'], $id_people);
 //        }
