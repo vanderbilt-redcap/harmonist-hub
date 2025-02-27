@@ -221,7 +221,7 @@ foreach ($regions as $region){
 }
 
 $requests_values = array(0 => $number_concepts,1=> $number_abstracts,2 => $number_manuscripts,3 => $number_fastTrack,4 => $number_poster ,5 => $number_other );
-$requests_labels = array(0 => "Concepts",1 => "Abstracts",2 => "Manuscripts",3 => "Fast Track",4 => "Poster", 5=>"Other");
+$requests_labels = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777");
 
 $array_sections = array(0=>'concepts',1=>'conceptswg',2=>'requests');
