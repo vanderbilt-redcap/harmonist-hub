@@ -23,15 +23,15 @@ if (!empty($concepts)) {
         '<th class="sorting_disabled" data-sortable="false">Concept</th>'.
         '</tr></thead><tbody>';
 
-    foreach ($concepts as $conceptData) {
-        $recordId = $conceptData['record_id'];
-        $concept = $module->getConceptModel()->fetchConcept($recordId);
-        $id_people = $concept->getContactLink();
-        $name = "";
-        if(!empty($id_people)){
-            $name = getPeopleName($pidsArray['PEOPLE'], $id_people);
-        }
-        $tags = "";
+//    foreach ($concepts as $conceptData) {
+//        $recordId = $conceptData['record_id'];
+//        $concept = $module->getConceptModel()->fetchConcept($recordId);
+//        $id_people = $concept->getContactLink();
+//        $name = "";
+//        if(!empty($id_people)){
+//            $name = getPeopleName($pidsArray['PEOPLE'], $id_people);
+//        }
+//        $tags = "";
 //        foreach ($concept->getConceptTags() as $tag=>$value){
 //            if($value == 1) {
 //                $tags .= $tag.",";
@@ -71,7 +71,7 @@ if (!empty($concepts)) {
 //        $concepts_table .= '<td style="text-align: center;">'.$file_concept.'</td>';
 //
 //        $concepts_table .= '</tr>';
-    }
+//    }
     $concepts_table .= '</tbody></table>';
 }else{
     $concepts_table = '<div class="concepts-table-notfound">No concepts found.</div>';
