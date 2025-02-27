@@ -40,12 +40,10 @@ if(!empty($dataTable)) {
             foreach ($sop_tablefields as $tables){
                 $table_id = explode('_',$tables);
                 if($table_id[0] == $data['record_id']){
-                    //the first element the id is always blank but it's saved in the json as 1
-                    $id =  ($table_id[1] == 1)? "":$table_id[1];
                     if (!array_key_exists($data['table_name'], $tablefields)) {
                         $tablefields[$data['table_name']] = array();
                     }
-                    array_push($tablefields[$data['table_name']],$data['variable_name'][$id]);
+                    array_push($tablefields[$data['table_name']],$data['variable_name'][$table_id[1]]);
                 }
             }
         }

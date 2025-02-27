@@ -15,6 +15,7 @@ $hub_profile = $module->getProjectSetting('hub-profile');
 
 $pid = $module->getSecurityHandler()->getProjectId();
 $option = $module->getSecurityHandler()->getRequestOption();
+
 $is_authorized_and_has_rights = false;
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
     $pidsArray = $module->getSecurityHandler()->getPidsArray();

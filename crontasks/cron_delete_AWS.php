@@ -1,16 +1,14 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once(dirname(dirname(__FILE__))."/classes/AllCrons.php");
-require_once(dirname(dirname(__FILE__))."/classes/SecurityHandler.php");
+include_once(__DIR__ ."/../projects.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 
-$aws_credentials = $this->getSecurityHandler()->getCredentialsServerVars("AWS");
-
-// If the URL exists, then we have the credentials in the server and can continue
-if($aws_credentials != null) {
+$aws_credentials = "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
+if (file_exists($aws_credentials)){
     require_once ($aws_credentials);
-    $credentials = new Aws\Credentials\Credentials($aws_key, $aws_secret);
+    $credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
     $s3 = new S3Client([
         'version' => 'latest',
         'region' => 'us-east-2',
@@ -26,17 +24,15 @@ if($aws_credentials != null) {
 
     foreach ($request_DU as $upload) {
         $expired_date = date('Y-m-d', strtotime($upload['responsecomplete_ts'] . $extra_days));
-        $message = AllCrons::runCronDeleteAws(
+        AllCrons::runCronDeleteAws(
             $this,
             $pidsArray,
-            null,
+            $s3,
             $upload,
-            array('sop_downloaders' => '1,2'),
             $expired_date,
             $settings,
             true
         );
-        array_push($messageArray, $message);
     }
 
     #Delete tokens expired on H18 Data Toolkit
@@ -44,7 +40,7 @@ if($aws_credentials != null) {
     $today = strtotime(date("Y-m-d"));
     foreach ($securityTokens as $token) {
         if (strtotime($token['tokenexpiration_ts']) <= $today) {
-            $this->query("DELETE FROM " . \Vanderbilt\HarmonistHubExternalModule\getDataTable($pidsArray['DATATOOLUPLOADSECURITY']) . " WHERE project_id = ? AND field_name=? AND value = ?", [$pidsArray['DATATOOLUPLOADSECURITY'], "record_id", $token["record_id"]]);
+            $this->query("DELETE FROM " . getDataTable($pidsArray['DATATOOLUPLOADSECURITY']) . " WHERE project_id = ? AND field_name=? AND value = ?", [$pidsArray['DATATOOLUPLOADSECURITY'], "record_id", $token["record_id"]]);
             \Records::deleteRecordFromRecordListCache($pidsArray['DATATOOLUPLOADSECURITY'], $token["record_id"], 1);
 
             #Logs

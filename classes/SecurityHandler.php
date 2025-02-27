@@ -65,7 +65,7 @@ class SecurityHandler
         return $this->requestOption;
     }
 
-    public function getTokenSessionName(): string
+    public function getTokenSessionName(): ?string
     {
         return $this->tokenSessionName;
     }
@@ -92,7 +92,7 @@ class SecurityHandler
     public function getPidsArray(): array
     {
         if (empty($this->pidsArray)) {
-            $hub_mapper = $this->module->getProjectSetting('hub-mapper');
+            $hub_mapper = $this->module->getProjectSetting('hub-mapper', $this->projectId);
             if ($hub_mapper !== "") {
                 $this->pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
             }

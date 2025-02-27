@@ -53,7 +53,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
     ?>
     <div class="pull-right">
-        <p><a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mts"?>">View Hub Statistics</a> | <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&option=mra&type=a")?>">View Archived Requests</a></p>
+        <p><a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=mts"?>">View Hub Statistics</a> | <a href="<?=$module->getUrl("index.php?pid=".$pidsArray['PROJECTS']."&NOAUTH&option=mra&type=a")?>">View Archived Requests</a></p>
     </div>
 </div>
 <div class="container">
@@ -458,32 +458,30 @@ namespace Vanderbilt\HarmonistHubExternalModule;
             </div>
 
             <div class="modal fade" id="modal-publications-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
-                <form class="form-horizontal" action="" method="post" id='dataPubForm'>
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Update Publications</h4>
-                            </div>
-                            <div class="modal-body">
-                                <span>Are you sure you want to update publications?</span>
-                                <br>
-                                <span style="color:red;">This will create a new JSON and prevent the cron from automatically running tonight until the next day.</span>
-                                <div style="display:none" id="pubsSpinner">
-                                    <div style="padding-top: 20px">
-                                        <div class="alert alert-success">
-                                            <em class="fa fa-spinner fa-spin"></em> Updating... Please wait until the process finishes.
-                                        </div>
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close closeCustomModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Update Publications</h4>
+                        </div>
+                        <div class="modal-body">
+                            <span>Are you sure you want to update publications?</span>
+                            <br>
+                            <span style="color:red;">This will create a new JSON and prevent the cron from automatically running tonight until the next day.</span>
+                            <div style="display:none" id="pubsSpinner">
+                                <div style="padding-top: 20px">
+                                    <div class="alert alert-success">
+                                        <em class="fa fa-spinner fa-spin"></em> Updating... Please wait until the process finishes.
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <a type="submit" onclick="runPubsCron('<?=$module->getUrl('crontasks/cron_publications.php')?>')" class="btn btn-default btn-success" id='btndataPubForm'>Continue</a>
-                                <a href="#" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</a>
-                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#" onclick="runPubsCron('<?=$module->getUrl('crontasks/cron_publications.php')."&NOAUTH"?>')" class="btn btn-default btn-success" id='btndataPubForm'>Continue</a>
+                            <a href="#" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</a>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
 

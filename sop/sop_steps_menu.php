@@ -104,7 +104,7 @@ if(!array_key_exists('record', $_REQUEST) || ($sop !="" && ($isAdmin || $harmoni
             }else if(sButton.name == 'save_continue_4') {
                 $('#save_continue_4_spinner').addClass('fa fa-spinner fa-spin');
                 $('#previous_4').css('right','220px');
-                generate_pdf($('#save_option').val(),<?=json_encode($module->getUrl('sop/sop_step_4_save_AJAX.php')."&NOAUTH")?>,<?=json_encode($module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ss5')?>);
+                generate_pdf($('#save_option').val(),<?=json_encode($module->getUrl('sop/sop_step_4_save_AJAX.php')."&NOAUTH")?>,<?=json_encode($module->getUrl('index.php').'&NOAUTH&&option=ss5')?>);
             }
             return false;
         });

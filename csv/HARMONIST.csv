@@ -92,11 +92,11 @@ cmember_role,writing_group_core,,dropdown,"<div class=""rich-text-field-label"">
 cmember_link,writing_group_core,,sql,"Writing Group Member","SELECT a.record,
 	CONCAT_WS(' ',
 		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
-		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
-	) as value  
-FROM [data-table:798] a  
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' )
+	) as value
+FROM [data-table:798] a
 WHERE a.project_id=798
-GROUP BY a.record 
+GROUP BY a.record
 ORDER BY value",,,,,,"[cmember_nh(1)] != ""1""",y,,,,,
 cmember_nh,writing_group_core,,checkbox,"This person is not a Hub Member","1, Add contact information",,,,,,,,,,,,
 cmember_firstname,writing_group_core,,text,"First Name",,,,,,,,y,,,,,

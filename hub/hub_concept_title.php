@@ -35,15 +35,15 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
         <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=cpt'?>">< Back to Concepts</a>
     </div>
     <?php if($concept != "") {?>
-    <h3 class="concepts-title-title"><?=$concept->getConceptId()?></h3>
+    <h3 class="concepts-title-title"><?=$concept['concept_id']?></h3>
 
         <?php if($isAdmin || $harmonist_perm_edit_concept){
-            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $recordId, "concept_sheet", "");
+            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $record, "concept_sheet", "");
             $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash'])."&modal=modal";
 
-            $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$recordId,ENT_QUOTES);
+            $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL."DataEntry/record_home.php?pid=".$pidsArray['HARMONIST']."&arm=1&id=".$record,ENT_QUOTES);
 
-            $survey_queue_link = \REDCap::getSurveyQueueLink($recordId);
+            $survey_queue_link = \REDCap::getSurveyQueueLink($record);
             ?>
             <div class="btn-group hidden-xs pull-right">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -106,38 +106,65 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
                 </div>
             </div>
        <?php } ?>
-    <p class="hub-title concepts-title-title" style="font-weight: normal"><?=$concept->getConceptTitle()?></p>
+    <p class="hub-title concepts-title-title" style="font-weight: normal"><?=$concept['concept_title']?></p>
 
     <table class="table table_requests sortable-theme-bootstrap" data-sortable>
         <div class="row request">
             <div class="col-md-2 col-sm-12"><strong>Working Group:</strong></div>
-            <div class="col-md-6 col-sm-12"><?=$concept->getWorkingGroup();?> </div>
-            <div class="col-md-4"><strong>Start Date: </strong><?=$concept->getStartDate();?> </span></div>
+            <div class="col-md-6 col-sm-12"><?=$group_name_total?> </div>
+            <div class="col-md-4"><strong>Start Date: </strong><?=$start_date;?> </span></div>
         </div>
         <div class="row request">
             <div class="col-md-2 col-sm-12"><strong>Contact:</strong> </div>
-            <div class="col-md-6 col-sm-12"><?=$concept->getContact();?></div>
-            <div class="col-md-4"><strong>Status: </strong><?=$concept->getStatus();?></div>
+            <div class="col-md-6 col-sm-12"><?=$name_concept?></div>
+            <div class="col-md-4"><strong>Status: </strong><span class="label label-as-badge <?=$active_color_button;?>"><?=$active;?></span> <?=$revised?></div>
         </div>
         <div class="row request">
             <div class="col-md-2"><strong>Participants:</strong></div>
             <div class="col-md-6">
                 <?php
-                    echo $concept->getParticipants();
-                    if($settings['writinggroup_opt'] == "2" || ($settings['writinggroup_opt'] == "1" && $isAdmin)){
-                        echo " (<a href='".$module->getUrl('index.php').'&NOAUTH&option=cwg&record='.$recordId."'>View Writing Group</a>)";
+                if(!empty($concept['participants_complete'])) {
+                    foreach ($concept['participants_complete'] as $id => $participant) {
+                        $RecordSetParticipant = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $concept['person_link'][$id]));
+                        $participant_info = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetParticipant,$pidsArray['PEOPLE'])[0]);
+                        if (!empty($participant_info)) {
+                            #get the label from the drop down menu
+                            echo '<div><a href="mailto:' . $participant_info['email'] . '">' . $participant_info['firstname'] . ' ' . $participant_info['lastname'] . '</a> (' . htmlspecialchars($module->getChoiceLabels('person_role', $pidsArray['HARMONIST'])[$concept['person_role'][$id]],ENT_QUOTES). ')</div>';
+                        } else {
+
+                            echo '<div>' . htmlspecialchars($concept['person_other'][$id],ENT_QUOTES) . '</div>';
+                        }
                     }
+                }else{
+                    echo "<div><em>Not specified</em></div>";
+                }
                 ?>
             </div>
             <div class="col-md-4" style="display: flex">
-                <div><strong>Tags: </strong></div>
-                <div><?=$concept->getTags();?></div>
+                <div>
+                    <strong>Tags: </strong>
+                </div>
+                <div>
+                <?php
+                $noTags = true;
+                $concept_tags = $module->getChoiceLabels('concept_tags', $pidsArray['HARMONIST']);
+                foreach ($concept['concept_tags'] as $tag=>$value){
+                    if($value == 1) {
+                        $noTags = false;
+                        echo '<div style="display: inline-block;padding:0 5px 5px 5px"><span class="label label-as-badge badge-draft"> ' . $concept_tags[$tag].'</span></div>';
+                    }
+                }
+                if($noTags){
+                   echo '<div style="display: inline-block;padding:0 5px 5px 5px"><em>None</em></div>';
+                }
+                ?>
+                </div>
             </div>
         </div>
     </table>
 
 <?php
-if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->getAdminupdateD())>0) || (!empty($concept) && $concept->getUpdateD() != "" && count($concept->getUpdateD())>0)) {
+if ((!empty($concept) && $concept['adminupdate_d'] != "" && count($concept['adminupdate_d'])>0) || (!empty($concept) && $concept['update_d'] != "" && count($concept['update_d'])>0)) {
 ?>
 
     <div class="panel panel-default-archive">
@@ -155,15 +182,15 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                 <?php
                     $project_status = $module->getChoiceLabels('project_status', $pidsArray['HARMONIST']);
                     $admin_status = $module->getChoiceLabels('admin_status', $pidsArray['HARMONIST']);
-                    if($concept->getAdminupdateD() == "" && $concept->getUpdateD() == ""){
+                    if($concept['adminupdate_d'] == "" && $concept['update_d'] == ""){
                         echo '<tr><td colspan="3">No updates available</td></tr>';
-                    }else if($concept->getAdminupdateD() != "" && $concept->getUpdateD() != ""){
+                    }else if($concept['adminupdate_d'] != "" && $concept['update_d'] != ""){
                         $adminUpdateD = array();
-                        foreach ($concept->getAdminupdateD() as $aindex => $adminupdate){
+                        foreach ($concept['adminupdate_d'] as $aindex => $adminupdate){
                             $adminUpdateD[$aindex."-admin"] = $adminupdate;
                         }
                         $updateD = array();
-                        foreach ($concept->getUpdateD() as $uindex => $update){
+                        foreach ($concept['update_d'] as $uindex => $update){
                             $updateD[$uindex."-project"] = $update;
                         }
                         $allUpdates = array_merge($updateD,$adminUpdateD);
@@ -173,29 +200,30 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                             $index_data = explode('-',$index);
                             echo '<tr>';
                             echo  '<td style="width: 10%;">' . $value. '</td>';
-                            echo  '<td>' . call_user_func(array($concept, "get".ucfirst($index_data[1])."Update"))[$index_data[0]]. '</td>';
-                            echo  '<td style="width: 25%;">'.${$index_data[1]."_status"}[call_user_func(array($concept, "get".ucfirst($index_data[1])."Status"))[$index_data[0]]].'</td>';
+                            echo  '<td>' . $concept[$index_data[1]."_update"][$index_data[0]]. '</td>';
+                            echo  '<td style="width: 25%;">'.${$index_data[1]."_status"}[$concept[$index_data[1]."_status"][$index_data[0]]].'</td>';
                             echo '</tr>';
                         }
-                    }else if($concept->getAdminupdateD() != "" && $concept->getUpdateD() == ""){
-                        asort($concept->getAdminupdateD());
-                        foreach ($concept->getAdminupdateD() as $index=>$value){
+                    }else if($concept['adminupdate_d'] != "" && $concept['update_d'] == ""){
+                        asort($concept['adminupdate_d']);
+                        foreach ($concept['adminupdate_d'] as $index=>$value){
                             echo '<tr>';
                             echo  '<td style="width: 10%;">' . htmlspecialchars($value,ENT_QUOTES). '</td>';
-                            echo  '<td>' . filter_tags($concept->getAdminUpdate()[$index]). '</td>';
-                            echo  '<td style="width: 25%;">'.htmlspecialchars($admin_status[$concept->getAdminStatus()[$index]],ENT_QUOTES).'</td>';
+                            echo  '<td>' . filter_tags($concept["admin_update"][$index]). '</td>';
+                            echo  '<td style="width: 25%;">'.htmlspecialchars($admin_status[$concept["admin_status"][$index]],ENT_QUOTES).'</td>';
                             echo '</tr>';
                         }
-                    }else if($concept->getAdminupdateD() == "" && $concept->getUpdateD() != ""){
-                        asort($concept->getUpdateD());
-                        foreach ($concept->getUpdateD() as $index=>$value){
+                    }else if($concept['adminupdate_d'] == "" && $concept['update_d'] != ""){
+                        asort($concept['update_d']);
+                        foreach ($concept['update_d'] as $index=>$value){
                             echo '<tr>';
                             echo  '<td style="width: 10%;">' . htmlspecialchars($value,ENT_QUOTES). '</td>';
-                            echo  '<td>' . filter_tags($concept->getProjectUpdate()[$index]). '</td>';
-                            echo  '<td style="width: 25%;">'.htmlspecialchars($project_status[$concept->getProjectStatus()[$index]],ENT_QUOTES).'</td>';
+                            echo  '<td>' . filter_tags($concept["project_update"][$index]). '</td>';
+                            echo  '<td style="width: 25%;">'.htmlspecialchars($project_status[$concept["project_status"][$index]],ENT_QUOTES).'</td>';
                             echo '</tr>';
                         }
                     }
+
                     echo '</tbody></table>';
                 ?>
                 </tbody>
@@ -204,22 +232,28 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
     </div>
 
 <?php } ?>
+
+
     <div class="panel panel-default" style="margin-bottom: 40px">
         <div class="panel-heading" style="height: 38px">
             <h3 class="panel-title">
                 <a data-toggle="collapse" href="#collapse_concept">Concept Sheet</a>
                 <?php
-                if(!empty($concept->getConceptFile())){
-                    $conceptFile = $concept->createConceptFile($concept->getConceptFile(),$current_user['record_id'],$secret_key,$secret_iv);
-                    echo '<span style="float: right;padding-right: 15px;">'.$conceptFile->getIcon().'</span>
-                          <a href="'.$conceptFile->getDownloadLink().'" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>';
-                 }
-                ?>
+                if(!empty($row_concept_file['doc_name'])) {
+                    $extension = ($row_concept_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
+                    $pdf_path = $module->getUrl("loadPDF.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&edoc=".$concept["concept_file"]."#page=1&zoom=100";
+
+                    $file_icon = getFileLink($module, $pidsArray['PROJECTS'], $concept["concept_file"],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                    $download_link = $module->getUrl("downloadFile.php")."&NOAUTH&code=".getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept["concept_file"]."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv);
+                    ?>
+                    <span style="float: right;padding-right: 15px;"><?=$file_icon;?></span>
+                    <a href="<?=$download_link?>" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>
+                <?php }?>
             </h3>
         </div>
         <div id="collapse_concept" class="table-responsive panel-collapse collapse in" aria-expanded="true">
-            <?php if(!empty($concept->getConceptFile())) {?>
-            <iframe class="commentsform" id="redcap-frame" src="<?=$conceptFile->getPdfPath()?>" style="border: none;width: 100%;height: 500px;"></iframe>
+            <?php if(!empty($row_concept_file['doc_name'])) {?>
+            <iframe class="commentsform" id="redcap-frame" src="<?=$pdf_path?>" style="border: none;width: 100%;height: 500px;"></iframe>
             <?php }else{?>
                 <table class="table table-hover table-bordered table-list table-font-size">
                     <tbody>
@@ -236,19 +270,19 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
     <div class="panel panel-default" style="margin-bottom: 40px">
         <div class="panel-heading" style="height: 38px">
             <h3 class="panel-title">
-                <a data-toggle="collapse" href="#collapse4" class="collapsed">Data Requests for <?=$concept->getConceptId()?></a>
+                <a data-toggle="collapse" href="#collapse4" class="collapsed">Data Requests for <?=$concept['concept_id']?></a>
             </h3>
         </div>
 
         <div id="collapse4" class="table-responsive panel-collapse collapse in" aria-expanded="false" style="overflow-y: hidden;">
             <table class="table sortable-theme-bootstrap" data-sortable>
             <?php
-            $q = $module->query("SELECT record FROM ".getDataTable($pidsArray['HARMONIST'])." WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$recordId,$pidsArray['HARMONIST']]);
+            $q = $module->query("SELECT record FROM ".getDataTable($pidsArray['HARMONIST'])." WHERE field_name = ? AND value IS NOT NULL AND record = ? AND project_id = ?",['datasop_file',$record,$pidsArray['HARMONIST']]);
 
             $params = [
                 'project_id' => $pidsArray['SOP'],
                 'return_format' => 'array',
-                'filterLogic' => "[sop_active] = '1' and [sop_visibility] = '2' and [sop_concept_id] = ".$recordId,
+                'filterLogic' => "[sop_active] = '1' and [sop_visibility] = '2' and [sop_concept_id] = ".$record,
                 'filterType' => "RECORD"
             ];
             $RecordSetSOP = \REDCap::getData($params);
@@ -271,12 +305,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                     );
                 }
                 while ($rowConcept = db_fetch_assoc($q)){
-                    $params = [
-                        'project_id' => $pidsArray['SOP'],
-                        'return_format' => 'array',
-                        'filterLogic' => "[sop_concept_id] = ".$rowConcept['record']
-                    ];
-                    $RecordSetSOP = \REDCap::getData($params);
+                    $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[sop_concept_id] = ".$rowConcept['record']);
                     $data_requests_old = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
                     if(empty($data_requests_old)){
                         echo getDataCallConceptsRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],$rowConcept['record'],"1");
@@ -310,12 +339,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                     <col>
                 </colgroup>
                 <?php
-                $params = [
-                    'project_id' => $pidsArray['DATAUPLOAD'],
-                    'return_format' => 'json-array',
-                    'filterLogic' => "[data_assoc_concept] = ".$recordId
-                ];
-                $uploads = \REDCap::getData($params);
+                $uploads = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null,null,null,null,false,false,false,"[data_assoc_concept] = ".$record);
                 if(!empty($uploads)){?>
 
                 <thead>
@@ -330,22 +354,10 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                 <tbody>
                 <?php
                 foreach ($uploads as $up){
-                    $params = [
-                        'project_id' => $pidsArray['PEOPLE'],
-                        'return_format' => 'json-array',
-                        'records' => [$up['data_upload_person']],
-                        'fields'=> ['firstname','lastname','email']
-                    ];
-                    $people = $module->escape(\REDCap::getData($params)[0]);
+                    $people = $module->escape(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $up['data_upload_person']))[0]);
                     $contact_person = "<a href='mailto:" . $people['email'] . "'>" . $people['firstname'] . " " . $people['lastname'] . "</a>";
 
-                    $params = [
-                        'project_id' => $pidsArray['REGIONS'],
-                        'return_format' => 'json-array',
-                        'records' => [$up['data_upload_region']],
-                        'fields'=> ['region_code']
-                    ];
-                    $region_code = \REDCap::getData($params);[0]['region_code'];
+                    $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $up['data_upload_region']),array('region_code'))[0]['region_code'];
 
                     $status = '<span class="badge label-updated">Available</span>';
                     if($up['deleted_y'] == '1'){
@@ -378,9 +390,9 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                 <a data-toggle="collapse" href="#collapse_publications">Abstracts & Publications</a>
                 <?php
                 $harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
-                $can_edit_pub = UserEditConditions::canUserEditData($isAdmin, $current_user['record_id'], $concept->getContactLink(), $concept->getContact2Link(), $harmonist_perm);
+                $can_edit_pub = UserEditConditions::canUserEditData($isAdmin, $current_user['record_id'], $concept['contact_link'], $concept['contact2_link'], $harmonist_perm);
                 if($can_edit_pub){
-                    $output_link = $module->getSurveyLinkNewInstance("outputs", $recordId, $pidsArray['HARMONIST']);
+                    $output_link = $module->getSurveyLinkNewInstance("outputs", $record, $pidsArray['HARMONIST']);
                 ?>
                 <a href="#" onclick="$('#hub_new_output').modal('show');" style="float: right;padding-right: 30px;color: #337ab7;cursor: pointer"><em class="fa fa-plus"></em> New Output</a>
                 <!-- MODAL NEW OUTPUT-->
@@ -411,7 +423,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
         <div id="collapse_publications" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="abstracts">
                 <?php
-                if(!empty($concept->getOutputType())){
+                if(!empty($concept['output_type'])){
                     $header = '<colgroup>
                         <col>
                         <col>
@@ -435,36 +447,36 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                     echo '<tbody>';
 
                     //Order by year
-                    $output_year = $concept->getOutputYear();
+                    $output_year = $concept['output_year'];
                     if(!empty($output_year) && is_array($output_year))
                         asort ($output_year);
                     foreach ($output_year as $index =>$value){
 
-                        echo '<tr><td>'.$concept->getOutputYear()[$index].'</td>'.
-                            '<td>'.$concept->getOutputVenue()[$index].'</td>'.
-                            '<td><span class="badge badge-pill '.$abstracts_publications_badge[$concept->getOutputType()[$index]].'">'.$abstracts_publications_type[$concept->getOutputType()[$index]].'</span> <strong>'.$concept->getOutputTitle()[$index].'</strong> </br><span class="abstract_text">'.$concept->getOutputAuthors()[$index].'</span></td>';
+                        echo '<tr><td>'.$concept['output_year'][$index].'</td>'.
+                            '<td>'.$concept['output_venue'][$index].'</td>'.
+                            '<td><span class="badge badge-pill '.$abstracts_publications_badge[$concept['output_type'][$index]].'">'.$abstracts_publications_type[$concept['output_type'][$index]].'</span> <strong>'.$concept['output_title'][$index].'</strong> </br><span class="abstract_text">'.$concept['output_authors'][$index].'</span></td>';
 
                         $available = '';
-                        if(!empty($concept->getOutputCitation()[$index])){
-                            $available = htmlspecialchars($concept->getOutputCitation()[$index],ENT_QUOTES);
+                        if(!empty($concept['output_citation'][$index])){
+                            $available = htmlspecialchars($concept['output_citation'][$index],ENT_QUOTES);
                         }
-                        if(!empty($concept->getOutputPmcid()[$index])){
-                            $available .= 'PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/'.$concept->getOutputPmcid()[$index].'" target="_blank">'.$concept->getOutputPmcid()[$index].'<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';
+                        if(!empty($concept['output_pmcid'][$index])){
+                            $available .= 'PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/'.$concept['output_pmcid'][$index].'" target="_blank">'.$concept['output_pmcid'][$index].'<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';
                         }
-                        if(!empty($concept->getOutputUrl()[$index])){
-                            $available .= '<a href="'.$concept->getOutputUrl()[$index].'" target="_blank">Link<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';
+                        if(!empty($concept['output_url'][$index])){
+                            $available .= '<a href="'.$concept['output_url'][$index].'" target="_blank">Link<i class="fa fa-fw fa-external-link" aria-hidden="true"></i></a>';
                         }
 
                         echo '<td>'.$available.'</td>';
 
                         $file ='';
-                        if($concept->getOutputFile()[$index] != ""){
-                            $file = getFileLink($module, $pidsArray['PROJECTS'], $concept->getOutputFile()[$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                        if($concept['output_file'][$index] != ""){
+                            $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $concept['output_file'][$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                         }
                         echo '<td>'.$file.'</td>';
 
                         if($can_edit_pub){
-                            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $recordId, "outputs", "", $index);
+                            $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "", $index);
                             $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
                             echo '<td><button class="btn btn-default open-codesModal" onclick="$(\'#edit_title\').html(\'Edit Publication\');editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button></td>';
                         }
@@ -501,12 +513,12 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
     <div class="panel panel-default" style="margin-bottom: 40px">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <a data-toggle="collapse" href="#collapse_linked_doc">Linked Documents</a>
+                <a data-toggle="collapse" href="#collapse_publications">Linked Documents</a>
                 <?php
                 $harmonist_perm = ($current_user['harmonist_perms___10'] == 1) ? true : false;
-                $can_edit_linked_doc = UserEditConditions::canUserEditData($isAdmin, $current_user['record_id'], $concept->getContactLink(),$concept->getContact2Link(), $harmonist_perm);
+                $can_edit_linked_doc = UserEditConditions::canUserEditData($isAdmin, $current_user['record_id'], $concept['contact_link'], $concept['contact2_link'], $harmonist_perm);
                 if($can_edit_linked_doc){
-                    $linked_doc_link = $module->getSurveyLinkNewInstance("linked_documents", $recordId, $pidsArray['HARMONIST']);
+                    $linked_doc_link = $module->getSurveyLinkNewInstance("linked_documents", $record, $pidsArray['HARMONIST']);
                     ?>
                     <a href="#" onclick="$('#hub_new_linked_doc').modal('show');" style="float: right;padding-right: 30px;color: #337ab7;cursor: pointer"><em class="fa fa-plus"></em> New File</a>
                     <!-- MODAL NEW OUTPUT-->
@@ -533,10 +545,10 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
             </h3>
         </div>
 
-        <div id="collapse_linked_doc" class="table-responsive panel-collapse collapse in" aria-expanded="true">
+        <div id="collapse_publications" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="abstracts">
                 <?php
-                if(!empty($concept->getDocTitle())){
+                if(!empty($concept['doc_title'])){
                     $header = '<colgroup>
                         <col>
                         <col>
@@ -557,21 +569,21 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                     echo '</tr></thead>'.$header;
 
                     echo '<tbody>';
-                    foreach ($concept->getDocuploadDt() as $linked_doc_instance => $value){
-                        if($concept->getDochiddenY()[$linked_doc_instance] !== "1"){
+                    foreach ($concept['dochidden_y'] as $linked_doc_instance => $doc_hidden_value){
+                        if($doc_hidden_value !== "1"){
                             echo '<tr>';
-                            echo '<td width="15%">'.$concept->getDocuploadDt()[$linked_doc_instance].'</td>';
-                            echo '<td width="25%">'.$concept->getDocTitle()[$linked_doc_instance].'</td>';
-                            echo '<td width="50%">'.$concept->getDocDescription()[$linked_doc_instance].'</td>';
+                            echo '<td width="15%">'.$concept['docupload_dt'][$linked_doc_instance].'</td>';
+                            echo '<td width="25%">'.$concept['doc_title'][$linked_doc_instance].'</td>';
+                            echo '<td width="50%">'.$concept['doc_description'][$linked_doc_instance].'</td>';
 
                             $file ='';
-                            if($concept->getDocFile()[$linked_doc_instance] != ""){
-                                $file = getFileLink($module, $pidsArray['PROJECTS'], $concept->getDocFile()[$linked_doc_instance],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
+                            if($concept['doc_file'][$linked_doc_instance] != ""){
+                                $file = getFileLink($module, $pidsArray['PROJECTS'], $concept['doc_file'][$linked_doc_instance],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                             }
                             echo '<td width="5%">'.$file.'</td>';
 
                             if($can_edit_linked_doc){
-                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $recordId, "linked_documents", "", $linked_doc_instance);
+                                $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "linked_documents", "", $linked_doc_instance);
                                 $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
                                 echo '<td><button class="btn btn-default open-codesModal" onclick="$(\'#edit_title\').html(\'Edit Linked Document\');editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button></td>';
                             }
@@ -597,19 +609,15 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
         <div id="collapse3" class="table-responsive panel-collapse collapse in" aria-expanded="true">
             <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                 <?php
-                $params = [
-                    'project_id' => $pidsArray['RMANAGER'],
-                    'return_format' => 'array'
-                ];
-                $RecordSetRM = \REDCap::getData($params);
-                $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],array('approval_y' => "1",'assoc_concept' => $recordId));
+                $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null);
+                $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],array('approval_y' => "1",'assoc_concept' => $concept['record_id']));
                 if(!empty($request)){
-                    echo getArchiveHeader('Status');
+                    echo \Vanderbilt\HarmonistHubExternalModule\getArchiveHeader('Status');
                     ?>
                     <tbody>
                     <?php
                     foreach ($request as $req) {
-                        echo getArchiveHTML($module, $pidsArray, $req, $request_type_label, $current_user['person_region'],$settings['vote_visibility']);
+                        echo \Vanderbilt\HarmonistHubExternalModule\getArchiveHTML($module, $pidsArray, $req, $request_type_label, $current_user['person_region'],$settings['vote_visibility']);
                     }
                 }else{?>
                     <tbody>
@@ -623,7 +631,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
     </div>
 </div>
 <?php }else{ ?>
-    <div class="alert alert-warning fade in col-md-12"><em>Concept #<?=$recordId?> is not available at this time.</em></div>
+    <div class="alert alert-warning fade in col-md-12"><em>Concept #<?=$record?> is not available at this time.</em></div>
 <?php } ?>
 <div class="modal fade" id="hub_view_votes" tabindex="-1" role="dialog" aria-labelledby="Codes">
     <div class="modal-dialog" role="document" style="width: 800px">

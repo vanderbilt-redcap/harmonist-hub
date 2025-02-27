@@ -16,9 +16,18 @@ class AllCrons
 
                 $downloadersOrdered = array();
                 foreach ($downloaders as $down) {
-                    if($peopleDown == null) {
-                        $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
-                        $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDownData['person_region']),array('region_code'))[0]['region_code'];
+                    if($peopleDown == null && isset($down)) {
+                        $region_codeDown = null;
+                        $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down));
+                        if(isset($peopleDownData)) {
+                            $peopleDownData = $peopleDownData[0];
+                            if(array_key_exists('person_region', $peopleDownData) && isset($peopleDownData['person_region'])) {
+                                $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDownData['person_region']),array('region_code'));
+                                if(isset($region_codeDown)) {
+                                    $region_codeDown = $region_codeDown[0]['region_code'];
+                                }
+                            }
+                        }
                     }else{
                         $region_codeDown = "TT";
                         $peopleDownData = $peopleDown[$down];
@@ -61,7 +70,6 @@ class AllCrons
                         if (!$email_sent) {
                             #Not downloaded any file
                             $messageArray = AllCrons::sendExpReminder($module, $pidsArray, $sop, $down, $upload, $expired_date['reminder'], $expired_date['reminder2'], $expired_date['delete'], $name_uploader, $region_code_uploader, $concept_id, $concept_title, $date_time, $settings, $email, $messageArray);
-                            $messageArray['notdownloaded'] += 1;
                         }
                     }
                 }
@@ -369,9 +377,10 @@ class AllCrons
      * @param $settings array Hub settings for this Harmonist instance
      * @return array|string
      */
-    public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $sop, $expired_date, $settings)
+    public static function runCronDeleteAws($module, $pidsArray, $s3, $upload, $expired_date, $settings)
     {
-        if((!array_key_exists('deleted_y',$upload) || $upload['deleted_y'] != "1") && strtotime($expired_date) <= strtotime(date('Y-m-d'))){
+        if((!array_key_exists('deleted_y',$upload) || $upload['deleted_y'] != "1") && strtotime($expired_date) <= strtotime(date('Y-m-d'))
+        && isset($upload['data_upload_bucket']) && isset($upload['data_upload_folder']) && isset($upload['data_upload_zip'])){
             try {
                 #Delete the object
                 $result = $s3->deleteObject(array(
@@ -402,6 +411,9 @@ class AllCrons
                 $peopleUp = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $upload['data_upload_person']))[0];
                 $region_codeUp = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleUp['person_region']),array('region_code'))[0]['region_code'];
 
+                $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $upload['data_assoc_request']));
+                $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP, $pidsArray['SOP'])[0];
+
                 $date = new \DateTime($upload['responsecomplete_ts']);
                 $date->modify("+1 hours");
                 $date_time = $date->format("Y-m-d H:i");
@@ -418,9 +430,6 @@ class AllCrons
                 #to downloaders
                 if ($sop['sop_downloaders'] !== "") {
                     $downloaders = explode(',', $sop['sop_downloaders']);
-                    $number_downloaders = count($downloaders);
-                    $messageArray['numDownloaders'] = $number_downloaders;
-
                     $downloadersOrdered = array();
                     foreach ($downloaders as $down) {
                         $peopleDown = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down))[0];
@@ -442,263 +451,12 @@ class AllCrons
 
                         sendEmail($down['email'], $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], $subject, $message, $down['id'],"Dataset deletion notification", $pidsArray['DATAUPLOAD']);
                     }
-                    $message['code_test'] = "1";
                 }
                 \REDCap::logEvent("Dataset deleted automatically\nRecord " . $upload['record_id'], "Concept ID: " . $concept_id . "\n Draft ID: " . $sop['record_id'], null, null, null, $pidsArray['DATAUPLOAD']);
             } catch (S3Exception $e) {
                 echo $e->getMessage() . "\n";
             }
         }
-        return $message;
-    }
-
-    public static function runCronMetrics($module, $pidsArray, $email = false)
-    {
-        $date = new \DateTime();
-        $record_id_metrics = "";
-        if($email != false){
-            $record_id_metrics = $module->framework->addAutoNumberedRecord($pidsArray['METRICS']);
-        }
-        $message = "";
-
-        $arrayMetrics = array(array('record_id' => $record_id_metrics));
-        $arrayMetrics[0]['date'] = $date->format('Y-m-d H:i:s');
-
-
-        /***CONCEPTS***/
-        $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
-        $total_concepts = count($RecordSetConcepts);
-        $arrayMetrics[0]['concepts'] = $total_concepts;
-
-        $RecordSetConceptsActive = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[active_y] = 'Y'");
-        $number_concepts_active = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsActive,$pidsArray['HARMONIST']));
-        $arrayMetrics[0]['concepts_a'] = $number_concepts_active;
-
-        $RecordSetConceptsCompleted = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[concept_outcome] = 1");
-        $number_concepts_completed = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsCompleted,$pidsArray['HARMONIST']));
-        $arrayMetrics[0]['concepts_c'] = $number_concepts_completed;
-
-        $RecordSetConceptsDiscontinued = \REDCap::getData($pidsArray['HARMONIST'], 'array', null, null, null, null, false, false, false, "[concept_outcome] = 2");
-        $number_concepts_discontinued = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptsDiscontinued,$pidsArray['HARMONIST']));
-        $arrayMetrics[0]['concepts_d'] = $number_concepts_discontinued;
-
-        /***REQUESTS***/
-        $RecordSetRequests = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] != 9");
-        $total_requests = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequests,$pidsArray['RMANAGER']));
-        $arrayMetrics[0]['requests'] = $total_requests;
-
-        $RecordSetRequestsApproved = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 1");
-        $number_requests_approved = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsApproved,$pidsArray['RMANAGER']));
-        $arrayMetrics[0]['requests_a'] = $number_requests_approved;
-
-        $RecordSetRequestsRejected = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 0");
-        $number_requests_rejected = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsRejected,$pidsArray['RMANAGER']));
-        $arrayMetrics[0]['requests_r'] = $number_requests_rejected;
-
-        $RecordSetRequestsDeactivated = \REDCap::getData($pidsArray['RMANAGER'], 'array', null, null, null, null, false, false, false, "[approval_y] = 9");
-        $number_requests_deactivated = count(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequestsDeactivated,$pidsArray['RMANAGER']));
-        $arrayMetrics[0]['requests_d'] = $number_requests_deactivated;
-
-        $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array', null, null, null, null, false, false, false, "[showregion_y] = 1");
-
-        #PUBLICATIONS AND ABSTRACTS;
-        $publications = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST']);
-
-        $number_publications = 0;
-        $number_publications_year = 0;
-        $number_abstracts = 0;
-        $number_abstracts_year = 0;
-        foreach ($publications as $outputs) {
-            foreach ($outputs['output_type'] as $index => $output_type) {
-                if ($output_type == '1') {
-                    $number_publications++;
-                    if ($outputs['output_year'][$index] == $date->format('Y')) {
-                        $number_publications_year++;
-                    }
-                } else if ($output_type == '2') {
-                    $number_abstracts++;
-                    if ($outputs['output_year'][$index] == $date->format('Y')) {
-                        $number_abstracts_year++;
-                    }
-                }
-            }
-        }
-        $arrayMetrics[0]['publications'] = $number_publications;
-        $arrayMetrics[0]['abstracts'] = $number_abstracts;
-        $arrayMetrics[0]['publications_current'] = $number_publications_year;
-        $arrayMetrics[0]['abstracts_current'] = $number_abstracts_year;
-
-        #COMMENTS AND VOTES
-        $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null,array('request_id'));
-        $req_id = array();
-        foreach ($comments as $comments) {
-            if ($comments['request_id'] != '') {
-                array_push($req_id, $comments['request_id']);
-            }
-        }
-        $req_id = array_unique($req_id);
-
-        $query = $module->framework->createQuery();
-        $query->add("SELECT record FROM ".getDataTable($pidsArray['RMANAGER'])." WHERE field_name = ? AND project_id = ? AND value = ?", ["approval_y", $pidsArray['RMANAGER'], "9"]);
-        $query->add('and')->addInClause('record ', $req_id);
-        $query->add('group by record');
-        $q = $query->execute();
-        while ($row = $q->fetch_assoc()) {
-            if (($key = array_search($row['record'], $req_id)) !== false) {
-                unset($req_id[$key]);
-            }
-        }
-
-        $query = $module->framework->createQuery();
-        $query->add("SELECT a.record FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." a INNER JOIN ".getDataTable($pidsArray['COMMENTSVOTES'])." b on a.record=b.record and a.project_id=b.project_id WHERE a.field_name = ? AND a.project_id = ? ", ["request_id", $pidsArray['COMMENTSVOTES']]);
-        $query->add('and')->addInClause('a.value ', $req_id);
-        $query->add('group by a.record');
-        $q = $query->execute();
-        $total_comments = 0;
-        $comments_id = array();
-        while ($row = $q->fetch_assoc()) {
-            $total_comments++;
-            array_push($comments_id, $row['record']);
-        }
-        $arrayMetrics[0]['comments'] = $total_comments;
-
-        $query = $module->framework->createQuery();
-        $query->add("SELECT * FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["response_pi_level", $pidsArray['COMMENTSVOTES']]);
-        $query->add('and')->addInClause('record ', $comments_id);
-        $query->add('group by record');
-        $q = $query->execute();
-        $number_comments_pi = 0;
-        $number_comments_nonpi = 0;
-        while ($row = $q->fetch_assoc()) {
-            if ($row['value'] == '1') {
-                $number_comments_pi++;
-            } else if ($row['value'] == '0') {
-                $number_comments_nonpi++;
-            }
-        }
-        $arrayMetrics[0]['comments_pi'] = $number_comments_pi;
-        $arrayMetrics[0]['comments_n'] = $number_comments_nonpi;
-
-        $query = $module->framework->createQuery();
-        $query->add("SELECT * FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["pi_vote", $pidsArray['COMMENTSVOTES']]);
-        $query->add('and')->addInClause('record ', $comments_id);
-        $query->add('group by record');
-        $q = $query->execute();
-        $number_votes = 0;
-        $request_ids = array();
-        while ($row = $q->fetch_assoc()) {
-            if ($row['value'] != '') {
-                $number_votes++;
-                array_push($request_ids, $row['record']);
-            }
-        }
-        $arrayMetrics[0]['votes'] = $number_votes;
-
-        $query = $module->framework->createQuery();
-        $query->add("SELECT * FROM ".getDataTable($pidsArray['COMMENTSVOTES'])." WHERE field_name = ? AND project_id = ? ", ["vote_now", $pidsArray['COMMENTSVOTES']]);
-        $query->add('and')->addInClause('record ', $comments_id);
-        $query->add('group by record');
-        $q = $query->execute();
-        $number_votes_later = 0;
-        while ($row = $q->fetch_assoc()) {
-            if ($row['value'] != '0') {
-                $number_votes_later++;
-            }
-        }
-        $arrayMetrics[0]['vote_later'] = $number_votes_later;
-
-        $comments_revision = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', null, array('request_id'), null, null, false, false, false, "[author_revision_y] = 1");
-        #get unique values from matrix column request_id (unique request ids)
-        $revisions = 0;
-        foreach ($comments_revision as $comment) {
-            $approval_y = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $comment['request_id']),array('approval_y'))[0]['approval_y'];
-            if ($approval_y == '1') {
-                $revisions++;
-            }
-        }
-        $arrayMetrics[0]['revisions'] = $revisions;
-
-        $RecordRequests = \REDCap::getData($pidsArray['RMANAGER'], 'array');
-        $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordRequests, $pidsArray['RMANAGER'], array('approval_y' => '1'));
-
-        $number_votes_completed_before_duedate = 0;
-        $number_votes_completed_after_duedate = 0;
-        $completerequests = 0;
-        $numregions = count($regions);
-        $completed_requests_by_all_regions = array();
-        foreach ($requests as $request) {
-            $votecount = 0;
-            foreach ($regions as $region) {
-                $instance = $region['record_id'];
-
-                if ($request['region_vote_status'][$instance] != "") {
-                    $votecount++;
-                    $request_date = date("Y-m-d", strtotime($request['region_close_ts'][$instance]));
-                    if (strtotime($request['due_d']) <= strtotime($request_date)) {
-                        //if vote submitted before or on due date
-                        $number_votes_completed_before_duedate++;
-                    } else {
-                        $number_votes_completed_after_duedate++;
-                    }
-                }
-
-                if ($votecount == $numregions) {
-                    $completerequests++; //if the number of votes (vote count) equals the number of voting regions, then this request is complete, so increment complete counter
-                    array_push($completed_requests_by_all_regions, $request['request_id']);
-                }
-            }
-        }
-
-        foreach ($completed_requests_by_all_regions as $completed) {
-            $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $completed));
-            $recordRMComplete = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM, $pidsArray['RMANAGER'])[0];
-            if ($recordRMComplete['detected_complete'][1] != "1") {
-                $Proj = new \Project($pidsArray['RMANAGER']);
-                $event_id_RM = $Proj->firstEventId;
-                $arrayRM = array();
-                $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete'] = array(1 => "1");//checkbox
-                $arrayRM[$comment['request_id']][$event_id_RM]['detected_complete_ts'] = date('Y-m-d H:i:s');
-                $results = \Records::saveData($pidsArray['RMANAGER'], 'array', $arrayRM, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-                \REDCap::logEvent("Metrics AllCrons", "detected_complete(1) = checked", NULL, $comment['request_id'], $event_id_RM, $pidsArray['RMANAGER']);
-            }
-        }
-
-        $number_votes = $number_votes_completed_before_duedate + $number_votes_completed_after_duedate;
-        $arrayMetrics[0]['votes_c'] = $number_votes_completed_before_duedate;
-        $number_votes_completed_before_duedate_percent = ($number_votes_completed_before_duedate / $number_votes) * 100;
-        $arrayMetrics[0]['votes_c_percentage'] = round($number_votes_completed_before_duedate_percent, 2);
-
-        $arrayMetrics[0]['votes_late'] = $number_votes_completed_after_duedate;
-        $number_votes_completed_after_duedate_percent = ($number_votes_completed_after_duedate / $number_votes) * 100;
-        $arrayMetrics[0]['votes_late_percentage'] = round($number_votes_completed_after_duedate_percent, 2);
-
-        #REQUESTS COMPLETED
-        $arrayMetrics[0]['requests_c'] = $completerequests;
-
-        #USERS
-        $query = $module->framework->createQuery();
-        $query->add("SELECT count(*) as total_registered_users FROM ".getDataTable($pidsArray['PEOPLE'])." WHERE field_name = ? AND project_id = ? AND value in (1,2,3)", ["harmonist_regperm", $pidsArray['PEOPLE']]);
-        $q = $query->execute();
-        $arrayMetrics[0]['users'] = $q->fetch_assoc()['total_registered_users'];
-
-        $number_users_pi = count(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null, null, null, null, false, false, false, "[harmonist_regperm] = 3"));
-        $arrayMetrics[0]['users_pi'] = $number_users_pi;
-
-        $query = $module->framework->createQuery();
-        $query->add("SELECT count(*) as number_users_accesslink FROM ".getDataTable($pidsArray['PEOPLE'])." WHERE field_name = ? AND project_id = ? AND DATEDIFF(NOW(),value) between 0 AND 30", ["last_requested_token_d", $pidsArray['PEOPLE']]);
-        $q = $query->execute();
-        $arrayMetrics[0]['users_access'] = $q->fetch_assoc()['number_users_accesslink'];
-
-        $number_requests_admin = count(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', null, null, null, null, false, false, false, "[harmonistadmin_y] = 1"));
-        $arrayMetrics[0]['admins'] = $number_requests_admin;
-
-        $json = json_encode($arrayMetrics);
-        $results = \Records::saveData($pidsArray['METRICS'], 'json', $json, 'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-        if($email != false) {
-            \Records::addRecordToRecordListCache($pidsArray['METRICS'], $record_id_metrics, 1);
-        }
-        $message['metrics'] = 1;
-        return $message;
     }
 
     public static function sendEmailToday($upload, $extra_days_delete, $extra_days, $extra_days2)
@@ -739,7 +497,6 @@ class AllCrons
                 "A summary report for the dataset is also available on that page.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
             $reminder_num = $settings['downloadreminder_dur'];
-            $messageArray[$settings['downloadreminder_dur']] += 1;
         } else {
             $subject = $settings['hub_name'] . " Data Request for " . $concept_id . " download expires on " . $expired_date_delete;
             $message = "<div>Dear " . $down['firstname'] . ",</div><br/><br/>" .
@@ -750,7 +507,6 @@ class AllCrons
                 "<div>This is the final reminder for this dataset.</div><br/>" .
                 "<span style='color:#777'>Please email <a href='mailto:" . $settings['hub_contact_email'] . "'>" . $settings['hub_contact_email'] . "</a> with any questions.</span>";
             $reminder_num = $settings['downloadreminder2_dur'];
-            $messageArray[$settings['downloadreminder2_dur']] += 1;
         }
 
         if ($email) {

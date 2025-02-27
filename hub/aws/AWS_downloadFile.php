@@ -25,7 +25,6 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                                'region' => 'us-east-2',
                                'credentials' => $credentials
                            ]);
-
         if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && $module->getSecurityHandler()->isTokenCorrect(
                 $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
             )) {
@@ -48,11 +47,15 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         $array_userid
                     )) !== false)) {
                 try {
-                    #Get the object
-                    $result = $s3->getObject(array(
-                                                 'Bucket' => $request_DU['data_upload_bucket'],
-                                                 'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip']
-                                             ));
+                    #Get the object as a link
+                    $cmd = $s3->getCommand('GetObject', [
+                        'Bucket' => $request_DU['data_upload_bucket'],
+                        'Key' => $request_DU['data_upload_folder'] . $request_DU['data_upload_zip'],
+                        'ResponseContentDisposition' => 'attachment; filename="'.$request_DU['data_upload_zip'].'"'
+                    ]);
+
+                    $request = $s3->createPresignedRequest($cmd, '+15 min');
+                    $presignedUrl = (string)$request->getUri();
 
                     $persondown = \REDCap::getData(
                         $pidsArray['PEOPLE'],
@@ -195,11 +198,10 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                         );
                     }
 
-
-                    #Display the object in the browser
-                    header("Content-Type: {$result['ContentType']}");
-                    header('Content-Disposition: attachment; filename="' . $request_DU['data_upload_zip'] . '"');
-                    echo $result['Body'];
+                    #Download the object in the browser
+                    header("Content-Type: application/zip, application/octet-stream");
+                    header('Content-Disposition: attachment; filename="'.$request_DU['data_upload_zip'].'"');
+                    header("Location: " . $presignedUrl);
                 } catch (S3Exception $e) {
                     echo $e->getMessage() . "\n";
                 }

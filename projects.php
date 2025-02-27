@@ -11,6 +11,9 @@ include_once (__DIR__ . "/autoload.php");
 
 REDCapManagement::getEnvironment();
 
+$secret_key = "";
+$secret_iv = "";
+
 if(!$isCron) {
     if($module == null) {
         $module = $this;

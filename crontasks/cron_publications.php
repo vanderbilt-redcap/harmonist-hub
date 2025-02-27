@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ ."/../projects.php");
+require_once dirname(dirname(__FILE__))."/projects.php";
 
 $isAdmin = false;
 if(array_key_exists('isAdmin', $_REQUEST) && ($_REQUEST['isAdmin'] == '1')){
@@ -25,6 +25,13 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
     $pubtext4 = empty($settings['pubtext4']) ? "Site" : $settings['pubtext4'];
     $pubtext5 = empty($settings['pubtext5']) ? "Multi" : $settings['pubtext5'];
 
+    $user_record = empty($current_user) ? null : $current_user['record_id'];
+
+    if(!isset($secret_key) || !isset($secret_iv)){
+        $secret_key = "";
+        $secret_iv = "";
+    }
+
     if (!empty($concepts)) {
         $table_array['data'] = array();
         $records = 0;
@@ -46,8 +53,8 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     }
 
                     $file = '';
-                    if ($concept['output_file'][$index] != "") {
-                        $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $pidsArray['PROJECTS'], $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                    if (array_key_exists('output_file',$concept) && is_array($concept['output_file']) && array_key_exists($index,$concept['output_file']) && $concept['output_file'][$index] !== "") {
+                        $file = getFileLink($moduleAux, $pidsArray['PROJECTS'], $concept['output_file'][$index], '1', '', $secret_key, $secret_iv, $user_record, "");
                     }
 
                     $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept['record_id'], "outputs", "",$index);
@@ -55,13 +62,41 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
                     $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
 
+                    $badge = "";
+                    $output_type = "";
+                    if(is_array($concept['output_type']) && array_key_exists($index,$concept['output_type']) && !empty($concept['output_type'][$index])) {
+                        if(array_key_exists($concept['output_type'][$index], $abstracts_publications_badge)){
+                            $badge = $abstracts_publications_badge[$concept['output_type'][$index]];
+                        }
+                        if(array_key_exists($concept['output_type'][$index], $abstracts_publications_type)){
+                            $output_type = htmlentities($abstracts_publications_type[$concept['output_type'][$index]]);
+                        }
+                    }
+
+                    $authors = "";
+                    if(is_array($concept['output_authors']) && array_key_exists($index,$concept['output_authors'])) {
+                        $authors = $concept['output_authors'][$index];
+                    }
+                    $title = "";
+                    if(is_array($concept['output_title']) && array_key_exists($index,$concept['output_title'])) {
+                        $title = $concept['output_title'][$index];
+                    }
+                    $venue = "";
+                    if(is_array($concept['output_venue']) && array_key_exists($index,$concept['output_venue'])) {
+                        $venue = htmlentities($concept['output_venue'][$index]);
+                    }
+                    $year = "";
+                    if(is_array($concept['output_year']) && array_key_exists($index,$concept['output_year'])) {
+                        $year = htmlentities($concept['output_year'][$index]);
+                    }
+
                     $table_aux = array();
                     $table_aux['concept'] = '<a href="' . $moduleAux->getUrl('index.php') .'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . $concept['record_id']. '">' . htmlentities($concept['concept_id']) . '</a>';
-                    $table_aux['year'] = '<strong>' . htmlentities($concept['output_year'][$index]) . '</strong>';
+                    $table_aux['year'] = '<strong>' . $year . '</strong>';
                     $table_aux['region'] = '<span class="badge badge-pill badge-draft">'.$pubtext3.'</span>';
-                    $table_aux['conf'] = htmlentities($concept['output_venue'][$index]);
-                    $table_aux['type'] = htmlentities($abstracts_publications_type[$concept['output_type'][$index]]);
-                    $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$concept['output_type'][$index]] . '">' . htmlentities($abstracts_publications_type[$concept['output_type'][$index]]) . '</span><span style="display:none">.</span> <strong>' . htmlentities($concept['output_title'][$index]) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($concept['output_authors'][$index]) . '</span>';
+                    $table_aux['conf'] = $venue;
+                    $table_aux['type'] = $output_type;
+                    $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . $output_type . '</span><span style="display:none">.</span> <strong>' . htmlentities($title) . '</strong><span style="display:none">.</span> </br><span class="abstract_text">' . htmlentities($authors) . '</span>';
                     $table_aux['available'] = $available;
                     $table_aux['file'] = $file;
                     $table_aux['edit'] = $edit;
@@ -94,20 +129,42 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             }
             $file = '';
             if ($output['output_file'] != "") {
-                $file = \Vanderbilt\HarmonistHubExternalModule\getFileLink($moduleAux, $pidsArray['PROJECTS'], $output['output_file'], '1', '', $secret_key, $secret_iv, $current_user['record_id'], "");
+                $file = getFileLink($moduleAux, $pidsArray['PROJECTS'], $output['output_file'], '1', '', $secret_key, $secret_iv, $user_record, "");
             }
 
             $passthru_link = $moduleAux->resetSurveyAndGetCodes($pidsArray['EXTRAOUTPUTS'], $output['record_id'], "output_record", "");
-            $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$moduleAux->escape($passthru_link['hash']);
-            $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
+            $edit = "";
+            if(is_array($passthru_link) && array_key_exists('hash', $passthru_link)) {
+                $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$moduleAux->escape($passthru_link['hash']);
+                $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\'' . $survey_link . '\');"><em class="fa fa-pencil"></em></a>';
+            }
+
+            $output_type = "";
+            $badge = "";
+            if(!empty($output['output_type'])) {
+                if(array_key_exists($output['output_type'], $abstracts_publications_badge)){
+                    $badge = $abstracts_publications_badge[$output['output_type']];
+                }
+                if(array_key_exists($output['output_type'], $abstracts_publications_type)){
+                    $output_type = htmlentities($abstracts_publications_type[$output['output_type']]);
+                }
+            }
+            $authors = "";
+            if(is_array($output['output_authors']) && array_key_exists($index,$output['output_authors'])) {
+                $authors = $output['output_authors'][$index];
+            }
+            $title = "";
+            if(is_array($output['output_title']) && array_key_exists($index,$output['output_title'])) {
+                $title = $output['output_title'][$index];
+            }
 
             $table_aux = array();
             $table_aux['concept'] = '<i>None</i>';
             $table_aux['year'] = htmlentities($output['output_year']);
             $table_aux['region'] = $type;
             $table_aux['conf'] = htmlentities($output['output_venue']);
-            $table_aux['type'] = htmlentities($abstracts_publications_type[$output['output_type']]);
-            $table_aux['title'] = '<span class="badge badge-pill ' . $abstracts_publications_badge[$output['output_type']] . '">' . htmlentities($abstracts_publications_type[$output['output_type']]) . '</span><span style="display:none">.</span> <strong>' . htmlentities($output['output_title']) . '</strong><span style="display:none">.</span> </br><span class=n"abstract_text">' . htmlentities($output['output_authors']) . '</span>';
+            $table_aux['type'] = $output_type;
+            $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . $output_type . '</span><span style="display:none">.</span> <strong>' . htmlentities($title) . '</strong><span style="display:none">.</span> </br><span class=n"abstract_text">' . htmlentities($authors) . '</span>';
             $table_aux['available'] = $available;
             $table_aux['file'] = $file;
             $table_aux['edit'] = $edit;
@@ -121,7 +178,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
 
     #create and save file with json
     $filename = "jsoncopy_file_publications_" . date("YmdsH") . ".txt";
-    $storedName = date("YmdsH") . "_pid" . $pidsArray['SETTINGS'] . "_" . \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(6) . ".txt";
+    $storedName = date("YmdsH") . "_pid" . $pidsArray['SETTINGS'] . "_" . getRandomIdentifier(6) . ".txt";
 
     $file = fopen(EDOC_PATH . $storedName, "wb");
     fwrite($file, json_encode($table_array, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_PRETTY_PRINT));
