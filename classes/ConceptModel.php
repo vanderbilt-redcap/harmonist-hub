@@ -23,7 +23,7 @@ class ConceptModel extends Model
                 'return_format' => 'array',
                 'records' => [$recordId]
             ];
-            $RecordSetTable = REDCap::getData($params);
+            $RecordSetTable = \REDCap::getData($params);
             $conceptData = $this->module->escape(
                 $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])[0]
             );
@@ -40,7 +40,7 @@ class ConceptModel extends Model
                 'project_id' => $this->getPidsArray()['HARMONIST'],
                 'return_format' => 'array'
             ];
-            $RecordSetTable = REDCap::getData($params);
+            $RecordSetTable = \REDCap::getData($params);
             $allConcepts = $this->module->escape(
                 $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])
             );
