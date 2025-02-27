@@ -23,10 +23,8 @@ if (!empty($concepts)) {
         '<th class="sorting_disabled" data-sortable="false">Concept</th>'.
         '</tr></thead><tbody>';
 
-    foreach ($concepts as $conceptData) {
-        $recordId = $conceptData['record_id'];
-        $concept = $module->getConceptModel()->fetchConcept($recordId);
-        $id_people = $concept->getContactLink();
+    foreach ($concepts as $concept) {
+        $recordId = $concept->getRecordId();
         $name = "";
         if(!empty($id_people)){
             $name = getPeopleName($pidsArray['PEOPLE'], $id_people);

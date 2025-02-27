@@ -10,9 +10,10 @@ class WritingGroupMember
     private $name;
     private $email;
     private $role;
+    private $order;
     private $editLink;
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -21,7 +22,7 @@ class WritingGroupMember
     {
         $this->name = $name;
     }
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -30,7 +31,7 @@ class WritingGroupMember
     {
         $this->email = $email;
     }
-    public function getRole(): string
+    public function getRole(): ?string
     {
         return $this->role;
     }
@@ -38,6 +39,16 @@ class WritingGroupMember
     public function setRole($role): void
     {
         $this->role = $role;
+    }
+
+    public function getOrder(): ?int
+    {
+        return $this->order;
+    }
+
+    public function setOrder($order): void
+    {
+        $this->order = $order;
     }
 
     public function getEditLink()
