@@ -66,7 +66,7 @@ class SecurityHandler
         return $this->requestOption;
     }
 
-    public function getTokenSessionName(): string
+    public function getTokenSessionName(): ?string
     {
         return $this->tokenSessionName;
     }
