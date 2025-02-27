@@ -23,13 +23,12 @@ class MessageHandler
 
     private function fetchWritingGroupMessage($message_type)
     {
-//        return "The writing group member data has been updated.";
         switch ($message_type) {
-            case UPDATE_MESSAGE:
+            case $this->UPDATE_MESSAGE:
                 return "The writing group member data has been updated.";
-            case SAVE_MESSAGE:
+            case $this->SAVE_MESSAGE:
                 return "The writing group member data has been saved.";
-            case NEW_MEMBER_MESSAGE:
+            case $this->NEW_MEMBER_MESSAGE:
                 return "The writing group new member has been added.";
         }
     }
