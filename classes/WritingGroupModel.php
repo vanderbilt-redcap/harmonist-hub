@@ -38,11 +38,11 @@ class WritingGroupModel extends Model
         $params = [
             'project_id' => $this->getPidsArray()['REGIONS'],
             'return_format' => 'json-array',
-            'records' => [$this->concept->getGmemberRole()],
+            'records' => [$this->concept->getGmemberRole()[$this->instance]],
             'fields'=> ['region_name']
         ];
         print_array("fetchWritingGroupByResearchGroup");
-        print_array($this->concept->getGmemberRole());
+        print_array($this->concept->getGmemberRole()[$this->instance]);
         $researchGroupName = \REDCap::getData($params)[0]['region_name'];
         print_array("researchGroupName: ".$researchGroupName);
         for($i = 1; $i < ((int)$this->concept->getAuthorshipLimit()+1) ; $i++){
