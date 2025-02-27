@@ -32,27 +32,27 @@ class ConceptModel extends Model
         return $concept;
     }
 
-    public function fetchAllConcepts(): array
+    public function fetchAllConcepts(): Concept
     {
         if (!empty($this->getPidsArray()['HARMONIST'])) {
             $params = [
                 'project_id' => $this->getPidsArray()['HARMONIST'],
                 'return_format' => 'array'
             ];
-            print_array("0");
+//            print_array("0");
             $RecordSetTable = \REDCap::getData($params);
-            print_array("1");
+//            print_array("1");
             $allConcepts = $this->module->escape(
                 $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])
             );
-            print_array("2");
-//            foreach ($allConcepts as $conceptData) {
-//                $concept[$conceptData['record_id']] = new Concept($conceptData, $this->module, $this->getPidsArray(), null);
-//            }
-            print_array("3");
+//            print_array("2");
+            foreach ($allConcepts as $conceptData) {
+                $concept[$conceptData['record_id']] = new Concept($conceptData, $this->module, $this->getPidsArray(), null);
+            }
+//            print_array("3");
         }
-//        return $concept;
-        return [];
+        return $concept;
+//        return [];
     }
 }
 
