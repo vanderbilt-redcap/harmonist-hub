@@ -609,14 +609,15 @@ class Concept extends Model
         $this->dochiddenY = $this->conceptData['dochidden_y'];
         $this->docuploadDt = $this->conceptData['docupload_dt'];
         $this->datasopFile = $this->conceptData['datasop_file'];
-        $this->decorateWorkingGroup();
-        $this->decorateStartDate();
-        $this->decorateStatus();
-        $this->decorateContact();
-        $this->decorateParticipants();
-        $this->decorateTags();
+
 
         if($this->authorshipLimit != null) {
+            $this->decorateWorkingGroup();
+            $this->decorateStartDate();
+            $this->decorateStatus();
+            $this->decorateContact();
+            $this->decorateParticipants();
+            $this->decorateTags();
             $this->decorateWritingGroupCore();
             $this->decorateWritingGroupByResearchGroup();
         }
