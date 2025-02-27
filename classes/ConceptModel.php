@@ -46,12 +46,13 @@ class ConceptModel extends Model
                 $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])
             );
             print_array("2");
-            foreach ($allConcepts as $conceptData) {
-                $concept[$conceptData['record_id']] = new Concept($conceptData, $this->module, $this->getPidsArray(), null);
-            }
+//            foreach ($allConcepts as $conceptData) {
+//                $concept[$conceptData['record_id']] = new Concept($conceptData, $this->module, $this->getPidsArray(), null);
+//            }
             print_array("3");
         }
-        return $concept;
+//        return $concept;
+        return [];
     }
 }
 
