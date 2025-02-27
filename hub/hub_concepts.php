@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 $wg_type = $_REQUEST['type'];
 $concepts_table = "";
 print_array("BEFORE");
-//$concepts = $module->getConceptModel()->fetchAllConcepts();
+$concepts = $module->getConceptModel()->fetchAllConcepts();
 //print_array("AFTER");
 //if (!empty($concepts)) {
 //    $concepts_table .= '<table class="table table_requests sortable-theme-bootstrap concepts-table" data-sortable id="sortable_table">'.
