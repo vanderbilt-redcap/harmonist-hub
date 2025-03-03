@@ -671,9 +671,9 @@ class Concept extends Model
 
         $this->workingGroup = "<em>Not specified</em>";
         if (!empty($wgroup['group_name'])) {
-            $groupNameTotal = $wgroup['group_name'];
+            $this->workingGroup = $wgroup['group_name'];
             if (!empty($wgroup2['group_name'])) {
-                $this->workingGroup = $groupNameTotal . ', ' . $wgroup2['group_name'];
+                $this->workingGroup .= ', ' . $wgroup2['group_name'];
             }
         } else {
             if (!empty($wgroup2['group_name'])) {

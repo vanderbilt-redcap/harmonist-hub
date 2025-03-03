@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 
 $recordId = htmlentities($_REQUEST['record'], ENT_QUOTES);
-$concept = $module->getConceptModel()->fetchConcept($recordId);
+$concept = $module->getConceptModel()->fetchConcept($recordId, null, true);
 
 $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
@@ -111,13 +111,13 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
     <table class="table table_requests sortable-theme-bootstrap" data-sortable>
         <div class="row request">
             <div class="col-md-2 col-sm-12"><strong>Working Group:</strong></div>
-            <div class="col-md-6 col-sm-12"><?=$group_name_total?> </div>
-            <div class="col-md-4"><strong>Start Date: </strong><?=$start_date;?> </span></div>
+            <div class="col-md-6 col-sm-12"><?=$concept->getWorkingGroup();?> </div>
+            <div class="col-md-4"><strong>Start Date: </strong><?=$concept->getStartDate();?> </span></div>
         </div>
         <div class="row request">
             <div class="col-md-2 col-sm-12"><strong>Contact:</strong> </div>
-            <div class="col-md-6 col-sm-12"><?=$name_concept?></div>
-            <div class="col-md-4"><strong>Status: </strong><span class="label label-as-badge <?=$active_color_button;?>"><?=$active;?></span> <?=$revised?></div>
+            <div class="col-md-6 col-sm-12"><?=$concept->getContact();?></div>
+            <div class="col-md-4"><strong>Status: </strong><?=$concept->getStatus();?></div>
         </div>
         <div class="row request">
             <div class="col-md-2"><strong>Participants:</strong></div>
