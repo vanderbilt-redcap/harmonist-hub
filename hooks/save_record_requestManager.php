@@ -45,7 +45,17 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     foreach ($regions as $region){
         $instance = $region['record_id'];
         //only if it's the first time we save the info
-        if(empty($requestData[$record]['repeat_instances']['dashboard_voting_status'][$instance])) {
+        if($region['voteregion_y'] == '1' &&
+            !array_key_exists($instance, $requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'])
+            ||
+            (
+                is_array($requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance])
+                &&
+                !array_key_exists('responding_region', $requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance])
+            )
+            ||
+            empty($requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance]['responding_region']))
+        {
             $array_repeat_instances = array();
             $aux = array();
             $aux['region_response_status'] = '0';
