@@ -101,6 +101,16 @@ class Concept extends Model
         $this->recordId = $recordId;
     }
 
+    public function getPersonRole()
+    {
+        return $this->personRole;
+    }
+
+    public function setPersonRole($personRole): void
+    {
+        $this->personRole = $personRole;
+    }
+
     public function getAuthorshipLimit()
     {
         return $this->authorshipLimit;
@@ -597,7 +607,7 @@ class Concept extends Model
         $this->participantsComplete = $this->conceptData['participants_complete'];
         $this->personLink = $this->conceptData['person_link'];
         $this->personRole = $this->conceptData['person_role'];
-        $this->personOther = $this->conceptData['person_lother'];
+        $this->personOther = $this->conceptData['person_other'];
         $this->adminUpdate = $this->conceptData['admin_update'];
         $this->projectUpdate = $this->conceptData['project_update'];
         $this->adminupdateD = $this->conceptData['adminupdate_d'];
