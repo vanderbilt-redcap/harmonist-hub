@@ -149,22 +149,13 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
                     $output_type = htmlentities($abstracts_publications_type[$output['output_type']]);
                 }
             }
-            $authors = "";
-            if(is_array($output['output_authors']) && array_key_exists($index,$output['output_authors'])) {
-                $authors = $output['output_authors'][$index];
-            }
-            $title = "";
-            if(is_array($output['output_title']) && array_key_exists($index,$output['output_title'])) {
-                $title = $output['output_title'][$index];
-            }
-
             $table_aux = array();
             $table_aux['concept'] = '<i>None</i>';
             $table_aux['year'] = htmlentities($output['output_year']);
             $table_aux['region'] = $type;
             $table_aux['conf'] = htmlentities($output['output_venue']);
             $table_aux['type'] = $output_type;
-            $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . $output_type . '</span><span style="display:none">.</span> <strong>' . htmlentities($title) . '</strong><span style="display:none">.</span> </br><span class=n"abstract_text">' . htmlentities($authors) . '</span>';
+            $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . $output_type . '</span><span style="display:none">.</span> <strong>' . htmlentities($output['output_title']) . '</strong><span style="display:none">.</span> </br><span class=n"abstract_text">' . htmlentities($output['output_authors']) . '</span>';
             $table_aux['available'] = $available;
             $table_aux['file'] = $file;
             $table_aux['edit'] = $edit;
