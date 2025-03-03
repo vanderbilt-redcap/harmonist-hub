@@ -42,7 +42,7 @@ if (!empty($concepts)) {
             '<td>' . $concept->getActiveY().'</td>' .
             '<td>' . $concept->getWg2Link().'</td>' .
             '<td style="">' . htmlspecialchars($name,ENT_QUOTES). '</td>' .
-            '<td><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$recordId.'">' . $concept->getConceptTitle() . '</a></td>' ;
+            '<td><a href="'.$module->getUrl('index.php').'&NOAUTH&option=ttl&record='.$recordId.'">' . $concept->getConceptTitle() . '</a></td>' ;
 
         #Only check if they are final
         $row = "";
