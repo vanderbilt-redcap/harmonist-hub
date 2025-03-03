@@ -197,11 +197,21 @@ foreach ($regions as $region){
 
     }
 }
+
+$requests_labels = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $requests_values = array_count_values(array_column($request, 'request_type'));
+//Add possible missing keys
+foreach ($requests_labels as $keyLabel => $requestsLabel){
+    if(!array_key_exists($keyLabel, $requests_values)){
+        $requests_values[$keyLabel] = 0;
+    }
+}
+
 ksort($requests_values);
 $requests_values = array_values($requests_values);
-$requests_labels = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777");
+ksort($requests_labels);
+$requests_labels = array_values($requests_labels);
 
 $array_sections = array(0=>'concepts',1=>'conceptswg',2=>'requests');
 $array_sections_title = array(0=>'concepts by status', 1=>'concepts by wg',2=>'Hub Review Requests');
