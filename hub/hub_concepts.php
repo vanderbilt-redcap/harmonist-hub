@@ -26,8 +26,8 @@ if (!empty($concepts)) {
     foreach ($concepts as $concept) {
         $recordId = $concept->getRecordId();
         $name = "";
-        if(!empty($id_people)){
-            $name = getPeopleName($pidsArray['PEOPLE'], $id_people);
+        if(!empty($concept->getContactLink())){
+            $name = getPeopleName($pidsArray['PEOPLE'], $concept->getContactLink());
         }
         $tags = "";
         foreach ($concept->getConceptTags() as $tag=>$value){
@@ -42,7 +42,7 @@ if (!empty($concepts)) {
             '<td>' . $concept->getActiveY().'</td>' .
             '<td>' . $concept->getWg2Link().'</td>' .
             '<td style="">' . htmlspecialchars($name,ENT_QUOTES). '</td>' .
-            '<td><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$recordId.'">' . $concept->getConceptTitle() . '</a></td>' ;
+            '<td><a href="'.$module->getUrl('index.php').'&NOAUTH&option=ttl&record='.$recordId.'">' . $concept->getConceptTitle() . '</a></td>' ;
 
         #Only check if they are final
         $row = "";

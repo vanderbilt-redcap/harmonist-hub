@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 
 $recordId = htmlentities($_REQUEST['record'], ENT_QUOTES);
-$concept = $module->getConceptModel()->fetchConcept($recordId);
+$concept = $module->getConceptModel()->fetchConcept($recordId, null, true);
 
 $abstracts_publications_type = $module->getChoiceLabels('output_type', $pidsArray['HARMONIST']);
 $abstracts_publications_badge = array("1" => "badge-manuscript", "2" => "badge-abstract", "3" => "badge-poster", "4" => "badge-presentation", "5" => "badge-report", "99" => "badge-other");
@@ -111,32 +111,21 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
     <table class="table table_requests sortable-theme-bootstrap" data-sortable>
         <div class="row request">
             <div class="col-md-2 col-sm-12"><strong>Working Group:</strong></div>
-            <div class="col-md-6 col-sm-12"><?=$group_name_total?> </div>
-            <div class="col-md-4"><strong>Start Date: </strong><?=$start_date;?> </span></div>
+            <div class="col-md-6 col-sm-12"><?=$concept->getWorkingGroup();?> </div>
+            <div class="col-md-4"><strong>Start Date: </strong><?=$concept->getStartDate();?> </span></div>
         </div>
         <div class="row request">
             <div class="col-md-2 col-sm-12"><strong>Contact:</strong> </div>
-            <div class="col-md-6 col-sm-12"><?=$name_concept?></div>
-            <div class="col-md-4"><strong>Status: </strong><span class="label label-as-badge <?=$active_color_button;?>"><?=$active;?></span> <?=$revised?></div>
+            <div class="col-md-6 col-sm-12"><?=$concept->getContact();?></div>
+            <div class="col-md-4"><strong>Status: </strong><?=$concept->getStatus();?></div>
         </div>
         <div class="row request">
             <div class="col-md-2"><strong>Participants:</strong></div>
             <div class="col-md-6">
                 <?php
-                if(!empty($concept->getParticipantsComplete())) {
-                    foreach ($concept->getParticipantsComplete() as $id => $participant) {
-                        $RecordSetParticipant = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $concept->getPersonLink()[$id]));
-                        $participant_info = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetParticipant,$pidsArray['PEOPLE'])[0]);
-                        if (!empty($participant_info)) {
-                            #get the label from the drop down menu
-                            echo '<div><a href="mailto:' . $participant_info['email'] . '">' . $participant_info['firstname'] . ' ' . $participant_info['lastname'] . '</a> (' . htmlspecialchars($module->getChoiceLabels('person_role', $pidsArray['HARMONIST'])[$concept->getPersonRole()[$id]],ENT_QUOTES). ')</div>';
-                        } else {
-
-                            echo '<div>' . htmlspecialchars($concept->getPersonOther()[$id],ENT_QUOTES) . '</div>';
-                        }
-                    }
-                }else{
-                    echo "<div><em>Not specified</em></div>";
+                echo $concept->getParticipants();
+                if($settings['writinggroup_opt'] == "2" || ($settings['writinggroup_opt'] == "1" && $isAdmin)){
+                    echo " (<a href='".$module->getUrl('index.php').'&NOAUTH&option=cwg&record='.$recordId."'>View Writing Group</a>)";
                 }
                 ?>
             </div>
@@ -239,21 +228,17 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
             <h3 class="panel-title">
                 <a data-toggle="collapse" href="#collapse_concept">Concept Sheet</a>
                 <?php
-                if(!empty($row_concept_file['doc_name'])) {
-                    $extension = ($row_concept_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
-                    $pdf_path = $module->getUrl("loadPDF.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&edoc=".$concept->getConceptFile()."#page=1&zoom=100";
-
-                    $file_icon = getFileLink($module, $pidsArray['PROJECTS'], $concept->getConceptFile(),'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
-                    $download_link = $module->getUrl("downloadFile.php")."&NOAUTH&code=".getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept->getConceptFile()."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv);
+                if(!empty($concept->getConceptFile())) {
+                    $fileData = $concept->createConceptFile($concept->getConceptFile(), $current_user['record_id'], $secret_key, $secret_iv);
                     ?>
-                    <span style="float: right;padding-right: 15px;"><?=$file_icon;?></span>
-                    <a href="<?=$download_link?>" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>
+                    <span style="float: right;padding-right: 15px;"><?=$fileData->getIcon();?></span>
+                    <a href="<?=$fileData->getDownloadLink();?>" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>
                 <?php }?>
             </h3>
         </div>
         <div id="collapse_concept" class="table-responsive panel-collapse collapse in" aria-expanded="true">
-            <?php if(!empty($row_concept_file['doc_name'])) {?>
-            <iframe class="commentsform" id="redcap-frame" src="<?=$pdf_path?>" style="border: none;width: 100%;height: 500px;"></iframe>
+            <?php if(!empty($fileData)) {?>
+            <iframe class="commentsform" id="redcap-frame" src="<?=$fileData->getPdfPath();?>" style="border: none;width: 100%;height: 500px;"></iframe>
             <?php }else{?>
                 <table class="table table-hover table-bordered table-list table-font-size">
                     <tbody>
