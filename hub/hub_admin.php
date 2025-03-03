@@ -477,7 +477,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <a href="#" onclick="runPubsCron('<?=$module->getUrl('crontasks/cron_publications.php')."&NOAUTH"?>')" class="btn btn-default btn-success" id='btndataPubForm'>Continue</a>
+                            <a href="#" onclick="runPubsCron('<?=$module->getUrl('crontasks/cron_publications.php')?>')" class="btn btn-default btn-success" id='btndataPubForm'>Continue</a>
                             <a href="#" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</a>
                         </div>
                     </div>
