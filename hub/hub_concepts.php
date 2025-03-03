@@ -26,8 +26,8 @@ if (!empty($concepts)) {
     foreach ($concepts as $concept) {
         $recordId = $concept->getRecordId();
         $name = "";
-        if(!empty($id_people)){
-            $name = getPeopleName($pidsArray['PEOPLE'], $id_people);
+        if(!empty($concept->getContactLink())){
+            $name = getPeopleName($pidsArray['PEOPLE'], $concept->getContactLink());
         }
         $tags = "";
         foreach ($concept->getConceptTags() as $tag=>$value){
