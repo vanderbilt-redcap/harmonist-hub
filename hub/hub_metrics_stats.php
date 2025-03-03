@@ -169,33 +169,11 @@ $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pi
 ArrayFunctions::array_sort_by_column($request, 'due_d');
 
 $instance = $current_user['person_region'];
-if ($instance == 1) {
-    $instance = '';
-}
 
-$number_concepts = 0;
-$number_abstracts = 0;
-$number_manuscripts = 0;
-$number_poster = 0;
-$number_fastTrack = 0;
-$number_other = 0;
 foreach ($request as $req){
-    if($req['request_type'] == '1'){
-        $number_concepts++;
-    }else if($req['request_type'] == '2'){
-        $number_abstracts++;
-    }else if($req['request_type'] == '3'){
-        $number_manuscripts++;
-    }else if($req['request_type'] == '4'){
-        $number_poster++;
-    }else if($req['request_type'] == '5'){
-        $number_fastTrack++;
-    }else if($req['request_type'] == '99'){
-        $number_other++;
-    }
-
     $requests_array_region[$req['contact_region']] += 1;
 }
+
 $requestsreq_values = array();
 $requestsreq_labels = array();
 $requestsreq_colors = array();
@@ -219,8 +197,9 @@ foreach ($regions as $region){
 
     }
 }
-
-$requests_values = array(0 => $number_concepts,1=> $number_abstracts,2 => $number_manuscripts,3 => $number_fastTrack,4 => $number_poster ,5 => $number_other );
+$requests_values = array_count_values(array_column($request, 'request_type'));
+ksort($requests_values);
+$requests_values = array_values($requests_values);
 $requests_labels = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777");
 
@@ -231,7 +210,7 @@ $array_sections_title_all = array(0=>'concepts by status', 1=>'concepts by Worki
 
 #Escape All Data
 $requests_values = $module->escape($requests_values);
-$requests_labels = $module->escape($requests_labels);
+$requests_labels = array_values($module->escape($requests_labels));
 $requests_colors = $module->escape($requests_colors);
 $array_sections = $module->escape($array_sections);
 $array_sections_title = $module->escape($array_sections_title);
