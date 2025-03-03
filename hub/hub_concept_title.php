@@ -241,21 +241,17 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
             <h3 class="panel-title">
                 <a data-toggle="collapse" href="#collapse_concept">Concept Sheet</a>
                 <?php
-                if(!empty($row_concept_file['doc_name'])) {
-                    $extension = ($row_concept_file['file_extension'] == 'pdf')? "pdf-icon.png" : "word-icon.png";
-                    $pdf_path = $module->getUrl("loadPDF.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&edoc=".$concept->getConceptFile()."#page=1&zoom=100";
-
-                    $file_icon = getFileLink($module, $pidsArray['PROJECTS'], $concept->getConceptFile(),'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
-                    $download_link = $module->getUrl("downloadFile.php")."&NOAUTH&code=".getCrypt("sname=".$row_concept_file['stored_name']."&file=". urlencode($row_concept_file['doc_name'])."&edoc=".$concept->getConceptFile()."&pid=".$current_user['record_id'],'e',$secret_key,$secret_iv);
+                if(!empty($concept->getConceptFile())) {
+                    $fileData = $concept->createConceptFile($concept->getConceptFile(), $current_user['record_id'], $secret_key, $secret_iv);
                     ?>
-                    <span style="float: right;padding-right: 15px;"><?=$file_icon;?></span>
-                    <a href="<?=$download_link?>" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>
+                    <span style="float: right;padding-right: 15px;"><?=$fileData->getIcon();?></span>
+                    <a href="<?=$fileData->getDownloadLink();?>" target="_blank" style="float: right;padding-right: 10px;"><span class="">Download </span>PDF </a>
                 <?php }?>
             </h3>
         </div>
         <div id="collapse_concept" class="table-responsive panel-collapse collapse in" aria-expanded="true">
-            <?php if(!empty($row_concept_file['doc_name'])) {?>
-            <iframe class="commentsform" id="redcap-frame" src="<?=$pdf_path?>" style="border: none;width: 100%;height: 500px;"></iframe>
+            <?php if(!empty($fileData)) {?>
+            <iframe class="commentsform" id="redcap-frame" src="<?=$fileData->getPdfPath();?>" style="border: none;width: 100%;height: 500px;"></iframe>
             <?php }else{?>
                 <table class="table table-hover table-bordered table-list table-font-size">
                     <tbody>
