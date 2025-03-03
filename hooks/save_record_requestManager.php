@@ -46,7 +46,11 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $instance = $region['record_id'];
         //only if it's the first time we save the info
         if($region['voteregion_y'] == '1' &&
-            !array_key_exists($instance, $requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'])
+            (
+                is_array($requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'])
+                &&
+                !array_key_exists($instance, $requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'])
+            )
             ||
             (
                 is_array($requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance])
