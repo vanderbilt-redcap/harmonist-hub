@@ -123,21 +123,23 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
             <div class="col-md-2"><strong>Participants:</strong></div>
             <div class="col-md-6">
                 <?php
-                if(!empty($concept->getParticipantsComplete())) {
-                    foreach ($concept->getParticipantsComplete() as $id => $participant) {
-                        $RecordSetParticipant = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $concept->getPersonLink()[$id]));
-                        $participant_info = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetParticipant,$pidsArray['PEOPLE'])[0]);
-                        if (!empty($participant_info)) {
-                            #get the label from the drop down menu
-                            echo '<div><a href="mailto:' . $participant_info['email'] . '">' . $participant_info['firstname'] . ' ' . $participant_info['lastname'] . '</a> (' . htmlspecialchars($module->getChoiceLabels('person_role', $pidsArray['HARMONIST'])[$concept->getPersonRole()[$id]],ENT_QUOTES). ')</div>';
-                        } else {
-
-                            echo '<div>' . htmlspecialchars($concept->getPersonOther()[$id],ENT_QUOTES) . '</div>';
-                        }
-                    }
-                }else{
-                    echo "<div><em>Not specified</em></div>";
-                }
+                #TODO: we need to change getParticipantsComplete to getPersonRole() and make sure that is mandatory on the Data Dictionaries
+//                if(!empty($concept->getParticipantsComplete()[1])) {
+//                    foreach ($concept->getParticipantsComplete()[1] as $id => $participant) {
+//                        $RecordSetParticipant = \REDCap::getData($pidsArray['PEOPLE'], 'array', array('record_id' => $concept->getPersonLink()[$id]));
+//                        $participant_info = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetParticipant,$pidsArray['PEOPLE'])[0]);
+//
+//                        if (!empty($participant_info)) {
+//                            #get the label from the drop down menu
+//                            echo '<div><a href="mailto:' . $participant_info['email'] . '">' . $participant_info['firstname'] . ' ' . $participant_info['lastname'] . '</a> (' . htmlspecialchars($module->getChoiceLabels('person_role', $pidsArray['HARMONIST'])[$concept->getPersonRole()[$id]],ENT_QUOTES). ')</div>';
+//                        } else {
+//
+//                            echo '<div>' . htmlspecialchars($concept->getPersonOther()[$id],ENT_QUOTES) . '</div>';
+//                        }
+//                    }
+//                }else{
+//                    echo "<div><em>Not specified</em></div>";
+//                }
                 ?>
             </div>
             <div class="col-md-4" style="display: flex">
