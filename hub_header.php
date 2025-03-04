@@ -2,6 +2,15 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
 
+$hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
+$current_user = $hubData->getCurrentUser();
+$name = $current_user['firstname'].' '.$current_user['lastname'];
+$person_region = $hubData->getPersonRegion();
+$isAdmin = $current_user['is_admin'];
+if($settings['hub_name'] !== ""){
+    $hub_projectname = $settings['hub_name'];
+}
+
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,
     ["requestopen_ts","approval_y","finalize_y","region_response_status","request_id","contact_region",
         "assoc_concept","mr_temporary","contact_email","request_title","request_type","finalconcept_doc", "finalconcept_pdf",
@@ -16,15 +25,6 @@ $indexUrl = $module->getUrl('index.php');
 if($module->getSecurityHandler()->isAuthorizedPage() && $is_authorized_and_has_rights){
     $token = $module->getSecurityHandler()->getTokenSession();
     $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
-}
-
-$hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
-$current_user = $hubData->getCurrentUser();
-$name = $current_user['firstname'].' '.$current_user['lastname'];
-$person_region = $hubData->getPersonRegion();
-$isAdmin = $current_user['is_admin'];
-if($settings['hub_name'] !== ""){
-    $hub_projectname = $settings['hub_name'];
 }
 
 $request_admin = "";
