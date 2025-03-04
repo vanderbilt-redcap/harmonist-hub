@@ -136,8 +136,6 @@ if($sop['dataformat_prefer'] != ""){
             $dataformat_prefer_text .= $dataformat_prefer_labels[$index].", ";
         }
     }
-    $data['dataformat_prefer_text'] = rtrim($dataformat_prefer_text,", ");
-
     $second_page .= "<p><span style='font-size: 12pt'><strong>Preferred file format:&nbsp;</strong></p><p>".rtrim($dataformat_prefer_text,", ")."</span></p>";
 }
 if($sop['dataformat_notes'] != ""){
