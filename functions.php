@@ -280,11 +280,11 @@ function fetchNumberOfOpenDataCalls($sopPid, $currentUserRegion): int
     $RecordSetSOP = \REDCap::getData($sopPid, 'array', null);
     $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments(
         $RecordSetSOP,
-        $$sopPid,
-        array(
+        $sopPid,
+        [
             'sop_active' => '1',
-            'sop_finalize_y' => array(1 => '1')
-        )
+            'sop_finalize_y' => [1 => '1']
+        ]
     );
     if (!empty($request_dataCall)) {
         foreach ($request_dataCall as $sop) {
