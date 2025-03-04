@@ -256,8 +256,6 @@ function getTableJsonName($project_id,$data,$varName,$jsonArray){
     return $jsonArray;
 }
 
-
-
 /**
  * Function that returns the number of open requests there are
  * @param $request
@@ -274,6 +272,32 @@ function numberOfOpenRequest($request,$instance){
         }
     }
     return $number;
+}
+
+function fetchNumberOfOpenDataCalls($sopPid, $currentUserRegion): int
+{
+    $open_data_calls = 0;
+    $RecordSetSOP = \REDCap::getData($sopPid, 'array', null);
+    $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments(
+        $RecordSetSOP,
+        $sopPid,
+        [
+            'sop_active' => '1',
+            'sop_finalize_y' => [1 => '1']
+        ]
+    );
+    if (!empty($request_dataCall)) {
+        foreach ($request_dataCall as $sop) {
+            if ($sop['sop_closed_y'] != "1") {
+                if ($sop['data_response_status'][$currentUserRegion] == "0" ||
+                    $sop['data_response_status'][$currentUserRegion] == "1" ||
+                    $sop['data_response_status'][$currentUserRegion] == "") {
+                    $open_data_calls++;
+                }
+            }
+        }
+    }
+    return $open_data_calls;
 }
 
 

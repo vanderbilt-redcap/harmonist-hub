@@ -344,25 +344,11 @@ if(!empty($homepage)) {
         </div>
     </div>
     <div class="col-sm-3">
-        <?php
-        $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
-        $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'],array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
-        $open_data_calls = 0;
-        if(!empty($request_dataCall)) {
-            foreach ($request_dataCall as $sop) {
-                if ($sop['sop_closed_y'] != "1") {
-                    if($sop['data_response_status'] !== "" && ($sop['data_response_status'][$current_user['person_region']] == "0" || $sop['data_response_status'][$current_user['person_region']] == "1" || $sop['data_response_status'][$current_user['person_region']] === "")){
-                        $open_data_calls++;
-                    }
-                }
-            }
-        }
-        ?>
         <?php if($settings['deactivate_datahub___1'] != "1"){ ?>
         <div class="panel panel-default">
             <div class="panel-heading" style="background-color: #5cb85c;color:#fff">
                 <h3 class="panel-title">
-                    Active Data Calls <span class="badge" style="padding: 2px 6px;background-color:#fff;color:#333;float: right"><?=$open_data_calls?></span>
+                    Active Data Calls <span class="badge" style="padding: 2px 6px;background-color:#fff;color:#333;float: right"><?=fetchNumberOfOpenDataCalls($pidsArray['SOP'], $current_user['person_region']);?></span>
                 </h3>
             </div>
             <div class="stat-table-outer" aria-expanded="true">
