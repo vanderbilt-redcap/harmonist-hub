@@ -28,19 +28,6 @@ $TBLCenter = \REDCap::getData($pidsArray['TBLCENTERREVISED'], 'json-array', null
 
 $region_tbl_percent = getTBLCenterUpdatePercentRegions($TBLCenter, $person_region['region_code'], $settings['pastlastreview_dur']);
 
-$RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', null);
-$request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'],array('sop_active' => '1', 'sop_finalize_y' => array(1=>'1')));
-$open_data_calls = 0;
-if(!empty($request_dataCall)) {
-    foreach ($request_dataCall as $sop) {
-        if ($sop['sop_closed_y'] != "1" && is_array($sop['data_response_status'])) {
-            if(array_key_exists($current_user['person_region'],$sop['data_response_status']) && ($sop['data_response_status'][$current_user['person_region']] == "0" || $sop['data_response_status'][$current_user['person_region']] == "1" || $sop['data_response_status'][$current_user['person_region']] == "")){
-                $open_data_calls++;
-            }
-        }
-    }
-}
-
 $news_type = $module->getChoiceLabels('news_type', $pidsArray['NEWITEMS']);
 $newItems = \REDCap::getData($pidsArray['NEWITEMS'], 'json-array', null,null,null,null,false,false,false,"[news_category] = '1'");
 ArrayFunctions::array_sort_by_column($newItems, 'news_d',SORT_DESC);
@@ -72,7 +59,7 @@ $exploreDataToken = json_encode("&code=".getCrypt($current_user['record_id'],'e'
         <div class="well centerwell data_boxes">
             <i class="fa fa-2x fa-fw fa-cloud-upload" aria-hidden="true"></i>
             <div class="welltitle"><strong>Check and submit</strong> data for an active data call</div>
-            <a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=upd";?>" class="btn btn-success">View Data Calls <span class="badge" style="padding: 2px 6px;"><?=$open_data_calls?></span></a>
+            <a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=upd";?>" class="btn btn-success">View Data Calls <span class="badge" style="padding: 2px 6px;"><?=fetchNumberOfOpenDataCalls($pidsArray['SOP'], $current_user['person_region']);?></span></a>
         </div>
     </div>
     <?php
