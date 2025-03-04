@@ -155,7 +155,7 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             $table_aux['region'] = $type;
             $table_aux['conf'] = htmlentities($output['output_venue']);
             $table_aux['type'] = $output_type;
-            $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . $output_type . '</span><span style="display:none">.</span> <strong>' . htmlentities($output['output_title']) . '</strong><span style="display:none">.</span> </br><span class=n"abstract_text">' . htmlentities($output['output_authors']) . '</span>';
+            $table_aux['title'] = '<span class="badge badge-pill ' . $badge . '">' . $output_type . '</span> <strong>' . $output['output_title'] . '</strong></br><span class="abstract_text">' . $output['output_authors'] . '</span>';
             $table_aux['available'] = $available;
             $table_aux['file'] = $file;
             $table_aux['edit'] = $edit;
