@@ -40,6 +40,7 @@ $dataformat_prefer_labels = $module->escape($module->getChoiceLabels('dataformat
 foreach($dataformat_prefer_labels as $dataformat_index => $value){
     $arraySOP[$record][$event_id]['dataformat_prefer___'.$dataformat_index] = "0";
 }
+
 $dataformat_prefer = "";
 if(!empty($_REQUEST['dataformat_prefer'])){
     $dataformat_prefer = explode(',',htmlentities($_REQUEST['dataformat_prefer'],ENT_QUOTES));
@@ -92,15 +93,12 @@ if($_REQUEST['sop_datacontact'] != "") {
 
 $dataformat_prefer_text = "";
 if($data['dataformat_prefer'] != ""){
-    $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']);
-    foreach($dataformat_prefer as $dataid => $dataformat){
-        foreach($data['dataformat_prefer'] as $dataf) {
-            if($dataf == $dataid){
-                $dataformat_prefer_text .= $dataformat.", ";
-            }
+    foreach($data['dataformat_prefer'] as $index => $dataf) {
+        if($dataf == "1"){
+            $dataformat_prefer_text .= $dataformat_prefer_labels[$index].", ";
         }
     }
-    $data['dataformat_prefer_text']=rtrim($dataformat_prefer_text,", ");
+    $data['dataformat_prefer_text'] = rtrim($dataformat_prefer_text,", ");
 }
 
 echo json_encode($module->escape($data));

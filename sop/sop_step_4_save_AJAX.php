@@ -130,12 +130,10 @@ $second_page .= "<p><span style='font-size:16pt'><strong>3. Exclusion Criteria</
 $second_page .= "<p><span style='font-size: 12pt'>".$sop['sop_exclusion']."</span></p>";
 $second_page .= "<p><span style='font-size:16pt'><strong>4. Data Submission Notes</strong></span></p>";
 if($sop['dataformat_prefer'] != ""){
-    $dataformat_prefer = $module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']);
-    foreach($dataformat_prefer as $dataid => $dataformat){
-        foreach($data['dataformat_prefer'] as $dataf) {
-            if($dataf == $dataid){
-                $dataformat_prefer_text .= $dataformat.", ";
-            }
+    $dataformat_prefer_labels = $module->getChoiceLabels('dataformat_prefer', $pidsArray['SOP']);
+    foreach($data['dataformat_prefer'] as $index => $dataf) {
+        if($dataf == "1"){
+            $dataformat_prefer_text .= $dataformat_prefer_labels[$index].", ";
         }
     }
     $second_page .= "<p><span style='font-size: 12pt'><strong>Preferred file format:&nbsp;</strong></p><p>".rtrim($dataformat_prefer_text,", ")."</span></p>";
