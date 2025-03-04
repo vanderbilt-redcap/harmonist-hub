@@ -200,10 +200,22 @@ foreach ($regions as $region){
 
 $requests_labels = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $requests_values = array_count_values(array_column($request, 'request_type'));
+
 //Add possible missing keys
 foreach ($requests_labels as $keyLabel => $requestsLabel){
     if(!array_key_exists($keyLabel, $requests_values)){
         $requests_values[$keyLabel] = 0;
+    }
+}
+
+//remove hidden options
+$hidden_choices = $default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'];
+foreach ($hidden_choices as $value){
+    if(array_key_exists($value,$requests_labels) ){
+        unset($requests_labels[$value]);
+    }
+    if(array_key_exists($value,$requests_values) ){
+        unset($requests_values[$value]);
     }
 }
 
