@@ -32,7 +32,7 @@ $other = 0;
 foreach ($concepts as $concept){
     if($concept['wg_link'] == ""){
         $other += 1;
-    }else{
+    }else if(!empty($wg_link[$concept['wg_link']])){
         $array_wg[$wg_link[$concept['wg_link']]] +=  1;
     }
 }
