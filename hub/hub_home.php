@@ -62,7 +62,6 @@ $requests_values = array_values($requests_values);
 ksort($request_type);
 $requests_labels = array_values($request_type);
 
-
 $requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777",
                     6=>"#aa2600",7=>"#bf80ff",8=>"#006238",9=>"#6ddc9c", 10=>"#d1691f");
 #If there are more options than colors, we repeat the colors from the beginning
