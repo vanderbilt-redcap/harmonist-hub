@@ -42,7 +42,7 @@ foreach ($regions as $region){
     $region_row = '';
     $total_votes = 0;
     foreach ($votes as $vote){
-        if(array_key_exists('pi_vote',$vote)){
+        if(array_key_exists('pi_vote',$vote) && !empty($vote_text[$vote['pi_vote']])){
             $region_time = $vote['responsecomplete_ts'];
             $name = getPeopleName($pidsArray['PEOPLE'], $vote['response_person'],"");
 
