@@ -72,7 +72,6 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" onclick="refreshModal('redcap-concept-frame','<?=$survey_link?>');">Back to Concept</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
