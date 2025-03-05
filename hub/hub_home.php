@@ -166,7 +166,7 @@ if(!empty($homepage)) {
                                $total_colors = count($requests_values) - count(empty($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']) ? $request_type:$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']);
                                $color = getGradientColor("777777","003D99",$total_colors,$i);
                                echo '<li class="list-group-item">
-                                        <a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&type=1".'" title="concept sheets" class="home_openrequests_link">
+                                        <a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&type=".$value.'" title="concept sheets" class="home_openrequests_link">
                                         <span class="badge" style="background-color:'.$color.'">'.$open_req_value.'</span>
                                         </a>
                                         '.$label.'
