@@ -40,17 +40,29 @@ for($i = 1; $i<$number_of_deadlines+1; $i++){
 ArrayFunctions::array_sort_by_column($dealines, 'date');
 
 /***GRAPH***/
+$requests_values = array_count_values(array_column($request, 'request_type'));
 foreach ($request_type as $keyLabel => $requestsLabel){
     if(!array_key_exists($keyLabel, $home_metrics_values)){
-        $home_metrics_values[$keyLabel] = 0;
+        $requests_values[$keyLabel] = 0;
     }
 }
 
-
-ksort($home_metrics_values);
-$requests_values = array_values($home_metrics_values);
+//remove hidden options
+$hidden_choices = $default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'];
+foreach ($hidden_choices as $value){
+    if(array_key_exists($value,$request_type) ){
+        unset($request_type[$value]);
+    }
+    if(array_key_exists($value,$requests_values) ){
+        unset($requests_values[$value]);
+    }
+}
+ksort($requests_values);
+$requests_values = array_values($requests_values);
 ksort($request_type);
 $requests_labels = array_values($request_type);
+
+
 $requests_colors = array(0 => "#337ab7",1 => "#00b386",2 => "#f0ad4e",3 => "#ff9966",4 => "#5bc0de",5 => "#777",
                     6=>"#aa2600",7=>"#bf80ff",8=>"#006238",9=>"#6ddc9c", 10=>"#d1691f");
 #If there are more options than colors, we repeat the colors from the beginning
