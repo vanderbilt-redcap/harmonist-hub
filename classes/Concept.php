@@ -656,7 +656,7 @@ class Concept extends Model
                 'records' => [$this->wgLink],
                 'fields' => ['group_name']
             ];
-            $wgroup = REDCap::getData($params)[0];
+            $wgroup = $this->module->escape(REDCap::getData($params))[0];
         }
 
         if (!empty($this->wg2Link)) {
@@ -666,7 +666,7 @@ class Concept extends Model
                 'records' => [$this->wg2Link],
                 'fields' => ['group_name']
             ];
-            $wgroup2 = REDCap::getData($params)[0];
+            $wgroup2 = $this->module->escape(REDCap::getData($params))[0];
         }
 
         $this->workingGroup = "<em>Not specified</em>";
@@ -715,7 +715,7 @@ class Concept extends Model
                 'records' => [$this->contactLink],
                 'fields' => ['email', 'firstname', 'lastname', 'person_region']
             ];
-            $personInfo = REDCap::getData($params)[0];
+            $personInfo = $this->module->escape(REDCap::getData($params))[0];
             if (!empty($personInfo)) {
                 $nameConcept = '<a href="mailto:' . $personInfo['email'] . '">' . $personInfo['firstname'] . ' ' . $personInfo['lastname'];
                 if (!empty($person_info['person_region'])) {
@@ -725,7 +725,7 @@ class Concept extends Model
                         'records' => [$personInfo['person_region']],
                         'fields' => ['region_code']
                     ];
-                    $personRegion = REDCap::getData($params)[0];
+                    $personRegion = $this->module->escape(REDCap::getData($params))[0];
                     if (!empty($personRegion)) {
                         $nameConcept .= " (" . $personRegion['region_code'] . ")";
                     }
@@ -747,7 +747,7 @@ class Concept extends Model
                     'return_format' => 'array',
                     'records' => [$this->personLink[$id]]
                 ];
-                $RecordSetParticipant = REDCap::getData($params);
+                $RecordSetParticipant = $this->module->escape(REDCap::getData($params));
                 $participantInfo = $this->module->escape(
                     $this->getProjectInfoArrayRepeatingInstruments($RecordSetParticipant, $this->pidsArray['PEOPLE'])[0]
                 );
