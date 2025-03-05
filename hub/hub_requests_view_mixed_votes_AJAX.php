@@ -9,13 +9,9 @@ $project_id = (int)$_REQUEST['pid'];
 $regions = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] =1"));
 ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
-$RecordSetRequest = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $request_id));
-$request = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRequest,$pidsArray['RMANAGER'])[0]);
-
 $region_vote_icon_view = $module->escape(array("1" => "fa fa-check", "0" => "fa fa-times", "9" => "fa fa-ban"));
 $region_vote_icon_text = $module->escape(array("1" => "text-approved", "0" => "text-error", "9" => "text-default"));
 $vote_text = $module->escape(array("1" => "Approved", "0" => "Not Approved", "9" => "Abstained/Not applicable"));
-$region_vote_status = $module->getChoiceLabels('region_vote_status', $pidsArray['RMANAGER']);
 
 $votes_menu = '<ul class="nav nav-tabs">';
 $votes_table = "";
@@ -35,9 +31,14 @@ foreach ($regions as $region){
         $activetab = "activetab";
         $activeLabel = "label-default label-white";
     }
-
-    $votes = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', array("request_id" => $request_id),null,null,null,false,false,false,"[response_region] =".$region['record_id']);
-    $response_person = $module->getChoiceLabels('response_person', $pidsArray['COMMENTSVOTES']);
+    $params = [
+        'project_id' => $pidsArray['COMMENTSVOTES'],
+        'return_format' => 'array',
+        'filterLogic' => "[request_id] = ".$request_id." and [response_region] = ".$region['record_id'],
+        'filterType' => "RECORD"
+    ];
+    $votesData = \REDCap::getData($params);
+    $votes = ProjectData::getProjectInfoArrayRepeatingInstruments($votesData,$pidsArray['COMMENTSVOTES']);
     $region_row = '';
     $total_votes = 0;
     foreach ($votes as $vote){
