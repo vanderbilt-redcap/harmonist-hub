@@ -3,8 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 include_once(__DIR__ ."/../projects.php");
-error_log("cron data log: ".$pidsArray['PROJECTS']);
-if($pidsArray['PROJECTS'] == 16) {
+
 $excel_data = array();
 
 $params = [
@@ -204,43 +203,34 @@ $sheet->setTitle('Data Activity Log');
 
 $writer = new Xlsx($spreadsheet);
 
-
 #SAVE FILE
-    ob_start();
-    $writer->save("php://output");
-    $fileData = ob_get_clean();
+ob_start();
+$writer->save("php://output");
+$fileData = ob_get_clean();
 
-    $filePath = EDOC_PATH . $storedName;
-    $tempFile = fopen(EDOC_PATH . $storedName, "wb");
-    fwrite($tempFile, $fileData);
-    $edocFile = ['name' => $filename];
-    $edocId = null;
-    $path = stream_get_meta_data($tempFile)['uri'];
-    $edocFile['size'] = filesize($path);
-    $edocFile['tmp_name'] = $path;
-    $docId = \REDCap::storeFile($filePath, $pidsArray['SETTINGS'], $storedName);
-    fclose($tempFile);
-    error_log("..........docId: " . $docId);
+$filePath = EDOC_PATH . $storedName;
+$tempFile = fopen(EDOC_PATH . $storedName, "wb");
+fwrite($tempFile, $fileData);
+$docId = \REDCap::storeFile($filePath, $pidsArray['SETTINGS'], $storedName);
+fclose($tempFile);
+
 //Add document DB ID to project
-    $Proj = new \Project($pidsArray['SETTINGS']);
-    $event_id = $Proj->firstEventId;
-    $json = json_encode(array(array('record_id' => 1, 'data_log_history_file' => $docId)));
-    $results = \Records::saveData(
-        $pidsArray['SETTINGS'],
-        'json',
-        $json,
-        'normal',
-        'YMD',
-        'flat',
-        '',
-        true,
-        true,
-        true,
-        false,
-        true,
-        array(),
-        true,
-        false
-    );
-    error_log(json_encode($results, JSON_PRETTY_PRINT));
-}
+$json = json_encode(array(array('record_id' => 1, 'data_log_history_file' => $docId)));
+$results = \Records::saveData(
+    $pidsArray['SETTINGS'],
+    'json',
+    $json,
+    'normal',
+    'YMD',
+    'flat',
+    '',
+    true,
+    true,
+    true,
+    false,
+    true,
+    array(),
+    true,
+    false
+);
+
