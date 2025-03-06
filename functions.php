@@ -108,7 +108,9 @@ function getFileLink($module, $project_id, $edoc, $option, $outer="",$secret_key
             $download = getCrypt("sname=".$row['stored_name']."&file=". $name."&edoc=".$edoc."&pid=".$user."&id=".$lid,'e',$secret_key,$secret_iv);
             $file_url = $module->getUrl("downloadFile.php")."&NOAUTH&code=".$module->escape($download);
 
-            if($option == ''){
+            if($option == 'link') {
+                $file_row = $file_url;
+            }elseif($option == ''){
                 $icon = getFaIconFile($row['file_extension']);
                 $file_row = $icon."<a href='".$file_url."' target='_blank'>".$module->escape($row['doc_name'])." ".ProjectData::formatBytes($row['doc_size'])."</a>";
             }else{

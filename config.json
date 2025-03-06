@@ -154,6 +154,13 @@
       "method": "cronMethod",
       "cron_frequency": "21600",
       "cron_max_run_time": "3600"
+    },
+    {
+      "cron_name": "cron_data_log",
+      "cron_description": "Cron that generates a downlodable data log file",
+      "method": "cronMethod",
+      "cron_frequency": "1",
+      "cron_max_run_time": "1"
     }
   ],
 
