@@ -45,7 +45,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
     $concept_sheet = $concept['concept_id'];
     $concept_title = $concept['concept_title'];
     $contact_link = $concept['contact_link'];
-    $assoc_concept = $concept_sheet."*".$this->getUrl("index.php").'&option=ttl&record='.$conceptId;
+    $assoc_concept = $concept_sheet;
 
     $person_proposed = "";
     if(!empty($contact_link)){
