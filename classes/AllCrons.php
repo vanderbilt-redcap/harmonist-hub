@@ -21,7 +21,7 @@ class AllCrons
                         $peopleDownData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $down));
                         if(isset($peopleDownData)) {
                             $peopleDownData = $peopleDownData[0];
-                            if(array_key_exists('person_region', $peopleDownData) && isset($peopleDownData['person_region'])) {
+                            if(is_array($peopleDownData) && array_key_exists('person_region', $peopleDownData) && isset($peopleDownData['person_region'])) {
                                 $region_codeDown = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $peopleDownData['person_region']),array('region_code'));
                                 if(isset($region_codeDown)) {
                                     $region_codeDown = $region_codeDown[0]['region_code'];
