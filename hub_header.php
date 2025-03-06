@@ -2,6 +2,12 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
 
+$indexUrl = $module->getUrl('index.php');
+if($module->getSecurityHandler()->isAuthorizedPage() && $is_authorized_and_has_rights){
+    $token = $module->getSecurityHandler()->getTokenSession();
+    $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
+}
+
 $hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
 $current_user = $hubData->getCurrentUser();
 $name = $current_user['firstname'].' '.$current_user['lastname'];
@@ -20,12 +26,6 @@ $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$p
 $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 $request_response_person = $module->getChoiceLabels('response_person', $pidsArray['RMANAGER']);
 $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region']));
-
-$indexUrl = $module->getUrl('index.php');
-if($module->getSecurityHandler()->isAuthorizedPage() && $is_authorized_and_has_rights){
-    $token = $module->getSecurityHandler()->getTokenSession();
-    $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
-}
 
 $request_admin = "";
 if($isAdmin) {
