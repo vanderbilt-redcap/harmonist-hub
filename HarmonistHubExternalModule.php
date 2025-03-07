@@ -256,7 +256,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     function cronMethod($cronAttributes)
     {
         //Only perform actions between 12am and 6am for crons that update at night
-        if ($cronAttributes['cron_name'] != 'cron_data_log' && $cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
+        if ($cronAttributes['cron_name'] != 'cron_data_upload_notification' && $cronAttributes['cron_name'] != 'cron_req_finalized_notification') {
             $hourRange = 6;
             if (date('G') > $hourRange) {
                 // Only perform actions between 12am and 6am.
