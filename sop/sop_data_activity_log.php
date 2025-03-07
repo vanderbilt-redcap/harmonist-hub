@@ -144,6 +144,15 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
     <h3>Data Activity Log <?=$datareq_title?></h3>
     <p class="hub-title"><?=filter_tags($settings['hub_data_activity_text'])?></p>
     <br>
+    <div class="optionSelect">
+        <div style="margin: 0 auto;width: 20%;">
+            <?php if($settings['data_log_history_file'] != ""){ ?>
+                <a href="<?=getFileLink($module,$pidsArray['SETTINGS'], $settings['data_log_history_file'], 'link', '1', $secret_key, $secret_iv, $current_user['record_id'], ""); ?>">
+                     <button type="submit" class="btn btn-primary">Download Complete Log</button>
+                </a>
+            <?php } ?>
+        </div>
+    </div>
     <div class="optionSelect conceptSheets_optionMenu">
         <div id="options_wrapper"></div>
         <div style="float:right">
