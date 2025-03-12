@@ -29,7 +29,7 @@
       },
       {
         "name": "Hub REDCap User Management",
-        "icon": "fas fa-refresh",
+        "icon": "fas fa-user",
         "url": "hub-user-management/index.php",
         "show-header-and-footer": true
       }
