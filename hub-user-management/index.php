@@ -284,6 +284,7 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
         <tbody>
         <?php
         foreach ($projects_array as $id => $constant) {
+            if(isset($pidsArray[$constant])){
             $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "ProjectSetup/index.php?pid=" . $pidsArray[$constant], ENT_QUOTES);
             $users = HubREDCapUsers::getUserList($module, $pidsArray[$constant]);
             $user_roles = HubREDCapUsers::getAllRoles($module, $pidsArray[$constant]);
@@ -331,6 +332,7 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
                 </td>
             </tr>
         <?php
+            }
         }
         ?>
         </tbody>
