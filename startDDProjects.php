@@ -265,12 +265,67 @@ $projects_array_sql = array(
             'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM [data-table:".$pidsArray['REGIONS']."] a  WHERE a.project_id=".$pidsArray['REGIONS']." GROUP BY a.record  ORDER BY value",
             'autocomplete' => '0',
             'label' => ""
-            ),
+        ),
         'person_link' => array (
             'query' => "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
             'autocomplete' => '0',
             'label' => ""
-        )
+        ),
+        'gmember_link_1' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Member 1 - Hub Link"
+        ),
+        'gmember_link_2' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Member 2 - Hub Link"
+        ),
+        'gmember_link_3' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Member 3 - Hub Link"
+        ),
+        'gmember_link_4' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Member 4 - Hub Link"
+        ),
+        'gmember_link_5' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Member 5 - Hub Link"
+        ),
+        'gmember_link_6' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Member 6 - Hub Link"
+        ),
+        'gmember_link_7' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Member 7 - Hub Link"
+        ),
+        'gmember_link_8' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Member 8 - Hub Link"
+        ),
+        'gmember_link_9' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Member 9 - Hub Link"
+        ),
+        'gmember_link_10' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Member 10 - Hub Link"
+        ),
+        'cmember_link' => array (
+            'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
+            'autocomplete' => '0',
+            'label' => "Writing Group Member"
+        ),
      ),
     $pidsArray['RMANAGER']=>array(
         'assoc_concept' => array (
