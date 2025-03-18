@@ -325,7 +325,7 @@ $projects_array_sql = array(
             'query' => "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value",
             'autocomplete' => '0',
             'label' => "Writing Group Member"
-        ),
+        )
      ),
     $pidsArray['RMANAGER']=>array(
         'assoc_concept' => array (
