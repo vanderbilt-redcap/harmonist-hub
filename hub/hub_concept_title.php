@@ -21,7 +21,7 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
             top.location.reload(true);
         });
 
-        var table = $('#linked_docs').DataTable({
+        $('#linked_docs').DataTable({
             "order": [0, "desc"],
             "bFilter" : false,
             "bLengthChange": false,
