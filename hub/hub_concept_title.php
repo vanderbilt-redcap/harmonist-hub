@@ -20,6 +20,14 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
             top.location.hash = "triggerReloadCode";
             top.location.reload(true);
         });
+
+        $('#linked_docs').DataTable({
+            "order": [0, "desc"],
+            "bFilter" : false,
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false
+        });
     });
 
     function reloadCode() {
@@ -530,7 +538,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
         </div>
 
         <div id="collapse_publications" class="table-responsive panel-collapse collapse in" aria-expanded="true">
-            <table class="table table_requests sortable-theme-bootstrap" data-sortable id="abstracts">
+            <table class="table table_requests sortable-theme-bootstrap" data-sortable id="linked_docs">
                 <?php
                 if(!empty($concept->getDocTitle())){
                     $header = '<colgroup>
