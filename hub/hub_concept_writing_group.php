@@ -64,7 +64,7 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
 
         //we hide the columns that we use only as filters
         if(!canEdit){
-            var column_actions = sortable_table.column(3);
+            var column_actions = sortable_table.column(4);
             column_actions.visible(false);
         }
 
