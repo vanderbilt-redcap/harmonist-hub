@@ -909,14 +909,16 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
         $tbl_array[$region['region_code']]['center'] = array();
     }
 
-    $tbl_adultped_array = array();
-    $tbl_adultped_array['adultstotalcountry'] = array();
-    $tbl_adultped_array['pedsstotalcountry'] = array();
-    $tbl_array['country'] = array();
+    $tbl_adultped_array = [];
+    $tbl_adultped_array['adultstotalcountry'] = [];
+    $tbl_adultped_array['pedsstotalcountry'] = [];
+    $tbl_array['country'] = [];
     foreach($TBLCenter as $record ){
         if(($record['drop_center'] == "" || !array_key_exists('drop_center',$record)) && $record['region'] != ""){
             if(!array_key_exists($record['region'], $tbl_array)){
                 $tbl_array[$record['region']] = [];
+                $tbl_array[$record['region']]['center'] = [];
+                $tbl_array[$record['region']]['country'] = [];
             }
             $tbl_array[$record['region']]['sites'] += 1;
             $tbl_adultped_array['sites'] += 1;
