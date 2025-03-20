@@ -7,11 +7,21 @@ $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);
 $exploded = array();
 parse_str($code, $exploded);
 
-$filename = $exploded['file'];
-$sname = $exploded['sname'];
+$filename = "";
+if(array_key_exists('file',$exploded)){
+    $filename = $exploded['file'];
+}
+$pid = "";
+$current_user = "";
+if(array_key_exists('pid',$exploded)){
+    $pid = $exploded['pid'];
+    $current_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $pid))[0];
+}
+$sname = "";
+if(array_key_exists('sname',$exploded)){
+    $sname = $exploded['sname'];
+}
 $extension = pathinfo($filename, PATHINFO_EXTENSION);
-
-$current_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $exploded['pid']))[0];
 
 if($current_user != "") {
     $record = $module->framework->addAutoNumberedRecord($pidsArray['FILELIBRARY']);
