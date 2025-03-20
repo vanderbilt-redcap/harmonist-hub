@@ -14,7 +14,7 @@ REDCapManagement::getEnvironment();
 $secret_key = "";
 $secret_iv = "";
 
-if(isset($isCron) && !$isCron) {
+if(!isset($isCron) || !$isCron) {
     if($module == null) {
         $module = $this;
     }
