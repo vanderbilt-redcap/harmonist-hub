@@ -915,6 +915,9 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
     $tbl_array['country'] = array();
     foreach($TBLCenter as $record ){
         if(($record['drop_center'] == "" || !array_key_exists('drop_center',$record)) && $record['region'] != ""){
+            if(!array_key_exists($record['region'], $tbl_array)){
+                $tbl_array[$record['region']] = [];
+            }
             $tbl_array[$record['region']]['sites'] += 1;
             $tbl_adultped_array['sites'] += 1;
 
