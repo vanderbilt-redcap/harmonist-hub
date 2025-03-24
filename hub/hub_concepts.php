@@ -52,7 +52,10 @@ if (!empty($concepts)) {
             'records' => [$recordId]
         ];
         $RecordSetSOP = \REDCap::getData($params);
-        $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
+        $sop = [];
+        if(!empty($RecordSetSOP)){
+            $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
+        }
         if(!empty($sop["status"]) && in_array('1',$sop["status"]) && !empty($sop["pdf_file"])) {
             #SOP Files from Builder SOP project
             $edoc_data = $sop["pdf_file"];
