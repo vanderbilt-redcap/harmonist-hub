@@ -222,13 +222,13 @@ $peoplePerm9SQL = "SELECT DISTINCT a.record, CONCAT(a.value, ' ', b.value) AS  V
 $peoplePerm1SQL = "SELECT DISTINCT a.record, CONCAT(a.value, ' ', b.value) AS VALUE FROM [data-table:".$pidsArray['PEOPLE']."] a LEFT JOIN [data-table:".$pidsArray['PEOPLE']."] b on b.project_id = ".$pidsArray['PEOPLE']." and b.record = a.record and b.field_name = 'lastname' LEFT JOIN [data-table:".$pidsArray['PEOPLE']."] c on c.project_id = ".$pidsArray['PEOPLE']." and c.record = a.record WHERE a.field_name = 'firstname' and a.project_id = ".$pidsArray['PEOPLE']." and ((c.field_name = 'harmonist_perms' AND c.value = '1') OR (c.field_name = 'harmonistadmin_y' AND c.value = '1')) ORDER BY a.value, b.value";
 $peopleReviewerSQL = "SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM [data-table:".$pidsArray['PEOPLE']."] WHERE project_id = ".$pidsArray['PEOPLE']." AND field_name = 'firstname') a JOIN (SELECT record, value FROM [data-table:".$pidsArray['PEOPLE']."] where project_id = ".$pidsArray['PEOPLE']." and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from [data-table:".$pidsArray['PEOPLE']."] where project_id = ".$pidsArray['PEOPLE']." and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value";
 $dataModelSQL = "SELECT CONCAT(a.record, ':', b.instance), CONCAT(a.value, ':', b.value) FROM (SELECT record,value FROM [data-table:".$pidsArray['DATAMODEL']."] WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['DATAMODEL']."] WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance";
-$dataModelSQL2 = "SELECT a.record,   CONCAT(   max(if(a.field_name = 'table_name', a.value, NULL)),    '  ' ) as value  FROM [data-table:".$pidsArray['DATAMODEL']."] a  WHERE a.project_id=".$pidsArray['DATAMODEL']."  GROUP BY a.record  ORDER BY value";
-$dataModelSQL3 = "SELECT a.record,   CONCAT(   max(if(a.field_name = 'table_name', a.value, NULL)),    ' () ' ) as value  FROM [data-table:".$pidsArray['DATAMODEL']."] a  WHERE a.project_id=".$pidsArray['DATAMODEL']."  GROUP BY a.record  ORDER BY value";
-$dataModelSQL4 = "SELECT CONCAT(a.record, '|', b.instance), CONCAT(a.value, ' | ', b.value) FROM (SELECT record,value FROM [data-table:".$pidsArray['DATAMODEL']."] WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['DATAMODEL']."] WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance";
+$dataModelSQLMetadata = "SELECT a.record,   CONCAT(   max(if(a.field_name = 'table_name', a.value, NULL)),    '  ' ) as value  FROM [data-table:".$pidsArray['DATAMODEL']."] a  WHERE a.project_id=".$pidsArray['DATAMODEL']."  GROUP BY a.record  ORDER BY value";
+$dataModelSQLDataAvailabilityTable = "SELECT a.record,   CONCAT(   max(if(a.field_name = 'table_name', a.value, NULL)),    ' () ' ) as value  FROM [data-table:".$pidsArray['DATAMODEL']."] a  WHERE a.project_id=".$pidsArray['DATAMODEL']."  GROUP BY a.record  ORDER BY value";
+$dataModelSQLDataAvailabilityVariable = "SELECT CONCAT(a.record, '|', b.instance), CONCAT(a.value, ' | ', b.value) FROM (SELECT record,value FROM [data-table:".$pidsArray['DATAMODEL']."] WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['DATAMODEL']."] WHERE project_id=".$pidsArray['DATAMODEL']." AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance";
 $workingGroupSQL = "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM [data-table:".$pidsArray['GROUP']."] a WHERE a.project_id=".$pidsArray['GROUP']." GROUP BY a.record ORDER BY value";
-$workingGroupSQL2 = "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:".$pidsArray['GROUP']."] record left join [data-table:".$pidsArray['GROUP']."] active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:".$pidsArray['GROUP']."] group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:".$pidsArray['GROUP']."] group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY group_name.value";
+$workingGroupSQLReqManager = "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:".$pidsArray['GROUP']."] record left join [data-table:".$pidsArray['GROUP']."] active_y on active_y.project_id = ".$pidsArray['GROUP']." and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:".$pidsArray['GROUP']."] group_abbr on group_abbr.project_id = ".$pidsArray['GROUP']." and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:".$pidsArray['GROUP']."] group_name on group_name.project_id = ".$pidsArray['GROUP']." and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = ".$pidsArray['GROUP']." group by record.value ORDER BY group_name.value";
 $regionSQL = "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM [data-table:".$pidsArray['REGIONS']."] a  WHERE a.project_id=".$pidsArray['REGIONS']." GROUP BY a.record  ORDER BY value";
-$regionSQL2 = "select record.record as record, CONCAT( max(if(region_name.field_name = 'region_name',region_name.value, '')), ' (', max(if(region_code.field_name = 'region_code', region_code.value, '')), ') ' ) as value from [data-table:".$pidsArray['REGIONS']."] record left join [data-table:".$pidsArray['REGIONS']."] activeregion_y on activeregion_y.project_id = ".$pidsArray['REGIONS']." and activeregion_y.record = record.value and activeregion_y.field_name = 'activeregion_y' and activeregion_y.value ='1' left join [data-table:".$pidsArray['REGIONS']."] region_code on region_code.project_id = ".$pidsArray['REGIONS']." and region_code.record = record.value and region_code.field_name = 'region_code' left join [data-table:".$pidsArray['REGIONS']."] region_name on region_name.project_id = ".$pidsArray['REGIONS']." and region_name.record = record.value and region_name.field_name = 'region_name' where record.field_name = 'record_id' and record.record=activeregion_y.record and record.project_id = ".$pidsArray['REGIONS']." group by record.value ORDER BY region_name.value";
+$regionSQLManagerContact = "select record.record as record, CONCAT( max(if(region_name.field_name = 'region_name',region_name.value, '')), ' (', max(if(region_code.field_name = 'region_code', region_code.value, '')), ') ' ) as value from [data-table:".$pidsArray['REGIONS']."] record left join [data-table:".$pidsArray['REGIONS']."] activeregion_y on activeregion_y.project_id = ".$pidsArray['REGIONS']." and activeregion_y.record = record.value and activeregion_y.field_name = 'activeregion_y' and activeregion_y.value ='1' left join [data-table:".$pidsArray['REGIONS']."] region_code on region_code.project_id = ".$pidsArray['REGIONS']." and region_code.record = record.value and region_code.field_name = 'region_code' left join [data-table:".$pidsArray['REGIONS']."] region_name on region_name.project_id = ".$pidsArray['REGIONS']." and region_name.record = record.value and region_name.field_name = 'region_name' where record.field_name = 'record_id' and record.record=activeregion_y.record and record.project_id = ".$pidsArray['REGIONS']." group by record.value ORDER BY region_name.value";
 $conceptsSQL = "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM [data-table:".$pidsArray['HARMONIST']."] WHERE project_id = ".$pidsArray['HARMONIST']." AND field_name = 'concept_id') a JOIN (SELECT record, value FROM [data-table:".$pidsArray['HARMONIST']."] where project_id = ".$pidsArray['HARMONIST']." and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value ";
 $projectsStudiesSQL = "SELECT value FROM (SELECT record,value, IFNULL(instance,1) as instance FROM [data-table:".$pidsArray['PROJECTSSTUDIES']."] WHERE project_id=".$pidsArray['PROJECTSSTUDIES']." AND field_name = 'studyfile_desc' AND record = [record-name]) as value ORDER BY value, instance";
 $peopleWritingGroupSQL = "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:".$pidsArray['PEOPLE']."] a  WHERE a.project_id=".$pidsArray['PEOPLE']." GROUP BY a.record ORDER BY value";
@@ -353,27 +353,27 @@ $projects_array_sql = array(
             'label' => ""
         ),
         'wg_name' => array (
-            'query' => $workingGroupSQL2,
+            'query' => $workingGroupSQLReqManager,
             'autocomplete' => '0',
             'label' => ""
         ),
         'wg2_name' => array (
-            'query' => $workingGroupSQL2,
+            'query' => $workingGroupSQLReqManager,
             'autocomplete' => '0',
             'label' => ""
         ),
         'wg3_name' => array (
-            'query' => $workingGroupSQL2,
+            'query' => $workingGroupSQLReqManager,
             'autocomplete' => '0',
             'label' => ""
         ),
         'wg4_name' => array (
-            'query' => $workingGroupSQL2,
+            'query' => $workingGroupSQLReqManager,
             'autocomplete' => '0',
             'label' => ""
         ),
         'contact_region' => array (
-            'query' => $regionSQL2,
+            'query' => $regionSQLManagerContact,
             'autocomplete' => '0',
             'label' => ""
         ),
@@ -521,12 +521,12 @@ $projects_array_sql = array(
     ),
     $pidsArray['DATAAVAILABILITY']=>array(
         'available_table' => array (
-            'query' => $dataModelSQL3,
+            'query' => $dataModelSQLDataAvailabilityTable,
             'autocomplete' => '0',
             'label' => ""
         ),
         'available_variable' => array (
-            'query' => $dataModelSQL4,
+            'query' => $dataModelSQLDataAvailabilityVariable,
             'autocomplete' => '0',
             'label' => ""
         )
@@ -573,7 +573,7 @@ $projects_array_sql = array(
     ),
     $pidsArray['DATAMODELMETADATA']=>array(
         'index_tablename' =>  array (
-            'query' => $dataModelSQL2,
+            'query' => $dataModelSQLMetadata,
             'autocomplete' => '0',
             'label' => ""
         ),
@@ -588,7 +588,7 @@ $projects_array_sql = array(
             'label' => ""
         ),
         'group_tablename' =>  array (
-            'query' => $dataModelSQL2,
+            'query' => $dataModelSQLMetadata,
             'autocomplete' => '0',
             'label' => ""
         ),
@@ -613,7 +613,7 @@ $projects_array_sql = array(
             'label' => ""
         ),
         'height_table' =>  array (
-            'query' => $dataModelSQL2,
+            'query' => $dataModelSQLMetadata,
             'autocomplete' => '0',
             'label' => ""
         ),
