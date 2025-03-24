@@ -329,10 +329,13 @@ function destroy_session(goToUrl) {
  * @param idframe
  * @param survey_link
  */
-function editIframeModal(id,idframe,survey_link,modalTitle = ""){
+function editIframeModal(id,idframe,survey_link,modalTitle = "", modalMessage = ""){
     $("#"+idframe).prop('src',survey_link);
     if(modalTitle != ""){
         $('#'+id+" .modal-title").text(modalTitle);
+    }
+    if(modalMessage != ""){
+        $('#'+idframe).attr("message",modalMessage);
     }
     $('#'+id).modal('show');
 }

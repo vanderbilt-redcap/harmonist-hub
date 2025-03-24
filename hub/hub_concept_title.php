@@ -14,13 +14,6 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
         $('html,body').scrollTop(0);
         $("html,body").animate({ scrollTop: 0 }, "slow");
 
-        reloadCode();
-
-        $('#hub_edit_concept').on('hidden.bs.modal', function () {
-            top.location.hash = "triggerReloadCode";
-            top.location.reload(true);
-        });
-
         $('#linked_docs').DataTable({
             "order": [0, "desc"],
             "bFilter" : false,
@@ -29,16 +22,17 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
             "bPaginate": false
         });
     });
-
-    function reloadCode() {
-        if (window.location.hash.substr(1) == "triggerReloadCode") {
-            window.location.hash = "";
-            $('#succMsgContainer').show();
-        }
-    }
 </script>
 <div class="container">
     <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;display: none;" id="succMsgContainer">If you've made any changes, they have been saved.</div>
+    <?php
+    if(isset( $_REQUEST['message'] )) {
+        $message = $module->getMessageHandler()->fetchMessage('concept', $_REQUEST['message']);
+        if (!empty($message)) {
+            echo '<div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">' . $message . '</div>';
+        }
+    }
+    ?>
     <div class="backTo">
         <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=cpt'?>">< Back to Concepts</a>
     </div>
@@ -76,7 +70,7 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
                         </div>
                         <div class="modal-body">
                             <input type="hidden" value="0" id="comment_loaded">
-                            <iframe class="commentsform" id="redcap-concept-frame" name="redcap-concept-frame" src="<?=$survey_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                            <iframe class="commentsform" id="redcap-concept-frame" message="U" name="redcap-concept-frame" src="<?=$survey_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
                         </div>
 
                         <div class="modal-footer">
@@ -397,7 +391,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" value="0" id="comment_loaded">
-                                <iframe class="commentsform" id="redcap-new-output-frame" name="redcap-new-output-frame" src="<?=$output_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                                <iframe class="commentsform" id="redcap-new-output-frame" name="redcap-new-output-frame" message="O" src="<?=$output_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -470,7 +464,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                         if($can_edit_pub){
                             $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept->getRecordId(), "outputs", "", $index);
                             $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
-                            echo '<td><button class="btn btn-default open-codesModal" onclick="$(\'#edit_title\').html(\'Edit Publication\');editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button></td>';
+                            echo '<td><button class="btn btn-default open-codesModal" onclick="$(\'#edit_title\').html(\'Edit Publication\');editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\', \'\',\'P\');"><em class="fa fa-pencil"></em></button></td>';
                         }
 
                         echo '</tr>';
@@ -492,7 +486,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                     <h4 class="modal-title" id="edit_title">Edit Publication</h4>
                 </div>
                 <div class="modal-body">
-                    <iframe class="commentsform" id="redcap-edit-frame" message="E" name="redcap-edit-frame" src="" style="border: none;height: 810px;width: 100%;"></iframe>
+                    <iframe class="commentsform" id="redcap-edit-frame" message="" name="redcap-edit-frame" src="" style="border: none;height: 810px;width: 100%;"></iframe>
                 </div>
 
                 <div class="modal-footer">
@@ -523,7 +517,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                                 </div>
                                 <div class="modal-body">
                                     <input type="hidden" value="0" id="comment_loaded">
-                                    <iframe class="commentsform" id="redcap-new-output-frame" name="redcap-new-output-frame" src="<?=$linked_doc_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
+                                    <iframe class="commentsform" id="redcap-new-output-frame" name="redcap-new-output-frame" message="D" src="<?=$linked_doc_link?>" style="border: none;height: 810px;width: 100%;"></iframe>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -577,7 +571,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                             if($can_edit_linked_doc){
                                 $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $concept->getRecordId(), "linked_documents", "", $linked_doc_instance);
                                 $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash']);
-                                echo '<td><button class="btn btn-default open-codesModal" onclick="$(\'#edit_title\').html(\'Edit Linked Document\');editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\');"><em class="fa fa-pencil"></em></button></td>';
+                                echo '<td><button class="btn btn-default open-codesModal" onclick="$(\'#edit_title\').html(\'Edit Linked Document\');editIframeModal(\'hub_edit_pub\',\'redcap-edit-frame\',\''.$survey_link.'\', \'\',\'L\');"><em class="fa fa-pencil"></em></button></td>';
                             }
                             echo '</tr>';
                         }
