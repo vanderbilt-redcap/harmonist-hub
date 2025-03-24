@@ -255,7 +255,7 @@ if(!empty($homepage)) {
                         $user_req_body = "";
                         $requests_counter = 0;
                         foreach ($requests as $req) {
-                            $user_req_body .= getHomeRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails, $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
+                            $user_req_body .= getHomeRequestHTML($module, $hubData, $pidsArray, $req, $commentDetails, $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'],$settings['pastrequest_dur'],'home');
                             if($user_req_body != ""){
                                 $requests_counter++;
                             }
