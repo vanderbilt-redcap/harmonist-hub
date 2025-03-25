@@ -18,7 +18,7 @@ $commentDetails = $hubData->getCommentDetails();
 
 $types_of_requests_data = [];
 foreach ($requests as $req){
-    if ((array_key_exists('type', $_REQUEST) && $_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || !array_key_exists('type', $_REQUEST)) {
+    if ((array_key_exists('type', $_REQUEST) && $_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || !array_key_exists('type', $_REQUEST) || (array_key_exists('type', $_REQUEST) && $_REQUEST['type'] == "")) {
         if (!hideRequestForNonVoters($settings, $req, $person_region)) {
             if (showClosedRequest($settings, $req, $current_user['person_region'])) {
                 //COMPLETED REQUESTS
