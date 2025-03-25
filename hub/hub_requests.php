@@ -18,17 +18,17 @@ $commentDetails = $hubData->getCommentDetails();
 
 $types_of_requests_data = [];
 foreach ($requests as $req){
-    if (($_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || $_REQUEST['type'] == "") {
+    if ((array_key_exists('type', $_REQUEST) && $_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || !array_key_exists('type', $_REQUEST) || (array_key_exists('type', $_REQUEST) && $_REQUEST['type'] == "")) {
         if (!hideRequestForNonVoters($settings, $req, $person_region)) {
             if (showClosedRequest($settings, $req, $current_user['person_region'])) {
                 //COMPLETED REQUESTS
-                $types_of_requests_data['completed'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails[$req['request_id']], $request_type_label, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
-            } else if ($current_user['pendingpanel_y___1'] == '1' && showPendingRequest($commentsDetails[$req['request_id']], $current_user['person_region'], $req) && $current_user['pendingpanel_y'][0] == '1' && $req['region_response_status'][$current_user['person_region']] != '2') {
+                $types_of_requests_data['completed'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentDetails[$req['request_id']], $request_type_label, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
+            } else if ($current_user['pendingpanel_y___1'] == '1' && showPendingRequest($commentDetails[$req['request_id']], $current_user['person_region'], $req) && $current_user['pendingpanel_y'][0] == '1' && $req['region_response_status'][$current_user['person_region']] != '2') {
                 //PENDING REQUESTS
-                $types_of_requests_data['pending'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails[$req['request_id']], $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $types_of_requests_data['pending'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentDetails[$req['request_id']], $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
             } else if (showOpenRequest($req, $current_user['person_region']) && $req['region_response_status'][$current_user['person_region']] != '2') {
                 //OPEN REQUESTS
-                $types_of_requests_data['open'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentsDetails[$req['request_id']], $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $types_of_requests_data['open'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentDetails[$req['request_id']], $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
             }
         }
     }

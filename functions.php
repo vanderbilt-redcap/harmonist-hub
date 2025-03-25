@@ -476,12 +476,14 @@ function showClosedRequest($settings,$req,$instance){
  * @return bool
  */
 function showPendingRequest($comments, $current_region, $request){
-    foreach ($comments as $comment) {
-        if ($comment['vote_now'] == "0" &&
-            $comment['response_region'] == $current_region &&
-            (!array_key_exists('finalize_y', $request) || $request['finalize_y'] == "")
-        ) {
-            return true;
+    if(is_array($comments) && !empty($comments)) {
+        foreach ($comments as $comment) {
+            if ($comment['vote_now'] == "0" &&
+                $comment['response_region'] == $current_region &&
+                (!array_key_exists('finalize_y', $request) || $request['finalize_y'] == "")
+            ) {
+                return true;
+            }
         }
     }
     return false;

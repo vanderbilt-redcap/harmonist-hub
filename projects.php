@@ -29,12 +29,21 @@ if(!isset($isCron) || !$isCron) {
     if(APP_PATH_WEBROOT[0] == '/'){
         $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
     }
-    define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
-    define('APP_PATH_PLUGIN',APP_PATH_WEBROOT_FULL."external_modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
+    if (!defined('APP_PATH_WEBROOT_ALL')) {
+        define('APP_PATH_WEBROOT_ALL',APP_PATH_WEBROOT_FULL.$APP_PATH_WEBROOT_ALL);
+    }
+    if (!defined('APP_PATH_PLUGIN')) {
+        define('APP_PATH_PLUGIN',APP_PATH_WEBROOT_FULL."external_modules/".substr(__DIR__,strlen(dirname(__DIR__))+1));
+    }
+    if (!defined('APP_PATH_MODULE')) {
+        define('APP_PATH_MODULE',$app_path_module);
+    }
+    if (!defined('DATEICON')) {
+        define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
+    }
+
     $versionsByPrefix = $module->getEnabledModules($_GET['pid']);
     $app_path_module = APP_PATH_WEBROOT_FULL."modules/harmonist-hub_".$versionsByPrefix['harmonist-hub'];
-    define('APP_PATH_MODULE',$app_path_module);
-    define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
 
     $encrypt_path = $module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION");
     if($encrypt_path != null)
