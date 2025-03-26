@@ -326,6 +326,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                                     include("crontasks/cron_publications.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
                                     include("crontasks/cron_upload_pending_data_set_data.php");
+                                } elseif ($cronAttributes['cron_name'] == 'cron_data_log') {
+                                    include("crontasks/cron_data_log.php");
                                 }
                             } catch (Throwable $e) {
                                 REDCap::email(

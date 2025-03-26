@@ -1,16 +1,12 @@
 {
     "require": {
         "nesbot/carbon": "^2.62",
-        "phpoffice/phpspreadsheet": "1.23.0",
+        "phpoffice/phpspreadsheet": "1.29.10",
+        "psr/simple-cache":" ^2.0",
         "dompdf/dompdf": "^2",
         "aws/aws-sdk-php": "^3.325"
     },
     "require-dev": {
         "vimeo/psalm": "^4.22"
-    },
-    "config": {
-        "platform": {
-            "php": "7.3.29"
-        }
     }
 }

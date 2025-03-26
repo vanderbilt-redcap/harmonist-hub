@@ -154,13 +154,18 @@
       "method": "cronMethod",
       "cron_frequency": "21600",
       "cron_max_run_time": "3600"
+    },
+    {
+      "cron_name": "cron_data_log",
+      "cron_description": "Cron that generates a downlodable data log file",
+      "method": "cronMethod",
+      "cron_frequency": "21600",
+      "cron_max_run_time": "3600"
     }
   ],
 
   "compatibility": {
     "php-version-min": "7.3.29",
-    "php-version-max": "",
-    "redcap-version-min": "14.0.0",
-    "redcap-version-max": ""
+    "redcap-version-min": "14.0.0"
   }
 }
