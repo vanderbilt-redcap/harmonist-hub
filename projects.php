@@ -26,6 +26,9 @@ if(!isset($isCron) || !$isCron) {
     #Get Projects ID's
     $pidsArray = REDCapManagement::getPIDsArray($project_id_main);
 
+    $versionsByPrefix = $module->getEnabledModules($_GET['pid']);
+    $app_path_module = APP_PATH_WEBROOT_FULL."modules/harmonist-hub_".$versionsByPrefix['harmonist-hub'];
+
     if(APP_PATH_WEBROOT[0] == '/'){
         $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);
     }
@@ -41,9 +44,6 @@ if(!isset($isCron) || !$isCron) {
     if (!defined('DATEICON')) {
         define('DATEICON',APP_PATH_WEBROOT.'Resources/images/date.png');
     }
-
-    $versionsByPrefix = $module->getEnabledModules($_GET['pid']);
-    $app_path_module = APP_PATH_WEBROOT_FULL."modules/harmonist-hub_".$versionsByPrefix['harmonist-hub'];
 
     $encrypt_path = $module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION");
     if($encrypt_path != null)
