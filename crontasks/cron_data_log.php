@@ -20,7 +20,7 @@ $all_data_recent_activity = array_merge($dataUpload_sevenDaysYoung, $dataDownloa
 ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
 
 foreach ($all_data_recent_activity as $recent_activity) {
-    if ($recent_activity['download_id'] != "") {
+    if (array_key_exists('download_id', $recent_activity) && $recent_activity['download_id'] != "") {
         $regionType = $recent_activity['downloader_region'];
     }else{
         $regionType = $recent_activity['data_upload_region'];
@@ -31,7 +31,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
         $dateComment->modify("+1 hours");
         $comment_time = $dateComment->format("Y-m-d H:i:s");
     }
-    if ($recent_activity['download_id'] != "") {
+    if (array_key_exists('download_id', $recent_activity) && $recent_activity['download_id'] != "") {
         $conceptId = $recent_activity['downloader_assoc_concept'];
     } else {
         $conceptId = $recent_activity['data_assoc_concept'];
@@ -58,7 +58,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
         $people_proposed = \REDCap::getData($params)[0];
         $person_proposed = trim($people_proposed['firstname'] . ' ' . $people_proposed['lastname']);
     }
-    if ($recent_activity['download_id'] != "") {
+    if (array_key_exists('download_id', $recent_activity) && $recent_activity['download_id'] != "") {
         #DOWNLOADS
         $activity = 'download ';
         $filename = $recent_activity['download_files'];
@@ -123,7 +123,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
     );
     array_push($excel_data, $aux);
 
-    if ($recent_activity['download_id'] != "" && $recent_activity['deleted_y'] == "1") {
+    if (array_key_exists('download_id', $recent_activity) && $recent_activity['download_id'] != "" && array_key_exists('deleted_y', $recent_activity) && $recent_activity['deleted_y'] == "1") {
         #DELETE
         $aux = array();
         $activity = "delete";

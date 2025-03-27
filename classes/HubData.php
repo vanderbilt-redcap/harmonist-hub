@@ -13,8 +13,10 @@ class HubData
 		$this->module = $module;
 		$this->token = $token;
 
-        $user = self::getCurrentUser();
-        $person_region = self::getPersonRegion();
+        if(array_key_exists($this->session_name, $_SESSION)) {
+            $user = self::getCurrentUser();
+            $person_region = self::getPersonRegion();
+        }
     }
 
     public function getCurrentUser()

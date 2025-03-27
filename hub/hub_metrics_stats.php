@@ -924,11 +924,21 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
             $tbl_adultped_array['sites'] += 1;
 
             if($record['country'] != "") {
-                $tbl_array[$record['region']]['country'][$country[$record['country']]] += 1;
+                if(!array_key_exists($country[$record['country']], $tbl_array['country'])){
+                    $tbl_array['country'][$country[$record['country']]] = 0;
+                }
                 $tbl_array['country'][$country[$record['country']]] += 1;
+
+                if(!array_key_exists($country[$record['country']],  $tbl_array[$record['region']]['country'])){
+                    $tbl_array[$record['region']]['country'][$country[$record['country']]] = 0;
+                }
+                $tbl_array[$record['region']]['country'][$country[$record['country']]] += 1;
             }
 
             if($record['center'] != "") {
+                if(!array_key_exists($record['center'], $tbl_array[$record['region']]['center'])){
+                    $tbl_array[$record['region']]['center'][$record['center']] = 0;
+                }
                 $tbl_array[$record['region']]['center'][$record['center']] += 1;
             }
 
@@ -936,6 +946,9 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
                 $tbl_array[$record['region']]['adults'] += 1;
                 $tbl_adultped_array['adultstotal'] += 1;
                 if($record['country'] != "") {
+                    if(!array_key_exists($country[$record['country']], $tbl_adultped_array['adultstotalcountry'])){
+                        $tbl_adultped_array['adultstotalcountry'][$country[$record['country']]] = 0;
+                    }
                     $tbl_adultped_array['adultstotalcountry'][$country[$record['country']]] += 1;
                 }
             }else if($record['adultped'] == 'PED'){
