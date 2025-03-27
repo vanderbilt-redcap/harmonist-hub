@@ -1070,6 +1070,7 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
     if($vote_grid == '2') {
         $button_votes = '<div><a href="#" onclick="viewAllVotesData(' . $sop['record_id'] . ');" class="btn btn-success btn-xs" style="margin-bottom: 7px;"><span class="fa fa-folder-open"></span> All votes</a></div>';
     }
+    $sop_visibility = "";
     if ($type == "s" || $type == "a") {
         if ($type == "a") {
             $width = "style='100px'";
@@ -1765,7 +1766,10 @@ function getRegionalAndMR($pidExtraOutputs, $conceptsData,$type, $regionalmrdata
                             } else if ($concepts['output_type'][$index] == '2' && $type == 'abstracts') {
                                 $regionalmrdata['mr'][$year] += 1;
                             }
-                            if ($concepts['output_venue'][$index] != "") {
+                            if ($concepts['output_venue'][$index] != "" && array_key_exists($year,$concept_outputs_by_year) && !empty($concept_outputs_by_year[$year])) {
+                                if(!array_key_exists($concepts['output_venue'][$index],$concept_outputs_by_year[$year])){
+                                    $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] = 0;
+                                }
                                 if ($concepts['output_type'][$index] == "1" && $type == 'manuscripts') {
                                     $concept_outputs_by_year[$year][$concepts['output_venue'][$index]] += 1;
                                 } else if ($concepts['output_type'][$index] == "2" && $type == 'abstracts') {
@@ -1810,6 +1814,9 @@ function getDataRMRTable($concept_outputs_by_year,$type){
                 $total_venue = "<i>None</i>";
             }else{
                 $total_venue .= $venue." (".$total."), ";
+                if(!array_key_exists($venue,${'data_'.$type.'_venue'})){
+                    ${'data_'.$type.'_venue'}[$venue] = 0;
+                }
                 ${'data_'.$type.'_venue'}[$venue] += $total;
             }
 
