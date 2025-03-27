@@ -807,6 +807,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                     <?php
                     $comments = \REDCap::getData($pidsArray['SOPCOMMENTS'], 'json-array', null,null,null,null,false,false,false,"[sop_id] = '".$record."'");
                     krsort($comments);
+                    $group_discussion = "";
                     if (!empty($comments)) {
                         foreach ($comments as $comment) {
                             $comment = $module->escape($comment);
