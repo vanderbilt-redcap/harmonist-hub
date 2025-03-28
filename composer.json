@@ -8,5 +8,10 @@
     },
     "require-dev": {
         "vimeo/psalm": "^4.22"
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.25"
+        }
     }
 }
