@@ -10,9 +10,18 @@ if($module->getSecurityHandler()->isAuthorizedPage() && $is_authorized_and_has_r
 
 $hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
 $current_user = $hubData->getCurrentUser();
-$name = $current_user['firstname'].' '.$current_user['lastname'];
+$isAdmin = false;
+$name = "";
+if($current_user != null){
+    $name = $current_user['firstname'].' '.$current_user['lastname'];
+    $isAdmin = $current_user['is_admin'];
+}
 $person_region = $hubData->getPersonRegion();
-$isAdmin = $current_user['is_admin'];
+$personRegionCode = "";
+if($person_region != null){
+    $personRegionCode = $person_region['region_code'];
+}
+
 if($settings['hub_name'] !== ""){
     $hub_projectname = $settings['hub_name'];
 }
@@ -128,8 +137,8 @@ if($isAdmin) {
             <?php if(!empty($token) && !array_key_exists('sout', $_REQUEST)){ ?>
                 <ul class="nav navbar-nav navbar-right" style="padding-right: 40px;">
                     <li class="menu-item dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle hidden-sm" style="padding: 20px"><span class="label label-primary"><?=$person_region['region_code']?></span>&nbsp;&nbsp;<?=$name?> <span class="caret"></span></a>
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle hidden-xs hidden-md hidden-lg" style="padding: 20px"><span class="label label-primary"><?=$person_region['region_code']?></span>&nbsp;&nbsp;<i class="fa fa-user" aria-hidden="true"></i> <span class="caret"></span></a>
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle hidden-sm" style="padding: 20px"><span class="label label-primary"><?=$personRegionCode?></span>&nbsp;&nbsp;<?=$name?> <span class="caret"></span></a>
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle hidden-xs hidden-md hidden-lg" style="padding: 20px"><span class="label label-primary"><?=$personRegionCode?></span>&nbsp;&nbsp;<i class="fa fa-user" aria-hidden="true"></i> <span class="caret"></span></a>
 
                         <ul class="dropdown-menu">
                             <li><a href="<?=$indexUrl.'&NOAUTH&option=pro'?>"><i class="fa fa-user fa-fw" aria-hidden="true"></i> Profile</a></li>
