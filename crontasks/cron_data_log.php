@@ -20,9 +20,10 @@ $all_data_recent_activity = array_merge($dataUpload_sevenDaysYoung, $dataDownloa
 ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
 
 foreach ($all_data_recent_activity as $recent_activity) {
+    $regionType = "";
     if (array_key_exists('download_id', $recent_activity) && $recent_activity['download_id'] != "") {
         $regionType = $recent_activity['downloader_region'];
-    }else{
+    }else if(array_key_exists('data_upload_region', $recent_activity)){
         $regionType = $recent_activity['data_upload_region'];
     }
     $comment_time ="";
@@ -41,11 +42,15 @@ foreach ($all_data_recent_activity as $recent_activity) {
         'return_format' => 'json-array',
         'records' => [$conceptId]
     ];
-    $concept = \REDCap::getData($params)[0];
-    $concept_sheet = $concept['concept_id'];
-    $concept_title = $concept['concept_title'];
-    $contact_link = $concept['contact_link'];
-    $assoc_concept = $concept_sheet;
+    $conceptData = \REDCap::getData($params);
+    $assoc_concept = "";
+    $concept_title = "";
+    $contact_link = "";
+    if(!empty($conceptData) && array_key_exists('0', $conceptData) && !empty($conceptData[0])){
+        $concept_title = $conceptData[0]['concept_title'];
+        $contact_link = $conceptData[0]['contact_link'];
+        $assoc_concept = $conceptData[0]['concept_id'];
+    }
 
     $person_proposed = "";
     if(!empty($contact_link)){
@@ -83,16 +88,27 @@ foreach ($all_data_recent_activity as $recent_activity) {
         'records' => [$personType],
         'fields' => ['firstname','lastname', 'person_region']
     ];
-    $people = \REDCap::getData($params)[0];
-    $person_proposed = trim($people['firstname'] . ' ' . $people['lastname']);
-    $params = [
-        'project_id' => $pidsArray['REGIONS'],
-        'return_format' => 'json-array',
-        'records' => [$people['person_region']],
-        'fields' => ['region_code']
-    ];
-    $region_code_person = \REDCap::getData($params)[0]['region_code'];
-    $name = trim($people['firstname'] . ' ' . $people['lastname']) . " (" . $region_code_person . ")";
+    $peopleData = \REDCap::getData($params);
+    $personName = "";
+    $name = "";
+    if(!empty($peopleData) && array_key_exists('0', $peopleData) && !empty($peopleData[0])){
+        $personName = trim($peopleData[0]['firstname'] . ' ' . $peopleData[0]['lastname']);
+        $personRegion = $peopleData[0]['person_region'];
+
+        $params = [
+            'project_id' => $pidsArray['REGIONS'],
+            'return_format' => 'json-array',
+            'records' => [$personRegion],
+            'fields' => ['region_code']
+        ];
+        $regionCodeData = \REDCap::getData($params);
+        $region_code_person = "";
+        if(!empty($regionCodeData) && array_key_exists('0', $regionCodeData) && array_key_exists('region_code', $regionCodeData[0])){
+            $region_code_person = $regionCodeData[0]['region_code'];
+        }
+        $name = $personName . " (" . $region_code_person . ")";
+    }
+    $person_proposed = $personName;
 
     $params = [
         'project_id' => $pidsArray['REGIONS'],
@@ -100,7 +116,11 @@ foreach ($all_data_recent_activity as $recent_activity) {
         'records' => [$regionType],
         'fields' => ['region_code']
     ];
-    $region_code = \REDCap::getData($params)[0]['region_code'];
+    $regionData = \REDCap::getData($params);
+    $region_code = "";
+    if(!empty($regionData) && array_key_exists('0', $regionData) && array_key_exists('region_code', $regionData[0])){
+        $region_code = $regionData[0]['region_code'];
+    }
 
     $params = [
         'project_id' => $pidsArray['SOP'],
@@ -108,7 +128,12 @@ foreach ($all_data_recent_activity as $recent_activity) {
         'records' => [$data_request],
         'fields' => ['sop_due_d']
     ];
-    $sop_due_d = \REDCap::getData($params)[0]['sop_due_d'];
+    $sopData = \REDCap::getData($params);
+
+    $sop_due_d = "";
+    if(!empty($sopData) && array_key_exists('0', $sopData) && array_key_exists('sop_due_d', $sopData[0])){
+        $sop_due_d = $sopData[0]['sop_due_d'];
+    }
 
     $aux = array(
         0 => $comment_time,

@@ -48,15 +48,18 @@ foreach ($request_type as $keyLabel => $requestsLabel){
 }
 
 //remove hidden options
-$hidden_choices = $default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'];
-foreach ($hidden_choices as $value){
-    if(array_key_exists($value,$request_type) ){
-        unset($request_type[$value]);
-    }
-    if(array_key_exists($value,$requests_values) ){
-        unset($requests_values[$value]);
+$hidden_choices = $default_values->getHideChoice($pidsArray['RMANAGER']);
+if(!empty($hidden_choices) && array_key_exists($pidsArray['RMANAGER'], $hidden_choices)){
+    foreach ($hidden_choices['request_type'] as $value){
+        if(array_key_exists($value,$request_type) ){
+            unset($request_type[$value]);
+        }
+        if(array_key_exists($value,$requests_values) ){
+            unset($requests_values[$value]);
+        }
     }
 }
+
 ksort($requests_values);
 $requests_values = array_values($requests_values);
 ksort($request_type);
