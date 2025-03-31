@@ -32,9 +32,10 @@ foreach ($all_data_recent_activity as $recent_activity) {
         $dateComment->modify("+1 hours");
         $comment_time = $dateComment->format("Y-m-d H:i:s");
     }
+    $conceptId = "";
     if (array_key_exists('download_id', $recent_activity) && $recent_activity['download_id'] != "") {
         $conceptId = $recent_activity['downloader_assoc_concept'];
-    } else {
+    } else if(array_key_exists('data_assoc_concept', $recent_activity)){
         $conceptId = $recent_activity['data_assoc_concept'];
     }
     $params = [
@@ -73,14 +74,27 @@ foreach ($all_data_recent_activity as $recent_activity) {
             'records' => [$recent_activity['download_id']],
             'fields' => ['data_assoc_request']
         ];
-        $data_request = \REDCap::getData($params)[0]['data_assoc_request'];
+        $dataRequestData = \REDCap::getData($params)[0]['data_assoc_request'];
+        $data_request = "";
+        if(!empty($dataRequestData) && array_key_exists('0', $dataRequestData) && is_array($dataRequestData[0]) && array_key_exists('data_assoc_request', $dataRequestData[0])){
+            $data_request = \REDCap::getData($params)[0]['data_assoc_request'];
+        }
         $personType = $recent_activity['downloader_id'];
     } else {
         #UPLOADS
         $activity = 'upload ';
-        $filename = $recent_activity['data_upload_zip'];
-        $data_request = $recent_activity['data_assoc_request'];
-        $personType = $recent_activity['data_upload_person'];
+        $filename = '';
+        if (array_key_exists('data_upload_zip', $recent_activity) && $recent_activity['data_upload_zip'] != "") {
+            $filename = $recent_activity['data_upload_zip'];
+        }
+        $data_request = '';
+        if (array_key_exists('data_assoc_request', $recent_activity) && $recent_activity['data_assoc_request'] != "") {
+            $data_request = $recent_activity['data_assoc_request'];
+        }
+        $personType = '';
+        if (array_key_exists('data_upload_person', $recent_activity) && $recent_activity['data_upload_person'] != "") {
+            $personType = $recent_activity['data_upload_person'];
+        }
     }
     $params = [
         'project_id' => $pidsArray['PEOPLE'],

@@ -445,8 +445,13 @@ function getArchiveHeader($region){
  * @return bool
  */
 function showOpenRequest($req,$instance){
-    if ($req['region_response_status'][$instance] != 2 && (!array_key_exists('finalize_y', $req) || $req['finalize_y'] == "")) {
-        return true;
+    if(array_key_exists('region_response_status',$req) && is_array($req['region_response_status']) && array_key_exists($instance,$req['region_response_status'])) {
+        if ($req['region_response_status'][$instance] != 2 && (!array_key_exists(
+                    'finalize_y',
+                    $req
+                ) || $req['finalize_y'] == "")) {
+            return true;
+        }
     }
     return false;
 }
