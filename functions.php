@@ -267,7 +267,7 @@ function getTableJsonName($project_id,$data,$varName,$jsonArray){
 function numberOfOpenRequest($request,$instance){
     $number=0;
     foreach ($request as $req) {
-        if(is_array($req['region_response_status'])) {
+        if(array_key_exists('region_response_status', $req) && is_array($req['region_response_status']) && array_key_exists($instance, $req['region_response_status'])) {
             if ($req['finalize_y'] == "" && ($req['region_response_status'][$instance] == 0 || $req['region_response_status'][$instance] == 1)) {
                 $number++;
             }
