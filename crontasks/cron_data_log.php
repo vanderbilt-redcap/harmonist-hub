@@ -76,7 +76,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
         ];
         $dataRequestData = \REDCap::getData($params)[0]['data_assoc_request'];
         $data_request = "";
-        if(!empty($dataRequestData) && array_key_exists('0', $dataRequestData) && is_array($dataRequestData[0]) && array_key_exists('data_assoc_request', $dataRequestData[0])){
+        if(is_array($dataRequestData) && array_key_exists('0', $dataRequestData) && is_array($dataRequestData[0]) && array_key_exists('data_assoc_request', $dataRequestData[0])){
             $data_request = \REDCap::getData($params)[0]['data_assoc_request'];
         }
         $personType = $recent_activity['downloader_id'];
@@ -189,7 +189,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
 
         $comment_time = "";
         if (!empty($recent_activity['deletion_ts'])) {
-            $dateComment = new DateTime($recent_activity['deletion_ts']);
+            $dateComment = new \DateTime($recent_activity['deletion_ts']);
             $dateComment->modify("+1 hours");
             $comment_time = $dateComment->format("Y-m-d H:i:s");
         }
@@ -207,6 +207,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
         array_push($excel_data, $aux);
     }
 }
+
 #EXEL SHEET
 $filename = $settings['hub_name']." Hub: Data Activity - " . date("Y-m-d_hi",time()) . ".xlsx";
 $storedName = date("YmdsH") . "_pid" . $pidsArray['PROJECTS'] . "_" . getRandomIdentifier(6) . ".xlsx";
