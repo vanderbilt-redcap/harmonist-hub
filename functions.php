@@ -268,7 +268,10 @@ function numberOfOpenRequest($request,$instance){
     $number=0;
     foreach ($request as $req) {
         if(array_key_exists('region_response_status', $req) && is_array($req['region_response_status']) && array_key_exists($instance, $req['region_response_status'])) {
-            if ($req['finalize_y'] == "" && ($req['region_response_status'][$instance] == 0 || $req['region_response_status'][$instance] == 1)) {
+            if ($req['region_response_status'][$instance] != 2 && (!array_key_exists(
+                        'finalize_y',
+                        $req
+                    ) || $req['finalize_y'] == "")) {
                 $number++;
             }
         }
