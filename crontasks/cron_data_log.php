@@ -66,7 +66,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
     }
     if (array_key_exists('download_id', $recent_activity) && $recent_activity['download_id'] != "") {
         #DOWNLOADS
-        $activity = 'download ';
+        $activity = 'download';
         $filename = $recent_activity['download_files'];
         $params = [
             'project_id' => $pidsArray['DATAUPLOAD'],
@@ -82,7 +82,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
         $personType = $recent_activity['downloader_id'];
     } else {
         #UPLOADS
-        $activity = 'upload ';
+        $activity = 'upload';
         $filename = '';
         if (array_key_exists('data_upload_zip', $recent_activity) && $recent_activity['data_upload_zip'] != "") {
             $filename = $recent_activity['data_upload_zip'];
@@ -162,7 +162,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
     );
     array_push($excel_data, $aux);
 
-    if (array_key_exists('download_id', $recent_activity) && $recent_activity['download_id'] != "" && array_key_exists('deleted_y', $recent_activity) && $recent_activity['deleted_y'] == "1") {
+    if ($activity == "upload" && array_key_exists('deleted_y', $recent_activity) && $recent_activity['deleted_y'] == "1") {
         #DELETE
         $aux = array();
         $activity = "delete";
