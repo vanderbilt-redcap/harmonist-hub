@@ -13,7 +13,7 @@ class ConceptModel extends Model
         parent::__construct($module, $projectId);
     }
 
-    public function fetchConcept($recordId, $authorshipLimit = null): Concept
+    public function fetchConcept($recordId, $authorshipLimit = null): ?Concept
     {
         $concept = null;
         if (!empty($this->getPidsArray()['HARMONIST'])) {
@@ -23,10 +23,15 @@ class ConceptModel extends Model
                 'records' => [$recordId]
             ];
             $RecordSetTable = \REDCap::getData($params);
-            $conceptData = $this->module->escape(
-                $this->getProjectInfoArrayRepeatingInstruments($RecordSetTable, $this->getPidsArray()['HARMONIST'])[0]
-            );
-            $concept = new Concept($conceptData, $this->module, $this->getPidsArray(), $authorshipLimit);
+            if(!empty($RecordSetTable)) {
+                $conceptData = $this->module->escape(
+                    $this->getProjectInfoArrayRepeatingInstruments(
+                        $RecordSetTable,
+                        $this->getPidsArray()['HARMONIST']
+                    )[0]
+                );
+                $concept = new Concept($conceptData, $this->module, $this->getPidsArray(), $authorshipLimit);
+            }
         }
         return $concept;
     }
