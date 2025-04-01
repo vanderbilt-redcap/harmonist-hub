@@ -9,7 +9,6 @@ $requests = $hubData->getAllRequests();
 ArrayFunctions::array_sort_by_column($requests, 'due_d');
 $request_type = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
-
 $instance = $current_user['person_region'];
 $open_requests_values = array();
 $home_metrics_values = array();
