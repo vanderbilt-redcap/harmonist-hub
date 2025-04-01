@@ -5,17 +5,16 @@ $RecordSetHome = \REDCap::getData($pidsArray['HOME'], 'array', null);
 $homepage = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetHome,$pidsArray['HOME'])[0];
 $homepage_links_sectionorder = $module->getChoiceLabels('links_sectionicon', $pidsArray['HOME']);
 
-$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array');
-$request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],array('approval_y' => '1'));
-ArrayFunctions::array_sort_by_column($request, 'due_d');
+$requests = $hubData->getAllRequests();
+ArrayFunctions::array_sort_by_column($requests, 'due_d');
 $request_type = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
 $instance = $current_user['person_region'];
 $open_requests_values = array();
 $home_metrics_values = array();
-foreach ($request as $req){
+foreach ($requests as $req){
     //Only open requests
-    if($req['finalize_y'] == "" && ($req['region_response_status'][$instance] == '0' || $req['region_response_status'][$instance] == '1')){
+    if(showOpenRequest($req,$instance)) {
         $open_requests_values[$req['request_type']] += 1;
     }
     $home_metrics_values[$req['request_type']] += 1;
@@ -40,7 +39,7 @@ for($i = 1; $i<$number_of_deadlines+1; $i++){
 ArrayFunctions::array_sort_by_column($dealines, 'date');
 
 /***GRAPH***/
-$requests_values = array_count_values(array_column($request, 'request_type'));
+$requests_values = array_count_values(array_column($requests, 'request_type'));
 foreach ($request_type as $keyLabel => $requestsLabel){
     if(!array_key_exists($keyLabel, $home_metrics_values)){
         $requests_values[$keyLabel] = 0;
@@ -250,7 +249,6 @@ if(!empty($homepage)) {
             <div class="table-responsive">
                 <table class="table table_requests sortable-theme-bootstrap" data-sortable>
                     <?php
-					$requests = $hubData->getAllRequests();
                     if(!empty($requests)) {
                         $commentDetails = $hubData->getCommentDetails();
 
