@@ -1,9 +1,11 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
+$option = "";
 if(array_key_exists('option',$_GET)){
     $option = htmlentities($_GET['option'],ENT_QUOTES);
 }
+$record = "";
 if(array_key_exists('record',$_GET)){
     $record = htmlentities($_GET['record'],ENT_QUOTES);
 }
