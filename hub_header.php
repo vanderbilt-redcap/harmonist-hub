@@ -16,14 +16,11 @@ $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$p
 
 $hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
 $current_user = $hubData->getCurrentUser();
-$isAdmin = false;
-$numberOfOpenRequest = 0;
-$name = "";
-if($current_user != null){
-    $name = $current_user['firstname'].' '.$current_user['lastname'];
-    $isAdmin = $current_user['is_admin'];
-    $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region']));
-}
+
+$name = $current_user['firstname'].' '.$current_user['lastname'];
+$isAdmin = $current_user['is_admin'];
+$numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region']));
+
 $person_region = $hubData->getPersonRegion();
 $personRegionCode = "";
 if($person_region != null){
