@@ -14,7 +14,7 @@ $open_requests_values = array();
 $home_metrics_values = array();
 foreach ($requests as $req){
     //Only open requests
-    if(showOpenRequest($req,$instance)) {
+    if(!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y']) && showOpenRequest($req,$instance)) {
         $open_requests_values[$req['request_type']] += 1;
     }
     $home_metrics_values[$req['request_type']] += 1;
