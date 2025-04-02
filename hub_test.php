@@ -10,7 +10,7 @@ if (defined('USERID') && USERID == 'bascome') {
         $settings = $module->getSecurityHandler()->getSettingsData();
 
         echo "<div style='margin: auto;width: 80%;'>";
-        echo "<div style='text-align: center;'><h2>HUB TESTING PAGE</h2></div>";
+        echo "<div style='text-align: center;'><h2>".strtoupper($settings['hub_name'])." HUB TESTING PAGE</h2></div>";
         echo "<div style='text-align: center;'>This page is designed to test several features safely.</div>";
 
         echo "<div style='padding-top: 50px'>";
@@ -30,6 +30,7 @@ if (defined('USERID') && USERID == 'bascome') {
             $current_user = $hubData->getCurrentUser();
             $requests = $hubData->getAllRequests();
             $person_region = $hubData->getPersonRegion();
+            print_array("*User Region: ".$person_region['region_code']);
 
             $instance = $current_user['person_region'];
             $open_requests_values = [];
@@ -37,12 +38,9 @@ if (defined('USERID') && USERID == 'bascome') {
             $request_type = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
             $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region'],$person_region['voteregion_y'],$settings['pastrequest_dur']));
+            print_array("......Total OPEN REQUESTS: ".$numberOfOpenRequest);
 
             foreach ($requests as $req){
-                if(!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y']) && showOpenRequest($req,$instance)) {
-                    $open_requests_values[$request_type[$req['request_type']]] += 1;
-                    $open_requests_ids[$req['request_id']] = $request_type[$req['request_type']];
-                }
                 if ((array_key_exists('type', $_REQUEST) && $_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || !array_key_exists('type', $_REQUEST) || (array_key_exists('type', $_REQUEST) && $_REQUEST['type'] == "")) {
                     if (!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y'])) {
                         if (showClosedRequest($settings, $req, $current_user['person_region'])) {
@@ -58,9 +56,6 @@ if (defined('USERID') && USERID == 'bascome') {
                     }
                 }
             }
-            print_array("......Total OPEN REQUESTS: ".$numberOfOpenRequest);
-            print_array($open_requests_values);
-            print_array($open_requests_ids);
         }
         echo "</div></div>";
     }
