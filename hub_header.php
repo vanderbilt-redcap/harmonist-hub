@@ -8,29 +8,15 @@ if($module->getSecurityHandler()->isAuthorizedPage() && $is_authorized_and_has_r
     $indexUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['PROJECTS'],$module->getUrl('index.php'));
 }
 
-$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,
-                                ["requestopen_ts","approval_y","finalize_y","region_response_status","request_id","contact_region",
-                                    "assoc_concept","mr_temporary","contact_email","request_title","request_type","finalconcept_doc", "finalconcept_pdf",
-                                    "author_doc","workflowcomplete_d","contact_name"]);
-$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],array('approval_y'=>1));
-
 $hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
 $current_user = $hubData->getCurrentUser();
 $person_region = $hubData->getPersonRegion();
+$requests = $hubData->getAllRequests();
 
 $name = $current_user['firstname'].' '.$current_user['lastname'];
 $isAdmin = $current_user['is_admin'];
 $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region'],$person_region['voteregion_y'],$settings['pastrequest_dur']));
-if ($name == "Eva Bascompte Moragas") {
-    print_array("numberOfOpenRequest: ".$numberOfOpenRequest);
-    $number = 0;
-    foreach ($requests as $req) {
-        if(!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y']) && showOpenRequest($req,$current_user['person_region'])) {
-            $number++;
-        }
-    }
-    print_array("number: ".$number);
-}
+
 $personRegionCode = "";
 if($person_region != null){
     $personRegionCode = $person_region['region_code'];
