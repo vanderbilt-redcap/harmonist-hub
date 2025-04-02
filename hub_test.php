@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 #AUTHORIZED PAGE
 #ONLY USER BASCOME HAS PERMISSIONS
-if (defined('USERID') && USERID == 'site_admin') {
+if (defined('USERID') && USERID == 'bascome') {
     if (!$module->getSecurityHandler()->setHasNoauthOnUrl()) {
         $pidsArray = $module->getSecurityHandler()->getPidsArray();
         $settings = $module->getSecurityHandler()->getSettingsData();
