@@ -3,6 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 #AUTHORIZED PAGE
 #ONLY USER BASCOME HAS PERMISSIONS
+#TODO: extend this with a test class that has each test
 if (defined('USERID') && USERID == 'bascome') {
     if (!$module->getSecurityHandler()->setHasNoauthOnUrl()) {
         $pidsArray = $module->getSecurityHandler()->getPidsArray();
