@@ -74,10 +74,10 @@ foreach ($all_data_recent_activity as $recent_activity) {
             'records' => [$recent_activity['download_id']],
             'fields' => ['data_assoc_request']
         ];
-        $dataRequestData = \REDCap::getData($params)[0]['data_assoc_request'];
+        $dataRequestData = \REDCap::getData($params);
         $data_request = "";
         if(is_array($dataRequestData) && array_key_exists('0', $dataRequestData) && is_array($dataRequestData[0]) && array_key_exists('data_assoc_request', $dataRequestData[0])){
-            $data_request = \REDCap::getData($params)[0]['data_assoc_request'];
+            $data_request = $dataRequestData[0]['data_assoc_request'];
         }
         $personType = $recent_activity['downloader_id'];
     } else {

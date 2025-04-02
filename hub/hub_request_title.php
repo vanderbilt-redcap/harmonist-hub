@@ -392,6 +392,7 @@ if($request !="") {
                         <tbody>
                         <?php
                         $request_time = "";
+                        $newest_record = "";
                         if(!empty($request['requestopen_ts'])){
                             $date = new \DateTime($request['requestopen_ts']);
                             $date->modify("+1 hours");

@@ -57,7 +57,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             }
 
             $voting_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $resp_region),array('voteregion_y'))[0];
-            if($voting_region['voteregion_y'] == "1" && $request['region_vote_status'][$instanceId] == ""){
+            if(array_key_exists('voteregion_y',$voting_region) && $voting_region['voteregion_y'] == "1" && (!array_key_exists($instanceId,$voting_region['region_vote_status']) ||  $request['region_vote_status'][$instanceId] == "")){
                 $all_votes_completed = false;
             }
         }
@@ -169,8 +169,13 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                     $hub_organization =' (<a href="'.$settings["hub_organization"].'">'.$settings["hub_organization"].'</a>)';
                 }
 
+                $hub_name_req_email = "";
+                if(array_key_exists('hub_name_req_email',$settings) && !empty($settings["hub_name_req_email"])){
+                    $hub_name_req_email = $settings["hub_name_req_email"];
+                }
+
                 $message = '<h2>Feedback Posted on '.$request_type_label[$request['request_type']].' Request  #'.$request['request_id'].'</h2>
-                            <p>A new comment, file, or vote for the following '.$settings["hub_name_req_email"].' request has been posted on the Hub.</p>
+                            <p>A new comment, file, or vote for the following '.$hub_name_req_email.' request has been posted on the Hub.</p>
                             <p><strong>Request Title:</strong>&nbsp; <a href="'.$url.'">'.$request['request_title'].'</a>
                             <br /><strong>Contact Person:</strong>&nbsp; '.$request['contact_name'].', '.$request['contact_email'].'</p>  
                             <h2>Feedback</h2>
