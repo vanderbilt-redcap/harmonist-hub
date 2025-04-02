@@ -38,7 +38,7 @@ if (defined('USERID') && USERID == 'bascome') {
             foreach ($requests as $req){
                 if(showOpenRequest($req,$instance)) {
                     $open_requests_values[$request_type[$req['request_type']]] += 1;
-                    $open_requests_ids[$request_type[$req['request_type']]] = $req['request_id'];
+                    $open_requests_ids[$req['request_id']] = $request_type[$req['request_type']];
                 }
                 if ((array_key_exists('type', $_REQUEST) && $_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || !array_key_exists('type', $_REQUEST) || (array_key_exists('type', $_REQUEST) && $_REQUEST['type'] == "")) {
                     if (!hideRequestForNonVoters($settings, $req, $person_region)) {
