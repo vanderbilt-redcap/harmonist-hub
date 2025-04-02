@@ -16,8 +16,8 @@ foreach ($requests as $req){
     //Only open requests
     if(!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y']) && showOpenRequest($req,$instance)) {
         $open_requests_values[$req['request_type']] += 1;
+        $home_metrics_values[$req['request_type']] += 1;
     }
-    $home_metrics_values[$req['request_type']] += 1;
 }
 $number_of_announcements = $settings['home_number_announcements'];
 $number_of_deadlines = $settings['home_number_deadlines'];
