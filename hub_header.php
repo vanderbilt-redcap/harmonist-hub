@@ -22,9 +22,14 @@ $name = $current_user['firstname'].' '.$current_user['lastname'];
 $isAdmin = $current_user['is_admin'];
 $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region'],$person_region['voteregion_y'],$settings['pastrequest_dur']));
 if ($name == "Eva Bascompte Moragas") {
-    print_array("pastrequest_dur: ".$settings['pastrequest_dur']);
-    print_array("person_region: ".$current_user['person_region']);
-    print_array("voteregion_y: ".$person_region['voteregion_y']);
+    print_array("numberOfOpenRequest: ".$numberOfOpenRequest);
+    $number = 0;
+    foreach ($requests as $req) {
+        if(!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y']) && showOpenRequest($req,$current_user['person_region'])) {
+            $number++;
+        }
+    }
+    print_array("number: ".$number);
 }
 $personRegionCode = "";
 if($person_region != null){
