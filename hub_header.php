@@ -21,8 +21,10 @@ $person_region = $hubData->getPersonRegion();
 $name = $current_user['firstname'].' '.$current_user['lastname'];
 $isAdmin = $current_user['is_admin'];
 $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region'],$person_region['voteregion_y'],$settings['pastrequest_dur']));
-if (defined('USERID') && USERID == 'bascome') {
-    \REDCap::email("eva.bascompte.moragas@vumc.org","eva.bascompte.moragas@vumc.org","Request Test",$settings['hub_name']." Total Requests: ".$numberOfOpenRequest);
+if ($name == "Eva Bascompte Moragas") {
+    print_array("pastrequest_dur: ".$settings['pastrequest_dur']);
+    print_array("person_region: ".$current_user['person_region']);
+    print_array("voteregion_y: ".$person_region['voteregion_y']);
 }
 $personRegionCode = "";
 if($person_region != null){
