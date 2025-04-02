@@ -36,8 +36,10 @@ if (defined('USERID') && USERID == 'bascome') {
             $open_requests_ids = [];
             $request_type = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 
+            $numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region'],$person_region['voteregion_y'],$settings['pastrequest_dur']));
+
             foreach ($requests as $req){
-                if(showOpenRequest($req,$instance)) {
+                if(!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y']) && showOpenRequest($req,$instance)) {
                     $open_requests_values[$request_type[$req['request_type']]] += 1;
                     $open_requests_ids[$req['request_id']] = $request_type[$req['request_type']];
                 }
@@ -56,7 +58,7 @@ if (defined('USERID') && USERID == 'bascome') {
                     }
                 }
             }
-            print_array("......Total OPEN REQUESTS:");
+            print_array("......Total OPEN REQUESTS: ".$numberOfOpenRequest);
             print_array($open_requests_values);
             print_array($open_requests_ids);
         }
