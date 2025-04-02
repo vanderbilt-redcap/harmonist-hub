@@ -16,12 +16,12 @@ $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$p
 
 $hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
 $current_user = $hubData->getCurrentUser();
+$person_region = $hubData->getPersonRegion();
 
 $name = $current_user['firstname'].' '.$current_user['lastname'];
 $isAdmin = $current_user['is_admin'];
-$numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region'],$current_user['voteregion_y'],$settings['pastrequest_dur']));
+$numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region'],$person_region['voteregion_y'],$settings['pastrequest_dur']));
 
-$person_region = $hubData->getPersonRegion();
 $personRegionCode = "";
 if($person_region != null){
     $personRegionCode = $person_region['region_code'];

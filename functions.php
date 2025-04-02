@@ -264,9 +264,9 @@ function getTableJsonName($project_id,$data,$varName,$jsonArray){
  * @param $instance
  * @return int
  */
-function numberOfOpenRequest($request, $instance, $voteregionY, $pastrequestDur){
+function numberOfOpenRequest($requests, $instance, $voteregionY, $pastrequestDur){
     $number=0;
-    foreach ($request as $req) {
+    foreach ($requests as $req) {
         if(!hideRequestForNonVoters($pastrequestDur, $req, $voteregionY) && showOpenRequest($req,$instance)) {
             $number++;
         }
