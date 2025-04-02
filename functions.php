@@ -264,10 +264,10 @@ function getTableJsonName($project_id,$data,$varName,$jsonArray){
  * @param $instance
  * @return int
  */
-function numberOfOpenRequest($request,$instance){
+function numberOfOpenRequest($request, $instance, $voteregionY, $pastrequestDur){
     $number=0;
     foreach ($request as $req) {
-        if(showOpenRequest($req,$instance)) {
+        if(!hideRequestForNonVoters($pastrequestDur, $req, $voteregionY) && showOpenRequest($req,$instance)) {
             $number++;
         }
     }
@@ -494,13 +494,13 @@ function showPendingRequest($comments, $current_region, $request){
     return false;
 }
 
-function hideRequestForNonVoters($settings,$req,$person_region){
+function hideRequestForNonVoters($pastrequestDur,$req,$voteregionY){
     if (!empty($req['due_d'])) {
-        $extra_days = ' + ' . $settings['pastrequest_dur'] . " days";
+        $extra_days = ' + ' . $pastrequestDur . " days";
         $due_date_time = date('Y-m-d', strtotime($req['due_d'] . $extra_days));
         $today = date('Y-m-d');
 
-        if($person_region['voteregion_y'] == "0" && strtotime($due_date_time) < strtotime($today)) {
+        if($voteregionY == "0" && strtotime($due_date_time) < strtotime($today)) {
             return true;
         }
     }

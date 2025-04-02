@@ -29,6 +29,7 @@ if (defined('USERID') && USERID == 'bascome') {
             );
             $current_user = $hubData->getCurrentUser();
             $requests = $hubData->getAllRequests();
+            $person_region = $hubData->getPersonRegion();
 
             $instance = $current_user['person_region'];
             $open_requests_values = [];
@@ -41,7 +42,7 @@ if (defined('USERID') && USERID == 'bascome') {
                     $open_requests_ids[$req['request_id']] = $request_type[$req['request_type']];
                 }
                 if ((array_key_exists('type', $_REQUEST) && $_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || !array_key_exists('type', $_REQUEST) || (array_key_exists('type', $_REQUEST) && $_REQUEST['type'] == "")) {
-                    if (!hideRequestForNonVoters($settings, $req, $person_region)) {
+                    if (!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y'])) {
                         if (showClosedRequest($settings, $req, $current_user['person_region'])) {
                             //COMPLETED REQUESTS
                            print_array("COMPLETED: ".$req['request_id'].", ".$request_type[$req['request_type']]);

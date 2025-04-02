@@ -19,7 +19,7 @@ $commentDetails = $hubData->getCommentDetails();
 $types_of_requests_data = [];
 foreach ($requests as $req){
     if ((array_key_exists('type', $_REQUEST) && $_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || !array_key_exists('type', $_REQUEST) || (array_key_exists('type', $_REQUEST) && $_REQUEST['type'] == "")) {
-        if (!hideRequestForNonVoters($settings, $req, $person_region)) {
+        if (!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y'])) {
             if (showClosedRequest($settings, $req, $current_user['person_region'])) {
                 //COMPLETED REQUESTS
                 $types_of_requests_data['completed'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentDetails[$req['request_id']], $request_type_label, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
