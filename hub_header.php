@@ -11,7 +11,14 @@ if($module->getSecurityHandler()->isAuthorizedPage() && $is_authorized_and_has_r
 $hubData = new HubData($module, $module->getSecurityHandler()->getTokenSessionName(), $token, $pidsArray);
 $current_user = $hubData->getCurrentUser();
 $person_region = $hubData->getPersonRegion();
-$requests = $hubData->getAllRequests();
+
+#Manually calling requests as it seems getLastLoggedEvent on $hubData->getAllRequests() is not working properly
+$RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,
+                                ["requestopen_ts","approval_y","finalize_y","region_response_status","request_id","contact_region",
+                                    "assoc_concept","mr_temporary","contact_email","request_title","request_type","finalconcept_doc", "finalconcept_pdf",
+                                    "author_doc","workflowcomplete_d","contact_name","due_d"]);
+$requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],array('approval_y'=>1));
+
 
 $name = $current_user['firstname'].' '.$current_user['lastname'];
 $isAdmin = $current_user['is_admin'];
