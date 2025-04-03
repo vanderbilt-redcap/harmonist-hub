@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . "/classes/HubData.php";
 
 require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
 
-#retrieve token is session is gone
+#retrieve token if session is gone
 if(defined("USERID") && empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
     session_start();
     $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()] = $module->getSecurityHandler()->getREDCapUserToken();
