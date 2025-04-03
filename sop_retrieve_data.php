@@ -2,8 +2,13 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 require_once dirname(__FILE__) . "/classes/HubData.php";
 
-require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
+//require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
 
+#retrieve token is session is gone
+if(defined("USERID") && empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
+    session_start();
+    $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()] = $module->getSecurityHandler()->getREDCapUserToken();
+}
 
 $request_DU = $module->escape(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null));
 krsort($request_DU);
