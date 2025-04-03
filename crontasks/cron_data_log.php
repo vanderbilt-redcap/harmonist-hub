@@ -11,11 +11,15 @@ $params = [
     'return_format' => 'json-array'
 ];
 $dataUpload_sevenDaysYoung = \REDCap::getData($params);
+ArrayFunctions::array_sort_by_column($dataUpload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
+
 $params = [
     'project_id' => $pidsArray['DATADOWNLOAD'],
     'return_format' => 'json-array'
 ];
 $dataDownload_sevenDaysYoung = \REDCap::getData($params);
+ArrayFunctions::array_sort_by_column($dataDownload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
+
 $all_data_recent_activity = array_merge($dataUpload_sevenDaysYoung, $dataDownload_sevenDaysYoung);
 ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplete_ts',SORT_DESC);
 
@@ -199,7 +203,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
             2 => $name,
             3 => $region_code,
             4 => $assoc_concept,
-            5 => $recent_activity['data_assoc_request'],
+            5 => $filename,
             6 => $concept_title,
             7 => $person_proposed,
             8 => $sop_due_d
@@ -207,6 +211,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
         array_push($excel_data, $aux);
     }
 }
+ArrayFunctions::array_sort_by_column($excel_data, '0',SORT_DESC);
 
 #EXEL SHEET
 $filename = $settings['hub_name']." Hub: Data Activity - " . date("Y-m-d_hi",time()) . ".xlsx";
