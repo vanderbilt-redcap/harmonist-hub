@@ -35,13 +35,13 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                 $params = [
                     'project_id' => $pidsArray['PEOPLE'],
                     'return_format' => 'json-array',
-                    'filterLogic' => "[redcap_name] = '" . USERID . "' AND [active_y] = 1",
+                    'filterLogic' => "[redcap_name] = '" . USERID . "' AND [active_y] = '1'",
                     'filterType' => "RECORD"
                 ];
                 print_array($params);
                 print_array(\REDCap::getData($params));
 
-                $test = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,null,null,null,false,false,false,"[redcap_name] = '" . USERID . "'");
+                $test = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,null,null,null,false,false,false,"[record]=3");
                 print_array($test);
             }
             $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()] = $module->getSecurityHandler()->getREDCapUserToken();
