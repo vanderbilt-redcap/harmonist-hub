@@ -32,7 +32,6 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
             session_start();
             if($pid == "204675" && defined("USERID") && USERID == "bascome") {
                 print_array($_SESSION);
-                print_array($pidsArray);
             }
             $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()] = $module->getSecurityHandler()->getREDCapUserToken();
             if($pid == "204675" && defined("USERID") && USERID == "bascome") {
