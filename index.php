@@ -18,21 +18,28 @@ $option = $module->getSecurityHandler()->getRequestOption();
 
 $is_authorized_and_has_rights = false;
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
+    error_log("IEDEA - AUTHORIZED PAGE");
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
     if ($settings['deactivate_datahub___1'] != "1") {
+        error_log("IEDEA - deactivate_datahub___1");
         #retrieve token if session is gone
         if(defined("USERID") && empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
+            error_log("IEDEA - session_start");
             session_start();
             $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()] = $module->getSecurityHandler()->getREDCapUserToken();
+            error_log("IEDEA - USERID: ".$_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()]);
         }
         if(!empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
+            error_log("IEDEA - Token exists");
             $is_authorized_and_has_rights = true;
             if ($option === 'lge') {
                 include('sop_data_activity_log_delete.php');
             } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
+                error_log("IEDEA - before sop_retrieve_data");
                 include('sop_retrieve_data.php');
             }
+            error_log("IEDEA - after if");
         }
     }
 }
