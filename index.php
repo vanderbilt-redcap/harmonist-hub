@@ -36,12 +36,24 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                 print_array($params);
                 print_array(\REDCap::getData($params));
                 $params = [
-                    'project_id' => $pidsArray['SETTINGS'],
+                    'project_id' => $pidsArray['PEOPLE'],
                     'return_format' => 'json-array',
-                    'filterLogic' => "[accesslink_dur] = '7'"
+                    'filterLogic' => "[active_y] = '1'"
                 ];
                 print_array($params);
                 print_array(\REDCap::getData($params));
+                $params = [
+                    'project_id' => $pidsArray['PEOPLE'],
+                    'return_format' => 'json-array'
+                ];
+                print_array($params);
+                $test_people = \REDCap::getData($params);
+                foreach ($test_people as $people) {
+                    if($people['active_y'] == "1" && $people['redcap_name'] == USERID) {
+                        print_array($people);
+                        break;
+                    }
+                }
 
                 $test = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,null,null,null,false,false,false,"[record]=3");
                 print_array($test);
