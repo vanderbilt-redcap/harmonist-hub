@@ -57,7 +57,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
             }
 
             $voting_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $resp_region),array('voteregion_y'))[0];
-            if(array_key_exists('voteregion_y',$voting_region) && $voting_region['voteregion_y'] == "1" && (!array_key_exists($instanceId,$voting_region['region_vote_status']) ||  $request['region_vote_status'][$instanceId] == "")){
+            if(array_key_exists('voteregion_y',$voting_region) && $voting_region['voteregion_y'] == "1" && array_key_exists('region_vote_status',$voting_region) && (!array_key_exists($instanceId,$voting_region['region_vote_status']) ||  (array_key_exists($instanceId,$voting_region['region_vote_status']) && $request['region_vote_status'][$instanceId] == ""))){
                 $all_votes_completed = false;
             }
         }
