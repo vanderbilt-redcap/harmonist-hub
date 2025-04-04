@@ -258,7 +258,7 @@ class SecurityHandler
             false,
             false,
             false,
-            "[redcap_name] = '" . $userid . "'"
+            "[redcap_name] = '" . $userid . "' AND [active_y] = '1'"
         )[0];
         if (!empty($people)) {
             return $people['access_token'];
@@ -278,7 +278,7 @@ class SecurityHandler
             false,
             false,
             false,
-            "[access_token] = '" . $token . "'"
+            "[access_token] = '" . $token . "' AND [active_y] = '1'"
         )[0];
         if (!empty($people)) {
             if (strtotime($people['token_expiration_d']) > strtotime(date('Y-m-d'))) {
