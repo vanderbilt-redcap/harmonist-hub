@@ -195,8 +195,8 @@ class SecurityHandler
     {
         $this->isAuthorized = self::isAuthorizedPage();
         if($test == "test"){
-            print_array("security token".self::getTokenByUserId(USERID));
-            print_array("USERID:".USERID);
+            print_array("security token: ".self::getTokenByUserId(USERID));
+            print_array("USERID: ".USERID);
         }
         #We check user first than token to ensure the hub refreshes to that user's account. Just in case someone tries to log in with someone else's token.
         if (
@@ -255,19 +255,30 @@ class SecurityHandler
 
     function getTokenByUserId($userid): ?string
     {
-        $people = REDCap::getData(
-            $this->pidsArray['PEOPLE'],
-            'json-array',
-            null,
-            array('access_token'),
-            null,
-            null,
-            false,
-            false,
-            false,
-            "[redcap_name] = '" . $userid . "' AND [active_y] = '1'"
-        )[0];
+//        $people = REDCap::getData(
+//            $this->pidsArray['PEOPLE'],
+//            'json-array',
+//            null,
+//            array('access_token'),
+//            null,
+//            null,
+//            false,
+//            false,
+//            false,
+//            "[redcap_name] = '" . $userid . "' AND [active_y] = '1'"
+//        )[0];
+
+        $params = [
+            'project_id' => $this->pidsArray['PEOPLE'],
+            'return_format' => 'json-array',
+            'fields' => ['access_token'],
+            'filterLogic' => "[redcap_name] = '" . $userid . "' AND [active_y] = '1'",
+            'filterType' => "RECORD"
+        ];
+        $people = $this->module->escape(REDCap::getData($params))[0];
+
         if($userid == "bascome"){
+            print_array("[redcap_name] = '" . $userid . "' AND [active_y] = '1'");
             print_array($people);
         }
         if (!empty($people)) {
