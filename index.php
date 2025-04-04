@@ -24,18 +24,20 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
         print_array("IEDEA - AUTHORIZED PAGE");
     }
     if ($settings['deactivate_datahub___1'] != "1") {
-        if($pid == "204675" && defined("USERID") && USERID == "bascome") {
-            print_array("IEDEA - deactivate_datahub___1");
-        }
         #retrieve token if session is gone
         if(defined("USERID") && empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
             if($pid == "204675" && defined("USERID") && USERID == "bascome") {
                 print_array("IEDEA - session_start");
             }
             session_start();
+            if($pid == "204675" && defined("USERID") && USERID == "bascome") {
+                print_array($_SESSION);
+            }
             $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()] = $module->getSecurityHandler()->getREDCapUserToken();
             if($pid == "204675" && defined("USERID") && USERID == "bascome") {
                 print_array($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()]);
+                print_array("token: ".$module->getSecurityHandler()->getTokenSessionName());
+                print_array("SESSION_TOKEN_STRING: ".SecurityHandler::SESSION_TOKEN_STRING);
             }
         }
         if(!empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
