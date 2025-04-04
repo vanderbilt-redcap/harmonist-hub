@@ -248,29 +248,18 @@ class SecurityHandler
 
     function getTokenByUserId($userid): ?string
     {
-//        $people = REDCap::getData(
-//            $this->pidsArray['PEOPLE'],
-//            'json-array',
-//            null,
-//            array('access_token'),
-//            null,
-//            null,
-//            false,
-//            false,
-//            false,
-//            "[redcap_name] = '" . $userid . "' AND [active_y] = '1'"
-//        )[0];
-
-
-        $params = [
-            'project_id' => $this->pidsArray['PEOPLE'],
-            'return_format' => 'json-array',
-            'fields' => ['access_token'],
-            'filterLogic' => "[redcap_name] = '" . $userid."'",
-            'filterType' => "RECORD"
-        ];
-        $people = $this->module->escape(\REDCap::getData($params))[0];
-
+        $people = REDCap::getData(
+            $this->pidsArray['PEOPLE'],
+            'json-array',
+            null,
+            array('access_token'),
+            null,
+            null,
+            false,
+            false,
+            false,
+            "[redcap_name] = '" . $userid . "' AND [active_y] = '1'"
+        )[0];
         if (!empty($people)) {
             return $people['access_token'];
         }
