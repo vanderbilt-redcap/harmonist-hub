@@ -171,7 +171,7 @@ foreach ($all_data_recent_activity as $recent_activity) {
         $aux = array();
         $activity = "delete";
         if ($recent_activity['deletion_type'][0] == '1') {
-            $name = "<em>Automatic</em>";
+            $name = "Automatic";
         } else if ($recent_activity['deletion_type'][0] == '2') {
             $params = [
                 'project_id' => $pidsArray['PEOPLE'],
