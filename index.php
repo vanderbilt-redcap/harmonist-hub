@@ -32,6 +32,13 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
             session_start();
             if($pid == "204675" && defined("USERID") && USERID == "bascome") {
                 print_array($_SESSION);
+                $params = [
+                    'project_id' => $this->pidsArray['PEOPLE'],
+                    'return_format' => 'json-array',
+                    'filterLogic' => "[redcap_name] = '" . USERID . "' AND [active_y] = 1",
+                    'filterType' => "RECORD"
+                ];
+                print_array(\REDCap::getData($params));
             }
             $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()] = $module->getSecurityHandler()->getREDCapUserToken();
             if($pid == "204675" && defined("USERID") && USERID == "bascome") {
