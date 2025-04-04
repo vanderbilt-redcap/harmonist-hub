@@ -33,7 +33,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
             if($pid == "204675" && defined("USERID") && USERID == "bascome") {
                 print_array($_SESSION);
                 $params = [
-                    'project_id' => $this->pidsArray['PEOPLE'],
+                    'project_id' => $pidsArray['PEOPLE'],
                     'return_format' => 'json-array',
                     'filterLogic' => "[redcap_name] = '" . USERID . "' AND [active_y] = 1",
                     'filterType' => "RECORD"
