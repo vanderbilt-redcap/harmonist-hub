@@ -20,67 +20,16 @@ $is_authorized_and_has_rights = false;
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
-    if ($settings['deactivate_datahub___1'] != "1") {
-        #retrieve token if session is gone
-        if(defined("USERID") && empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
-            if($pid == "204675" && defined("USERID") && USERID == "bascome") {
-                print_array("IEDEA - session_start");
-            }
-            session_start();
-            if($pid == "204675" && defined("USERID") && USERID == "bascome") {
-                $params = [
-                    'project_id' => $pidsArray['PEOPLE'],
-                    'return_format' => 'json-array',
-                    'filterLogic' => "[redcap_name] = '" . USERID . "' AND [active_y] = '1'"
-                ];
-                print_array($params);
-                print_array(\REDCap::getData($params));
-                $params = [
-                    'project_id' => $pidsArray['PEOPLE'],
-                    'return_format' => 'json-array',
-                    'filterLogic' => "[active_y] = '1'"
-                ];
-                print_array($params);
-                print_array(\REDCap::getData($params));
-                $params = [
-                    'project_id' => $pidsArray['PEOPLE'],
-                    'return_format' => 'json-array'
-                ];
-                print_array($params);
-                $test_people = \REDCap::getData($params);
-                foreach ($test_people as $people) {
-                    if($people['active_y'] == "1" && $people['redcap_name'] == USERID) {
-                        print_array($people);
-                        break;
-                    }
-                }
-
-                $test = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,null,null,null,false,false,false,"[record]=3");
-                print_array($test);
-            }
-            $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()] = $module->getSecurityHandler()->getREDCapUserToken();
-        }
-        if(!empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
-            if($pid == "204675" && defined("USERID") && USERID == "bascome") {
-                print_array("IEDEA - Token exists");
-            }
-            $is_authorized_and_has_rights = true;
-            if ($option === 'lge') {
-                include('sop_data_activity_log_delete.php');
-            } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
-                if($pid == "204675" && defined("USERID") && USERID == "bascome") {
-                    print_array("IEDEA - before sop_retrieve_data");
-                }
-                include('sop_retrieve_data.php');
-            }
-            if($pid == "204675" && defined("USERID") && USERID == "bascome") {
-                print_array("IEDEA - after if");
-            }
+    if ($settings['deactivate_datahub___1'] != "1" && !empty(
+        $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()]
+        )) {
+        $is_authorized_and_has_rights = true;
+        if ($option === 'lge') {
+            include('sop_data_activity_log_delete.php');
+        } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
+            include('sop_retrieve_data.php');
         }
     }
-}
-if($pid == "204675" && defined("USERID") && USERID == "bascome") {
-    print_array("IEDEA - OUT");
 }
 ?>
 <!DOCTYPE html>
