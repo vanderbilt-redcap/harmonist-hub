@@ -20,14 +20,19 @@ $is_authorized_and_has_rights = false;
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
-    if ($settings['deactivate_datahub___1'] != "1" && !empty(
-        $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()]
-        )) {
-        $is_authorized_and_has_rights = true;
-        if ($option === 'lge') {
-            include('sop_data_activity_log_delete.php');
-        } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
-            include('sop_retrieve_data.php');
+    if ($settings['deactivate_datahub___1'] != "1") {
+        #retrieve token if session is gone
+        if(defined("USERID") && empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
+            session_start();
+            $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()] = $module->getSecurityHandler()->getREDCapUserToken();
+        }
+        if(!empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
+            $is_authorized_and_has_rights = true;
+            if ($option === 'lge') {
+                include('sop_data_activity_log_delete.php');
+            } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
+                include('sop_retrieve_data.php');
+            }
         }
     }
 }
