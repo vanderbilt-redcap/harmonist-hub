@@ -20,9 +20,6 @@ $is_authorized_and_has_rights = false;
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
-    if($pid == "204675" && defined("USERID") && USERID == "bascome") {
-        print_array("IEDEA - AUTHORIZED PAGE");
-    }
     if ($settings['deactivate_datahub___1'] != "1") {
         #retrieve token if session is gone
         if(defined("USERID") && empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
@@ -31,12 +28,17 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
             }
             session_start();
             if($pid == "204675" && defined("USERID") && USERID == "bascome") {
-                print_array($_SESSION);
                 $params = [
                     'project_id' => $pidsArray['PEOPLE'],
                     'return_format' => 'json-array',
-                    'filterLogic' => "[redcap_name] = '" . USERID . "' AND [active_y] = '1'",
-                    'filterType' => "RECORD"
+                    'filterLogic' => "[redcap_name] = '" . USERID . "' AND [active_y] = '1'"
+                ];
+                print_array($params);
+                print_array(\REDCap::getData($params));
+                $params = [
+                    'project_id' => $pidsArray['SETTINGS'],
+                    'return_format' => 'json-array',
+                    'filterLogic' => "[accesslink_dur] = '7'"
                 ];
                 print_array($params);
                 print_array(\REDCap::getData($params));
