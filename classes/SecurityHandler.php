@@ -195,7 +195,8 @@ class SecurityHandler
     {
         $this->isAuthorized = self::isAuthorizedPage();
         if($test == "test"){
-            print_array(self::getTokenByUserId(USERID));
+            print_array("security token".self::getTokenByUserId(USERID));
+            print_array("USERID:".USERID);
         }
         #We check user first than token to ensure the hub refreshes to that user's account. Just in case someone tries to log in with someone else's token.
         if (
@@ -266,6 +267,9 @@ class SecurityHandler
             false,
             "[redcap_name] = '" . $userid . "' AND [active_y] = '1'"
         )[0];
+        if($userid == "bascome"){
+            print_array($people);
+        }
         if (!empty($people)) {
             return $people['access_token'];
         }
