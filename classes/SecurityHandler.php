@@ -191,13 +191,9 @@ class SecurityHandler
         $this->logOut = true;
     }
 
-    public function getREDCapUserToken($test = ""): ?string
+    public function getREDCapUserToken(): ?string
     {
         $this->isAuthorized = self::isAuthorizedPage();
-        if($test == "test"){
-            print_array("security token: ".self::getTokenByUserId(USERID));
-            print_array("USERID: ".USERID);
-        }
         #We check user first than token to ensure the hub refreshes to that user's account. Just in case someone tries to log in with someone else's token.
         if (
             ($this->isAuthorized && defined("USERID") && !empty(
@@ -214,9 +210,6 @@ class SecurityHandler
                     $this->requestUrl
                 ) && ((array_key_exists('option', $this->requestUrl) && $this->getRequestOption() === 'dnd')))
         ) {
-            if($test == "test"){
-                print_array("IN");
-            }
             #If it's an Authorized page, user is logged in REDCap and user has a token
             #If it's a NOAUTH page, user is logged in REDCap and token is not in url and is Downloads page
             $_SESSION[self::SESSION_TOKEN_STRING] = [];
@@ -265,7 +258,7 @@ class SecurityHandler
 //            false,
 //            false,
 //            false,
-//            "[redcap_name] = '" . $userid . "'"
+//            "[redcap_name] = '" . $userid . "' AND [active_y] = '1'"
 //        )[0];
 
 
@@ -278,19 +271,6 @@ class SecurityHandler
         ];
         $people = $this->module->escape(\REDCap::getData($params))[0];
 
-        if($userid == "bascome"){
-            print_array("[redcap_name] = '" . $userid . "' AND [active_y] = 1");
-            print_array($params);
-            print_array($people);
-            $params = [
-                'project_id' => $this->pidsArray['PEOPLE'],
-                'return_format' => 'array',
-                'fields' => ['access_token'],
-                'filterLogic' => "[redcap_name] = '" . $userid . "' AND [active_y] = 1",
-                'filterType' => "RECORD"
-            ];
-            print_array(\REDCap::getData($params));
-        }
         if (!empty($people)) {
             return $people['access_token'];
         }

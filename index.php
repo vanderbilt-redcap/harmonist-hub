@@ -38,15 +38,13 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                     'filterLogic' => "[redcap_name] = '" . USERID . "' AND [active_y] = 1",
                     'filterType' => "RECORD"
                 ];
+                print_array($params);
                 print_array(\REDCap::getData($params));
+
+                $test = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,null,null,null,false,false,false,"[redcap_name] = '" . USERID . "'");
+                print_array($test);
             }
             $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()] = $module->getSecurityHandler()->getREDCapUserToken();
-            if($pid == "204675" && defined("USERID") && USERID == "bascome") {
-                print_array($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()]);
-                print_array("token: ".$module->getSecurityHandler()->getREDCapUserToken("test"));
-                print_array("session name: ".$module->getSecurityHandler()->getTokenSessionName());
-                print_array("SESSION_TOKEN_STRING: ".SecurityHandler::SESSION_TOKEN_STRING);
-            }
         }
         if(!empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
             if($pid == "204675" && defined("USERID") && USERID == "bascome") {
