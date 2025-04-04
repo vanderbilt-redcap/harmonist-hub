@@ -284,14 +284,10 @@ class SecurityHandler
             print_array($people);
             $params = [
                 'project_id' => $this->pidsArray['PEOPLE'],
-                'return_format' => 'json-array',
+                'return_format' => 'array',
+                'fields' => ['access_token'],
                 'filterLogic' => "[redcap_name] = '" . $userid . "' AND [active_y] = 1",
                 'filterType' => "RECORD"
-            ];
-            print_array(\REDCap::getData($params));
-            $params = [
-                'project_id' => $this->pidsArray['PEOPLE'],
-                'return_format' => 'json-array'
             ];
             print_array(\REDCap::getData($params));
         }
