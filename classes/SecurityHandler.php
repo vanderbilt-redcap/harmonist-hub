@@ -191,9 +191,12 @@ class SecurityHandler
         $this->logOut = true;
     }
 
-    public function getREDCapUserToken(): ?string
+    public function getREDCapUserToken($test = ""): ?string
     {
         $this->isAuthorized = self::isAuthorizedPage();
+        if($test == "test"){
+            print_array(self::getTokenByUserId(USERID));
+        }
         #We check user first than token to ensure the hub refreshes to that user's account. Just in case someone tries to log in with someone else's token.
         if (
             ($this->isAuthorized && defined("USERID") && !empty(
@@ -210,6 +213,9 @@ class SecurityHandler
                     $this->requestUrl
                 ) && ((array_key_exists('option', $this->requestUrl) && $this->getRequestOption() === 'dnd')))
         ) {
+            if($test == "test"){
+                print_array("IN");
+            }
             #If it's an Authorized page, user is logged in REDCap and user has a token
             #If it's a NOAUTH page, user is logged in REDCap and token is not in url and is Downloads page
             $_SESSION[self::SESSION_TOKEN_STRING] = [];
