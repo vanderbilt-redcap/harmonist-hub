@@ -40,7 +40,7 @@ if($request !="") {
     if (!empty($request['assoc_concept'])) {
         $RecordSetConceptSheets = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $request['assoc_concept']));
         $concept_sheet = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConceptSheets,$pidsArray['HARMONIST'])[0]['concept_id'];
-        $concept = '<a href="i'.$module->getUrl('index.php').'&NOAUTH&pid=' . $pidsArray['DATAMODEL'] . '&option=ttl&record=' . $request['assoc_concept'] . '" target="_blank">' . $concept_sheet . '</a>';
+        $concept = '<a href="'.$module->getUrl('index.php').'&NOAUTH&option=ttl&record=' . $request['assoc_concept'] . '" target="_blank">' . $concept_sheet . '</a>';
     }else if($request['mr_temporary'] != ""){
         $concept = $request['mr_temporary'];
     }
