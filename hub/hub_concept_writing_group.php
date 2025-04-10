@@ -4,10 +4,12 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 global $date;
 $recordId = htmlentities($_REQUEST['record'], ENT_QUOTES);
 $concept = $module->getConceptModel()->fetchConcept($recordId, $settings['authorship_limit']);
-$writingGroupMember = new WritingGroupModel($module, $pid, $concept);
-$writingGroupMemberList = $writingGroupMember->fetchAllWritingGroup();
-$canUserEdit = $concept->canUserEdit($current_user['record_id']);
-$docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name']);
+if($concept != null){
+    $writingGroupMember = new WritingGroupModel($module, $pid, $concept);
+    $writingGroupMemberList = $writingGroupMember->fetchAllWritingGroup();
+    $canUserEdit = $concept->canUserEdit($current_user['record_id']);
+    $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name']);
+}
 ?>
 <script language="JavaScript">
     //To filter the data
@@ -94,7 +96,7 @@ $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name'])
     <div class="backTo">
         <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$recordId?>">< Back to Concept</a>
     </div>
-    <?php if($concept != "") {?>
+    <?php if($concept != "" && $concept != null) {?>
     <h3 class="concepts-title-title"><?=$concept->getConceptId().": Writing Group"?></h3>
 
     <?php if($isAdmin || $harmonist_perm_edit_concept){
