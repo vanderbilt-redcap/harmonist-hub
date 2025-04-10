@@ -40,9 +40,9 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                 $pidsArray['PEOPLE'],
                 'json-array',
                 array('record_id' => $current_user),
-                array('harmonistadmin_y', 'redcap_name')
+                array('harmonistadmin_y', 'redcap_name', 'active_y')
             )[0];
-            if (!empty($current_user) && $userData['redcap_name'] == USERID && ($request_DU['data_upload_person'] == $current_user || ($key = array_search(
+            if (!empty($current_user) && $userData['redcap_name'] == USERID && $userData['active_y'] == "1" && ($request_DU['data_upload_person'] == $current_user || ($key = array_search(
                         $current_user,
                         $array_userid
                     )) !== false)) {

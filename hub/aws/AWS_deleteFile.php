@@ -29,8 +29,8 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                            ]);
         try {
             if($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])&& $module->getSecurityHandler()->isTokenCorrect($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])) {
-                $userData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $current_user),array('harmonistadmin_y','redcap_name'))[0];
-                if (!empty($current_user) && $userData['redcap_name'] == USERID && ($request_DU['data_upload_person'] == $current_user || $userData['harmonistadmin_y'])){
+                $userData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $current_user),array('harmonistadmin_y','redcap_name', 'active_y'))[0];
+                if (!empty($current_user) && $userData['redcap_name'] == USERID && $userData['active_y'] == "1" && ($request_DU['data_upload_person'] == $current_user || $userData['harmonistadmin_y'])){
                         // Delete the object
                     $result = $s3->deleteObject(array(
                                                     'Bucket' => $request_DU['data_upload_bucket'],
