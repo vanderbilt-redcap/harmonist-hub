@@ -180,6 +180,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                             include('sop/sop_submit_data.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'dat' && !$deactivate_datahub)
                         {
+                            print_array("HELLO");
                             include('hub/hub_data.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'pdc' && !$deactivate_datahub)
                         {
