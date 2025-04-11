@@ -62,6 +62,7 @@ class WritingGroupModel extends Model
                 }
                 if ($saveData) {
                     $writingGroupMember->setRole($researchGroupName);
+                    $writingGroupMember->setRoleId($region['record_id']);
                     $writingGroupMember->setOrder($i);
                     $writingGroupMember->setEditLink(
                         $this->fetchSurveyLink(

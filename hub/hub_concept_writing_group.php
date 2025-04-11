@@ -7,9 +7,10 @@ $concept = $module->getConceptModel()->fetchConcept($recordId, $settings['author
 if($concept != null){
     $writingGroupMember = new WritingGroupModel($module, $pid, $concept);
     $writingGroupMemberList = $writingGroupMember->fetchAllWritingGroup();
-    $canUserEdit = $concept->canUserEdit($current_user['record_id']);
+    $canUserEdit = $concept->canUserEdit($current_user['record_id'], $current_user['harmonist_perms___3']);
     $docName = $writingGroupMember->fetchWritingGroupFileName($settings['hub_name']);
 }
+$harmonistPermEditConcept = ($current_user['harmonist_perms___3'] == 1) ? true : false;
 ?>
 <script language="JavaScript">
     //To filter the data
@@ -30,6 +31,7 @@ if($concept != null){
     $(document).ready(function() {
         let docName = <?=json_encode($docName)?>;
         let canEdit = <?=json_encode($canUserEdit)?>;
+        let harmonistPermEditConcept = <?=json_encode($harmonistPermEditConcept)?>;
         let columns = [0, 1, 2, 3];
 
         Sortable.init();
@@ -65,7 +67,7 @@ if($concept != null){
         var sortable_table = $('#sortable_table').DataTable();
 
         //we hide the columns that we use only as filters
-        if(!canEdit){
+        if(!canEdit && !harmonistPermEditConcept){
             var column_actions = sortable_table.column(4);
             column_actions.visible(false);
         }
@@ -99,7 +101,7 @@ if($concept != null){
     <?php if($concept != "" && $concept != null) {?>
     <h3 class="concepts-title-title"><?=$concept->getConceptId().": Writing Group"?></h3>
 
-    <?php if($isAdmin || $harmonist_perm_edit_concept){
+    <?php if($isAdmin || $harmonistPermEditConcept){
         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $recordId, "concept_sheet", "");
         $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash'])."&modal=modal";
 
@@ -171,7 +173,7 @@ if($concept != null){
                     <th class="sorted_class" >Email</th>
                     <th class="sorted_class">Role</th>
                     <th class="sorted_class">Order</th>
-                    <?php if($canUserEdit){?>
+                    <?php if($canUserEdit || $harmonistPermEditConcept){?>
                     <th class="sorted_class">Actions</th>
                     <?php } ?>
                 </tr>
@@ -180,7 +182,7 @@ if($concept != null){
             <?php
                 foreach ($writingGroupMemberList as $writingGroupMember) {
                     $edit = "";
-                    if($canUserEdit){
+                    if(($harmonistPermEditConcept && $writingGroupMember->getRoleId() == $current_user["person_region"]) || $canUserEdit){
                         $edit = '<a href="#" class="btn btn-default open-codesModal" onclick="editIframeModal(\'hub_edit_writing_group\',\'redcap-edit-frame\',\'' . $writingGroupMember->getEditLink() . '\');"><em class="fa fa-pencil"></em></a>';
                     }
                     echo "<tr>
@@ -188,7 +190,7 @@ if($concept != null){
                         <td style='width: 30%'><a href='mailto:".$writingGroupMember->getEmail()."'>".$writingGroupMember->getEmail()."</a></td>
                         <td style='width: 15%'>".$writingGroupMember->getRole()."</td>
                         <td style='width: 15%'>".$writingGroupMember->getOrder()."</td>";
-                    if($canUserEdit) {
+                    if($canUserEdit || $harmonistPermEditConcept) {
                         echo "<td style='width: 5%'>" . $edit . "</td>";
                     }
                         echo "</tr>";
