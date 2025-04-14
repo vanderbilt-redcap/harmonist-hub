@@ -3,11 +3,13 @@ record_id,sop_comments,,text,"Record ID",,,,,,,,,,,,,
 sop_id,sop_comments,,text,"SOP ID
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>",,,,,,,,,LV,,,," @HIDDEN-SURVEY"
 response_person,sop_comments,,sql,"Person ID
-<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=59097 GROUP BY a.record ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
 response_region,sop_comments,,sql,"Region ID of User
-<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=59099  GROUP BY a.record  ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=2127  GROUP BY a.record  ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
 comment_ver,sop_comments,,dropdown,"Comment on Draft vs. Final
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","0, Draft | 1, Final",,,,,,,,LV,,,," @HIDDEN-SURVEY"
+other_action,sop_comments,,dropdown,"Other Tracked Activity
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by Hub interface</div>","0, Made Final | 1, Made Public | 2, Made Private | 3, Data Call started | 4, Data Call ended",,,,,,,,,,,," @HIDDEN-SURVEY"
 comments,sop_comments,,notes,"Questions and Comments",,,,,,,,,LV,,,,
 revised_file,sop_comments,,file,"Revised File",,,,,,,,,LV,,,,
 response_regioncode,data_redundancy,"These fields will be filled by a redcap_survey_complete hook",text,"2-letter Region Code 
