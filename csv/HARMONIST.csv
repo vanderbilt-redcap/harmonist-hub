@@ -35,21 +35,36 @@ notiedeaperson,participants,,checkbox,,"1, The person I want to add is not in th
 person_other,participants,,text,"<div style=""padding-left:30px; color:#333333"">Other (non-Consortia) Contact
 <span style=""font-weight:lighter; font-style:italic"">(For Consortium members, please <a href=""https://redcap.vumc.org/redcap_v7.2.2/DataEntry/record_home.php?pid=59097"">add them to the Persons Project</a> instead and they will then appear in the dropdown list.)</span></div>",,,,,,,"[notiedeaperson(1)] = '1'",,,,,,
 nothubuser,participants,,checkbox,,"1, The person I want to add is not in the Hub Users list.",,,,,,,,LV,,,,
-participant_firstname,participants,,text,"First Name",,,,,,,"[nothubuser] = '1'",,,,,,
-participant_lastname,participants,,text,"Last Name",,,,,,,"[nothubuser] = '1'",,,,,,
-participant_email,participants,,text,"Email Address",,,email,,,,"[nothubuser] = '1'",,,,,,
+participant_firstname,participants,,text,"First Name",,,,,,,"[nothubuser(1)] = '1'",,,,,,
+participant_lastname,participants,,text,"Last Name",,,,,,,"[nothubuser(1)] = '1'",,,,,,
+participant_email,participants,,text,"Email Address",,,email,,,,"[nothubuser(1)] = '1'",,,,,,
 participant_note,participants,,text,"Note about participant",,,,,,,,,,,,,
 adminupdate_d,admin_update,,text,"Date of update",,,date_ymd,,,,,,,,,,
 admin_status,admin_update,,dropdown,Status,"1, Not approved | 2, Approved | 3, In development | 4, Submitted to journal | 5, Published",,,,,,,,,,,,
 admin_update,admin_update,,notes,"Admin update on project:",,,,,,,,,LV,,,,
 adminupdate_file,admin_update,,file,"Associated file",,,,,,,,,,,,,
-update_request,project_update_survey,,descriptive,"Hello [configuration_arm_1][first_name], 
-Please submit a <u>brief status report</u> on the following project for the upcoming Quarterly Project Review:<div class='blue'><p style=""text-indent:50px;""><strong>[configuration_arm_1][project_title]</strong></p></div>We will use this info to report to the consortium.",,,,,,,,,,,,,
+update_request,project_update_survey,,descriptive,"Dear Concept Lead for [concept_id],
+
+Please submit a <u>brief status report</u> on the following project:
+<div class='blue'><p style=""text-indent:50px;""><strong>Concept: [configuration_arm_1][concept_title] ([concept_id])</strong></p></div>",,,,,,,,,,,,,
 update_d,project_update_survey,,text,"Date of update",,,date_ymd,,,,,,,,,," @TODAY @READONLY"
 project_status,project_update_survey,,radio,"Current Project Status
 <div style=""font-weight:lighter"">Please select the <b>most recent</b> status that applies to your concept sheet.</div>","1, Approved | 2, Data requested | 3, Data analysis | 4, Abstract submitted | 5, Abstract accepted | 6, Manuscript submitted | 7, Manuscript under revision | 8, Published",,,,,,,,LV,,,,
 project_update,project_update_survey,,notes,"Please give a 2-3 sentence update on this project.<div style=""font-weight:lighter"">This can include updates on data collection, preparation, and analysis; work on abstracts or manuscripts; writing group meetings; journal/conference submissions; or waiting periods (to receive data, to hear from reviewers, etc.)</div>",,,,,,,,,LV,,,,
-output,project_update_survey,,descriptive,"<div class=""green"" style=""text-align:center"">Congratulations on your abstract/manuscript acceptance! We will send a follow up survey to capture the information about your abstract or manuscript.</div>",,,,,,,"[project_status] = '5' or [project_status] = '8'",,,,,,
+output_display,project_update_survey,,descriptive,"<p>Research Products linked to this concept: 
+<em><span style=""font-weight: normal;"">(Missing data will show as a blank. To update data on existing publications shown below, e-mail <a href=""mailto:hilary.vansell@vumc.org"" target=""_blank"" rel=""noopener"">hubadmin@fakeemail.org</a>)</span></em></p>",,,,,,,,,,,,,
+no_outputs,project_update_survey,,descriptive,"<div style=""margin-left: 20px; margin-right: 20px;""> <div class=""gray"">No Research Products reported yet.</div> </div>",,,,,,,,,,,,," @IF(([output_year][1] <> '' or [output_year][2] <> '' or [output_year][3] <> '' or [output_year][4] <> ''), @HIDDEN, '')"
+output_displayabstract_1,project_update_survey,,descriptive,"<p style=""padding-left: 40px;"">[output_year][1], [output_type][1],<span style=""font-weight: normal;""> [output_venue][1]: </span><span style=""font-weight: normal;"">[output_authors][1].<em> [output_title][1].</em></span></p>",,,,,,,"[output_type][1] <> '1' and [output_type][1] <> ''",,,,,," @IF([output_year][1] = '', @HIDDEN, '')"
+output_displayabstract_2,project_update_survey,,descriptive,"<p style=""padding-left: 40px;"">[output_year][2], [output_type][2],<span style=""font-weight: normal;""> [output_venue][2]: </span><span style=""font-weight: normal;"">[output_authors][2].<em> [output_title][2].</em></span></p>",,,,,,,"[output_type][2] <> '1' and [output_type][2] <> ''",,,,,," @IF([output_year][2] = '', @HIDDEN, '')"
+output_displayabstract_3,project_update_survey,,descriptive,"<p style=""padding-left: 40px;"">[output_year][3], [output_type][3],<span style=""font-weight: normal;""> [output_venue][3]: </span><span style=""font-weight: normal;"">[output_authors][3].<em> [output_title][3].</em></span></p>",,,,,,,"[output_type][3] <> '1' and [output_type][3] <> ''",,,,,," @IF([output_year][3] = '', @HIDDEN, '')"
+output_displayabstract_4,project_update_survey,,descriptive,"<p style=""padding-left: 40px;"">[output_year][4], [output_type][4],<span style=""font-weight: normal;""> [output_venue][4]: </span><span style=""font-weight: normal;"">[output_authors][4].<em> [output_title][4].</em></span></p>",,,,,,,"[output_type][4] <> '1' and [output_type][4] <> ''",,,,,," @IF([output_year][4] = '', @HIDDEN, '')"
+output_displayabstract_5,project_update_survey,,descriptive,"<p style=""padding-left: 40px;"">[output_year][5], [output_type][5],<span style=""font-weight: normal;""> [output_venue][5]: </span><span style=""font-weight: normal;"">[output_authors][5].<em> [output_title][5].</em></span></p>",,,,,,,"[output_type][5] <> '1' and [output_type][5] <> ''",,,,,," @IF([output_year][5] = '', @HIDDEN, '')"
+output_displaypaper_1,project_update_survey,,descriptive,"<p style=""padding-left: 40px;"">[output_year][1]<span style=""font-weight: normal;"">, </span>[output_type][1]<span style=""font-weight: normal;"">, [output_venue][1]: </span><span style=""font-weight: normal;"">[output_authors][1]. <em>[output_title][1]. </em></span><span style=""font-weight: normal;"">[output_citation][1]. </span><span style=""font-weight: normal;"">PMID [output_pmid][1]/ PMCID [output_pmcid][1].</span></p>",,,,,,,"[output_type][1] = '1'",,,,,," @IF([output_year][1] = '', @HIDDEN, '')"
+output_displaypaper_2,project_update_survey,,descriptive,"<p style=""padding-left: 40px;"">[output_year][2]<span style=""font-weight: normal;"">, </span>[output_type][2]<span style=""font-weight: normal;"">, [output_venue][2]: </span><span style=""font-weight: normal;"">[output_authors][2]. <em>[output_title][2]. </em></span><span style=""font-weight: normal;"">[output_citation][2]. </span><span style=""font-weight: normal;"">PMID [output_pmid][2] / PMCID [output_pmcid][2].</span></p>",,,,,,,"[output_type][2] = '1'",,,,,," @IF([output_year][2] = '', @HIDDEN, '')"
+output_displaypaper_3,project_update_survey,,descriptive,"<p style=""padding-left: 40px;"">[output_year][3]<span style=""font-weight: normal;"">, </span>[output_type][3]<span style=""font-weight: normal;"">, [output_venue][3]: </span><span style=""font-weight: normal;"">[output_authors][3]. <em>[output_title][3]. </em></span><span style=""font-weight: normal;"">[output_citation][3]. </span><span style=""font-weight: normal;"">PMID [output_pmid][3] / PMCID [output_pmcid][3].</span></p>",,,,,,,"[output_type][3] = '1'",,,,,," @IF([output_year][3] = '', @HIDDEN, '')"
+output_displaypaper_4,project_update_survey,,descriptive,"<p style=""padding-left: 40px;"">[output_year][4]<span style=""font-weight: normal;"">, </span>[output_type][4]<span style=""font-weight: normal;"">, [output_venue][4]: </span><span style=""font-weight: normal;"">[output_authors][4]. <em>[output_title][4]. </em></span><span style=""font-weight: normal;"">[output_citation][4]. </span><span style=""font-weight: normal;"">PMID [output_pmid][4] / PMCID [output_pmcid][4].</span></p>",,,,,,,"[output_type][4] = '1'",,,,,," @IF([output_year][4] = '', @HIDDEN, '')"
+output_displaypaper_5,project_update_survey,,descriptive,"<p style=""padding-left: 40px;"">[output_year][5]<span style=""font-weight: normal;"">, </span>[output_type][5]<span style=""font-weight: normal;"">, [output_venue][5]: </span><span style=""font-weight: normal;"">[output_authors][5]. <em>[output_title][5]. </em></span><span style=""font-weight: normal;"">[output_citation][5]. </span><span style=""font-weight: normal;"">PMID [output_pmid][5] / PMCID [output_pmcid][5].</span></p>",,,,,,,"[output_type][5] = '1'",,,,,," @IF([output_year][5] = '', @HIDDEN, '')"
+new_output,project_update_survey,,checkbox,,"1, <b>I have new research products to report </b> (a new survey will open to complete the information)",,,,,,,,LV,,,,
 thanks,project_update_survey,,descriptive,"<div class=""green"" style=""text-align:center"">Thank you! We will include your update in a status report for the consortium.</div>",,,,,,,,,,,,,
 output_txt,outputs,,descriptive,"<div style=""color:white; text-align:center; border: 1px #3498db; background-color: #2980b9;""><h3 style=""margin:0px; padding:10px"">Scientific Outputs</h3></div>",,,,,,,,,,,,,
 output_type,outputs,,dropdown,"Type of Scientific Output","1, Manuscript | 2, Abstract | 3, Poster | 4, Presentation Slides | 5, Report | 99, Other",,,,,,,,,,,,
@@ -92,11 +107,11 @@ cmember_role,writing_group_core,,dropdown,"<div class=""rich-text-field-label"">
 cmember_link,writing_group_core,,sql,"Writing Group Member","SELECT a.record,
 	CONCAT_WS(' ',
 		CONCAT( '""', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '""'),
-		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' )
-	) as value
-FROM [data-table:798] a
+		CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) 
+	) as value  
+FROM [data-table:798] a  
 WHERE a.project_id=798
-GROUP BY a.record
+GROUP BY a.record 
 ORDER BY value",,,,,,"[cmember_nh(1)] != ""1""",y,,,,,
 cmember_nh,writing_group_core,,checkbox,"This person is not a Hub Member","1, Add contact information",,,,,,,,,,,,
 cmember_firstname,writing_group_core,,text,"First Name",,,,,,,,y,,,,,
