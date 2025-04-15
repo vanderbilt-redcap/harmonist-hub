@@ -106,6 +106,9 @@ class SecurityHandler
             if ($projectId == null) {
                 $projectId = $this->pidsArray['SETTINGS'];
             }
+            if($projectId == null){
+                return [];
+            }
             $settings = REDCap::getData($projectId, 'json-array', null)[0];
 
             if (!empty($settings)) {
