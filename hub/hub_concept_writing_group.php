@@ -101,7 +101,7 @@ $harmonistPermEditConcept = ($current_user['harmonist_perms___3'] == 1) ? true :
     <?php if($concept != "" && $concept != null) {?>
     <h3 class="concepts-title-title"><?=$concept->getConceptId().": Writing Group"?></h3>
 
-    <?php if($isAdmin || $harmonistPermEditConcept){
+    <?php if($isAdmin){
         $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['HARMONIST'], $recordId, "concept_sheet", "");
         $survey_link = APP_PATH_WEBROOT_FULL . "/surveys/?s=".$module->escape($passthru_link['hash'])."&modal=modal";
 
