@@ -209,7 +209,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                             echo '<tr>';
                             echo  '<td style="width: 10%;">' . htmlspecialchars($value,ENT_QUOTES). '</td>';
                             echo  '<td>' . filter_tags($concept->getProjectUpdate()[$index]). '</td>';
-                            echo  '<td style="width: 25%;">'.htmlspecialchars($project_status[$concept->getProjectUpdate()[$index]],ENT_QUOTES).'</td>';
+                            echo  '<td style="width: 25%;">'.htmlspecialchars($project_status[$concept->getProjectStatus()[$index]],ENT_QUOTES).'</td>';
                             echo '</tr>';
                         }
                     }
