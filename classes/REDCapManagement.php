@@ -542,6 +542,102 @@ class REDCapManagement {
 
     public static function getProjectsModuleEmailAlertsArray($module, $hub_projectname){
         $projects_array_module_emailalerts = array(
+            2=> array(
+                "datapipeEmail_var" => "[contact_link], Contact Person\n[contact2_link], Contact Person 2",
+                "emailFromForm_var" => "",
+                "emailSender_var" => $hub_projectname." Hub",
+                "datapipe_var" => "[record_id], Record ID\n[concept_id], Concept ID\n[concept_title], Concept title\n[contact_name], Contact name\n[active_y], Active\n[contact_link], Contact Person\n[contact2_link], Contact Person 2\n[first_name], First name",
+                "surveyLink_var" => "[survey-link:project_update_survey][new-instance], Smart Variable survey instance",
+                "formLink_var" => "",
+                "emailFailed_var" => "harmonist@vumc.org",
+                "form-name" => array
+                (
+                    0 => "concept_sheet"
+                ),
+                "form-name-event" => array
+                (
+                    0 => ""
+                ),
+                "email-from" => array
+                (
+                    0 => "noreply@fakemail.com, ".$hub_projectname." Hub"
+                ),
+                "email-to" => array
+                (
+                    0 => "[contact_link],[contact2_link]"
+                ),
+                "email-cc" => array
+                (
+                    0 => ""
+                ),
+                "email-bcc" => array
+                (
+                    0 => ""
+                ),
+                "email-subject" => array
+                (
+                    0 => "Project Update Requested, ".$hub_projectname." Concept # [concept_id]"
+                ),
+                "email-text" => array
+                (
+                    0 => '<p class="MsoNormal"><span style="font-size: 11.0pt;">Dear Concept Lead(s) for [concept_id],</span></p>
+<p class="MsoNormal"><span style="font-size: 11.0pt;">You are the designated point of contact(s) for this '.$hub_projectname.' concept sheet.<span style="mso-spacerun: yes;">&nbsp;</span>Please provide a brief project status report at the <strong>survey link</strong> below. Your update will be included on the Hub concept page and a report of all responses will be sent to our listserv. If you are not the correct person for the concept, please let us know by e-mailing <a href="mailto:hilary.vansell@vumc.org">hilary.vansell@vumc.org</a>.&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size: 11.0pt;"><strong>[concept_title] </strong>([concept_id])</span></p>
+<p class="MsoNormal"><span style="font-size: 11.0pt;">Survey link: [survey-link:project_update_survey][new-instance]</span></p>
+<p class="MsoNormal"><span style="font-size: 11.0pt;">Thank you for participating in '.$hub_projectname.' research!</span></p>'
+                ),
+                "email-attachment-variable" => array
+                (
+                    0 => "[issue_file]"
+                ),
+                "email-repetitive" => array
+                (
+                    0 => 0
+                ),
+                "email-deleted" => array
+                (
+                    0 => 0
+                ),
+                "email-deactivate" => array
+                (
+                    0 => 1
+                ),
+                "email-condition" => array
+                (
+                    0 => "[active_y] = 'Y'"
+                ),
+                "email-incomplete" => array
+                (
+                    0 => 0
+                ),
+                "cron-send-email-on" => array
+                (
+                    0 => "now"
+                ),
+                "cron-send-email-on-field" => array
+                (
+                    0 => ""
+                ),
+                "cron-repeat-for" => array
+                (
+                    0 => 7
+                ),
+                "cron-queue-expiration-date" => array
+                (
+                    0 => "cond"
+                ),
+                "cron-queue-expiration-date-field" => array
+                (
+                    0 => "[active_y] = 'N' or datediff([update_d][last-instance], \"2025-04-24\", \"d\", \"y\") < 6"
+                ),
+                "alert-id" => array
+                (
+                    0 => 0
+                ),
+                "alert-name" => array(
+                    0 => "Project Update Survey "
+                )
+            ),
             3=> array(
                 "datapipeEmail_var" => "[contact_email], Contact Email\n[cc_email1], CC Email 1\n[cc_email2], CC Email 2",
                 "emailFromForm_var" => "",
