@@ -92,8 +92,8 @@ $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
 $conceptsData = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'],'');
 $regionalmrdata = array();
 foreach ($concept_type as $output_type=>$type){
-    ${"regionalmrdata_".$type} = \Vanderbilt\HarmonistHubExternalModule\getRegionalAndMR($pidsArray['EXTRAOUTPUTS'], $conceptsData,$type, $regionalmrdata,$settings['oldestyear_rmr_'.$type],$output_type);
-    ${"data_".$type} = \Vanderbilt\HarmonistHubExternalModule\getDataRMRTable(${"regionalmrdata_".$type}['outputs'],$type);
+    ${"regionalmrdata_".$type} = getRegionalAndMR($pidsArray['EXTRAOUTPUTS'], $conceptsData,$type, $regionalmrdata,$settings['oldestyear_rmr_'.$type],$output_type);
+    ${"data_".$type} = getDataRMRTable(${"regionalmrdata_".$type}['outputs'],$type);
 }
 
 $regionalmrpubs_color_manuscripts = ['#f5a549','#d1691f'];

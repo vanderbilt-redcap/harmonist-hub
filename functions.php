@@ -1815,7 +1815,7 @@ function getDataRMRTable($concept_outputs_by_year,$type){
             $total_out += $total;
             if($venue == "None"){
                 $total_venue = "<i>None</i>";
-            }else{
+            }else if($total > 0){
                 $total_venue .= $venue." (".$total."), ";
                 if(!array_key_exists($venue,${'data_'.$type.'_venue'})){
                     ${'data_'.$type.'_venue'}[$venue] = 0;
@@ -1832,7 +1832,9 @@ function getDataRMRTable($concept_outputs_by_year,$type){
         arsort(${'data_'.$type.'_venue'});
         $list = "";
         foreach(${'data_'.$type.'_venue'} as $venue=>$total){
-            $list .= $venue." (".$total."), ";
+            if($total > 0){
+                $list .= $venue." (".$total."), ";
+            }
         }
     }
     ${'data_'.$type} .= "<tr style='background-color: aliceblue'>
