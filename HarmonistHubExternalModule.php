@@ -25,8 +25,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $dd_array = REDCap::getDataDictionary('array');
 
-        #If it's not the mapper, do not show link in project
-        if ($hub_mapper != "" && $project_id != $hub_mapper) {
+        #If it's not the mapper, do not show link in project, unless for Data Donloads
+        if ($hub_mapper != "" && $project_id != $hub_mapper && $link['name'] != "Data Downloads User Management") {
             return false;
         }
         if ($link['name'] == "Harmonist Hub") {
@@ -53,6 +53,12 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                     $dd_array
                 ) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
                 $link['url'] = $this->getUrl("installProjects.php");
+            }
+        } elseif($link['name'] == "Data Downloads User Management" && $hub_mapper != "") {
+            #Link only displays on People's Project
+            $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
+            if ($project_id != $pidsArray['PEOPLE']) {
+                return false;
             }
         } else {
             #User has no permissions to see Last Updates, do not show link
