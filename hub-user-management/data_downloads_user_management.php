@@ -11,14 +11,13 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     <meta name="author" content="">
     <meta http-equiv="Cache-control" content="public">
     <meta name="theme-color" content="#fff">
-    <script type="text/javascript" src="<?=$module->getUrl('js/jquery.dataTables.min.js')?>"></script>
-    <script type="text/javascript" src="<?=$module->getUrl('js/selectAll.js')?>"></script>
-
     <link type='text/css' href='<?=$module->getUrl('css/sortable-theme-bootstrap.css')?>' rel='stylesheet' media='screen' />
     <link type='text/css' href='<?=$module->getUrl('bootstrap-3.3.7/css/bootstrap.min.css')?>' rel='stylesheet' media='screen' />
     <link type='text/css' href='<?=$module->getUrl('css/style.css')?>' rel='stylesheet' media='screen' />
     <link type='text/css' href='<?=$module->getUrl('css/tabs-steps-menu.css')?>' rel='stylesheet' media='screen' />
     <link type='text/css' href='<?=$module->getUrl('css/styles_user_management.css')?>' rel='stylesheet' media='screen' />
+
+    <script type="text/javascript" src="<?=$module->getUrl('js/selectAll.js')?>"></script>
 
     <script>
         $(document).ready(function () {
@@ -47,6 +46,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     </style>
 </head>
 <body>
+
 <?php if (!empty($module->getDataDownloadsUsersHandler()->getErrorUserList())){ ?>
     <div class="container" style="margin-top: 10px">
         <div class="alert alert-warning col-md-12">
@@ -58,7 +58,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     </div>
 <?php } ?>
 <div style="padding-top:15px;padding-left:15px">
-    Here you will find a list of users that have the correct permissions to use Data Downloads.<br>
+    <div>Here you will find a list of users that have the correct permissions to use Data Downloads.<br></div>
 </div>
 <div id="selectAllDiv" style="float: left;padding-top: 10px;">
     <input type="checkbox" id="ckb_user" name="chkAll_user" onclick="checkAll('user');" style="cursor: pointer;">
@@ -75,7 +75,6 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         <tbody>
         <?php
         $count = 0;
-//        print_array($hubDataDownloadsUsers->getErrorUserList());
         foreach ($module->getDataDownloadsUsersHandler()->getSuccessUserList() as $index => $user) {
             $count++;
             $admin = "";

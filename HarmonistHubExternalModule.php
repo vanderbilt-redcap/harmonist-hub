@@ -542,9 +542,9 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         return $this->conceptModel;
     }
 
-    public function getDataDownloadsUsersHandler(): HubDataDownloadsUsers
+    public function getDataDownloadsUsersHandler($refresh = false): HubDataDownloadsUsers
     {
-        if (!$this->dataDownloadsUsersHandler) {
+        if (!$this->dataDownloadsUsersHandler || $refresh) {
             $this->dataDownloadsUsersHandler = new HubDataDownloadsUsers($this, (int)$_GET['pid']);
         }
 

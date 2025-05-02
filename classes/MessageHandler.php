@@ -9,6 +9,7 @@ class MessageHandler
     const UPDATE_MESSAGE = 'U';
     const SAVE_MESSAGE = 'S';
     const NEW_MESSAGE = 'N';
+    const DELETE_MESSAGE = 'D';
     private $message = "";
 
     public function fetchMessage($type, $message_type)
@@ -33,6 +34,12 @@ class MessageHandler
                     $message_type = self::NEW_MESSAGE;
                 }
                 break;
+            case 'dataDownloadsUser':
+                $text = "The user";
+                if($message_type == "D") {
+                    $message_type = self::DELETE_MESSAGE;
+                }
+                break;
         }
         $this->message = $this->decorateMessage($message_type, $text);
         return $this->message;
@@ -47,6 +54,8 @@ class MessageHandler
                 return "$text data has been saved.";
             case self::NEW_MESSAGE:
                 return "$text has been added.";
+            case self::DELETE_MESSAGE:
+                return "$text has been removed.";
         }
     }
 }

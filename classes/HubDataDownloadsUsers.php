@@ -38,6 +38,7 @@ class HubDataDownloadsUsers extends Model
             'project_id' => $this->getPidsArray()['PEOPLE'],
             'return_format' => 'json-array',
             'fields' => [
+                'record_id',
                 'active_y',
                 'email',
                 'firstname',
@@ -62,6 +63,57 @@ class HubDataDownloadsUsers extends Model
 
                     $this->decorateAllUserLists($person, $errorPemissionList);
                 }
+            }
+        }
+    }
+
+    public function removeUserFromDataDownloads($user_id){
+        $this->removeDataDownloadPermission($user_id);
+        $this->removeUserFromDataDonwloadsProject($user_id);
+    }
+
+    private function removeDataDownloadPermission($record){
+        #Uncheck variable
+        $Proj = new \Project($this->getPidsArray()['PEOPLE']);
+        $event_id = $Proj->firstEventId;
+        $array = [];
+        $array[$record][$event_id]['allowgetdata_y'] = [1 => ""];//checkbox
+
+        $params = [
+            'project_id' => $this->getPidsArray()['PEOPLE'],
+            'dataFormat' => 'array',
+            'data' => $array,
+            'overwriteBehavior' => "overwrite",
+            'dateFormat' => "YMD",
+            'type' => "flat"
+        ];
+        $results = \REDCap::saveData($params);
+    }
+
+    private function removeUserFromDataDonwloadsProject($user_id){
+        $params = [
+            'project_id' => $this->getPidsArray()['PEOPLE'],
+            'return_format' => 'json-array',
+            'records' => [$user_id],
+            'fields' => [
+                'redcap_name',
+                'email',
+                'firstname',
+                'lastname'
+            ]
+        ];
+        $userData = $this->module->escape(\REDCap::getData($params))[0];
+        if(!empty($userData)){
+            if(filter_var($userData['redcap_name'], FILTER_VALIDATE_EMAIL)){
+                #USER ID IS EMAIL
+                #TODO
+            }else{
+                #USER ID
+                $q = $this->module->query("DELETE FROM redcap_user_rights WHERE project_id = ? and username = ?", [$this->getPidsArray()['DATADOWNLOADUSERS'],$userData['redcap_name']]);
+
+                #Logs
+                $message = "User ".$userData['redcap_name']." removed by ".USERID;
+                \REDCap::logEvent($message, "Deletion from Data Downloads User Management", null, null, null, $this->getPidsArray()['DATADOWNLOADUSERS']);
             }
         }
     }
