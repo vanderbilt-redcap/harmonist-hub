@@ -1,0 +1,3 @@
+<?php
+namespace Vanderbilt\HarmonistHubExternalModule;
+?>

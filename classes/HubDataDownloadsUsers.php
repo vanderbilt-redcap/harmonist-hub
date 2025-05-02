@@ -5,9 +5,10 @@ class HubDataDownloadsUsers extends Model
 {
     private $successUserList = [];
     private $errorUserList = [];
-    public function __construct(HarmonistHubExternalModule $module, $pidsArray)
+    public function __construct(HarmonistHubExternalModule $module, $peoplePid)
     {
-        parent::__construct($module, $pidsArray['PROJECTS']);
+        $hub_mapper = $module->getProjectSetting('hub-mapper', $peoplePid);
+        parent::__construct($module, $hub_mapper);
         $this->decorateUserList();
     }
 
@@ -52,55 +53,47 @@ class HubDataDownloadsUsers extends Model
         if (!empty($peopleData)) {
             foreach ($peopleData as $person) {
                 $errorPemissionList = [];
-                if($person['allowgetdata_y___1'] == "1") {
-                    if(!empty($person['redcap_name'])){
-                        if(!$this->isUserInDataDownloads($person['redcap_name'])){
-                            $errorPemissionList[] = "User has data downloads activated but is <strong>not in Data Downloads Project</strong>.";
-                        }
-                        if($this->isUserExpired($person['redcap_name'])){
-                            $errorPemissionList[] = "Their <strong>REDCap account has expired</strong>.";
-                        }
-                        if(!$this->doesUserExistInREDCap($person['redcap_name'])){
-                            $errorPemissionList[] = "User <strong>doesn't exist in REDCap</strong>.";
-                        }
-                    }else{
-                        $errorPemissionList[] = "User has downloads activated but the username is empty.";
-                    }
-                    if(!$this->isUserActive($person['active_y'])){
-                        $errorPemissionList[] = "User is <strong>not active</strong>.";
-                    }
-                    if(!$this->doesUserHaveHubAccess($person['harmonist_regperm'])){
-                        $errorPemissionList[] = "User has <strong>no Hub Access Permission</strong>.";
-                    }
+                if($this->canUserDownloadData($person['allowgetdata_y___1'])) {
+                    $errorPemissionList = $this->checkUserName($person['redcap_name'], $errorPemissionList);
+                    $errorPemissionList = $this->isUserActive($person['active_y'], $errorPemissionList);
+                    $errorPemissionList = $this->doesUserHaveHubAccess($person['harmonist_regperm'], $errorPemissionList);
 
-                    if($person['person_region'] != null){
-                        $params = [
-                            'project_id' => $this->getPidsArray()['REGIONS'],
-                            'return_format' => 'json-array',
-                            'records' => $person['person_region'],
-                            'fields' => [
-                                'region_code'
-                            ]
-                        ];
-                        $personRegion = $this->module->escape(\REDCap::getData($params))[0];
-                        $regionCode = "";
-                        if(!empty($personRegion)){
-                            $regionCode = "(".$personRegion['region_code'].")";
-                        }
-                        $person['region_code'] = $regionCode;
-                    }
-                    if(empty($errorPemissionList)){
-                        $this->successUserList[] = $person;
-                    }else{
-                        $person['error_permission_list'] = $errorPemissionList;
-                        $this->errorUserList[] = $person;
-                    }
+                    $person = $this->decorateUserRegion($person);
+
+                    $this->decorateAllUserLists($person, $errorPemissionList);
                 }
             }
         }
     }
 
-    private function isUserInDataDownloads($username){
+    private function canUserDownloadData($personDownload):bool
+    {
+        if ($personDownload == "1") {
+            return true;
+        }
+        return false;
+    }
+
+    private function checkUserName($username, $errorPemissionList):array
+    {
+        if(!empty($username)){
+            if(!$this->isUserInDataDownloads($username)){
+                $errorPemissionList[] = "User has data downloads activated but is <strong>not in Data Downloads Project</strong>.";
+            }
+            if($this->isUserExpired($username)){
+                $errorPemissionList[] = "Their <strong>REDCap account has expired</strong>.";
+            }
+            if(!$this->doesUserExistInREDCap($username)){
+                $errorPemissionList[] = "User <strong>doesn't exist in REDCap</strong>.";
+            }
+        }else{
+            $errorPemissionList[] = "User has downloads activated but the username is empty.";
+        }
+        return $errorPemissionList;
+    }
+
+    private function isUserInDataDownloads($username):bool
+    {
         $sql = "SELECT p.app_title
 					FROM redcap_projects p
 					JOIN redcap_user_rights u ON p.project_id = u.project_id
@@ -118,7 +111,8 @@ class HubDataDownloadsUsers extends Model
         return false;
     }
 
-    private function isUserExpired($username){
+    private function isUserExpired($username):bool
+    {
         $sql = "SELECT * 
                 FROM `redcap_user_rights` 
                 WHERE username = ? 
@@ -143,20 +137,51 @@ class HubDataDownloadsUsers extends Model
         return false;
     }
 
-    private function isUserActive($personActive):bool
+    private function isUserActive($personActive, $errorPemissionList):array
     {
         if($personActive == "0" || empty($personActive)){
-            return false;
+            $errorPemissionList[] = "User is <strong>not active</strong>.";
         }
-        return true;
+        return $errorPemissionList;
     }
 
-    private function doesUserHaveHubAccess($personPermission):bool
+    private function doesUserHaveHubAccess($personPermission, $errorPemissionList):array
     {
         if($personPermission == "0"){
-            return false;
+            $errorPemissionList[] = "User has <strong>no Hub Access Permission</strong>.";
         }
-        return true;
+        return $errorPemissionList;
+    }
+
+    private function decorateUserRegion($person):array
+    {
+        if($person['person_region'] != null){
+            $params = [
+                'project_id' => $this->getPidsArray()['REGIONS'],
+                'return_format' => 'json-array',
+                'records' => $person['person_region'],
+                'fields' => [
+                    'region_code'
+                ]
+            ];
+            $personRegion = $this->module->escape(\REDCap::getData($params))[0];
+            $regionCode = "";
+            if(!empty($personRegion)){
+                $regionCode = "(".$personRegion['region_code'].")";
+            }
+            $person['region_code'] = $regionCode;
+        }
+        return $person;
+    }
+
+    private function decorateAllUserLists($person, $errorPemissionList):void
+    {
+        if(empty($errorPemissionList)){
+            $this->successUserList[] = $person;
+        }else{
+            $person['error_permission_list'] = $errorPemissionList;
+            $this->errorUserList[] = $person;
+        }
     }
 }
 ?>

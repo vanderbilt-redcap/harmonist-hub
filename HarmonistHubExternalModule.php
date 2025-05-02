@@ -541,5 +541,14 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         }
         return $this->conceptModel;
     }
+
+    public function getDataDownloadsUsersHandler(): HubDataDownloadsUsers
+    {
+        if (!$this->dataDownloadsUsersHandler) {
+            $this->dataDownloadsUsersHandler = new HubDataDownloadsUsers($this, (int)$_GET['pid']);
+        }
+
+        return $this->dataDownloadsUsersHandler;
+    }
 }
 ?>
