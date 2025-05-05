@@ -36,7 +36,7 @@
       {
         "name": "Data Downloads User Management",
         "icon": "fas fa-user",
-        "url": "hub-user-management/data_download_management.php",
+        "url": "hub-user-management/data_downloads_user_management.php",
         "show-header-and-footer": true
       }
     ]

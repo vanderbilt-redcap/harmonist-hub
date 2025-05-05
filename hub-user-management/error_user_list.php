@@ -57,7 +57,7 @@ include APP_PATH_DOCROOT . 'ProjectGeneral/header.php';
                     $('#checked_values_remove_user').val(checked_values);
                     let users_info = "<ul>";
                     checked_values.forEach((user_id) => {
-                        users_info += "<li >"+$('#'+user_id).attr("user-name")+"</li>";
+                        users_info += "<li >"+$('#'+user_id).attr("user-data")+"</li>";
                     });
                     users_info += "<ul>";
                     $('#user_remove_list').html(users_info);
@@ -173,6 +173,7 @@ if(isset( $_REQUEST['message'] )) {
             }
             $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $_GET['pid']."&id=".$user['record_id'], ENT_QUOTES);
             $name = $user['firstname']." ".$user['lastname'];
+            $userData = $name." ".$user['region_code']." ".$admin;
             ?>
             <tr>
                 <td style="padding-bottom: 0;padding-top: 0;">
@@ -182,7 +183,7 @@ if(isset( $_REQUEST['message'] )) {
                                 <table class="table table-striped table-hover" style="margin-bottom:0px; border: 1px solid #dee2e6;font-size: 13px;" data-sortable>
                                     <tr row="<?=$index?>" value="<?=$index?>" name="chkAll_parent_user">
                                         <td style="width: 1%;">
-                                            <input id="<?=$user['record_id']?>" value="<?=$user['record_id']?>" pid="<?=$count?>" user-name="<?=$name;?>" onclick="selectData('<?= $index; ?>','user');" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
+                                            <input id="<?=$user['record_id']?>" value="<?=$user['record_id']?>" pid="<?=$count?>" user-data="<?=$userData;?>" onclick="selectData('<?= $index; ?>','user');" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
                                         </td>
                                         <td>
                                             <a data-toggle="collapse" href="#collapse<?=$index?>" id="<?='table_'.$index?>" class="label label-as-badge-square ">
