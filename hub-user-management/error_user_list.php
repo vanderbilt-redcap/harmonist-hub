@@ -20,102 +20,21 @@ include APP_PATH_DOCROOT . 'ProjectGeneral/header.php';
     <link type='text/css' href='<?=$module->getUrl('css/styles_user_management.css')?>' rel='stylesheet' media='screen' />
 
     <script type="text/javascript" src="<?=$module->getUrl('js/selectAll.js')?>"></script>
+    <script type="text/javascript" src="<?=$module->getUrl('js/data_downloads_user_management.js')?>"></script>
 
     <script>
         $(document).ready(function () {
-            $('#selectErrorUserListDataTable').dataTable({
-                "bPaginate": false,
-                "bLengthChange": false,
-                "bFilter": true,
-                "bInfo": false
-            });
-
-            //when any of the filters is called upon change datatable data
-            $('#admin_only, #selectErrorUserListDataTable_filter').change( function() {
-                $searchTerm = "";
-                if( $('#admin_only').is(":checked")){
-                    $searchTerm = "Admin";
-                }
-                var table = $('#selectErrorUserListDataTable').DataTable();
-                table.columns().search($searchTerm).draw();
-            } );
-
-            $('#selectErrorUserListDataTable_filter').insertAfter($('#admin_wrapper'));
-            $('#selectErrorUserListDataTable_filter').css("padding-left", "25%");
-            $('#selectErrorUserListDataTable_filter').css("margin-top", "10px");
-            $('#selectErrorUserListDataTable_filter').css("float", "left");
-
-            $('#remove_user').click(function () {
-                $('user_remove_list').html("");
-
-                let checked_values = [];
-                $("input[nameCheck='tablefields[]']:checked").each(function() {
-                    checked_values.push($(this).val());
-                });
-
-                if(checked_values.length != 0) {
-                    $('#checked_values_remove_user').val(checked_values);
-                    let users_info = "<ul>";
-                    checked_values.forEach((user_id) => {
-                        users_info += "<li >"+$('#'+user_id).attr("user-data")+"</li>";
-                    });
-                    users_info += "<ul>";
-                    $('#user_remove_list').html(users_info);
-                    $("#removeUsersForm").dialog({
-                        width: 700,
-                        modal: true,
-                        enableRemoteModule: true
-                    }).prev(".ui-dialog-titlebar").css("background", "#f8d7da").css("color", "#721c24")
-
-                }else{
-                    $("#dialogWarning").dialog({modal:true, width:300}).prev(".ui-dialog-titlebar").css("background","#f8d7da").css("color","#721c24");
-                }
-                return false;
-            });
-
-            $('#remove_user_single_management').submit(function (event) {
-                $("#dialogWarningDelete").dialog('close');
-                $("#hubUsersSpinner").dialog({modal:true, width:400});
-                let url = <?=json_encode($module->getUrl('hub-user-management/data_downloads_user_management_AJAX.php'))?>;
-                let id = $(this).attr('id');
-                let option = id.replace('_management','');
-                let data = "&checked_values_remove_user="+$("#checked_values_remove_user").val() + "&option="+option;
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: data,
-                    error: function (xhr, status, error) {
-                        alert(xhr.responseText);
-                    },
-                    success: function (result) {
-                        var message = jQuery.parseJSON(result)['message'];
-                        window.location = getMessageLetterUrl(window.location.href, message);
-                        $("#hubUsersSpinner").dialog('close');
-                    }
-                });
-                return false;
+            let urlRemove = <?=json_encode($module->getUrl('hub-user-management/data_downloads_user_management_AJAX.php'))?>;
+            $('#remove_error_user_management').click(function (event) {
+                return removeUserFromDataDownloads(urlRemove);
             });
         });
-
-        function getMessageLetterUrl(url, letter){
-            if (url.substring(url.length-1) == "#")
-            {
-                url = url.substring(0, url.length-1);
-            }
-
-            if(url.match(/(&message=)([A-Z]{1})/)){
-                url = url.replace( /(&message=)([A-Z]{1})/, "&message="+letter );
-            }else{
-                url = url + "&message="+letter;
-            }
-            return url;
-        }
     </script>
     <style>
-        #selectErrorUserListDataTable thead {
+        #selectUserListDataTable thead {
             display: none;
         }
-        #selectErrorUserListDataTable {
+        #selectUserListDataTable {
             width: 100%;
         }
         table.dataTable tbody tr.odd td {
@@ -142,21 +61,9 @@ if(isset( $_REQUEST['message'] )) {
     Here you will find a list of users that are missing the correct permissions to use Data Downloads.<br>
     Click on each user to see the missing permissiong.
 </div>
-
-<div id="btn_wrapper" class="container-fluid p-y-1" style="float:left;">
-    <div id="selectAll_wrapper" style="float:left;margin-top: 10px;margin-left: 10px;">
-        <input type="checkbox" id="ckb_user" name="chkAll_user" onclick="checkAll('user');" style="cursor: pointer;">
-        <a href="#" style="cursor: pointer;font-size: 14px;font-weight: normal;" onclick="checkAllText('user');">Select All</a>
-    </div>
-    <div id="admin_wrapper" style="float:left;padding-left: 15px;
-    padding-top: 11px;">
-        <input type="checkbox" id="admin_only" name="admin_only" style="cursor: pointer;float: left;margin-right: 5px;box-shadow: none;">
-        <label for="admin_only" style="font-weight: normal;margin-top: 1px;">Admins Only</label>
-    </div>
-    <button type="button" class="btn btn-danger float-right btnClassConfirm" id="remove_user" style="margin-right: 10px;">Remove User</button>
-</div>
+<?php include_once ("data_downloads_user_management_buttons.php")?>
 <div class="container-fluid p-y-1">
-    <table id="selectErrorUserListDataTable" data-sortable style="border: none;">
+    <table id="selectUserListDataTable" data-sortable style="border: none;">
         <thead>
         <tr>
             <th></th>
@@ -224,23 +131,15 @@ if(isset( $_REQUEST['message'] )) {
     <p>No users have been selected.</p>
 </div>
 <div id="removeUsersForm" title="WARNING!" style="display:none;">
-    <form method="POST" action="" id="remove_user_single_management">
-        <p>Are you sure you want to remove these users?</p>
-        <p>This will remove the user from the Data Downloads project and from the download secure data list.</p>
-        <div id="user_remove_list"></div>
-        <input type="hidden" id="checked_values_remove_user" name="checked_values_remove_user">
-        <div class="modal-footer" style="padding-top: 30px;">
-            <a onclick="$('#remove_user_single_management').closest('form').submit();" class="btn btn-danger" name="btnConfirm">Remove User</a>
-        </div>
-    </form>
-</div>
-<div style="display:none" title="Updating..." id="hubUsersSpinner">
-    <div style="padding-top: 20px">
-        <div class="alert alert-success">
-            <em class="fa fa-spinner fa-spin"></em> Please wait until the process finishes.
-        </div>
+    <p>Are you sure you want to remove these users?</p>
+    <p>This will remove the user from the Data Downloads project and from the download secure data list.</p>
+    <div id="user_remove_list"></div>
+    <input type="hidden" id="checked_values_remove_user" name="checked_values_remove_user">
+    <div class="modal-footer" style="padding-top: 30px;">
+        <a class="btn btn-danger" id="remove_error_user_management"  name="remove_error_user_management">Remove User</a>
     </div>
 </div>
+<?php include_once (__DIR__ ."/../hub_spinner.php"); ?>
 </body>
 </html>
 <?php include APP_PATH_DOCROOT . 'ProjectGeneral/footer.php';?>
