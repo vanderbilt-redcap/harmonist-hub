@@ -151,7 +151,7 @@ if(isset( $_REQUEST['message'] )) {
     <div id="admin_wrapper" style="float:left;padding-left: 15px;
     padding-top: 11px;">
         <input type="checkbox" id="admin_only" name="admin_only" style="cursor: pointer;float: left;margin-right: 5px;box-shadow: none;">
-        <label for="admin_only">Admins Only</label>
+        <label for="admin_only" style="font-weight: normal;margin-top: 1px;">Admins Only</label>
     </div>
     <button type="button" class="btn btn-danger float-right btnClassConfirm" id="remove_user" style="margin-right: 10px;">Remove User</button>
 </div>
