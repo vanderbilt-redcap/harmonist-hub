@@ -3,7 +3,10 @@ $(document).ready(function () {
         "bPaginate": false,
         "bLengthChange": false,
         "bFilter": true,
-        "bInfo": false
+        "bInfo": false,
+        "order": {
+            handler: false
+        }
     });
 
     //when any of the filters is called upon change datatable data
@@ -33,7 +36,7 @@ $(document).ready(function () {
             $('#checked_values_remove_user').val(checked_values);
             let users_info = "<ul>";
             checked_values.forEach((user_id) => {
-                users_info += "<li >"+$('#'+user_id).attr("user-data")+"</li>";
+                users_info += "<li style='padding: 5px;'>"+$('#'+user_id).attr("user-data")+"</li>";
             });
             users_info += "<ul>";
             $('#user_remove_list').html(users_info);
@@ -48,13 +51,91 @@ $(document).ready(function () {
         }
         return false;
     });
+
+    $('#add_user').click(function () {
+        $('#new_user').val("");
+        $('user_add_list').html("");
+
+        let checked_values = [];
+        let checked_missing = [];
+        $("input[nameCheck='tablefields[]']:checked").each(function() {
+            checked_values.push($(this).val());
+            checked_missing.push($(this).attr("username-missing"));
+        });
+
+        if(checked_values.length != 0) {
+            $('#checked_values_add_user').val(checked_values);
+            $('#checked_values_missing_user').val(checked_missing);
+            let users_info = "<ul>";
+            checked_values.forEach((user_id) => {
+                let error_list_user = $('#error-list-'+user_id).attr('error-data').split(";");
+                let error_list = "<ul>";
+                error_list_user.forEach((errorText) => {
+                    error_list += "<li>"+errorText+"</li>";
+                });
+                error_list += "</ul>";
+                users_info += '<li style="list-style-type: none;padding: 10px;">' + $('#' + user_id).attr("user-data");
+                users_info += '<a id="data-toggle'+user_id+'" tabIndex="0" role="button" class="info-toggle" data-html="true" data-container="body" data-toggle="tooltip" data-trigger="hover" data-placement="right" style="outline: none;" title="'+error_list+'"><i class="fas fa-info-circle fa-fw" style="color:#0d6efd;margin-left:5px;" aria-hidden="true"></i></a>';
+                let userNameMissing = $('#error-list-'+user_id).attr('username-missing');
+                if(userNameMissing) {
+                    users_info += '<input type="text" style="margin-top: 5px;" class="form-control" onkeyup="checkUserName(' + user_id + ')" name="new_user" id="user-name-' + user_id + '"></li>' +
+                    ' <div id="user-list-' + user_id + '"></div>';
+                }else{
+                    users_info += '<input type="text" class="form-control" id="user-name-' + user_id + '" value="'+$('#'+user_id).attr('user-name')+'" disabled></li>';
+                }
+            });
+            users_info += "<ul>";
+            $('#user_add_list').html(users_info);
+            $("#addUsersForm").dialog({
+                width: 700,
+                modal: true,
+                enableRemoteModule: true
+            });
+
+        } else {
+            $("#dialogWarning").dialog({
+                modal: true,
+                width: 300
+            }).prev(".ui-dialog-titlebar").css("background", "#f8d7da").css("color", "#721c24");
+        }
+        return false;
+    });
 });
 
-function removeUserFromDataDownloads(url){
+function manageUserFromDataDownloads(url,option) {
     $("#dialogWarningDelete").dialog('close');
     $("#hubSpinner").dialog({modal:true, width:400});
 
-    let data = "&checked_values_remove_user="+$("#checked_values_remove_user").val();
+    let data = "&checked_values_user="+$("#checked_values_"+option+"_user").val()+"&option="+option;
+    if(option == "add"){
+        data += "&checked_values_missing_user="+$("#checked_values_missing_user").val();
+        let userNames = [];
+        $("#addUsersForm input[type=text]").each(function (el) {
+            userNames.push($(this).val());
+        });
+        data += "&usernames="+userNames;
+    }
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        error: function (xhr, status, error) {
+            alert(xhr.responseText);
+        },
+        success: function (result) {
+            var message = jQuery.parseJSON(result)['message'];
+            window.location = getMessageLetterUrl(window.location.href, message);
+            $("#hubSpinner").dialog('close');
+        }
+    });
+    return false;
+}
+
+function addUserFromDataDownloads(url) {
+    $("#dialogWarningDelete").dialog('close');
+    $("#hubSpinner").dialog({modal:true, width:400});
+
+    let data = "&checked_values_user="+$("#checked_values_user").val();
     $.ajax({
         type: "POST",
         url: url,

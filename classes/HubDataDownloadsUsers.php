@@ -17,7 +17,7 @@ class HubDataDownloadsUsers extends Model
         $this->errorUserList = $errorUserList;
     }
 
-    public function getErrorUserList()
+    public function getErrorUserList(): array
     {
         return $this->errorUserList;
     }
@@ -27,7 +27,7 @@ class HubDataDownloadsUsers extends Model
         $this->successUserList = $successUserList;
     }
 
-    public function getSuccessUserList()
+    public function getSuccessUserList(): array
     {
         return $this->successUserList;
     }
@@ -66,13 +66,22 @@ class HubDataDownloadsUsers extends Model
             }
         }
     }
-
-    public function removeUserFromDataDownloads($user_id){
-        $this->removeDataDownloadPermission($user_id);
-        $this->removeUserFromDataDonwloadsProject($user_id);
+    public function removeUserFromDataDownloads($userId): void
+    {
+        $this->removeDataDownloadPermission($userId);
+        $this->removeUserFromDataDonwloadsProject($userId);
     }
 
-    private function removeDataDownloadPermission($record){
+    public function addUserToDataDownloads($userId, $userName, $missing): void
+    {
+        if($missing) {
+            $this->addUsernameOnProject($userId, $userName);
+        }
+        $this->addUserToDataDonwloadsProject($userId, $userName);
+    }
+
+    private function removeDataDownloadPermission($record): void
+    {
         #Uncheck variable
         $Proj = new \Project($this->getPidsArray()['PEOPLE']);
         $event_id = $Proj->firstEventId;
@@ -90,11 +99,12 @@ class HubDataDownloadsUsers extends Model
         $results = \REDCap::saveData($params);
     }
 
-    private function removeUserFromDataDonwloadsProject($user_id){
+    private function removeUserFromDataDonwloadsProject($userId): void
+    {
         $params = [
             'project_id' => $this->getPidsArray()['PEOPLE'],
             'return_format' => 'json-array',
-            'records' => [$user_id],
+            'records' => [$userId],
             'fields' => [
                 'redcap_name',
                 'email',
@@ -103,7 +113,7 @@ class HubDataDownloadsUsers extends Model
             ]
         ];
         $userData = $this->module->escape(\REDCap::getData($params))[0];
-        if(!empty($userData)){
+        if(!empty($userData) && $this->isUserInDataDownloads($userData['redcap_name'])){
             if(filter_var($userData['redcap_name'], FILTER_VALIDATE_EMAIL)){
                 #USER ID IS EMAIL
                 #TODO
@@ -118,7 +128,59 @@ class HubDataDownloadsUsers extends Model
         }
     }
 
-    private function canUserDownloadData($personDownload):bool
+    private function addUsernameOnProject($record, $userName): void
+    {
+        $Proj = new \Project($this->getPidsArray()['PEOPLE']);
+        $event_id = $Proj->firstEventId;
+        $array = [];
+        $array[$record][$event_id]['redcap_name'] = $userName;
+
+        $params = [
+            'project_id' => $this->getPidsArray()['PEOPLE'],
+            'redcap_name' => 'array',
+            'data' => $array,
+            'overwriteBehavior' => "overwrite",
+            'dateFormat' => "YMD",
+            'type' => "flat"
+        ];
+        $results = \REDCap::saveData($params);
+    }
+
+    private function addUserToDataDonwloadsProject($userId, $userName): void
+    {
+        $params = [
+            'project_id' => $this->getPidsArray()['PEOPLE'],
+            'return_format' => 'json-array',
+            'records' => [$userId],
+            'fields' => [
+                'email',
+                'firstname',
+                'lastname'
+            ]
+        ];
+        $userData = $this->module->escape(\REDCap::getData($params))[0];
+        if(!empty($userData) && !$this->isUserInDataDownloads($userName)){
+            if(filter_var($userName, FILTER_VALIDATE_EMAIL)){
+                #USER ID IS EMAIL
+                #TODO
+            }else{
+                #USER ID
+                $fields_rights = "project_id, username, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
+                $instrument_names = \REDCap::getInstrumentNames(null,$this->getPidsArray()['DATADOWNLOADUSERS']);
+                #Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
+                $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
+                $this->module->query("INSERT INTO redcap_user_rights (" . $fields_rights . ")
+                                VALUES (?,?,?,?,?,?,?,?,?)",
+                               [$this->getPidsArray()['DATADOWNLOADUSERS'], $userName, 1, 1, 1, 1, 1, 1, $data_entry]);
+
+                #Logs
+                $message = "User ".$userName." added by ".USERID;
+                \REDCap::logEvent($message, "Added user from Data Downloads User Management", null, null, null, $this->getPidsArray()['DATADOWNLOADUSERS']);
+            }
+        }
+    }
+
+    private function canUserDownloadData($personDownload): bool
     {
         if ($personDownload == "1") {
             return true;
@@ -126,25 +188,27 @@ class HubDataDownloadsUsers extends Model
         return false;
     }
 
-    private function checkUserName($username, $errorPemissionList):array
+    private function checkUserName($username, $errorPemissionList): array
     {
         if(!empty($username)){
             if(!$this->isUserInDataDownloads($username)){
-                $errorPemissionList[] = "User has data downloads activated but is <strong>not in Data Downloads Project</strong>.";
+                $errorPemissionList[] = "User <strong><em>".$username."</em></strong> has data downloads activated but is <strong>not in Data Downloads Project</strong>.";
             }
             if($this->isUserExpired($username)){
-                $errorPemissionList[] = "Their <strong>REDCap account has expired</strong>.";
+                $errorPemissionList[] = "<strong>REDCap account has expired</strong> for user <strong><em>".$username."</em></strong> .";
             }
             if(!$this->doesUserExistInREDCap($username)){
-                $errorPemissionList[] = "User <strong>doesn't exist in REDCap</strong>.";
+                $errorPemissionList[] = "Username <strong><em>".$username."</em> doesn't exist in REDCap</strong>.";
+                $errorPemissionList["usernameMissing"] = true;
             }
         }else{
             $errorPemissionList[] = "User has downloads activated but the username is empty.";
+            $errorPemissionList["usernameMissing"] = true;
         }
         return $errorPemissionList;
     }
 
-    private function isUserInDataDownloads($username):bool
+    private function isUserInDataDownloads($username): bool
     {
         $sql = "SELECT p.app_title
 					FROM redcap_projects p
@@ -163,7 +227,7 @@ class HubDataDownloadsUsers extends Model
         return false;
     }
 
-    private function isUserExpired($username):bool
+    private function isUserExpired($username): bool
     {
         $sql = "SELECT * 
                 FROM `redcap_user_rights` 
@@ -176,7 +240,7 @@ class HubDataDownloadsUsers extends Model
         }
         return false;
     }
-    private function doesUserExistInREDCap($username):bool
+    private function doesUserExistInREDCap($username): bool
     {
         $sql = "SELECT * 
                 FROM `redcap_user_rights` 
@@ -189,7 +253,7 @@ class HubDataDownloadsUsers extends Model
         return false;
     }
 
-    private function isUserActive($personActive, $errorPemissionList):array
+    private function isUserActive($personActive, $errorPemissionList): array
     {
         if($personActive == "0" || empty($personActive)){
             $errorPemissionList[] = "User is <strong>not active</strong>.";
@@ -197,7 +261,7 @@ class HubDataDownloadsUsers extends Model
         return $errorPemissionList;
     }
 
-    private function doesUserHaveHubAccess($personPermission, $errorPemissionList):array
+    private function doesUserHaveHubAccess($personPermission, $errorPemissionList): array
     {
         if($personPermission == "0"){
             $errorPemissionList[] = "User has <strong>no Hub Access Permission</strong>.";
@@ -205,7 +269,7 @@ class HubDataDownloadsUsers extends Model
         return $errorPemissionList;
     }
 
-    private function decorateUserRegion($person):array
+    private function decorateUserRegion($person): array
     {
         if($person['person_region'] != null){
             $params = [
@@ -226,7 +290,7 @@ class HubDataDownloadsUsers extends Model
         return $person;
     }
 
-    private function decorateAllUserLists($person, $errorPemissionList):void
+    private function decorateAllUserLists($person, $errorPemissionList): void
     {
         if(empty($errorPemissionList)){
             $this->successUserList[] = $person;

@@ -60,6 +60,11 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             if ($project_id != $pidsArray['PEOPLE']) {
                 return false;
             }
+
+            #User has no permissions to see Last Updates, do not show link
+            if (!$this->getUser()->hasDesignRights($project_id)) {
+                return false;
+            }
         } else {
             #User has no permissions to see Last Updates, do not show link
             if (!$this->getUser()->hasDesignRights($project_id)) {

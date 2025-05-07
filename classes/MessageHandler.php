@@ -38,6 +38,8 @@ class MessageHandler
                 $text = "The user";
                 if($message_type == "D") {
                     $message_type = self::DELETE_MESSAGE;
+                }elseif ($message_type == "N") {
+                    $message_type = self::NEW_MESSAGE;
                 }
                 break;
         }

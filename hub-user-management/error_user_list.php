@@ -23,12 +23,54 @@ include APP_PATH_DOCROOT . 'ProjectGeneral/header.php';
     <script type="text/javascript" src="<?=$module->getUrl('js/data_downloads_user_management.js')?>"></script>
 
     <script>
+        $(function () {
+            $("body").tooltip({ selector: '[data-toggle=tooltip]', placement: 'right' , trigger: 'hover', html: true});
+        })
         $(document).ready(function () {
-            let urlRemove = <?=json_encode($module->getUrl('hub-user-management/data_downloads_user_management_AJAX.php'))?>;
+            let urlUserManagament = <?=json_encode($module->getUrl('hub-user-management/data_downloads_user_management_AJAX.php'))?>;
             $('#remove_error_user_management').click(function (event) {
-                return removeUserFromDataDownloads(urlRemove);
+                return manageUserFromDataDownloads(urlUserManagament,'remove');
+            });
+            $('#add_error_user_management').click(function (event) {
+                $('#msgUserList').attr('display','none');
+                let errors = false;
+                $("#addUsersForm input").each(function (el) {
+                    if($('#'+this.id).val() == undefined || $('#'+this.id).val() == ""){
+                        $('#'+this.id).addClass("error");
+                        errors = true;
+                    }
+                });
+                if(errors){
+                    $('#msgUserList').show();
+                }else{
+                    return manageUserFromDataDownloads(urlUserManagament,'add');
+                }
             });
         });
+
+        function checkUserName(user_id){
+            let term = $('#user-name-'+user_id).val();
+            $.ajax({
+                method: "POST",
+                url: <?=json_encode($module->getUrl('hub-user-management/getUserInfoAutocomplete_AJAX.php'))?>,
+                dataType: "json",
+                data: {
+                    term: term
+                }
+            }).done(function(response) {
+                $('#user-list-'+user_id).show();
+                var lists = '';
+                $.each(response, function(key, user) {
+                    lists += "<div class='autocomplete-items' onclick='addUserName(\"" + user.value + "\",\"" + user_id + "\")'><a onclick='addUserName(\"" + user.value + "\",\"" + user_id + "\")'>" +  user.label + "</a></div>";
+                });
+                $('#user-list-'+user_id).html(lists);
+            });
+        }
+
+        function addUserName(value, id){
+            $("#user-list-"+id).html("");
+            $("#user-name-"+id).val(value);
+        }
     </script>
     <style>
         #selectUserListDataTable thead {
@@ -49,19 +91,27 @@ include APP_PATH_DOCROOT . 'ProjectGeneral/header.php';
         table.dataTable tbody tr.rowSelected td{
             background-color: #e6f5ff !important;
         }
+        .tooltip-inner {
+            text-align: left;
+            max-width: 100%;
+            padding-top:10px;
+        }
     </style>
 </head>
 <body>
 <?php
 if(isset( $_REQUEST['message'] )) {
-    echo '<div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">'.$module->getMessageHandler()->fetchMessage('dataDownloadsUser',$_REQUEST['message']).'</div>';
+    echo '<div class="container-fluid p-y-1"><div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">'.$module->getMessageHandler()->fetchMessage('dataDownloadsUser',$_REQUEST['message']).'</div></div>';
 }
 ?>
 <div style="padding-top:15px;padding-left:15px;padding-bottom: 60px;">
     Here you will find a list of users that are missing the correct permissions to use Data Downloads.<br>
     Click on each user to see the missing permissiong.
 </div>
-<?php include_once ("data_downloads_user_management_buttons.php")?>
+<?php
+$show = true;
+include_once ("data_downloads_user_management_buttons.php");
+?>
 <div class="container-fluid p-y-1">
     <table id="selectUserListDataTable" data-sortable style="border: none;">
         <thead>
@@ -72,7 +122,9 @@ if(isset( $_REQUEST['message'] )) {
         <tbody>
         <?php
         $count = 0;
-        foreach ($module->getDataDownloadsUsersHandler()->getErrorUserList() as $index => $user) {
+        $data = $module->getDataDownloadsUsersHandler()->getErrorUserList();
+        ArrayFunctions::array_sort_by_column($data, 'lastname',SORT_ASC);
+        foreach ($data as $index => $user) {
             $count++;
             $admin = "";
             if($user['harmonistadmin_y'] == "1"){
@@ -81,6 +133,16 @@ if(isset( $_REQUEST['message'] )) {
             $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $_GET['pid']."&id=".$user['record_id'], ENT_QUOTES);
             $name = $user['firstname']." ".$user['lastname'];
             $userData = $name." ".$user['region_code']." ".$admin;
+
+            $usernameMissing = false;
+            foreach($user['error_permission_list'] as $index => $errorText) {
+                if($index == "usernameMissing"){
+                    unset($user['error_permission_list']['usernameMissing']);
+                    $usernameMissing = true;
+                    break;
+                }
+            }
+            $errorArrayList = implode(";", $user['error_permission_list']);
             ?>
             <tr>
                 <td style="padding-bottom: 0;padding-top: 0;">
@@ -90,29 +152,31 @@ if(isset( $_REQUEST['message'] )) {
                                 <table class="table table-striped table-hover" style="margin-bottom:0px; border: 1px solid #dee2e6;font-size: 13px;" data-sortable>
                                     <tr row="<?=$index?>" value="<?=$index?>" name="chkAll_parent_user">
                                         <td style="width: 1%;">
-                                            <input id="<?=$user['record_id']?>" value="<?=$user['record_id']?>" pid="<?=$count?>" user-data="<?=$userData;?>" onclick="selectData('<?= $index; ?>','user');" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
+                                            <input id="<?=$user['record_id']?>" value="<?=$user['record_id']?>" pid="<?=$count?>" user-data="<?=$userData;?>" user-name="<?=$user['redcap_name'];?>" username-missing="<?=$usernameMissing?>" onclick="selectData('<?= $index; ?>','user');" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
                                         </td>
                                         <td>
-                                            <a data-toggle="collapse" href="#collapse<?=$index?>" id="<?='table_'.$index?>" class="label label-as-badge-square ">
+                                            <a data-toggle="collapse" href="#collapse<?=$user['record_id']?>" id="<?='table_'.$index?>" class="label label-as-badge-square ">
                                                 <span class="table_name" style="font-weight: normal;">
                                                     <span style="padding-right: 10px;"><?=$name;?> <?=$user['region_code'];?></span>
                                                     <?=$admin;?>
                                                 </span>
                                             </a>
-                                            <a href="<?=$gotoredcap?>" target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;">Go to REDCap</a>
+                                            <a href="<?=$gotoredcap?>" target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;">View Record</a>
                                         </td>
                                     </tr>
                                 </table>
                             </h3>
                         </div>
-                        <div id="collapse<?=$index?>" class="table-responsive panel-collapse collapse" aria-expanded="true">
+                        <div id="collapse<?=$user['record_id']?>" class="table-responsive panel-collapse collapse" aria-expanded="true">
                             <table style="width: 100%;margin-top: 5px;">
                                 <tr style="padding:8px 30px;">
                                     <td>
-                                        <ul>
-                                        <?php foreach ($user['error_permission_list'] as $error){?>
-                                            <li><?=$error;?></li>
-                                        <?php } ?>
+                                        <ul id="<?="error-list-".$user['record_id']?>" error-data="<?=$errorArrayList?>" username-missing="<?=$usernameMissing?>">
+                                        <?php foreach ($user['error_permission_list'] as $errorType => $error){
+                                            if($errorType != "usernameMissing"){?>
+                                                <li><?=$error;?></li>
+                                           <?php }
+                                            } ?>
                                         </ul>
                                     </td>
                                 </tr>
@@ -137,6 +201,17 @@ if(isset( $_REQUEST['message'] )) {
     <input type="hidden" id="checked_values_remove_user" name="checked_values_remove_user">
     <div class="modal-footer" style="padding-top: 30px;">
         <a class="btn btn-danger" id="remove_error_user_management"  name="remove_error_user_management">Remove User</a>
+    </div>
+</div>
+
+<div id="addUsersForm" title="Add Users" style="display:none;">
+    <div class="alert alert-danger fade in col-md-12" style="display:none;" id="msgUserList">Username can't be blank.</div>
+    <p>Are you sure you want to add these users?</p>
+    <div id="user_add_list"></div>
+    <input type="hidden" id="checked_values_add_user" name="checked_values_add_user">
+    <input type="hidden" id="checked_values_missing_user" name="checked_values_missing_user">
+    <div class="modal-footer" style="padding-top: 30px;">
+        <a class="btn btn-success" id="add_error_user_management"  name="add_error_user_management">Add</a>
     </div>
 </div>
 <?php include_once (__DIR__ ."/../hub_spinner.php"); ?>

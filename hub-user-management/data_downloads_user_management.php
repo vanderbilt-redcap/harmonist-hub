@@ -23,9 +23,9 @@ include_once(__DIR__ ."/../projects.php");
 
     <script>
         $(document).ready(function () {
-            let urlRemove = <?=json_encode($module->getUrl('hub-user-management/data_downloads_user_management_AJAX.php'))?>;
+            let urlUserManagament = <?=json_encode($module->getUrl('hub-user-management/data_downloads_user_management_AJAX.php'))?>;
             $('#remove_success_user_management').click(function (event) {
-                return removeUserFromDataDownloads(urlRemove);
+                return manageUserFromDataDownloads(urlUserManagament,'remove');
             });
         });
     </script>
@@ -41,7 +41,7 @@ include_once(__DIR__ ."/../projects.php");
 <body>
 <?php
 if(isset( $_REQUEST['message'] )) {
-    echo '<div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">'.$module->getMessageHandler()->fetchMessage('dataDownloadsUser',$_REQUEST['message']).'</div>';
+    echo '<div class="container-fluid p-y-1"><div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">'.$module->getMessageHandler()->fetchMessage('dataDownloadsUser',$_REQUEST['message']).'</div></div>';
 }
 ?>
 <?php if (!empty($module->getDataDownloadsUsersHandler()->getErrorUserList())){ ?>
@@ -57,7 +57,10 @@ if(isset( $_REQUEST['message'] )) {
 <div style="padding-top:15px;padding-left:15px;padding-bottom: 60px;">
     <div>Here you will find a list of users that have the correct permissions to use Data Downloads.<br></div>
 </div>
-<?php include_once ("data_downloads_user_management_buttons.php")?>
+<?php
+$show = false;
+include_once ("data_downloads_user_management_buttons.php");
+?>
 <div class="container-fluid p-y-1"  style="margin-top:40px">
     <table id="selectUserListDataTable" class="table table-striped table-hover" style="border: 1px solid #dee2e6;" data-sortable>
         <thead>
@@ -69,7 +72,9 @@ if(isset( $_REQUEST['message'] )) {
         <tbody>
         <?php
         $count = 0;
-        foreach ($module->getDataDownloadsUsersHandler()->getSuccessUserList() as $index => $user) {
+        $data = $module->getDataDownloadsUsersHandler()->getSuccessUserList();
+        ArrayFunctions::array_sort_by_column($data, 'lastname',SORT_ASC);
+        foreach ($data as $index => $user) {
             $count++;
             $admin = "";
             if($user['harmonistadmin_y'] == "1"){
@@ -90,7 +95,7 @@ if(isset( $_REQUEST['message'] )) {
                                                     <?=$admin;?>
                                                 </span>
                     </a>
-                    <a href="<?=$gotoredcap?>" target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;">Go to REDCap</a>
+                    <a href="<?=$gotoredcap?>" target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;">View Record</a>
                 </td>
             </tr>
             <?php

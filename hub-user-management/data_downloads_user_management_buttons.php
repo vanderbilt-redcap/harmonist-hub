@@ -9,4 +9,7 @@
         <label for="admin_only" style="font-weight: normal;margin-top: 1px;">Admins Only</label>
     </div>
     <button type="button" class="btn btn-danger float-right btnClassConfirm" id="remove_user" style="margin-right: 10px;">Remove User</button>
+    <?php if($show){ ?>
+    <button type="button" class="btn btn-success float-right btnClassConfirm" id="add_user" style="margin-right: 10px;">Add User</button>
+    <?php } ?>
 </div>
