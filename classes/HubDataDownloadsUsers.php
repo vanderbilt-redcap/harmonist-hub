@@ -9,7 +9,7 @@ class HubDataDownloadsUsers extends Model
     {
         $hub_mapper = $module->getProjectSetting('hub-mapper', $peoplePid);
         parent::__construct($module, $hub_mapper);
-        $this->decorateUserList();
+        $this->loadUserList();
     }
 
     public function setErrorUserList($errorUserList): void
@@ -32,7 +32,12 @@ class HubDataDownloadsUsers extends Model
         return $this->successUserList;
     }
 
-    public function decorateUserList(): void
+    public function getUserDataEntryLink($recordId, $projectId): string
+    {
+        return $this->getDatEntryLink($recordId, $projectId);
+    }
+
+    public function loadUserList(): void
     {
         $params = [
             'project_id' => $this->getPidsArray()['PEOPLE'],
@@ -69,7 +74,7 @@ class HubDataDownloadsUsers extends Model
     public function removeUserFromDataDownloads($userId): void
     {
         $this->removeDataDownloadPermission($userId);
-        $this->removeUserFromDataDonwloadsProject($userId);
+//        $this->removeUserFromDataDonwloadsProject($userId);
     }
 
     public function addUserToDataDownloads($userId, $userName, $missing): void
@@ -97,6 +102,9 @@ class HubDataDownloadsUsers extends Model
             'type' => "flat"
         ];
         $results = \REDCap::saveData($params);
+        if(array_key_exists("errors", $results) && !empty($results["errors"])) {
+            throw new Exception("ERROR. Something went wrong while trying to save data to database.");
+        }
     }
 
     private function removeUserFromDataDonwloadsProject($userId): void
@@ -144,6 +152,9 @@ class HubDataDownloadsUsers extends Model
             'type' => "flat"
         ];
         $results = \REDCap::saveData($params);
+        if(array_key_exists("errors", $results) && !empty($results["errors"])) {
+            throw new Exception("ERROR. Something went wrong while trying to save data to database.");
+        }
     }
 
     private function addUserToDataDonwloadsProject($userId, $userName): void

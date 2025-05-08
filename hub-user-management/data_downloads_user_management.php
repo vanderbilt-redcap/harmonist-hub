@@ -80,7 +80,7 @@ include_once ("data_downloads_user_management_buttons.php");
             if($user['harmonistadmin_y'] == "1"){
                 $admin = "<span class='label label-approved'>Admin</span>";
             }
-            $gotoredcap = htmlentities(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $_GET['pid']."&id=".$user['record_id'], ENT_QUOTES);
+            $personDataEntryLink = $module->getDataDownloadsUsersHandler()->getUserDataEntryLink($user['record_id'],$_GET['pid']);
             $name = $user['firstname']." ".$user['lastname'];
             $userData = $name." ".$user['region_code']." ".$admin;
             ?>
@@ -95,7 +95,7 @@ include_once ("data_downloads_user_management_buttons.php");
                                                     <?=$admin;?>
                                                 </span>
                     </a>
-                    <a href="<?=$gotoredcap?>" target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;">View Record</a>
+                    <a href="<?=$personDataEntryLink?>" target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;">View Record</a>
                 </td>
             </tr>
             <?php
