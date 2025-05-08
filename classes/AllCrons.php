@@ -180,7 +180,7 @@ class AllCrons
     public static function runCronMonthlyDigest($module, $pidsArray, $requests, $requests_hub, $sops, $settings, $email = false)
     {
         $environment = "";
-        if(ENVIRONMENT == 'TEST'){
+        if(defined('ENVIRONMENT') && ENVIRONMENT == 'TEST'){
             $environment = " ".ENVIRONMENT;
         }
 
@@ -289,10 +289,10 @@ class AllCrons
             "<br><div style='padding: 3px;'><h3><strong>Active Data Calls</strong></h3></div><ol style='padding-left: 15px;'>";
 
         $isEmpty = true;
-        $RecordSetRegions = \REDCap::getData($pidsArray['SOP'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
-        $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegions,$pidsArray['SOP']);
+        $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
+        $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegions,$pidsArray['REGIONS']);
         foreach ($sops as $sop){
-            if((!array_key_exists('sop_closed_y',$sop) || $sop['sop_closed_y'] == "") && $sop['sop_due_d'] != ""){
+            if((!array_key_exists('sop_closed_y',$sop) || $sop['sop_closed_y'][1] != "1") && $sop['sop_due_d'] != ""){
                 $message['active_data_calls'] = $message['active_data_calls'] + 1;
                 $isEmpty = false;
                 if (!empty($sop['sop_concept_id'])) {
@@ -354,7 +354,6 @@ class AllCrons
             $email_req .= "<li><em>No active data calls.</em></li>";
         }
         $email_req .= "</ol></div>";
-
         if($email) {
             if ($settings['hub_subs_monthly_digest'] != "") {
                 $emails = explode(';', $settings['hub_subs_monthly_digest']);
