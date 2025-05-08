@@ -32,11 +32,6 @@ class HubDataDownloadsUsers extends Model
         return $this->successUserList;
     }
 
-    public function getUserDataEntryLink($recordId, $projectId): string
-    {
-        return $this->getDatEntryLink($recordId, $projectId);
-    }
-
     public function loadUserList(): void
     {
         $params = [

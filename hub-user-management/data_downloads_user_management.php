@@ -80,7 +80,7 @@ include_once ("data_downloads_user_management_buttons.php");
             if($user['harmonistadmin_y'] == "1"){
                 $admin = "<span class='label label-approved'>Admin</span>";
             }
-            $personDataEntryLink = $module->getDataDownloadsUsersHandler()->getUserDataEntryLink($user['record_id'],$_GET['pid']);
+            $personDataEntryLink = $module->getDataDownloadsUsersHandler()->getDatEntryLink($user['record_id'],$_GET['pid']);
             $name = $user['firstname']." ".$user['lastname'];
             $userData = $name." ".$user['region_code']." ".$admin;
             ?>
