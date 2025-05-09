@@ -25,7 +25,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         $hub_mapper = $this->getProjectSetting('hub-mapper');
         $dd_array = REDCap::getDataDictionary('array');
 
-        #If it's not the mapper, do not show link in project, unless for Data Donloads
+        #If it's not the mapper, do not show link in project, unless for Data Downloads
         if ($hub_mapper != "" && $project_id != $hub_mapper && $link['name'] != "Data Downloads User Management") {
             return false;
         }

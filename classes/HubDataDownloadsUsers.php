@@ -56,8 +56,8 @@ class HubDataDownloadsUsers extends Model
                 $errorPemissionList = [];
                 if($this->canUserDownloadData($person['allowgetdata_y___1'])) {
                     $errorPemissionList = $this->checkUserName($person['redcap_name'], $errorPemissionList);
-                    $errorPemissionList = $this->isUserActive($person['active_y'], $errorPemissionList);
-                    $errorPemissionList = $this->doesUserHaveHubAccess($person['harmonist_regperm'], $errorPemissionList);
+                    $errorPemissionList = $this->validateUserActive($person['active_y'], $errorPemissionList);
+                    $errorPemissionList = $this->validateUserHubAccess($person['harmonist_regperm'], $errorPemissionList);
 
                     $person = $this->decorateUserRegion($person);
 
@@ -98,7 +98,7 @@ class HubDataDownloadsUsers extends Model
         ];
         $results = \REDCap::saveData($params);
         if(array_key_exists("errors", $results) && !empty($results["errors"])) {
-            throw new Exception("ERROR. Something went wrong while trying to save data to database.");
+            throw new Exception("ERROR. Something went wrong while trying to save data to database.".json_encode($results["errors"]));
         }
     }
 
@@ -140,7 +140,7 @@ class HubDataDownloadsUsers extends Model
 
         $params = [
             'project_id' => $this->getPidsArray()['PEOPLE'],
-            'redcap_name' => 'array',
+            'dataFormat' => 'array',
             'data' => $array,
             'overwriteBehavior' => "overwrite",
             'dateFormat' => "YMD",
@@ -148,7 +148,7 @@ class HubDataDownloadsUsers extends Model
         ];
         $results = \REDCap::saveData($params);
         if(array_key_exists("errors", $results) && !empty($results["errors"])) {
-            throw new Exception("ERROR. Something went wrong while trying to save data to database.");
+            throw new Exception("ERROR. Something went wrong while trying to save data to database.".json_encode($results["errors"]));
         }
     }
 
@@ -259,7 +259,7 @@ class HubDataDownloadsUsers extends Model
         return false;
     }
 
-    private function isUserActive($personActive, $errorPemissionList): array
+    private function validateUserActive($personActive, $errorPemissionList): array
     {
         if($personActive == "0" || empty($personActive)){
             $errorPemissionList[] = "User is <strong>not active</strong>.";
@@ -267,7 +267,7 @@ class HubDataDownloadsUsers extends Model
         return $errorPemissionList;
     }
 
-    private function doesUserHaveHubAccess($personPermission, $errorPemissionList): array
+    private function validateUserHubAccess($personPermission, $errorPemissionList): array
     {
         if($personPermission == "0"){
             $errorPemissionList[] = "User has <strong>no Hub Access Permission</strong>.";
