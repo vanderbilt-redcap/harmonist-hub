@@ -2,6 +2,8 @@
 record_id,comments_and_votes,,text,"Record ID",,,,,,,,,,,,,
 request_id,comments_and_votes,,text,"Request ID
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>",,,,,,,,,LV,,,," @HIDDEN-SURVEY"
+request_type,comments_and_votes,,dropdown,"Request Type
+<div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","1, Concept Sheet | 5, Fast Track Concept | 2, Abstract | 3, Manuscript | 4, Poster | 99, Other",,,,,,,,LV,,,," @HIDDEN-SURVEY"
 response_person,comments_and_votes,,sql,"Person ID of User
 <div style=""font-weight:lighter;font-style:italic"">Autopopulated by REDCap hook</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,,,,,,,LV,,,," @HIDDEN-SURVEY"
 response_region,comments_and_votes,,sql,"Research Group ID of User
