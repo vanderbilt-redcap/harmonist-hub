@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once dirname(__FILE__) . "/classes/HubData.php";
+// require_once dirname(__FILE__) . "/classes/HubData.php";
 
 $indexUrl = $module->getUrl('index.php');
 if($module->getSecurityHandler()->isAuthorizedPage() && $is_authorized_and_has_rights){
@@ -156,6 +156,6 @@ if($isAdmin) {
 </nav>
 <?php
 if($settings['session_timeout_popup'] == 1 && $settings['session_timeout_popup'] != ''){
-    include("logout_popup.php");
+    // include("logout_popup.php");
 }
 ?>

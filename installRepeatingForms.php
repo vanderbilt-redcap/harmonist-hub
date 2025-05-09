@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once(dirname(__FILE__)."/classes/REDCapManagement.php");
-require_once(dirname(__FILE__)."/projects.php");
+// require_once(dirname(__FILE__)."/classes/REDCapManagement.php");
+// require_once(dirname(__FILE__)."/projects.php");
 
 $forms = $_POST['fields'];
 

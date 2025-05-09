@@ -5,7 +5,7 @@ use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
 if ($module->getUser()->isSuperUser()) {
-    include_once("projects.php");
+    // include_once("projects.php");
 
     #DEBBUG CODE HERE TO TEST DIRECTLY THINGS IN THE SERVERS
 

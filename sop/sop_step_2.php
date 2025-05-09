@@ -157,7 +157,7 @@ if($indexSubSet>0) {
                                                    data-target="#codesModal<?= htmlspecialchars($codeformat['code_file'],ENT_QUOTES); ?>">See
                                                     Code List</a>
 
-                                                <?PHP require('codes_modal.php');
+                                                <?PHP
                                             }
                                         } else {
                                             echo $dataFormat;

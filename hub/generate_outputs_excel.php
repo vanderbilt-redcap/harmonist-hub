@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-require_once dirname(dirname(__FILE__))."/projects.php";
+// require_once dirname(dirname(__FILE__))."/projects.php";
 
 $RecordSetConcetps = \REDCap::getData($pidsArray['HARMONIST'], 'array', null);
 $concepts = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcetps,$pidsArray['HARMONIST']);

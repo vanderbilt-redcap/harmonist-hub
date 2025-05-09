@@ -72,7 +72,6 @@ if(array_key_exists('message', $_REQUEST)){
     <p class="hub-title"><?=filter_tags($settings['hub_tbl_center_text'])?></p>
 </div>
 <br>
-<?php include(dirname(dirname(__FILE__)).'/map/map_mini.php');?>
 <div class="container">
     <?php if($isAdmin || $harmonist_perm){?>
         <div class="optionSelect">

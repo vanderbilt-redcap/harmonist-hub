@@ -20,7 +20,7 @@ $pid = (int)$_GET['pid'];
 <?php
 if(($hub_projectname == '' || $hub_profile == '') || (array_key_exists('message',$_REQUEST) && $_REQUEST['message']=='D')){?>
     <head>
-        <?php include_once("head_scripts.php");?>
+        <?php ?>
         <script>
             var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php'))?>;
             var indexPage_url = <?=json_encode($module->getUrl('index.php')."&NOAUTH")?>;
@@ -52,7 +52,7 @@ if($hub_projectname == '' || $hub_profile == ''){
     if (count($dd_array) == 1 && $isAdmin && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
         ?>
     <head>
-        <?php include_once("head_scripts.php");?>
+        <?php ?>
         <script>
             var startDDProjects_url = <?=json_encode($module->getUrl('startDDProjects.php'))?>;
             var indexPage_url = <?=json_encode($module->getUrl('index.php')."&NOAUTH")?>;

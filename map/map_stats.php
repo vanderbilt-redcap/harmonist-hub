@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once dirname(dirname(__FILE__))."/projects.php";
+// require_once dirname(dirname(__FILE__))."/projects.php";
 
 $regionstbl = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array', null,null,null,null,false,false,false,"[showregion_y] = 1"));
 ArrayFunctions::array_sort_by_column($regionstbl, 'region_code');

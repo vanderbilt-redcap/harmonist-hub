@@ -14,7 +14,7 @@ use function Vanderbilt\HarmonistHubExternalModule\getFile;
     <meta name="theme-color" content="#fff">
     <link rel="icon" type="image/x-icon" href="<?=getFile($module, $settings['hub_logo_favicon'],'favicon',$secret_key,$secret_iv)?>">
 
-    <?php include_once("head_scripts.php");?>
+    <?php ?>
 
     <script type='text/javascript'>
         $(document).ready(function() {

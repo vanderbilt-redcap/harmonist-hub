@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once dirname(dirname(__FILE__))."/projects.php";
+// require_once dirname(dirname(__FILE__))."/projects.php";
 
 $selectConcept = htmlentities($_REQUEST['selectConcept'],ENT_QUOTES);
 $option = htmlentities($_REQUEST['option'],ENT_QUOTES);

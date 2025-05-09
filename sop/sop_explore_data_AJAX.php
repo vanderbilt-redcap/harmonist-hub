@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once dirname(dirname(__FILE__))."/projects.php";
+// require_once dirname(dirname(__FILE__))."/projects.php";
 
 $user = getCrypt($_REQUEST['code'],'d',$secret_key,$secret_iv);
 $upload_user = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $user),array('access_token','email','firstname','lastname','person_region'))[0];

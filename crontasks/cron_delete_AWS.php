@@ -1,13 +1,13 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once(dirname(dirname(__FILE__))."/classes/AllCrons.php");
-include_once(__DIR__ ."/../projects.php");
+// require_once(dirname(dirname(__FILE__))."/classes/AllCrons.php");
+// include_once(__DIR__ ."/../projects.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 
 $aws_credentials = "/app001/credentials/Harmonist-Hub/".$pidsArray['PROJECTS']."_aws_s3.php";
 if (file_exists($aws_credentials)){
-    require_once ($aws_credentials);
+    // require_once ($aws_credentials);
     $credentials = new \Aws\Credentials\Credentials($aws_key, $aws_secret);
     $s3 = new S3Client([
         'version' => 'latest',

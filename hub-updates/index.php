@@ -3,9 +3,9 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 use REDCap;
 
-include_once(__DIR__ . "/../projects.php");
-include_once(__DIR__ . "/../classes/HubUpdates.php");
-include_once(__DIR__ . "/../classes/Messages.php");
+// include_once(__DIR__ . "/../projects.php");
+// include_once(__DIR__ . "/../classes/HubUpdates.php");
+// include_once(__DIR__ . "/../classes/Messages.php");
 
 $allUpdates = $module->getProjectSetting('hub-updates')['data'];
 #Sanitize text title and descrition for pages

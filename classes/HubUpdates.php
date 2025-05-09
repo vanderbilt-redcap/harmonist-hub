@@ -6,8 +6,8 @@ use Form;
 use MetaData;
 use REDCap;
 
-include_once(__DIR__ . "/REDCapManagement.php");
-include_once(__DIR__ . "/../simplediff-modified/simplediff.php");
+// include_once(__DIR__ . "/REDCapManagement.php");
+// include_once(__DIR__ . "/../simplediff-modified/simplediff.php");
 
 class HubUpdates
 {

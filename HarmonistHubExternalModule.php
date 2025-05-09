@@ -10,10 +10,10 @@ use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 use ReflectionClass;
 
-include_once (__DIR__ . "/autoload.php");
-include_once(__DIR__ . "/functions.php");
+// include_once (__DIR__ . "/autoload.php");
+// include_once(__DIR__ . "/functions.php");
 
-require_once(dirname(__FILE__) . "/vendor/autoload.php");
+// require_once(dirname(__FILE__) . "/vendor/autoload.php");
 
 class HarmonistHubExternalModule extends AbstractExternalModule
 {
@@ -135,7 +135,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
     function redcap_save_record($project_id, $record, $instrument, $event_id)
     {
         echo '<script>';
-        include_once("js/iframe.js");
+        // include_once("js/iframe.js");
         echo '</script>';
 
         #Get Projects ID's
@@ -144,18 +144,18 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         try {
             #Depending on the project we add one hook or another
             if ($project_id == $pidsArray['SOP']) {
-                include_once("hooks/save_record_SOP.php");
+                // include_once("hooks/save_record_SOP.php");
             } else if ($project_id == $pidsArray['RMANAGER']) {
-                include_once("hooks/save_record_requestManager.php");
+                // include_once("hooks/save_record_requestManager.php");
             } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
-                include_once("hooks/save_record_commentsAndVotes.php");
+                // include_once("hooks/save_record_commentsAndVotes.php");
             } else if ($project_id == $pidsArray['SOPCOMMENTS']) {
-                include_once("hooks/save_record_SOP_comments.php");
+                // include_once("hooks/save_record_SOP_comments.php");
             } else if ($project_id == $pidsArray['HARMONIST']) {
-                include_once("hooks/save_record_concept_sheet.php");
+                // include_once("hooks/save_record_concept_sheet.php");
             }
             echo '<script>';
-            include_once("js/iframe.js");
+            // include_once("js/iframe.js");
             echo '</script>';
         } catch (Throwable $e) {
             REDCap::email(
@@ -175,7 +175,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         try {
             #Depending on the project que add one hook or another
             if ($project_id == $pidsArray['SOP'] && $instrument == 'dhwg_review_request') {
-                include_once("sop/sop_make_public_request_AJAX.php?record=" . $record);
+                // include_once("sop/sop_make_public_request_AJAX.php?record=" . $record);
                 echo '<script>parent.location.href = ' . json_encode(
                         $this->getUrl(
                             "index.php"
@@ -183,7 +183,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                     ) . '</script>';
             } else {
                 echo '<script>';
-                include_once("js/iframe.js");
+                // include_once("js/iframe.js");
                 echo '</script>';
             }
         } catch (Throwable $e) {
@@ -310,24 +310,24 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                             try {
                                 #CRONS
                                 if ($cronAttributes['cron_name'] == 'cron_metrics' && $settings['deactivate_metrics_cron___1'] !== "1") {
-                                    include("crontasks/cron_metrics.php");
+                                    // include("crontasks/cron_metrics.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_delete' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
-                                    include("crontasks/cron_delete_AWS.php");
+                                    // include("crontasks/cron_delete_AWS.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_data_upload_expiration_reminder' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
-                                    include("crontasks/cron_data_upload_expiration_reminder.php");
+                                    // include("crontasks/cron_data_upload_expiration_reminder.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_data_upload_notification' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
-                                    include("crontasks/cron_data_upload_notification.php");
+                                    // include("crontasks/cron_data_upload_notification.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_monthly_digest') {
                                     //Every First Monday of the Month
-                                    include("crontasks/cron_monthly_digest.php");
+                                    // include("crontasks/cron_monthly_digest.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_req_finalized_notification') {
-                                    include("crontasks/cron_req_finalized_notification.php");
+                                    // include("crontasks/cron_req_finalized_notification.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_publications') {
-                                    include("crontasks/cron_publications.php");
+                                    // include("crontasks/cron_publications.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_upload_pending_data_set_data' && ($settings['deactivate_datadown___1'] !== "1" || $settings['deactivate_datahub___1'] !== "1")) {
-                                    include("crontasks/cron_upload_pending_data_set_data.php");
+                                    // include("crontasks/cron_upload_pending_data_set_data.php");
                                 } elseif ($cronAttributes['cron_name'] == 'cron_data_log' && $settings['deactivate_datahub___1'] !== "1") {
-                                    include("crontasks/cron_data_log.php");
+                                    // include("crontasks/cron_data_log.php");
                                 }
                             } catch (Throwable $e) {
                                 REDCap::email(

@@ -1,8 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once dirname(__FILE__) . "/classes/HubData.php";
+// require_once dirname(__FILE__) . "/classes/HubData.php";
 
-require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
+// require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
 
 $request_DU = $module->escape(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null));
 krsort($request_DU);
@@ -21,7 +21,6 @@ foreach ($request_DU as $down){
 ?>
 <!DOCTYPE html>
 <html lang="en">
-    <?php include("hub_html_head.php"); ?>
 <script>
     $(document).ready(function () {
         var tableDown = $('#sortable_table_downloads').DataTable({
@@ -34,7 +33,6 @@ foreach ($request_DU as $down){
     });
 </script>
 <body>
-<?php include('hub_header.php');?>
 <div class="container" style="margin: 0 auto;float:none;min-height: 900px;">
 <div class="optionSelect">
     <div class="backTo">
@@ -212,11 +210,10 @@ foreach ($request_DU as $down){
 </div>
 <?php
 if($settings['session_timeout_popup'] == 2 && $settings['session_timeout_popup'] != ''){
-    include(dirname(dirname(__FILE__)) . "/logout_popup.php");
+    // include(dirname(dirname(__FILE__)) . "/logout_popup.php");
 }
 ?>
 </div>
-<?php include('hub_footer.php'); ?>
 <br/>
 </body>
 </html>

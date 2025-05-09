@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once "projects.php";
+// require_once "projects.php";
 use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 $code = getCrypt($_REQUEST['code'],"d",$secret_key,$secret_iv);

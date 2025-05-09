@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ ."/../projects.php");
-include_once(__DIR__ . "/../classes/HubUpdates.php");
+// include_once(__DIR__ ."/../projects.php");
+// include_once(__DIR__ . "/../classes/HubUpdates.php");
 
 $constantReq = $_REQUEST['constant'];
 $option = $_REQUEST['option'];

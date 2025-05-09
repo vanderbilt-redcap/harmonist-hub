@@ -1,8 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include APP_PATH_DOCROOT . 'ProjectGeneral/header.php';
-include_once(__DIR__ ."/../projects.php");
-include_once(__DIR__ . "/../classes/HubUpdates.php");
+// include APP_PATH_DOCROOT . 'ProjectGeneral/header.php';
+// include_once(__DIR__ ."/../projects.php");
+// include_once(__DIR__ . "/../classes/HubUpdates.php");
 
 $resolved_list = HubUpdates::getResolvedList($module,'resolved');
 $hub_updates_resolved_list_last_updated = empty($module->getProjectSetting('hub-updates-resolved-list-last-updated')) ? array() : $module->getProjectSetting('hub-updates-resolved-list-last-updated');

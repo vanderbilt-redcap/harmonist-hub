@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ ."/../projects.php");
-include_once(__DIR__ ."/../functions.php");
+// include_once(__DIR__ ."/../projects.php");
+// include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
 
 #Get Projects ID's

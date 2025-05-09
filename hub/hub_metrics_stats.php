@@ -880,7 +880,6 @@ $activity_data = ProjectData::getCheckboxValuesAsArray($module, $pidsArray['SETT
     <p class="hub-title"><?=filter_tags(($settings['hub_stats_map']=="")?$default_values_settings['hub_stats_map']:$settings['hub_stats_map'])?></p>
 </div>
 <div class="container" style="padding-top: 20px">
-    <?php include(dirname(dirname(__FILE__)).'/map/map_stats.php');?>
 </div>
 <script>
     $(document).ready(function() {

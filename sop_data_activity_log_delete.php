@@ -1,9 +1,9 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once dirname(__FILE__) . "/classes/HubData.php";
+// require_once dirname(__FILE__) . "/classes/HubData.php";
 
-require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
-require_once ($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
+// require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
+// require_once ($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
 
 $deleteCode = $module->escape($_REQUEST['del']);
 $file_name = $module->escape($_REQUEST['file_name']);
@@ -24,7 +24,6 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
     <meta name="theme-color" content="#fff">
     <link rel="icon" href="<?=getFile($module, $settings['hub_logo_favicon'],'favicon')?>">
 
-    <?php include_once("head_scripts.php");?>
 
     <script type='text/javascript'>
         $(document).ready(function() {
@@ -49,7 +48,6 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
     }
 </style>
 <body>
-<?php include('hub_header.php');?>
 <div class="container" style="margin: 0 auto;float:none;min-height: 900px;">
     <form class="form-horizontal" action="<?=$deleteAwsUrl?>" method="post" id='deleteAwsData'>
         <div>
@@ -66,7 +64,6 @@ $deleteAwsUrl = preg_replace('/pid=(\d+)/', "pid=".$pidsArray['DATADOWNLOADUSERS
         </div>
     </form>
     <div style="padding-top: 500px;"></div>
-    <?php include('hub_footer.php'); ?>
     <br/>
 </body>
 </html>

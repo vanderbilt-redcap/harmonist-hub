@@ -3,14 +3,14 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 
-include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
-include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php");
+// include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
+// include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php");
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
     if($settings['deactivate_datahub___1'] != "1") {
-        require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
-        require_once ($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
+        // require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
+        // require_once ($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
 
         $code = getCrypt($_REQUEST['code'], "d", $secret_key, $secret_iv);
         $exploded = array();

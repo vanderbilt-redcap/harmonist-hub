@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once dirname(dirname(__FILE__))."/projects.php";
+// require_once dirname(dirname(__FILE__))."/projects.php";
 
 $record_id = htmlentities($_REQUEST['id'],ENT_QUOTES);
 $Proj = new \Project($pidsArray['SOP']);

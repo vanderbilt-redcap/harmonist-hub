@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ ."/../projects.php");
-include_once(__DIR__ . "/../classes/HubUpdates.php");
+// include_once(__DIR__ ."/../projects.php");
+// include_once(__DIR__ . "/../classes/HubUpdates.php");
 
 $checked_values = $_REQUEST['checked_values'];
 $option = $_REQUEST['option'];

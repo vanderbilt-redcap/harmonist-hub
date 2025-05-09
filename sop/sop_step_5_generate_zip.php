@@ -1,7 +1,7 @@
 <?PHP
 namespace Vanderbilt\HarmonistHubExternalModule;
-require_once dirname(dirname(__FILE__))."/projects.php";
-require_once APP_PATH_DOCROOT.'Classes/Files.php';
+// require_once dirname(dirname(__FILE__))."/projects.php";
+// require_once APP_PATH_DOCROOT.'Classes/Files.php';
 
 $record_id = htmlentities($_REQUEST['record'],ENT_QUOTES);
 

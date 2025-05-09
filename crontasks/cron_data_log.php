@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-include_once(__DIR__ ."/../projects.php");
+// include_once(__DIR__ ."/../projects.php");
 
 $excel_data = array();
 

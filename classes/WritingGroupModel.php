@@ -4,7 +4,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 use REDCap;
 
-include_once (__DIR__ . "/../autoload.php");
+// include_once (__DIR__ . "/../autoload.php");
 
 class WritingGroupModel extends Model
 {

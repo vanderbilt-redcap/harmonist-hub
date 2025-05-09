@@ -25,9 +25,9 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
         )) {
         $is_authorized_and_has_rights = true;
         if ($option === 'lge') {
-            include('sop_data_activity_log_delete.php');
+            // include('sop_data_activity_log_delete.php');
         } elseif ($option === 'dnd' && $settings['deactivate_datahub___1'] != "1") {
-            include('sop_retrieve_data.php');
+            // include('sop_retrieve_data.php');
         }
     }
 }
@@ -58,8 +58,8 @@ if($hub_projectname != '' && $hub_profile != ''){
             if (count($dd_array) == 1 && $isAdminInstall && !array_key_exists('project_constant', $dd_array) && !array_key_exists('project_id', $dd_array) || count($data_array) == 0) {
                 //Do nothing
             } else {
-                include_once("projects.php");
-                include("hub_html_head.php");
+                // include_once("projects.php");
+                // include("hub_html_head.php");
                 ?>
                 <body>
                 <?php
@@ -82,168 +82,168 @@ if($hub_projectname != '' && $hub_profile != ''){
                 if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'dfq'){
                     //No header
                 }else{
-                    include('hub_header.php');
+                    // include('hub_header.php');
                 }
                 ?>
                 <div class="container" style="margin: 0 auto;float:none;min-height: 900px;">
                     <?php
                     if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'map' )
                     {
-                        include('map/index.php');
+                        // include('map/index.php');
                     }else if( !array_key_exists(SecurityHandler::SESSION_TOKEN_STRING, $_REQUEST) && !array_key_exists('request', $_REQUEST) && empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])){
-                        include('hub/hub_login.php');
+                        // include('hub/hub_login.php');
                     }else if($current_user['active_y'] == "0"){
-                        include('hub/hub_login.php');
+                        // include('hub/hub_login.php');
                     }else if(!empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()]) && $module->getSecurityHandler()->isTokenCorrect($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])){
                         if( !array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST)){
-                            include('hub/hub_home.php');
+                            // include('hub/hub_home.php');
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'log')
                         {
-                            include('hub/hub_changelog.php');
+                            // include('hub/hub_changelog.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'smn' && !$deactivate_datahub)
                         {
-                            include('sop/sop_request_data.php');
+                            // include('sop/sop_request_data.php');
                         } else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'sra' && !$deactivate_datahub)
                         {
-                            include('sop/sop_recent_activity.php');
+                            // include('sop/sop_recent_activity.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'tbl' && !$deactivate_datahub && !$deactivate_tblcenter)
                         {
-                            include('sop/sop_table_center.php');
+                            // include('sop/sop_table_center.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'ofs' && !$deactivate_datahub)
                         {
-                            include('sop/sop_document_library.php');
+                            // include('sop/sop_document_library.php');
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'sop' && !$deactivate_datahub)
                         {
-                            include('sop/sop_data_request_title.php');
+                            // include('sop/sop_data_request_title.php');
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'dna' && !$deactivate_datahub)
                         {
-                            include('sop/sop_news_archive.php');
+                            // include('sop/sop_news_archive.php');
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'ss1' && !$deactivate_datahub)
                         {
-                            include('sop/sop_steps_menu.php');
+                            // include('sop/sop_steps_menu.php');
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'ss5' && !$deactivate_datahub)
                         {
-                            include('sop/sop_step_5.php');
+                            // include('sop/sop_step_5.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'spr' && !$deactivate_datahub)
                         {
-                            include('sop/sop_make_public_request_review.php');
+                            // include('sop/sop_make_public_request_review.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'lgd' && !$deactivate_datahub)
                         {
-                            include('sop/sop_data_activity_log.php');
+                            // include('sop/sop_data_activity_log.php');
                         } else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'cpt' )
                         {
-                            include('hub/hub_concepts.php');
+                            // include('hub/hub_concepts.php');
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'ttl' )
                         {
-                            include('hub/hub_concept_title.php');
+                            // include('hub/hub_concept_title.php');
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'cwg' && ($settings['writinggroup_opt'] == "2" || ($settings['writinggroup_opt'] == "1" && $isAdmin)) )
                         {
-                            include('hub/hub_concept_writing_group.php');
+                            // include('hub/hub_concept_writing_group.php');
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'hub')
                         {
                             if(array_key_exists('record', $_REQUEST) && !empty($_REQUEST['record'])) {
-                                include('hub/hub_request_title.php');
+                                // include('hub/hub_request_title.php');
                             }else{
-                                include('hub/hub_requests.php');
+                                // include('hub/hub_requests.php');
                             }
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'adm')
                         {
                             if($isAdmin){
-                                include('hub/hub_admin.php');
+                                // include('hub/hub_admin.php');
                             }else{
-                                include('hub/hub_error_page.php');
+                                // include('hub/hub_error_page.php');
                             }
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'usr'){
-                            include('hub/hub_users.php');
+                            // include('hub/hub_users.php');
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'mra')
                         {
-                            include('hub/hub_my_requests_archive.php');
+                            // include('hub/hub_my_requests_archive.php');
                         } else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'mrr')
                         {
-                            include('hub/hub_my_requests_archive_rejected.php');
+                            // include('hub/hub_my_requests_archive_rejected.php');
                         }
                         else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'hra')
                         {
-                            include('hub/hub_recent_activity.php');
+                            // include('hub/hub_recent_activity.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'upd' && !$deactivate_datahub)
                         {
-                            include('sop/sop_submit_data.php');
+                            // include('sop/sop_submit_data.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'dat' && !$deactivate_datahub)
                         {
-                            include('hub/hub_data.php');
+                            // include('hub/hub_data.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'pdc' && !$deactivate_datahub)
                         {
-                            include('sop/sop_data_call_archive.php');
+                            // include('sop/sop_data_call_archive.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'out')
                         {
-                            include('hub/hub_publications.php');
+                            // include('hub/hub_publications.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'mts' && ($settings['deactivate_metrics___1'] != "1" || $isAdmin))
                         {
-                            include('hub/hub_metrics_stats.php');
+                            // include('hub/hub_metrics_stats.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'mth' && ($settings['deactivate_datametrics___1'] != "1" || $isAdmin))
                         {
-                            include('sop/sop_metrics_stats.php');
+                            // include('sop/sop_metrics_stats.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'faq')
                         {
-                            include('faq/hub_faq.php');
+                            // include('faq/hub_faq.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'pro')
                         {
-                            include('hub/hub_profile.php');
+                            // include('hub/hub_profile.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'bug')
                         {
-                            include('hub/hub_report_bug.php');
+                            // include('hub/hub_report_bug.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'unf')
                         {
-                            include('hub/hub_request_title.php');
+                            // include('hub/hub_request_title.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'und' && !$deactivate_datahub)
                         {
-                            include('sop/sop_data_request_title.php');
+                            // include('sop/sop_data_request_title.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'cal' && $settings['calendar_active'][1] == "1")
                         {
-                            include('hub/hub_calendar.php');
+                            // include('hub/hub_calendar.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $option === 'abt')
                         {
-                            include('hub/hub_about.php');
+                            // include('hub/hub_about.php');
                         }else if( array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST) && $_REQUEST[SecurityHandler::SESSION_OPTION_STRING] === 'dab' && !$deactivate_toolkit)
                         {
-                            include('sop/sop_explore_data.php');
+                            // include('sop/sop_explore_data.php');
                         }
                         else{
-                            include('hub/hub_home.php');
+                            // include('hub/hub_home.php');
                         }
 
                     }else{
                         echo "<script>$(document).ready(function() { $('#hub_error_message').show(); $('#hub_error_message').html('<strong>This Access Link has expired. </strong> <br />Please request a new Access Link below.');});</script>";
-                        include('hub/hub_login.php');
+                        // include('hub/hub_login.php');
                     }
                     ?>
                 </div>
-                <?php include('hub_footer.php'); ?>
+                <?php ?>
                 <br/>
                 <?php
             }
         }elseif(!$is_authorized_and_has_rights){
-            include("hub_html_head.php");
+            // include("hub_html_head.php");
             $pidsArray = $module->getSecurityHandler()->getPidsArray();
             $settings = $module->getSecurityHandler()->getSettingsData();
 
-            include('hub_header.php');
+            // include('hub_header.php');
             ?><body>
                 <div class="container" style="margin: 0 auto;float:none;min-height: 900px;">
-                    <?php include('hub/hub_login.php');?>
+                    <?php ?>
                 </div>
                 <br/>
-                <?php include('hub_footer.php'); ?>
+                <?php ?>
                 <?php
         }
     ?>

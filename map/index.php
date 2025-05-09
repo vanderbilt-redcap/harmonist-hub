@@ -1,5 +1,5 @@
 <?php
-require_once dirname(dirname(__FILE__))."/base.php";
+// require_once dirname(dirname(__FILE__))."/base.php";
 
 #Color code & Region names
 $colorCountryArray = array("AP"=>"#e74c3c","NA"=>"#95a5a6","CN"=>"#3498db","CA"=>"#1abc9c","EA"=>"#e67e22","SA"=>"#9b59b6","WA"=>"#f1c40f");

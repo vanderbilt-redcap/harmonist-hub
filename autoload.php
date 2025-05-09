@@ -20,7 +20,7 @@ spl_autoload_register(function ($class) use ($autoloadNamespaces) {
 
             // If the file exists, require it
             if (file_exists($file)) {
-                require $file;
+                // require $file;
             }
 
             // Exit the function if the class file was found and included

@@ -2,7 +2,7 @@
 namespace Vanderbilt\HarmonistHubExternalModule;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
-include_once(__DIR__ . "/classes/HubREDCapUsers.php");
+// include_once(__DIR__ . "/classes/HubREDCapUsers.php");
 
 if(APP_PATH_WEBROOT[0] == '/'){
     $APP_PATH_WEBROOT_ALL = substr(APP_PATH_WEBROOT, 1);

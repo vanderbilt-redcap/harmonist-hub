@@ -1,6 +1,6 @@
 <?php
 define('NOAUTH',true);
-require_once dirname(dirname(__FILE__))."/projects.php";
+// require_once dirname(dirname(__FILE__))."/projects.php";
 
 $record = $_REQUEST['record'];
 $Proj = new \Project($pidsArray['SOP']);

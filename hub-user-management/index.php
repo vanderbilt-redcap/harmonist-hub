@@ -1,7 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-include_once(__DIR__ ."/../projects.php");
-include_once(__DIR__ ."/../classes/HubREDCapUsers.php");
+// include_once(__DIR__ ."/../projects.php");
+// include_once(__DIR__ ."/../classes/HubREDCapUsers.php");
 
 $projects_array = REDCapManagement::getProjectsConstantsArray();
 $projects_titles_array = REDCapManagement::getProjectsTitlesArray();

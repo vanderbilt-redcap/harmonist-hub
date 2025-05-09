@@ -5,7 +5,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 use Project;
 use REDCap;
 
-include_once(__DIR__ . "/REDCapManagement.php");
+// include_once(__DIR__ . "/REDCapManagement.php");
 
 class ProjectData
 {
