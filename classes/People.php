@@ -178,7 +178,7 @@ class People extends Model
         $this->tokenExpirationD = $tokenExpirationD;
     }
 
-    private function hydrateConcept()
+    private function hydratePeople()
     {
         $this->recordId = $this->conceptData['record_id'];
         $this->activeY = $this->conceptData['active_y'];
