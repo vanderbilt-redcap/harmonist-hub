@@ -18,6 +18,7 @@ foreach ($request_DU as $down){
     }
     array_push($array_downloads_by_concept[$down['data_assoc_concept']][$down['data_assoc_request']],$down);
 }
+print_array($_SESSION);
 ?>
 <!DOCTYPE html>
 <html lang="en">
