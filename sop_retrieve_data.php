@@ -120,6 +120,7 @@ foreach ($request_DU as $down){
                             $downloads_active++;
                             $downloadUrl = $module->getUrl('hub/aws/AWS_downloadFile.php').'&code=' . getCrypt("id=". $data_up['record_id']."&user_id=".$hubData->getCurrentUser()['record_id'],'e',$secret_key,$secret_iv);
                             $buttons = '<div><a href="'.$downloadUrl. '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
+                            print_array($downloadUrl);
                         } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != ""){
                             if($data_up['deletion_type'] == '2'){
                                 $person_info_delete = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $data_up['deletion_hubuser']),array('firstname','lastname','email'))[0];
