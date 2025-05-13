@@ -5,6 +5,8 @@ use Aws\S3\Exception\S3Exception;
 include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
 include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php");
 
+\REDCap::email('eva.bascompte.moragas@vumc.org', 'eva.bascompte.moragas@vumc.org', "TEST", "IN AWS DOWN");
+
 print_array("AWS");
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
     print_array("isAuthorizedPage");
