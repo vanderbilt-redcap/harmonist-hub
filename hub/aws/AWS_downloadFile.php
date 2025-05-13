@@ -5,10 +5,13 @@ use Aws\S3\Exception\S3Exception;
 include_once(dirname(dirname(dirname(__FILE__))) . "/email.php");
 include_once(dirname(dirname(dirname(__FILE__))) . "/classes/SecurityHandler.php");
 
+print_array("AWS");
 if ($module->getSecurityHandler()->isAuthorizedPage()) {
+    print_array("isAuthorizedPage");
     $pidsArray = $module->getSecurityHandler()->getPidsArray();
     $settings = $module->getSecurityHandler()->getSettingsData();
     if($settings['deactivate_datadown___1'] != "1" && $settings['deactivate_datahub___1'] != "1") {
+        print_array("Data Downloads activated");
         require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
         require_once ($module->getSecurityHandler()->getCredentialsServerVars("AWS"));
 
@@ -25,6 +28,7 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                                'region' => 'us-east-2',
                                'credentials' => $credentials
                            ]);
+        print_array("after Credentials");
         if ($request_DU['deleted_y'] != '1' && $request_DU != '' && !empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]) && $module->getSecurityHandler()->isTokenCorrect(
                 $_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$settings['hub_name'] . $pidsArray['PROJECTS']]
             )) {
@@ -42,11 +46,14 @@ if ($module->getSecurityHandler()->isAuthorizedPage()) {
                 array('record_id' => $current_user),
                 array('harmonistadmin_y', 'redcap_name', 'active_y')
             )[0];
+            print_array("Token Correct");
+            print_array("USERID: ".USERID);
             if (!empty($current_user) && $userData['redcap_name'] == USERID && $userData['active_y'] == "1" && ($request_DU['data_upload_person'] == $current_user || ($key = array_search(
                         $current_user,
                         $array_userid
                     )) !== false)) {
                 try {
+                    print_array("We are in!");
                     #Get the object as a link
                     $cmd = $s3->getCommand('GetObject', [
                         'Bucket' => $request_DU['data_upload_bucket'],
