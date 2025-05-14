@@ -118,7 +118,7 @@ foreach ($request_DU as $down){
                         $buttons = "";
                         if ($data_up['deleted_y'] != '1' && strtotime ($expire_date) >= strtotime(date('Y-m-d'))) {
                             $downloads_active++;
-                            $downloadUrl = $module->getUrl('hub/aws/AWS_downloadFile.php').'&code=' . getCrypt("id=". $data_up['record_id']."&user_id=".$hubData->getCurrentUser()['record_id'],'e',$secret_key,$secret_iv);
+                            $downloadUrl = $module->getUrl('hub/aws/AWS_downloadFile.php').'&codeData=' . getCrypt("id=". $data_up['record_id']."&user_id=".$hubData->getCurrentUser()['record_id'],'e',$secret_key,$secret_iv);
                             $buttons = '<div><a href="'.$downloadUrl. '" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i> Download</a></div>';
                         } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != ""){
                             if($data_up['deletion_type'] == '2'){
