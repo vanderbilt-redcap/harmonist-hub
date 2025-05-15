@@ -6,6 +6,8 @@ class HubDataDownloadsUsers extends Model
     private $successUserList = [];
     private $errorUserList = [];
 
+    private $peopleUser;
+
     public function __construct(HarmonistHubExternalModule $module, $peoplePid)
     {
         $hub_mapper = $module->getProjectSetting('hub-mapper', $peoplePid);
@@ -45,11 +47,30 @@ class HubDataDownloadsUsers extends Model
             foreach ($peopleData as $person) {
                 if($this->canUserDownloadData($person['allowgetdata_y___1'])) {
                     $people = new People($person, $this->module, $this->getPidsArray()['PROJECTS']);
-                    $this->decorateAllUserLists($person, $people->fetchErrorPemissionList());
+                    $this->decorateAllUserLists($people);
                 }
             }
         }
     }
+
+    public function fetchPeopleErrorUser($userId, $username="", $missing=false): ?People
+    {
+        if(!empty($this->errorUserList)) {
+            foreach ($this->errorUserList as $index => $user) {
+                if ($user->getRecordId() == $userId) {
+                    if ($missing && !empty($username)) {
+                        $user->setRedcapName($username);
+                        $user->addUsernameOnProject();
+                    }
+                    $user->setRedcapName('bascome');
+                    $this->peopleUser = $user;
+                    return $user;
+                }
+            }
+        }
+        return null;
+    }
+
 
     private function canUserDownloadData($personDownload): bool
     {
@@ -59,13 +80,12 @@ class HubDataDownloadsUsers extends Model
         return false;
     }
 
-    private function decorateAllUserLists($person, $errorPemissionList): void
+    private function decorateAllUserLists($people): void
     {
-        if(empty($errorPemissionList)){
-            $this->successUserList[] = $person;
+        if(empty($people->fetchErrorPemissionList())){
+            $this->successUserList[] = $people;
         }else{
-            $person['error_permission_list'] = $errorPemissionList;
-            $this->errorUserList[] = $person;
+            $this->errorUserList[] = $people;
         }
     }
 }

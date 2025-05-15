@@ -24,7 +24,7 @@ class People extends Model
     private $tokenExpirationD;
     private $regionCode;
     private $errorUserList;
-    private $errorPemissionList = [];
+    private $errorPermissionList = [];
 
     public function __construct($peopleData, HarmonistHubExternalModule $module, $pidsMapper)
     {
@@ -204,84 +204,104 @@ class People extends Model
         $this->regionCode = $regionCode;
     }
 
+    public function getErrorPermissionList(): array
+    {
+        return $this->errorPermissionList;
+    }
+
+    public function setErrorPermissionList(array $errorPermissionList): void
+    {
+        $this->errorPermissionList = $errorPermissionList;
+    }
+
     public function fetchErrorPemissionList(){
         $this->checkUserName();
         $this->validateUserActive();
         $this->validateUserHubAccess();
-        return $this->errorPemissionList;
+        return $this->errorPermissionList;
     }
 
-    public function removeUserFromDataDownloads($userId): void
+    public function removeUserFromDataDownloads(): void
     {
-        $this->removeDataDownloadPermission($userId);
-        $this->removeUserFromDataDonwloadsProject($userId);
+        $this->removeDataDownloadPermission();
+        $this->removeUserFromDataDonwloadsProject();
     }
 
-    public function addUserToDataDownloads($userId, $userName, $missing): void
+    public function addUserToDataDownloads(): void
     {
-        if($missing) {
-            $this->addUsernameOnProject($userId, $userName);
+        $this->addUserToDataDonwloadsProject();
+    }
+
+    public function addUsernameOnProject(): void
+    {
+        if(!empty($this->redcapName) && !empty($this->recordId)) {
+            $Proj = new \Project($this->getPidsArray()['PEOPLE']);
+            $event_id = $Proj->firstEventId;
+            $array = [];
+            $array[$this->recordId][$event_id]['redcap_name'] = $this->redcapName;
+
+            $params = [
+                'project_id' => $this->getPidsArray()['PEOPLE'],
+                'dataFormat' => 'array',
+                'data' => $array,
+                'overwriteBehavior' => "overwrite",
+                'dateFormat' => "YMD",
+                'type' => "flat"
+            ];
+            $results = \REDCap::saveData($params);
+            if (array_key_exists("errors", $results) && !empty($results["errors"])) {
+                throw new Exception(
+                    "ERROR. Something went wrong while trying to save data to database." . var_export(
+                        $results["errors"]
+                    )
+                );
+            }
         }
-        $this->addUserToDataDonwloadsProject($userId, $userName);
     }
 
-    private function removeDataDownloadPermission($record): void
-    {
-        #Uncheck variable
-        $Proj = new \Project($this->getPidsArray()['PEOPLE']);
-        $event_id = $Proj->firstEventId;
-        $array = [];
-        $array[$record][$event_id]['allowgetdata_y'] = [1 => ""];//checkbox
 
-        $params = [
-            'project_id' => $this->getPidsArray()['PEOPLE'],
-            'dataFormat' => 'array',
-            'data' => $array,
-            'overwriteBehavior' => "overwrite",
-            'dateFormat' => "YMD",
-            'type' => "flat"
-        ];
-        $results = \REDCap::saveData($params);
-        if(array_key_exists("errors", $results) && !empty($results["errors"])) {
-            throw new Exception("ERROR. Something went wrong while trying to save data to database.".var_export($results["errors"]));
+    private function removeDataDownloadPermission(): void
+    {
+        if(!empty($this->recordId)) {
+            #Uncheck variable
+            $Proj = new \Project($this->getPidsArray()['PEOPLE']);
+            $event_id = $Proj->firstEventId;
+            $array = [];
+            $array[$this->recordId][$event_id]['allowgetdata_y'] = [1 => ""];//checkbox
+
+            $params = [
+                'project_id' => $this->getPidsArray()['PEOPLE'],
+                'dataFormat' => 'array',
+                'data' => $array,
+                'overwriteBehavior' => "overwrite",
+                'dateFormat' => "YMD",
+                'type' => "flat"
+            ];
+            $results = \REDCap::saveData($params);
+            if (array_key_exists("errors", $results) && !empty($results["errors"])) {
+                throw new Exception(
+                    "ERROR. Something went wrong while trying to save data to database." . var_export(
+                        $results["errors"]
+                    )
+                );
+            }
         }
     }
 
     private function removeUserFromDataDonwloadsProject(): void
     {
-        if(!empty($userData) && $this->isUserInDataDownloads()){
+        if(!empty($this->redcapName) && $this->isUserInDataDownloads()){
             if(filter_var($this->redcapName, FILTER_VALIDATE_EMAIL)){
                 #USER ID IS EMAIL
                 #TODO
             }else{
                 #USER ID
-                $q = $this->module->query("DELETE FROM redcap_user_rights WHERE project_id = ? and username = ?", [$this->getPidsArray()['DATADOWNLOADUSERS'],$userData['redcap_name']]);
+                $q = $this->module->query("DELETE FROM redcap_user_rights WHERE project_id = ? and username = ?", [$this->getPidsArray()['DATADOWNLOADUSERS'],$this->redcapName]);
 
                 #Logs
                 $message = "User ".$this->redcapName." removed by ".USERID;
                 \REDCap::logEvent($message, "Deletion from Data Downloads User Management", null, null, null, $this->getPidsArray()['DATADOWNLOADUSERS']);
             }
-        }
-    }
-
-    private function addUsernameOnProject(): void
-    {
-        $Proj = new \Project($this->getPidsArray()['PEOPLE']);
-        $event_id = $Proj->firstEventId;
-        $array = [];
-        $array[$this->recordId][$event_id]['redcap_name'] = $this->redcapName;
-
-        $params = [
-            'project_id' => $this->getPidsArray()['PEOPLE'],
-            'dataFormat' => 'array',
-            'data' => $array,
-            'overwriteBehavior' => "overwrite",
-            'dateFormat' => "YMD",
-            'type' => "flat"
-        ];
-        $results = \REDCap::saveData($params);
-        if(array_key_exists("errors", $results) && !empty($results["errors"])) {
-            throw new Exception("ERROR. Something went wrong while trying to save data to database.".var_export($results["errors"]));
         }
     }
 
@@ -331,18 +351,18 @@ class People extends Model
     {
         if(!empty($this->redcapName)){
             if(!$this->isUserInDataDownloads()){
-                $this->errorPemissionList[] = "User <strong><em>".$this->redcapName."</em></strong> has data downloads activated but is <strong>not in Data Downloads Project</strong>.";
+                $this->errorPermissionList[] = "User <strong><em>".$this->redcapName."</em></strong> has data downloads activated but is <strong>not in Data Downloads Project</strong>.";
             }
             if($this->isUserExpired()){
-                $this->errorPemissionList[] = "<strong>REDCap account has expired</strong> for user <strong><em>".$this->redcapName."</em></strong> .";
+                $this->errorPermissionList[] = "<strong>REDCap account has expired</strong> for user <strong><em>".$this->redcapName."</em></strong> .";
             }
             if(!$this->doesUserExistInREDCap()){
-                $this->errorPemissionList[] = "Username <strong><em>".$this->redcapName."</em> doesn't exist in REDCap</strong>.";
-                $this->errorPemissionList["usernameMissing"] = true;
+                $this->errorPermissionList[] = "Username <strong><em>".$this->redcapName."</em> doesn't exist in REDCap</strong>.";
+                $this->errorPermissionList["usernameMissing"] = true;
             }
         }else{
-            $this->errorPemissionList[] = "User has downloads activated but the username is empty.";
-            $this->errorPemissionList["usernameMissing"] = true;
+            $this->errorPermissionList[] = "User has downloads activated but the username is empty.";
+            $this->errorPermissionList["usernameMissing"] = true;
         }
     }
 
@@ -376,14 +396,14 @@ class People extends Model
     private function validateUserActive(): void
     {
         if($this->activeY == "0" || empty($this->activeY)){
-            $this->errorPemissionList[] = "User is <strong>not active</strong>.";
+            $this->errorPermissionList[] = "User is <strong>not active</strong>.";
         }
     }
 
     private function validateUserHubAccess(): void
     {
         if($this->harmonistRegperm == "0"){
-            $this->errorPemissionList[] = "User has <strong>no Hub Access Permission</strong>.";
+            $this->errorPermissionList[] = "User has <strong>no Hub Access Permission</strong>.";
         }
     }
 

@@ -34,7 +34,7 @@ include APP_PATH_DOCROOT . 'ProjectGeneral/header.php';
             $('#add_error_user_management').click(function (event) {
                 $('#msgUserList').attr('display','none');
                 let errors = false;
-                $("#addUsersForm input").each(function (el) {
+                $("#addUsersForm input:not([type=hidden])").each(function (el) {
                     if($('#'+this.id).val() == undefined || $('#'+this.id).val() == ""){
                         $('#'+this.id).addClass("error");
                         errors = true;
@@ -123,26 +123,26 @@ include_once ("data_downloads_user_management_buttons.php");
         <?php
         $count = 0;
         $data = $module->getDataDownloadsUsersHandler()->getErrorUserList();
-        ArrayFunctions::array_sort_by_column($data, 'lastname',SORT_ASC);
+//        ArrayFunctions::array_sort_by_column($data, 'lastname',SORT_ASC);
         foreach ($data as $index => $user) {
             $count++;
             $admin = "";
-            if($user['harmonistadmin_y'] == "1"){
+            if($user->getHarmonistadminY() == "1"){
                 $admin = "<span class='label label-approved'>Admin</span>";
             }
-            $personDataEntryLink = $module->getDataDownloadsUsersHandler()->getDatEntryLink($user['record_id'],$_GET['pid']);
-            $name = $user['firstname']." ".$user['lastname'];
-            $userData = $name." ".$user['region_code']." ".$admin;
+            $personDataEntryLink = $module->getDataDownloadsUsersHandler()->getDatEntryLink($user->getRecordId(),$_GET['pid']);
+            $name = $user->getFirstname()." ".$user->getLastname();
+            $userData = $name." ".$user->getRegionCode()." ".$admin;
 
             $usernameMissing = false;
-            foreach($user['error_permission_list'] as $index => $errorText) {
+            foreach($user->getErrorPermissionList() as $index => $errorText) {
                 if($index == "usernameMissing"){
-                    unset($user['error_permission_list']['usernameMissing']);
+                    unset($user->getErrorPermissionList()['usernameMissing']);
                     $usernameMissing = true;
                     break;
                 }
             }
-            $errorArrayList = implode(";", $user['error_permission_list']);
+            $errorArrayList = implode(";", $user->getErrorPermissionList());
             ?>
             <tr>
                 <td style="padding-bottom: 0;padding-top: 0;">
@@ -152,12 +152,12 @@ include_once ("data_downloads_user_management_buttons.php");
                                 <table class="table table-striped table-hover" style="margin-bottom:0px; border: 1px solid #dee2e6;font-size: 13px;" data-sortable>
                                     <tr row="<?=$index?>" value="<?=$index?>" name="chkAll_parent_user">
                                         <td style="width: 1%;">
-                                            <input id="<?=$user['record_id']?>" value="<?=$user['record_id']?>" pid="<?=$count?>" user-data="<?=$userData;?>" user-name="<?=$user['redcap_name'];?>" username-missing="<?=$usernameMissing?>" onclick="selectData('<?= $index; ?>','user');" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
+                                            <input id="<?=$user->getRecordId()?>" value="<?=$user->getRecordId()?>" pid="<?=$count?>" user-data="<?=$userData;?>" user-name="<?=$user->getRedcapName();?>" username-missing="<?=$usernameMissing?>" onclick="selectData('<?= $index; ?>','user');" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
                                         </td>
                                         <td>
-                                            <a data-toggle="collapse" href="#collapse<?=$user['record_id']?>" id="<?='table_'.$index?>" class="label label-as-badge-square ">
+                                            <a data-toggle="collapse" href="#collapse<?=$user->getRecordId()?>" id="<?='table_'.$index?>" class="label label-as-badge-square ">
                                                 <span class="table_name" style="font-weight: normal;">
-                                                    <span style="padding-right: 10px;"><?=$name;?> <?=$user['region_code'];?></span>
+                                                    <span style="padding-right: 10px;"><?=$name;?> <?=$user->getRegionCode();?></span>
                                                     <?=$admin;?>
                                                 </span>
                                             </a>
@@ -167,12 +167,12 @@ include_once ("data_downloads_user_management_buttons.php");
                                 </table>
                             </h3>
                         </div>
-                        <div id="collapse<?=$user['record_id']?>" class="table-responsive panel-collapse collapse" aria-expanded="true">
+                        <div id="collapse<?=$user->getRecordId()?>" class="table-responsive panel-collapse collapse" aria-expanded="true">
                             <table style="width: 100%;margin-top: 5px;">
                                 <tr style="padding:8px 30px;">
                                     <td>
-                                        <ul id="<?="error-list-".$user['record_id']?>" error-data="<?=$errorArrayList?>" username-missing="<?=$usernameMissing?>">
-                                        <?php foreach ($user['error_permission_list'] as $errorType => $error){
+                                        <ul id="<?="error-list-".$user->getRecordId()?>" error-data="<?=$errorArrayList?>" username-missing="<?=$usernameMissing?>">
+                                        <?php foreach ($user->getErrorPermissionList() as $errorType => $error){
                                             if($errorType != "usernameMissing"){?>
                                                 <li><?=$error;?></li>
                                            <?php }

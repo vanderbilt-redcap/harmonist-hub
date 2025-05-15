@@ -12,11 +12,11 @@ if($option == "remove") {
 $checked_values = explode(",",$_REQUEST['checked_values_user']);
 foreach ($checked_values as $key => $userId) {
     if($option == "remove") {
-        $module->getDataDownloadsUsersHandler()->removeUserFromDataDownloads($userId);
+        $module->getDataDownloadsUsersHandler()->fetchPeopleErrorUser($userId)->removeUserFromDataDownloads();
     }else if($option == "add"){
         $missing_values = explode(",",$_REQUEST['checked_values_missing_user']);
         $usernames = explode(",",$_REQUEST['usernames']);
-        $module->getDataDownloadsUsersHandler()->addUserToDataDownloads($userId,$usernames[$key],$missing_values[$key]);
+        $module->getDataDownloadsUsersHandler()->fetchPeopleErrorUser($userId,$usernames[$key],$missing_values[$key])->addUserToDataDownloads();
     }
 }
 
