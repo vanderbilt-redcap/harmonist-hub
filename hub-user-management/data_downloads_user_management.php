@@ -73,34 +73,32 @@ include_once ("data_downloads_user_management_buttons.php");
         <?php
         $count = 0;
         $data = $module->getDataDownloadsUsersHandler()->getSuccessUserList();
-        if(is_array($data)){
-            ArrayFunctions::array_sort_by_column($data, 'lastname',SORT_ASC);
-            foreach ($data as $index => $user) {
-                $count++;
-                $admin = "";
-                if($user['harmonistadmin_y'] == "1"){
-                    $admin = "<span class='label label-approved'>Admin</span>";
-                }
-                $personDataEntryLink = $module->getDataDownloadsUsersHandler()->getDatEntryLink($user['record_id'],$_GET['pid']);
-                $name = $user['firstname']." ".$user['lastname'];
-                $userData = $name." ".$user['region_code']." ".$admin;
-                ?>
-                <tr row="<?=$index?>" value="<?=$index?>" name="chkAll_parent_user">
-                    <td style="width: 5%;">
-                        <input id="<?=$user['record_id']?>" value="<?=$user['record_id']?>" pid="<?=$count?>" user-data="<?=$userData;?>" onclick="selectData('<?= $index; ?>','user');" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
-                    </td>
-                    <td>
-                        <a data-toggle="collapse" href="#collapse<?=$index?>" id="<?='table_'.$index?>" class="label label-as-badge-square ">
-                                                    <span class="table_name" style="font-weight: normal;">
-                                                        <span style="padding-right: 10px;"><?=$name;?> <?=$user['region_code'];?></span>
-                                                        <?=$admin;?>
-                                                    </span>
-                        </a>
-                        <a href="<?=$personDataEntryLink?>" target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;">View Record</a>
-                    </td>
-                </tr>
-                <?php
+        usort($data, fn($a, $b) => strcmp($a->getLastname(), $b->getLastname()));
+        foreach ($data as $index => $user) {
+            $count++;
+            $admin = "";
+            if($user->getHarmonistadminY() == "1"){
+                $admin = "<span class='label label-approved'>Admin</span>";
             }
+            $personDataEntryLink = $module->getDataDownloadsUsersHandler()->getDatEntryLink($user->getRecordId(),$_GET['pid']);
+            $name = $user->getFirstname()." ".$user->getLastname();
+            $userData = $name." ".$user->getRegionCode()." ".$admin;
+            ?>
+            <tr row="<?=$index?>" value="<?=$index?>" name="chkAll_parent_user">
+                <td style="width: 5%;">
+                    <input id="<?=$user->getRecordId()?>" value="<?=$user->getRecordId()?>" pid="<?=$count?>" user-data="<?=$userData;?>" onclick="selectData('<?= $index; ?>','user');" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
+                </td>
+                <td>
+                    <a data-toggle="collapse" href="#collapse<?=$index?>" id="<?='table_'.$index?>" class="label label-as-badge-square ">
+                                                <span class="table_name" style="font-weight: normal;">
+                                                    <span style="padding-right: 10px;"><?=$name;?> <?=$user->getRegionCode();?></span>
+                                                    <?=$admin;?>
+                                                </span>
+                    </a>
+                    <a href="<?=$personDataEntryLink?>" target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;">View Record</a>
+                </td>
+            </tr>
+            <?php
         }
         ?>
         </tbody>

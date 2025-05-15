@@ -123,7 +123,7 @@ include_once ("data_downloads_user_management_buttons.php");
         <?php
         $count = 0;
         $data = $module->getDataDownloadsUsersHandler()->getErrorUserList();
-//        ArrayFunctions::array_sort_by_column($data, 'lastname',SORT_ASC);
+        usort($data, fn($a, $b) => strcmp($a->getLastname(), $b->getLastname()));
         foreach ($data as $index => $user) {
             $count++;
             $admin = "";
@@ -135,14 +135,15 @@ include_once ("data_downloads_user_management_buttons.php");
             $userData = $name." ".$user->getRegionCode()." ".$admin;
 
             $usernameMissing = false;
+            $errorList = $user->getErrorPermissionList();
             foreach($user->getErrorPermissionList() as $index => $errorText) {
                 if($index == "usernameMissing"){
-                    unset($user->getErrorPermissionList()['usernameMissing']);
+                    unset($errorList[$index]);
                     $usernameMissing = true;
                     break;
                 }
             }
-            $errorArrayList = implode(";", $user->getErrorPermissionList());
+            $errorArrayList = implode(";", $errorList);
             ?>
             <tr>
                 <td style="padding-bottom: 0;padding-top: 0;">

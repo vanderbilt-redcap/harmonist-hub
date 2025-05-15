@@ -125,7 +125,6 @@ function manageUserFromDataDownloads(url,option) {
         success: function (result) {
             var message = jQuery.parseJSON(result)['message'];
             window.location = getMessageLetterUrl(window.location.href, message);
-            $("#hubSpinner").dialog('close');
         }
     });
     return false;
@@ -146,7 +145,6 @@ function addUserFromDataDownloads(url) {
         success: function (result) {
             var message = jQuery.parseJSON(result)['message'];
             window.location = getMessageLetterUrl(window.location.href, message);
-            $("#hubSpinner").dialog('close');
         }
     });
     return false;

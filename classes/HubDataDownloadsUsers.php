@@ -62,7 +62,19 @@ class HubDataDownloadsUsers extends Model
                         $user->setRedcapName($username);
                         $user->addUsernameOnProject();
                     }
-                    $user->setRedcapName('bascome');
+                    $this->peopleUser = $user;
+                    return $user;
+                }
+            }
+        }
+        return null;
+    }
+
+    public function fetchPeopleSuccessUser($userId): ?People
+    {
+        if(!empty($this->successUserList)) {
+            foreach ($this->successUserList as $index => $user) {
+                if ($user->getRecordId() == $userId) {
                     $this->peopleUser = $user;
                     return $user;
                 }
