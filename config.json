@@ -32,6 +32,12 @@
         "icon": "fas fa-user",
         "url": "hub-user-management/index.php",
         "show-header-and-footer": true
+      },
+      {
+        "name": "Data Downloads User Management",
+        "icon": "fas fa-user",
+        "url": "hub-user-management/data_downloads_user_management.php",
+        "show-header-and-footer": true
       }
     ]
   },

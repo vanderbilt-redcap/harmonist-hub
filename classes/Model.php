@@ -150,4 +150,9 @@ class Model
     {
         return $this->module;
     }
+
+    public function getDatEntryLink($recordId, $projectId): string
+    {
+        return htmlentities(APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $projectId."&id=".$recordId, ENT_QUOTES);
+    }
 }
