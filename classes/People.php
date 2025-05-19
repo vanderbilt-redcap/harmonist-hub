@@ -291,40 +291,30 @@ class People extends Model
     private function removeUserFromDataDonwloadsProject(): void
     {
         if(!empty($this->redcapName) && $this->isUserInDataDownloads()){
-            if(filter_var($this->redcapName, FILTER_VALIDATE_EMAIL)){
-                #USER ID IS EMAIL
-                #TODO
-            }else{
-                #USER ID
-                $q = $this->module->query("DELETE FROM redcap_user_rights WHERE project_id = ? and username = ?", [$this->getPidsArray()['DATADOWNLOADUSERS'],$this->redcapName]);
+            #USER ID
+            $q = $this->module->query("DELETE FROM redcap_user_rights WHERE project_id = ? and username = ?", [$this->getPidsArray()['DATADOWNLOADUSERS'],$this->redcapName]);
 
-                #Logs
-                $message = "User ".$this->redcapName." removed by ".USERID;
-                \REDCap::logEvent($message, "Deletion from Data Downloads User Management", null, null, null, $this->getPidsArray()['DATADOWNLOADUSERS']);
-            }
+            #Logs
+            $message = "User ".$this->redcapName." removed by ".USERID;
+            \REDCap::logEvent($message, "Deletion from Data Downloads User Management", null, null, null, $this->getPidsArray()['DATADOWNLOADUSERS']);
         }
     }
 
     private function addUserToDataDonwloadsProject(): void
     {
         if(!$this->isUserInDataDownloads()){
-            if(filter_var($this->redcapName, FILTER_VALIDATE_EMAIL)){
-                #USER ID IS EMAIL
-                #TODO
-            }else{
-                #USER ID
-                $fields_rights = "project_id, username, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
-                $instrument_names = \REDCap::getInstrumentNames(null,$this->getPidsArray()['DATADOWNLOADUSERS']);
-                #Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
-                $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
-                $this->module->query("INSERT INTO redcap_user_rights (" . $fields_rights . ")
-                                VALUES (?,?,?,?,?,?,?,?,?)",
-                                     [$this->getPidsArray()['DATADOWNLOADUSERS'], $this->redcapName, 1, 1, 1, 1, 1, 1, $data_entry]);
+            #USER ID
+            $fields_rights = "project_id, username, design, user_rights, data_export_tool, reports, graphical, data_logging, data_entry";
+            $instrument_names = \REDCap::getInstrumentNames(null,$this->getPidsArray()['DATADOWNLOADUSERS']);
+            #Data entry [$instrument,$status] -> $status: 0 NO ACCESS, 1 VIEW & EDIT, 2 READ ONLY
+            $data_entry = "[".implode(',1][',array_keys($instrument_names)).",1]";
+            $this->module->query("INSERT INTO redcap_user_rights (" . $fields_rights . ")
+                            VALUES (?,?,?,?,?,?,?,?,?)",
+                                 [$this->getPidsArray()['DATADOWNLOADUSERS'], $this->redcapName, 1, 1, 1, 1, 1, 1, $data_entry]);
 
-                #Logs
-                $message = "User ".$this->redcapName." added by ".USERID;
-                \REDCap::logEvent($message, "Added user from Data Downloads User Management", null, null, null, $this->getPidsArray()['DATADOWNLOADUSERS']);
-            }
+            #Logs
+            $message = "User ".$this->redcapName." added by ".USERID;
+            \REDCap::logEvent($message, "Added user from Data Downloads User Management", null, null, null, $this->getPidsArray()['DATADOWNLOADUSERS']);
         }
     }
 
@@ -359,6 +349,9 @@ class People extends Model
             if(!$this->doesUserExistInREDCap()){
                 $this->errorPermissionList[] = "Username <strong><em>".$this->redcapName."</em> doesn't exist in REDCap</strong>.";
                 $this->errorPermissionList["usernameMissing"] = true;
+                if(filter_var($this->redcapName, FILTER_VALIDATE_EMAIL)){
+                    $this->errorPermissionList[] = "User <strong><em>".$this->redcapName."</em></strong> hasn’t logged in since the VUMC SSO transition";
+                }
             }
         }else{
             $this->errorPermissionList[] = "User has downloads activated but the username is empty.";
