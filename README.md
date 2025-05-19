@@ -13,7 +13,6 @@ In the configuration window enter the mandatory fields.
 
 <img src="docs/images/readme2.png" alt="This picture shows Github's Harmonist main page">
 
-
 Another interesting field is *User Permissions.* This field allows the admin to add a user (previously added to the current project) to be part of the installation. This means that, as soon as the install starts this user will also be added to the 30+ REDCap projects that power the Hub.
 
 <h2>1. First Time Install</h2>
