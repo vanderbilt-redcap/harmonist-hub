@@ -531,10 +531,13 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
             </div>
 
             <div class="panel-body">
-                <?php if ($sop['sop_finalize_y'][1] != "" || ($sop['sop_closed_y'] != "" && $sop['sop_closed_y'] != "1")) {
+                <?php
+                    $showdataCallBanner = false;
+                    if ($sop['sop_finalize_y'][1] != "" || ($sop['sop_closed_y'] != "" && $sop['sop_closed_y'] != "1")) {
                     $message_text = "";
                     if ($sop['sop_finalize_y'][1] != "" && $sop['sop_finalize_y'][1] == "1") {
                         $message_text .= "Data Call started";
+                        $showdataCallBanner = true;
                         if ($sop['sop_final_d'] != "") {
                             $message_text .= " on " . $sop['sop_final_d'] . ".";
                         } else {
@@ -543,20 +546,20 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                     }
                     if ($sop['sop_closed_y'] != "" && $sop['sop_closed_y'] == "1") {
                         $message_text .= " Data Call archived";
+                        $showdataCallBanner = true;
                         if ($sop['sop_closed_d'] != "") {
                             $message_text .= " on " . $sop['sop_closed_d'] . ".";
                         } else {
                             $message_text .= ".";
                         }
                     }
-
-                    ?>
-                    <div class="alert alert-warning fade in col-md-12 col-xs-12" id="succMsgContainer_stay">
-                        <?php
+                    if($showdataCallBanner){
+                        echo '<div class="alert alert-warning fade in col-md-12 col-xs-12" id="succMsgContainer_stay">';
                         echo "<div class='pull-left'>".htmlspecialchars($message_text,ENT_QUOTES)."</div>";
                         echo '<a href="#" onclick="confirmDataUpload(\'' . $module->escape($sop['sop_concept_id']) . '\',\'' . $module->escape($current_user['record_id']) . '\',\'' .$module->escape($concept_id) . '\',\'' .$module->escape($sop['record_id']) . '\');" class="pull-right btn btn-default btn-xs hidden-sm hidden-xs">Upload Data</a>';
-                        ?>
-                    </div>
+                        echo '</div>';
+                    }
+                    ?>
                     <div class="modal fade" id="modal-data-upload-confirmation" tabindex="-1" role="dialog" aria-labelledby="Codes">
                         <form class="form-horizontal" action="" method="post" id='dataUploadForm'>
                             <div class="modal-dialog" role="document">
