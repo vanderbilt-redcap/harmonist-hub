@@ -531,9 +531,9 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
             </div>
 
             <div class="panel-body">
-                <?php if ($sop['sop_finalize_y'] != "" || ($sop['sop_closed_y'] != "" && $sop['sop_closed_y'] != "1")) {
+                <?php if ($sop['sop_finalize_y'][1] != "" || ($sop['sop_closed_y'] != "" && $sop['sop_closed_y'] != "1")) {
                     $message_text = "";
-                    if ($sop['sop_finalize_y'] != "") {
+                    if ($sop['sop_finalize_y'][1] != "" && $sop['sop_finalize_y'][1] == "1") {
                         $message_text .= "Data Call started";
                         if ($sop['sop_final_d'] != "") {
                             $message_text .= " on " . $sop['sop_final_d'] . ".";
