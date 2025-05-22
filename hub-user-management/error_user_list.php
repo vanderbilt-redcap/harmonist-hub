@@ -200,6 +200,7 @@ include_once ("data_downloads_user_management_buttons.php");
     <p>This will remove the user from the Data Downloads project and from the download secure data list.</p>
     <div id="user_remove_list"></div>
     <input type="hidden" id="checked_values_remove_user" name="checked_values_remove_user">
+    <input type="hidden" id="user_list_type" name="user_list_type" value="error">
     <div class="modal-footer" style="padding-top: 30px;">
         <a class="btn btn-danger" id="remove_error_user_management"  name="remove_error_user_management">Remove User</a>
     </div>

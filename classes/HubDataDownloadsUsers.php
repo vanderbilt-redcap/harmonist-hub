@@ -53,28 +53,20 @@ class HubDataDownloadsUsers extends Model
         }
     }
 
-    public function fetchPeopleErrorUser($userId, $username="", $missing=false): ?People
+    public function fetchPeopleUser($userId, $userListType, $username="", $missing=false): ?People
     {
-        if(!empty($this->errorUserList)) {
-            foreach ($this->errorUserList as $index => $user) {
+        if($userListType == "error"){
+            $userList = $this->errorUserList;
+        }else{
+            $userList = $this->successUserList;
+        }
+        if(!empty($userList)) {
+            foreach ($userList as $index => $user) {
                 if ($user->getRecordId() == $userId) {
                     if ($missing && !empty($username)) {
                         $user->setRedcapName($username);
                         $user->addUsernameOnProject();
                     }
-                    $this->peopleUser = $user;
-                    return $user;
-                }
-            }
-        }
-        return null;
-    }
-
-    public function fetchPeopleSuccessUser($userId): ?People
-    {
-        if(!empty($this->successUserList)) {
-            foreach ($this->successUserList as $index => $user) {
-                if ($user->getRecordId() == $userId) {
                     $this->peopleUser = $user;
                     return $user;
                 }
