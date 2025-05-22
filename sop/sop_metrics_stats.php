@@ -472,108 +472,108 @@ $downRegion_colors = $module->escape($downRegion_colors);
         });
 
         //Data Call Timeline
-        var  ctxdataTimelineChart = $("#dataTimelineChart");
-        var configdataTimelineChart = {
-            type: 'bar',
-            data: {
-                labels: time_labels,
-                datasets: [
-                    {
-                        label: 'Pre-Data Call Requests',
-                        data: dataCall_started_timeline,
-                        backgroundColor: '#337ab7',
-                        borderWidth: 0
-                    },
-                    {
-                        label: 'Active Data Calls',
-                        data: dataCall_ended_timeline,
-                        backgroundColor: '#ffa64d',
-                        borderWidth: 0
-                    }
-                ]
-            },
-            options: {
-                legend: {
-                    display: true,
-                    onHover: function(event, legendItem) {
-                        document.getElementById("dataTimelineChart").style.cursor = 'pointer';
-                    },
-                    onClick: function(e, legendItem) {
-                        var index = legendItem.datasetIndex;
-                        var ci = this.chart;
-                        var alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
-
-                        ci.data.datasets.forEach(function(e, i) {
-                            var meta = ci.getDatasetMeta(i);
-                            if (i !== index) {
-                                if (!alreadyHidden) {
-                                    meta.hidden = meta.hidden === null ? !meta.hidden : null;
-                                } else if (meta.hidden === null) {
-                                    meta.hidden = true;
-                                }
-                            } else if (i === index) {
-                                meta.hidden = null;
-                            }
-                        });
-
-                        ci.update();
-                    }
-                },
-                tooltips: {
-                    callbacks: {
-                        title: function(tooltipItem, data) {
-                            return "Pre-Data Call Requests: "+data['datasets'][0]['data'][tooltipItem[0]['index']]+"\n"+"Active Data Calls: "+data['datasets'][1]['data'][tooltipItem[0]['index']];
-                        },
-                        label: function(tooltipItem, data) {
-                            // return dataCall_timeline_labels[tooltipItem['index']];
-                            if(dataCall_timeline_labels[tooltipItem['index']] != undefined){
-                                var text = dataCall_timeline_labels[tooltipItem['index']];
-                                var titles = text.split("\n");
-                                var text_array = [];
-                                Object.keys(titles).forEach(function (index) {
-                                    if(titles[index] != ""){
-                                        text_array.push(titles[index]);
-                                    }
-                                });
-                                return text_array;
-                            }
-
-                        }
-                    },
-                    backgroundColor: '#FFF',
-                    titleFontSize: 16,
-                    titleFontColor: '#337ab7',
-                    bodyFontColor: '#000',
-                    bodyFontSize: 14,
-                    displayColors: false,
-                    intersect: false
-                },
-                responsive: false,
-                scales : {
-                    xAxes : [{
-                        stacked : true
-                    }],
-                    yAxes : [{
-                        stacked : true,
-                        ticks: {
-                            beginAtZero:true
-                        }
-                    }]
-                },
-                plugins: {
-                    labels:false
-                },
-                animation: {
-                    onComplete: function(animation){
-                        document.querySelector('#downdatacalltimeline').setAttribute('href', this.toBase64Image());
-                    }
-                }
-            }
-        };
-        //By default all labels bold and font size bigger
-        Chart.defaults.global.defaultFontStyle = 'bold';
-
-        var timeline_chart = new Chart(ctxdataTimelineChart, configdataTimelineChart);
+        // var  ctxdataTimelineChart = $("#dataTimelineChart");
+        // var configdataTimelineChart = {
+        //     type: 'bar',
+        //     data: {
+        //         labels: time_labels,
+        //         datasets: [
+        //             {
+        //                 label: 'Pre-Data Call Requests',
+        //                 data: dataCall_started_timeline,
+        //                 backgroundColor: '#337ab7',
+        //                 borderWidth: 0
+        //             },
+        //             {
+        //                 label: 'Active Data Calls',
+        //                 data: dataCall_ended_timeline,
+        //                 backgroundColor: '#ffa64d',
+        //                 borderWidth: 0
+        //             }
+        //         ]
+        //     },
+        //     options: {
+        //         legend: {
+        //             display: true,
+        //             onHover: function(event, legendItem) {
+        //                 document.getElementById("dataTimelineChart").style.cursor = 'pointer';
+        //             },
+        //             onClick: function(e, legendItem) {
+        //                 var index = legendItem.datasetIndex;
+        //                 var ci = this.chart;
+        //                 var alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
+        //
+        //                 ci.data.datasets.forEach(function(e, i) {
+        //                     var meta = ci.getDatasetMeta(i);
+        //                     if (i !== index) {
+        //                         if (!alreadyHidden) {
+        //                             meta.hidden = meta.hidden === null ? !meta.hidden : null;
+        //                         } else if (meta.hidden === null) {
+        //                             meta.hidden = true;
+        //                         }
+        //                     } else if (i === index) {
+        //                         meta.hidden = null;
+        //                     }
+        //                 });
+        //
+        //                 ci.update();
+        //             }
+        //         },
+        //         tooltips: {
+        //             callbacks: {
+        //                 title: function(tooltipItem, data) {
+        //                     return "Pre-Data Call Requests: "+data['datasets'][0]['data'][tooltipItem[0]['index']]+"\n"+"Active Data Calls: "+data['datasets'][1]['data'][tooltipItem[0]['index']];
+        //                 },
+        //                 label: function(tooltipItem, data) {
+        //                     // return dataCall_timeline_labels[tooltipItem['index']];
+        //                     if(dataCall_timeline_labels[tooltipItem['index']] != undefined){
+        //                         var text = dataCall_timeline_labels[tooltipItem['index']];
+        //                         var titles = text.split("\n");
+        //                         var text_array = [];
+        //                         Object.keys(titles).forEach(function (index) {
+        //                             if(titles[index] != ""){
+        //                                 text_array.push(titles[index]);
+        //                             }
+        //                         });
+        //                         return text_array;
+        //                     }
+        //
+        //                 }
+        //             },
+        //             backgroundColor: '#FFF',
+        //             titleFontSize: 16,
+        //             titleFontColor: '#337ab7',
+        //             bodyFontColor: '#000',
+        //             bodyFontSize: 14,
+        //             displayColors: false,
+        //             intersect: false
+        //         },
+        //         responsive: false,
+        //         scales : {
+        //             xAxes : [{
+        //                 stacked : true
+        //             }],
+        //             yAxes : [{
+        //                 stacked : true,
+        //                 ticks: {
+        //                     beginAtZero:true
+        //                 }
+        //             }]
+        //         },
+        //         plugins: {
+        //             labels:false
+        //         },
+        //         animation: {
+        //             onComplete: function(animation){
+        //                 document.querySelector('#downdatacalltimeline').setAttribute('href', this.toBase64Image());
+        //             }
+        //         }
+        //     }
+        // };
+        // //By default all labels bold and font size bigger
+        // Chart.defaults.global.defaultFontStyle = 'bold';
+        //
+        // var timeline_chart = new Chart(ctxdataTimelineChart, configdataTimelineChart);
 
 
         var  ctxdataTimelineChart = $("#iedeaChartCommunications");
@@ -994,16 +994,16 @@ $downRegion_colors = $module->escape($downRegion_colors);
     </div>
 </div>
 
-<div class="container" style="padding-top: 60px">
-    <h4>
-        Data Call Timeline
-        <a href="#" download="statistics_data.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downdatacalltimeline" name="downdatacalltimeline"></a>
-    </h4>
-    <p class="hub-title"><?=filter_tags($settings['hub_stats_datacall_time'])?></p>
-</div>
-<div class="container">
-    <canvas id="dataTimelineChart" class="canvas_statistics" width="1100px" height="310px"></canvas>
-</div>
+<!--<div class="container" style="padding-top: 60px">-->
+<!--    <h4>-->
+<!--        Data Call Timeline-->
+<!--        <a href="#" download="statistics_data.png" class="fa fa-download" style="color:#8c8c8c;padding-left:10px;" id="downdatacalltimeline" name="downdatacalltimeline"></a>-->
+<!--    </h4>-->
+<!--    <p class="hub-title">--><?//=filter_tags($settings['hub_stats_datacall_time'])?><!--</p>-->
+<!--</div>-->
+<!--<div class="container">-->
+<!--    <canvas id="dataTimelineChart" class="canvas_statistics" width="1100px" height="310px"></canvas>-->
+<!--</div>-->
 
 <div class="container" style="padding-top: 60px">
     <h4>
