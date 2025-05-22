@@ -65,6 +65,19 @@ class HarmonistHubExternalModule extends AbstractExternalModule
             if (!$this->getUser()->hasDesignRights($project_id)) {
                 return false;
             }
+
+            #Check if Data Hub is activated
+            $params = [
+                'project_id' => $pidsArray['SETTINGS'],
+                'return_format' => 'json-array',
+                'records' => [1],
+                'fields' => ['deactivate_datahub']
+            ];
+            $settings = $this->escape(REDCap::getData($params))[0];
+            if($settings['deactivate_datahub___1'] == "1"){
+                return false;
+            }
+
         } else {
             #User has no permissions to see Last Updates, do not show link
             if (!$this->getUser()->hasDesignRights($project_id)) {

@@ -106,7 +106,7 @@ if(isset( $_REQUEST['message'] )) {
 ?>
 <div style="padding-top:15px;padding-left:15px;padding-bottom: 60px;">
     Here you will find a list of users that are missing the correct permissions to use Data Downloads.<br>
-    Click on each user to see the missing permissiong.
+    Click on each user to see the missing permission.
 </div>
 <?php
 $show = true;
@@ -168,7 +168,7 @@ include_once ("data_downloads_user_management_buttons.php");
                                 </table>
                             </h3>
                         </div>
-                        <div id="collapse<?=$user->getRecordId()?>" class="table-responsive panel-collapse collapse" aria-expanded="true">
+                        <div id="collapse<?=$user->getRecordId()?>" class="table-responsive panel-collapse collapse in" aria-expanded="true">
                             <table style="width: 100%;margin-top: 5px;">
                                 <tr style="padding:8px 30px;">
                                     <td>
@@ -200,6 +200,7 @@ include_once ("data_downloads_user_management_buttons.php");
     <p>This will remove the user from the Data Downloads project and from the download secure data list.</p>
     <div id="user_remove_list"></div>
     <input type="hidden" id="checked_values_remove_user" name="checked_values_remove_user">
+    <input type="hidden" id="user_list_type" name="user_list_type" value="error">
     <div class="modal-footer" style="padding-top: 30px;">
         <a class="btn btn-danger" id="remove_error_user_management"  name="remove_error_user_management">Remove User</a>
     </div>

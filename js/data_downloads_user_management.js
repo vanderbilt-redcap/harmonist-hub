@@ -114,6 +114,8 @@ function manageUserFromDataDownloads(url,option) {
             userNames.push($(this).val());
         });
         data += "&usernames="+userNames;
+    }else{
+        data +="&user_list_type="+$("#user_list_type").val();
     }
     $.ajax({
         type: "POST",
