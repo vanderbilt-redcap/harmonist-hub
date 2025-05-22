@@ -350,7 +350,7 @@ class People extends Model
                 $this->errorPermissionList[] = "Username <strong><em>".$this->redcapName."</em> doesn't exist in REDCap</strong>.";
                 $this->errorPermissionList["usernameMissing"] = true;
                 if(filter_var($this->redcapName, FILTER_VALIDATE_EMAIL)){
-                    $this->errorPermissionList[] = "User <strong><em>".$this->redcapName."</em></strong> hasn’t logged in since the VUMC SSO transition";
+                    $this->errorPermissionList[] = "User <strong><em>".$this->redcapName."</em></strong> hasn’t logged in since the VUMC SSO transition.";
                 }
             }
         }else{
