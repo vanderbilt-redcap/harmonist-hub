@@ -1140,7 +1140,7 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
         $file_data = " | ".getFileLink($module, $pidsArray['PROJECTS'], $sop['sop_finalpdf'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
     }
 
-    $data .=    "<td><div><strong>" . $concept_id . "</strong> ".$sop_visibility."</div><div>" . $concept_title . "</div><div><em>Draft ID: ".$sop['record_id']."</em></div><div></div><a href='".$module->getUrl("index.php")."&NOAUTH&option=sop&record=".$sop['record_id'].$url."'>Data Request </a> | <a href='".$module->getUrl("index.php")."&option=ttl&record=".$sop['sop_concept_id']."'>".$concept_id." Concept</a>".$file_data."</td>" .
+    $data .=    "<td><div><strong>" . $concept_id . "</strong> ".$sop_visibility."</div><div>" . $concept_title . "</div><div><em>Draft ID: ".$sop['record_id']."</em></div><div></div><a href='".$module->getUrl("index.php")."&NOAUTH&option=sop&record=".$sop['record_id'].$url."'>Data Request </a> | <a href='".$module->getUrl("index.php")."&NOAUTH&option=ttl&record=".$sop['sop_concept_id']."'>".$concept_id." Concept</a>".$file_data."</td>" .
         "<td style='width:168px'>" . $contact_person . "</td>" .
         $status_row.
         "<td ".$width.">" . $button_votes.$buttons . "</td>" .
