@@ -8,7 +8,7 @@ After an admin has activated the Harmonist Hub External Module in a project, we 
 
 In the configuration window enter the mandatory fields.
 
-1. Hub Name: The name the hub and projects will have. This will be the main name added to all projects. It is recommended to not add a very long name.  
+1. Hub Name: The name the Hub and projects will have. This will be the main name added to all projects. It is recommended to not add a very long name.  
 2. Hub Profile: This field is mandatory but any value works.
 
 <img src="docs/images/readme2.png" alt="This picture shows Github's Harmonist main page">
