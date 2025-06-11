@@ -230,7 +230,7 @@ class HubREDCapUsers
         $search_term = str_replace(",", "", $search_term);
 
         // Return nothing if search term is blank
-//        if ($search_term == '') exit('[]');
+        if ($search_term == '') exit('[]');
 
         // If search term contains a space, then assum multiple search terms that will be searched for independently
         if (strpos($search_term, " ") !== false) {

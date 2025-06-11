@@ -119,7 +119,7 @@ $zipPath = $module->getSafePath(EDOC_PATH.$zipname,EDOC_PATH);
 
 $zip = new \ZipArchive();
 if ( $zip->open($zipPath, \ZipArchive::CREATE) !== TRUE) {
-//    exit("Error creating ZIP file");
+    exit("Error creating ZIP file");
 }
 #Add a file to zip and rename it
 $zip->addFile($module->getSafePath(EDOC_PATH.$pdf_file,EDOC_PATH), $filename.'.pdf');
