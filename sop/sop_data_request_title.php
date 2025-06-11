@@ -821,8 +821,8 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                                 $comment_time = $dateComment->format("Y-m-d H:i:s");
                             }
 
-                            $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname','email'))[0];
-                            $name = $module->escape(trim($people['firstname'] . ' ' . $people['lastname']));
+                            $people = $module->escape(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname','email'))[0]);
+                            $name = trim($people['firstname'] . ' ' . $people['lastname']);
 
                             $gd_files = "";
                             if (!empty($comment['revised_file'])) {
