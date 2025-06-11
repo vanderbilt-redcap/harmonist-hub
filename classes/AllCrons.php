@@ -292,7 +292,7 @@ class AllCrons
         $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
         $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegions,$pidsArray['REGIONS']);
         foreach ($sops as $sop){
-            if((!array_key_exists('sop_closed_y',$sop) || $sop['sop_closed_y'][1] != "1") && $sop['sop_due_d'] != ""){
+            if((!array_key_exists('sop_closed_y',$sop) || $sop['sop_closed_y'] != "1") && $sop['sop_due_d'] != ""){
                 $message['active_data_calls'] = $message['active_data_calls'] + 1;
                 $isEmpty = false;
                 if (!empty($sop['sop_concept_id'])) {

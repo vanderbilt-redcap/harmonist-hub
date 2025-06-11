@@ -56,7 +56,7 @@ foreach ($region_vote_values as $votes_info){
 }
 
 //if($all_votes_completed){
-//    if($sop['sop_closed_y'][0] != "1") {
+//    if($sop['sop_closed_y'] != "1") {
 //        $recordSOP->updateDetails(["sop_closed_y" => [0 => "1"]], true);
 //        $recordSOP->updateDetails(["sop_closed_d" => date('Y-m-d H:i:s')], true);
 //    }
