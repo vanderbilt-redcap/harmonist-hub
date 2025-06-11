@@ -198,6 +198,7 @@ class AllCrons
         $message['active_requests'] = 0;
         $message['requests_finalized'] = 0;
         $message['active_data_calls'] = 0;
+        $orderedListCount = 1;
         foreach ($requests as $req){
             if((!array_key_exists('finalize_y',$req) || $req['finalize_y'] === "") && $req['due_d'] !== "" ){
                 $message['active_requests'] = $message['active_requests'] + 1;
@@ -213,7 +214,7 @@ class AllCrons
                     $date_color_text = "color:#e74c3c";
                 }
 
-                $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;'><div><strong>Due: <span style='".$date_color_text."'>".$req['due_d']."</span></strong> </div>";
+                $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;' value='".$orderedListCount."'><div><strong>Due: <span style='".$date_color_text."'>".$req['due_d']."</span></strong> </div>";
 
                 $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
                 if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
@@ -244,6 +245,7 @@ class AllCrons
                     $email_req .= "<em>None</em>";
                 }
                 $email_req .="</div></li>";
+                $orderedListCount++;
             }
         }
         if($isEmpty){
@@ -255,11 +257,12 @@ class AllCrons
         $numberDaysInCurrentMonth = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'));
         $expire_date = date('Y-m-d', strtotime(date('Y-m-d') ."-".$numberDaysInCurrentMonth." days"));
         $isEmpty = true;
+        $orderedListCount = 1;
         foreach ($requests_hub as $req){
             if($req['final_d'] != "" ){
                 $message['requests_finalized'] = $message['requests_finalized'] + 1;
                 $isEmpty = false;
-                $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;'><div style='padding: 3px;'>Date finalized: ".$req['final_d']."</span></div>";
+                $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;' value='".$orderedListCount."'><div style='padding: 3px;'>Date finalized: ".$req['final_d']."</span></div>";
 
                 $email_req .= "<div style='padding: 3px;'><strong>" . $request_type[$req['request_type']] . "</strong>";
                 if(!empty($req['assoc_concept']) && $req['request_type'] != "1") {
@@ -280,6 +283,7 @@ class AllCrons
                 }
                 $email_req .= "<div style='padding: 3px;'>Status: <span style='".$color_text."'>".$finalize_y[$req['finalize_y']]."</span></div>";
                 $email_req .="</li>";
+                $orderedListCount++;
             }
         }
         if($isEmpty){
@@ -291,8 +295,9 @@ class AllCrons
         $isEmpty = true;
         $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
         $regions = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegions,$pidsArray['REGIONS']);
+        $orderedListCount = 1;
         foreach ($sops as $sop){
-            if((!array_key_exists('sop_closed_y',$sop) || $sop['sop_closed_y'][1] != "1") && $sop['sop_due_d'] != ""){
+            if((!array_key_exists('sop_closed_y',$sop) || $sop['sop_closed_y'] != "1") && $sop['sop_due_d'] != ""){
                 $message['active_data_calls'] = $message['active_data_calls'] + 1;
                 $isEmpty = false;
                 if (!empty($sop['sop_concept_id'])) {
@@ -311,7 +316,7 @@ class AllCrons
                     $concept_sheet = $concept['concept_id'];
                     $concept_title = $concept['concept_title'];
 
-                    $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;'><div style='padding: 3px;'><strong>Due: <span style='$date_color_text'>" . $sop['sop_due_d'] . "</span></strong></span></div>";
+                    $email_req .= "<li style='padding-bottom: 15px;padding-left: 10px;' value='".$orderedListCount."'><div style='padding: 3px;'><strong>Due: <span style='$date_color_text'>" . $sop['sop_due_d'] . "</span></strong></span></div>";
                 }
 
                 $email_req .= "<div style='padding: 3px;'><a href='" . $module->getUrl("index.php")."&NOAUTH&pid=" . $pidsArray['DATAMODEL'] . "&option=hub&record=" . $sop['request_id'] . "' target='_blank' alt='concept_link'>" . $sop['request_title'] . "</a></div>";
@@ -348,6 +353,7 @@ class AllCrons
                     $email_req .= "<em>None</em>";
                 }
                 $email_req .= "</div></li>";
+                $orderedListCount++;
             }
         }
         if($isEmpty){
