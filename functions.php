@@ -1,12 +1,13 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-use Carbon\Carbon;
-use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
-use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 require_once 'vendor/autoload.php';
 require_once(dirname(__FILE__)."/classes/ArrayFunctions.php");
 require_once(dirname(__FILE__)."/classes/ProjectData.php");
+
+use Carbon\Carbon;
+use Vanderbilt\HarmonistHubExternalModule\ArrayFunctions;
+use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 
 /**

@@ -1,7 +1,10 @@
 <?php
-namespace Vanderbilt\HarmonistHubExternalModule;
+//namespace Vanderbilt\HarmonistHubExternalModule;
+
 require_once 'vendor/autoload.php';
 include_once(__DIR__ . "/classes/REDCapManagement.php");
+
+use Vanderbilt\HarmonistHubExternalModule\REDCapManagement;
 
 function sendEmail($to, $from, $fromName, $subject, $message, $record_id, $action_description="", $pid="", $cc=""){
     if (filter_var($to, FILTER_VALIDATE_EMAIL)) {
