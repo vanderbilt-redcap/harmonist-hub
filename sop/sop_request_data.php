@@ -37,7 +37,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
         <div class="optionSelect">
             <div style="margin: 0 auto 15px auto;width: 200px;">
                 <div style="display: inline-block">
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ss1'?>" class="btn btn-success btn-md">Create New Data Request</a>
+                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=ss1'?>" class="btn btn-success btn-md">Create New Data Request</a>
                 </div>
             </div>
         </div>
