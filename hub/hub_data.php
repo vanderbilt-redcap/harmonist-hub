@@ -59,7 +59,7 @@ $exploreDataToken = json_encode("&code=".getCrypt($current_user['record_id'],'e'
         <div class="well centerwell data_boxes">
             <i class="fa fa-2x fa-fw fa-cloud-upload" aria-hidden="true"></i>
             <div class="welltitle"><strong>Check and submit</strong> data for an active data call</div>
-            <a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=upd";?>" class="btn btn-success">View Data Calls <span class="badge" style="padding: 2px 6px;"><?=fetchNumberOfOpenDataCalls($pidsArray['SOP'], $current_user['person_region']);?></span></a>
+            <a href="<?=$module->getUrl("index.php")."&NOAUTH&option=upd";?>" class="btn btn-success">View Data Calls <span class="badge" style="padding: 2px 6px;"><?=fetchNumberOfOpenDataCalls($pidsArray['SOP'], $current_user['person_region']);?></span></a>
         </div>
     </div>
     <?php

@@ -365,7 +365,7 @@ if(!empty($homepage)) {
             </div>
             <div class="stat-table-outer" aria-expanded="true">
                 <div style="padding-bottom: 10px;text-align: left;"><?=$settings['hub_active_shortcut']?></div>
-                <div style="text-align: center;"><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'?>" class="btn btn-default">View Data Calls</a></div>
+                <div style="text-align: center;"><a href="<?=$module->getUrl('index.php').'&NOAUTH&option=upd'?>" class="btn btn-default">View Data Calls</a></div>
             </div>
         </div>
         <?php } ?>
