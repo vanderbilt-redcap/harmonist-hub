@@ -1,30 +1,65 @@
 <?php
+class Autoloader
+{
+    private $autoloadNamespaces = [];
 
-// Define a mapping of namespaces to base directories
-$autoloadNamespaces = [
-    'Vanderbilt\\HarmonistHubExternalModule\\' => __DIR__ . '/classes/',
-    // Add more namespaces and paths as needed
-];
+    /**
+     * Register a namespace with its corresponding directories or files.
+     *
+     * @param string $namespace The namespace to register.
+     * @param array $baseDirs List of base directories or PHP files for this namespace.
+     */
+    public function registerNamespace(string $namespace, array $baseDirs)
+    {
+        $this->autoloadNamespaces[$namespace] = $baseDirs;
+    }
 
-// The autoloader function
-spl_autoload_register(function ($class) use ($autoloadNamespaces) {
-    // Iterate over the namespace to directory mapping
-    foreach ($autoloadNamespaces as $namespace => $baseDir) {
-        // Check if the class name starts with the namespace
-        if (strpos($class, $namespace) === 0) {
-            // Remove the namespace prefix from the class name
-            $relativeClass = substr($class, strlen($namespace));
-
-            // Convert namespace separators to directory separators
-            $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
-
-            // If the file exists, require it
-            if (file_exists($file)) {
-                require $file;
+    /**
+     * Autoload classes and include PHP files containing functions.
+     *
+     * @param string $class The fully-qualified class name.
+     */
+    public function autoload($class)
+    {
+        foreach ($this->autoloadNamespaces as $namespace => $baseDirs) {
+            foreach ($baseDirs as $baseDir) {
+                if (strpos($class, $namespace) === 0) {
+                    if (is_file($baseDir) && str_ends_with($baseDir, '.php')) {
+                        $this->includeFunctionFile($baseDir);
+                    } else {
+                        $relativeClass = substr($class, strlen($namespace));
+                        $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
+                        if (file_exists($file)) {
+                            require_once $file;
+                        }
+                    }
+                }
             }
-
-            // Exit the function if the class file was found and included
-            return;
         }
     }
-});
+
+    /**
+     * Include a PHP file containing functions.
+     *
+     * @param string $filePath The path to the PHP file.
+     */
+    private function includeFunctionFile(string $filePath)
+    {
+        if (file_exists($filePath)) {
+            include_once $filePath;
+        }
+    }
+}
+
+// Instantiate the autoloader
+$autoloader = new Autoloader();
+
+// Register namespaces with directories or specific function files
+$autoloader->registerNamespace('Vanderbilt\\HarmonistHubExternalModule\\', [
+    __DIR__ . '/classes/', // Directory containing classes
+    __DIR__ . '/email.php', // File containing functions
+    __DIR__ . '/functions.php' // File containing functions
+]);
+
+// Register the autoloader with PHP's SPL autoloader
+spl_autoload_register([$autoloader, 'autoload']);
