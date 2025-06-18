@@ -52,7 +52,7 @@ $exploreDataToken = json_encode("&code=".getCrypt($current_user['record_id'],'e'
         <div class="well centerwell data_boxes">
             <i class="fa fa-2x fa-fw fa-bullhorn" aria-hidden="true"></i>
             <div class="welltitle"><strong>Request</strong> <?=$settings['hub_name']?> data for your approved concept</div>
-            <a href="<?=$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=smn";?>" class="btn btn-primary">Create Data Request</a>
+            <a href="<?=$module->getUrl("index.php")."&NOAUTH&option=smn";?>" class="btn btn-primary">Create Data Request</a>
         </div>
     </div>
     <div class="col-sm-3">
