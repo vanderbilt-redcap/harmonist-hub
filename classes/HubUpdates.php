@@ -19,6 +19,7 @@ class HubUpdates
     {
         $allItems = array();
         $constants_array = REDCapManagement::getProjectsConstantsArray();
+        $projects_array_sql = REDCapManagement::getProjectsSQLFieldsArray($pidsArray);
         foreach ($constants_array as $constant) {
             $path = $module->framework->getModulePath() . "csv/" . $constant . ".csv";
             $old = REDCap::getDataDictionary($pidsArray[$constant], 'array', false);
@@ -43,6 +44,7 @@ class HubUpdates
                             $sql['sql'] = $value[$fieldType];
                             $sql['changed'] = false;
                             $sql = self::changeSQLDataTable("", $sql);
+                            $sql = self::checkSQLRegisteredPids($projects_array_sql[$pidsArray[$constant]][$key]['query'], $sql);
                             if ($sql['changed']) {
                                 $added[$key][$fieldType] = $sql['sql'];
                             }
@@ -77,6 +79,7 @@ class HubUpdates
                                         $sql['changed'] = false;
                                         $sql = self::changeSQLDataTable($old[$key][$fieldType], $sql);
                                         $sql = self::compareSQL($old[$key][$fieldType], $sql);
+                                        $sql = self::checkSQLRegisteredPids($projects_array_sql[$pidsArray[$constant]][$key]['query'], $sql);
                                         if ($sql['changed']) {
                                             $hasValueChanged = true;
                                             $hasSQLChanged = true;
@@ -106,7 +109,6 @@ class HubUpdates
                 }
             }
         }
-
         return $allItems;
     }
 
@@ -141,7 +143,7 @@ class HubUpdates
             }
         }
         //Compare if the newly changed SQL is the same as the old if not return sql as it has changed
-        if ($sqlNew['sql'] != $sqlOld) {
+        if ($sqlNew['sql'] != $sqlOld && !empty($sqlNew['sql'])) {
             $sqlNew['changed'] = true;
         }
         return $sqlNew;
@@ -212,6 +214,26 @@ class HubUpdates
         return $sqlNew;
     }
 
+    public static function checkSQLRegisteredPids($sqlData, $sqlNew): array
+    {
+        #remove extra white spaces
+        $sqlNew['sql'] = preg_replace('/\s+/', ' ', $sqlNew['sql']);
+        if(!empty($sqlData)) {
+            foreach (['/project_id=(\d+)/', '/project_id\s=\s(\d+)/', '/\[data-table:(.*?)\]/'] as $pattern){
+                preg_match_all($pattern, $sqlNew['sql'], $matchNew);
+                $slqPidNew = $matchNew[1][0];
+                preg_match_all($pattern, $sqlData, $matchRegistered);
+                $slqPidRegistered = $matchRegistered[1][0];
+                if ($slqPidNew != $slqPidRegistered && !empty($slqPidNew) && !empty($slqPidRegistered)) {
+                    $sqlNew['sql'] = str_replace("[data-table:" . $slqPidNew . "]", "[data-table:" . $slqPidRegistered . "]", $sqlNew['sql']);
+                    $projectIdValueInSQLNew = str_replace($slqPidRegistered, $slqPidNew, $matchRegistered[0][0]);
+                    $sqlNew['sql'] = str_replace($projectIdValueInSQLNew, $matchRegistered[0][0], $sqlNew['sql']);
+                }
+            }
+        }
+        return $sqlNew;
+    }
+
     public static function getListOfChanges($checked_values): array
     {
         $hub_updates_list = explode(",", $checked_values);
@@ -264,6 +286,9 @@ class HubUpdates
         $projects_array = REDCapManagement::getProjectsConstantsArray();
         $projects_array_repeatable = REDCapManagement::getProjectsRepeatableArray();
         $projects_array_surveys = REDCapManagement::getProjectsSurveysArray();
+        $hub_mapper = $module->getProjectSetting('hub-mapper');
+        $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
+        $projects_array_sql = REDCapManagement::getProjectsSQLFieldsArray($pidsArray);
         $save_data = $old;
         foreach ($update_list as $status => $statusData) {
             foreach ($statusData as $index => $variable) {
@@ -277,6 +302,7 @@ class HubUpdates
                         $sql['changed'] = false;
                         $sql = self::changeSQLDataTable($old[$variable]['select_choices_or_calculations'], $sql);
                         $sql = self::compareSQL($old[$variable]['select_choices_or_calculations'], $sql);
+                        $sql = self::checkSQLRegisteredPids($projects_array_sql[$pidsArray[$constant]][$variable]['query'], $sql);
                         if ($sql['changed']) {
                             $new[$variable]['select_choices_or_calculations'] = $sql['sql'];
                         }

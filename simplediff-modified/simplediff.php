@@ -43,7 +43,7 @@ function checkSQLDifferences($old, $new){
 
 function printSQLDifferences($old, $new){
     //Split strings in arrays to find all differences
-    $pattern = "/[\s]+/";
+    $pattern = "/[\s]/";
     $sql_checked = checkSQLDifferences(preg_split($pattern, $old), preg_split($pattern, $new));
     $print = [];
     foreach($sql_checked as $value){
