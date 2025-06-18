@@ -133,11 +133,11 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
         }
 
         if($_REQUEST['type'] == "upload") {
-            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'?>">< Back to Submit Data</a><?php
+            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&option=upd'?>">< Back to Submit Data</a><?php
         }else if($datareq_id != "") {
-            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record='.$module->escape($datareq_id).'&type=s'?>">< Back to Data Request</a><?php
+            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&option=sop&record='.$module->escape($datareq_id).'&type=s'?>">< Back to Data Request</a><?php
         }else{
-            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a><?php
+            ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&option=dat'?>">< Back to Data</a><?php
         }
         ?>
     </div>
