@@ -406,7 +406,7 @@ if($settings['deactivate_datadown___1'] != "1"){
                 </div>
             </a>
             <?php } ?>
-            <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ofs'?>" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=ofs'?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
                         <span style="float:left;font-weight: bold">Document Library</span>
