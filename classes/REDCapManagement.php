@@ -248,6 +248,461 @@ class REDCapManagement {
         return $projects_array_surveys_hash;
     }
 
+    public static function getProjectsSQLFieldsArray($pidsArray): ?array
+    {
+        if(is_array($pidsArray) && !empty($pidsArray)) {
+            $peopleSQL = "SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM [data-table:" . $pidsArray['PEOPLE'] . "] a  WHERE a.project_id=" . $pidsArray['PEOPLE'] . " GROUP BY a.record ORDER BY value";
+            $peoplePerm9SQL = "SELECT DISTINCT a.record, CONCAT(a.value, ' ', b.value) AS  VALUE  FROM [data-table:" . $pidsArray['PEOPLE'] . "] a  LEFT JOIN [data-table:" . $pidsArray['PEOPLE'] . "] b on b.project_id = " . $pidsArray['PEOPLE'] . " and b.record = a.record and b.field_name = 'lastname'  LEFT JOIN [data-table:" . $pidsArray['PEOPLE'] . "] c on c.project_id = " . $pidsArray['PEOPLE'] . " and c.record = a.record  WHERE a.field_name = 'firstname' and a.project_id = " . $pidsArray['PEOPLE'] . " and ((c.field_name = 'harmonist_perms' AND c.value = '9') OR (c.field_name = 'harmonistadmin_y' AND c.value = '1')) ORDER BY a.value, b.value";
+            $peoplePerm1SQL = "SELECT DISTINCT a.record, CONCAT(a.value, ' ', b.value) AS VALUE FROM [data-table:" . $pidsArray['PEOPLE'] . "] a LEFT JOIN [data-table:" . $pidsArray['PEOPLE'] . "] b on b.project_id = " . $pidsArray['PEOPLE'] . " and b.record = a.record and b.field_name = 'lastname' LEFT JOIN [data-table:" . $pidsArray['PEOPLE'] . "] c on c.project_id = " . $pidsArray['PEOPLE'] . " and c.record = a.record WHERE a.field_name = 'firstname' and a.project_id = " . $pidsArray['PEOPLE'] . " and ((c.field_name = 'harmonist_perms' AND c.value = '1') OR (c.field_name = 'harmonistadmin_y' AND c.value = '1')) ORDER BY a.value, b.value";
+            $peopleReviewerSQL = "SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM [data-table:" . $pidsArray['PEOPLE'] . "] WHERE project_id = " . $pidsArray['PEOPLE'] . " AND field_name = 'firstname') a JOIN (SELECT record, value FROM [data-table:" . $pidsArray['PEOPLE'] . "] where project_id = " . $pidsArray['PEOPLE'] . " and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from [data-table:" . $pidsArray['PEOPLE'] . "] where project_id = " . $pidsArray['PEOPLE'] . " and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value";
+            $dataModelSQL = "SELECT CONCAT(a.record, ':', b.instance), CONCAT(a.value, ':', b.value) FROM (SELECT record,value FROM [data-table:" . $pidsArray['DATAMODEL'] . "] WHERE project_id=" . $pidsArray['DATAMODEL'] . " AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM [data-table:" . $pidsArray['DATAMODEL'] . "] WHERE project_id=" . $pidsArray['DATAMODEL'] . " AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance";
+            $dataModelSQL2 = "SELECT a.record,   CONCAT(   max(if(a.field_name = 'table_name', a.value, NULL)),    '  ' ) as value  FROM [data-table:" . $pidsArray['DATAMODEL'] . "] a  WHERE a.project_id=" . $pidsArray['DATAMODEL'] . "  GROUP BY a.record  ORDER BY value";
+            $dataModelSQL3 = "SELECT a.record,   CONCAT(   max(if(a.field_name = 'table_name', a.value, NULL)),    ' () ' ) as value  FROM [data-table:" . $pidsArray['DATAMODEL'] . "] a  WHERE a.project_id=" . $pidsArray['DATAMODEL'] . "  GROUP BY a.record  ORDER BY value";
+            $dataModelSQL4 = "SELECT CONCAT(a.record, '|', b.instance), CONCAT(a.value, ' | ', b.value) FROM (SELECT record,value FROM [data-table:" . $pidsArray['DATAMODEL'] . "] WHERE project_id=" . $pidsArray['DATAMODEL'] . " AND field_name = 'table_name') a JOIN (SELECT record, value, IFNULL(instance,1) as instance FROM [data-table:" . $pidsArray['DATAMODEL'] . "] WHERE project_id=" . $pidsArray['DATAMODEL'] . " AND field_name = 'variable_name') b  ON b.record=a.record ORDER BY a.value, b.instance";
+            $workingGroupSQL = "SELECT a.record, CONCAT( max(if(a.field_name = 'group_name', a.value, '')), ' (', max(if(a.field_name = 'group_abbr', a.value, '')), ') ' ) as value FROM [data-table:" . $pidsArray['GROUP'] . "] a WHERE a.project_id=" . $pidsArray['GROUP'] . " GROUP BY a.record ORDER BY value";
+            $workingGroupSQL2 = "select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from [data-table:" . $pidsArray['GROUP'] . "] record left join [data-table:" . $pidsArray['GROUP'] . "] active_y on active_y.project_id = " . $pidsArray['GROUP'] . " and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join [data-table:" . $pidsArray['GROUP'] . "] group_abbr on group_abbr.project_id = " . $pidsArray['GROUP'] . " and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join [data-table:" . $pidsArray['GROUP'] . "] group_name on group_name.project_id = " . $pidsArray['GROUP'] . " and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = " . $pidsArray['GROUP'] . " group by record.value ORDER BY group_name.value";
+            $regionSQL = "SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM [data-table:" . $pidsArray['REGIONS'] . "] a  WHERE a.project_id=" . $pidsArray['REGIONS'] . " GROUP BY a.record  ORDER BY value";
+            $regionSQL2 = "select record.record as record, CONCAT( max(if(region_name.field_name = 'region_name',region_name.value, '')), ' (', max(if(region_code.field_name = 'region_code', region_code.value, '')), ') ' ) as value from [data-table:" . $pidsArray['REGIONS'] . "] record left join [data-table:" . $pidsArray['REGIONS'] . "] activeregion_y on activeregion_y.project_id = " . $pidsArray['REGIONS'] . " and activeregion_y.record = record.value and activeregion_y.field_name = 'activeregion_y' and activeregion_y.value ='1' left join [data-table:" . $pidsArray['REGIONS'] . "] region_code on region_code.project_id = " . $pidsArray['REGIONS'] . " and region_code.record = record.value and region_code.field_name = 'region_code' left join [data-table:" . $pidsArray['REGIONS'] . "] region_name on region_name.project_id = " . $pidsArray['REGIONS'] . " and region_name.record = record.value and region_name.field_name = 'region_name' where record.field_name = 'record_id' and record.record=activeregion_y.record and record.project_id = " . $pidsArray['REGIONS'] . " group by record.value ORDER BY region_name.value";
+            $conceptsSQL = "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM [data-table:" . $pidsArray['HARMONIST'] . "] WHERE project_id = " . $pidsArray['HARMONIST'] . " AND field_name = 'concept_id') a JOIN (SELECT record, value FROM [data-table:" . $pidsArray['HARMONIST'] . "] where project_id = " . $pidsArray['HARMONIST'] . " and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value ";
+            $projectsStudiesSQL = "SELECT value FROM (SELECT record,value, IFNULL(instance,1) as instance FROM [data-table:" . $pidsArray['PROJECTSSTUDIES'] . "] WHERE project_id=" . $pidsArray['PROJECTSSTUDIES'] . " AND field_name = 'studyfile_desc' AND record = [record-name]) as value ORDER BY value, instance";
+            $peopleWritingGroupSQL = "SELECT a.record, CONCAT_WS(' ',CONCAT( '\"', max(if(a.field_name = 'firstname', a.value, '')), ' ', max(if(a.field_name = 'lastname', a.value, '')), '\"'),CONCAT('<' , max(if(a.field_name = 'email', a.value, '')), '>' ) ) as value  FROM [data-table:" . $pidsArray['PEOPLE'] . "] a  WHERE a.project_id=" . $pidsArray['PEOPLE'] . " GROUP BY a.record ORDER BY value";
+            $dataUpload = "SELECT a.record,   CONCAT(   max(if(a.field_name = 'record_id', a.value, NULL)),    ' (',   max(if(a.field_name = 'responsecomplete_ts', a.value, NULL)),   ') ' ) as value  FROM [data-table:" . $pidsArray['DATAUPLOAD'] . "] a  WHERE a.project_id=" . $pidsArray['DATAUPLOAD'] . "  GROUP BY a.record  ORDER BY value";
+            $codeListSQL = "select record, value from [data-table:" . $pidsArray['CODELIST'] . "] where project_id = " . $pidsArray['CODELIST'] . " and field_name = 'list_name' order by value asc";
+            $sopSQL = "SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM [data-table:" . $pidsArray['SOP'] . "] WHERE project_id = " . $pidsArray['SOP'] . " AND field_name = 'record_id') a JOIN (SELECT record, value FROM [data-table:" . $pidsArray['SOP'] . "] where project_id = " . $pidsArray['SOP'] . " and field_name = 'sop_name') b ON b.record=a.record ORDER BY a.value, b.value";
+
+            $projects_array_sql = [
+                $pidsArray['DATAMODEL'] => [
+                    'variable_replacedby' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'variable_splitdate_m' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'variable_splitdate_d' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'code_list_ref' => [
+                        'query' => $codeListSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['HARMONIST'] => [
+                    'contact_link' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'contact2_link' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'wg_link' => [
+                        'query' => $workingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'wg2_link' => [
+                        'query' => $workingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'lead_region' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'person_link' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'gmember_link_1' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Member 1 - Hub Link"
+                    ],
+                    'gmember_link_2' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Member 2 - Hub Link"
+                    ],
+                    'gmember_link_3' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Member 3 - Hub Link"
+                    ],
+                    'gmember_link_4' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Member 4 - Hub Link"
+                    ],
+                    'gmember_link_5' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Member 5 - Hub Link"
+                    ],
+                    'gmember_link_6' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Member 6 - Hub Link"
+                    ],
+                    'gmember_link_7' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Member 7 - Hub Link"
+                    ],
+                    'gmember_link_8' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Member 8 - Hub Link"
+                    ],
+                    'gmember_link_9' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Member 9 - Hub Link"
+                    ],
+                    'gmember_link_10' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Member 10 - Hub Link"
+                    ],
+                    'cmember_link' => [
+                        'query' => $peopleWritingGroupSQL,
+                        'autocomplete' => '0',
+                        'label' => "Writing Group Member"
+                    ]
+                ],
+                $pidsArray['RMANAGER'] => [
+                    'assoc_concept' => [
+                        'query' => $conceptsSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'wg_name' => [
+                        'query' => $workingGroupSQL2,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'wg2_name' => [
+                        'query' => $workingGroupSQL2,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'wg3_name' => [
+                        'query' => $workingGroupSQL2,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'wg4_name' => [
+                        'query' => $workingGroupSQL2,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'contact_region' => [
+                        'query' => $regionSQL2,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'contactperson_id' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '1',
+                        'label' => "Contact Person:
+                                  <span style='font-weight:lighter;'>[contact_name], <a href='mailto:[contact_email]'>[contact_email]</a></span>If blank, map this person to official Hub Members List
+                                    <div style='font-weight:lighter;font-style:italic'>(Find the name above in the official list. If it doesn't exist, you can add this person (<a href='" . substr(APP_PATH_WEBROOT, 1) . "DataEntry/record_home.php?pid=" . $pidsArray['PEOPLE'] . "'>via REDCap</a>) or list their PI's name instead.)</div>"
+                    ],
+                    'reviewer_id' => [
+                        'query' => $peopleReviewerSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'responding_region' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'finalizer_id' => [
+                        'query' => $peopleReviewerSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['COMMENTSVOTES'] => [
+                    'response_person' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'response_region' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['SOP'] => [
+                    'sop_hubuser' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'sop_creator' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'sop_creator2' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'sop_datacontact' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'sop_concept_id' => [
+                        'query' => $conceptsSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'sop_finalize_person' => [
+                        'query' => $peoplePerm1SQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'data_region' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['SOPCOMMENTS'] => [
+                    'response_person' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'response_region' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['PEOPLE'] => [
+                    'person_region' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['DATAUPLOAD'] => [
+                    'data_assoc_concept' => [
+                        'query' => $conceptsSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'data_assoc_request' => [
+                        'query' => $sopSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'data_upload_person' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'data_upload_region' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'deletion_hubuser' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['DATADOWNLOAD'] => [
+                    'downloader_assoc_concept' => [
+                        'query' => $conceptsSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'downloader_id' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'downloader_region' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'download_id' => [
+                        'query' => $dataUpload,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['DATAAVAILABILITY'] => [
+                    'available_table' => [
+                        'query' => $dataModelSQL3,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'available_variable' => [
+                        'query' => $dataModelSQL4,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['DATATOOLMETRICS'] => [
+                    'userregion_id' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['FILELIBRARY'] => [
+                    'file_uploader' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['FILELIBRARYDOWN'] => [
+                    'library_download_person' => [
+                        'query' => $peopleSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'library_download_region' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['NEWITEMS'] => [
+                    'news_person' => [
+                        'query' => $peoplePerm9SQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['EXTRAOUTPUTS'] => [
+                    'lead_region' => [
+                        'query' => $regionSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['DATAMODELMETADATA'] => [
+                    'index_tablename' => [
+                        'query' => $dataModelSQL2,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'patient_id_var' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'default_group_var' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'group_tablename' => [
+                        'query' => $dataModelSQL2,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'birthdate_var' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'death_date_var' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'age_date_var' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'enrol_date_var' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'height_table' => [
+                        'query' => $dataModelSQL2,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'height_var' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'height_date' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ],
+                    'height_units' => [
+                        'query' => $dataModelSQL,
+                        'autocomplete' => '0',
+                        'label' => ""
+                    ]
+                ],
+                $pidsArray['PROJECTSSTUDIES'] => [
+                    'study_concept' => [
+                        'query' => $conceptsSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'study_wg' => [
+                        'query' => $workingGroupSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'topfile1' => [
+                        'query' => $projectsStudiesSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'topfile2' => [
+                        'query' => $projectsStudiesSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'topfile3' => [
+                        'query' => $projectsStudiesSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ],
+                    'topfile4' => [
+                        'query' => $projectsStudiesSQL,
+                        'autocomplete' => '1',
+                        'label' => ""
+                    ]
+                ]
+            ];
+            return $projects_array_sql;
+        }
+        return [];
+    }
+
 	public static function getChoices($metadata) {
 		$choicesStrs = array();
 		$multis = array("checkbox", "dropdown", "radio");
