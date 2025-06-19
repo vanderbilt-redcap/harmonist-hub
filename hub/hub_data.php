@@ -393,7 +393,7 @@ if($settings['deactivate_datadown___1'] != "1"){
             <?php } ?>
 
             <?php if($settings['deactivate_datametrics___1'] != "1" || $isAdmin){?>
-            <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mth'?>" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=mth'?>" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div style="display: inline-block;width: 50%;vertical-align:top;padding-right:5px">
                     <div style="font-weight:bold; padding-bottom:20px">
                         Hub Stats
