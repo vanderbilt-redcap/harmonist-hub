@@ -1,7 +1,7 @@
 {
     "require": {
         "nesbot/carbon": "^2.62",
-        "phpoffice/phpspreadsheet": "1.29.10",
+        "phpoffice/phpspreadsheet": "4.3.1",
         "psr/simple-cache":" ^2.0",
         "dompdf/dompdf": "^2",
         "aws/aws-sdk-php": "^3.325"
