@@ -12,6 +12,7 @@ use ReflectionClass;
 
 include_once (__DIR__ . "/autoload.php");
 include_once(__DIR__ . "/functions.php");
+include_once(__DIR__ . "/email.php");
 
 require_once(dirname(__FILE__) . "/vendor/autoload.php");
 
