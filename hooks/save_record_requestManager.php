@@ -76,10 +76,12 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $jsonRM = json_encode($arrayRM);
     $results = \Records::saveData($project_id, 'json', $jsonRM,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
 }else if($instrument == 'tracking_number_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
+    error_log("tracking_number_assignment_survey");
     $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', array('record_id' => '1'))[0];
     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[concept_id] = '".$request['mr_assigned']."'");
     $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
     if (empty($concept)) {
+        error_log("CONCEPT");
         if($request['final_d'] != ""){
             $start_year = date("Y", strtotime($request['final_d']));
         }
@@ -98,10 +100,6 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $arrayConcepts[0]['wg3_link'] = $request['wg3_name'];
         $arrayConcepts[0]['wg4_link'] = $request['wg4_name'];
         $arrayConcepts[0]['concept_sheet_complete'] = '2';
-
-        if ($request['request_type'] == "5") {
-            $arrayConcepts[0]['concept_speclabel'] = '1';
-        }
 
         #Copy Documents
         $finalConcept_PDF = "<i>None</i>";
@@ -134,7 +132,9 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 $arrayConcepts[0]['concept_word'] = $docId;
             }
         }
-
+        $json = json_encode($arrayConcepts);
+        $results = \Records::saveData($pidsArray['HARMONIST'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        error_log(json_encode($results,JSON_PRETTY_PRINT));
         $wgroup_name = "<i>None</i>";
         if ($request['wg_name'] != "") {
             $wgroup = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg_name']),array('group_name','group_abbr'))[0];
@@ -161,9 +161,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
                 sendEmail($email, $settings['accesslink_sender_email'], $settings['accesslink_sender_name'], "New concept sheet " . $request['mr_assigned'] . " created in the Hub", $message, $concept_id,"New concept sheet created",$pidsArray['HARMONIST']);
             }
         }
-
-        $json = json_encode($arrayConcepts);
-        $results = \Records::saveData($pidsArray['HARMONIST'], 'json', $json,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
+        error_log("EMAIL SENT!");
     }else{
         $link = APP_PATH_WEBROOT_ALL . "DataEntry/record_home.php?pid=" . $pidsArray['HARMONIST'] . "&arm=1&id=" . $concept['record_id'];
 
