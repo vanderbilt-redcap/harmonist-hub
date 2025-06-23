@@ -1,5 +1,5 @@
 <?php
-//namespace Vanderbilt\HarmonistHubExternalModule;
+namespace Vanderbilt\HarmonistHubExternalModule;
 
 require_once 'vendor/autoload.php';
 include_once(__DIR__ . "/classes/REDCapManagement.php");
