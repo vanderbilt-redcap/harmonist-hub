@@ -675,7 +675,7 @@ $downRegion_colors = $module->escape($downRegion_colors);
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php').'&NOAUTH&'.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=dat'?>">< Back to Data</a>
     </div>
 </div>
 <div class="container">
