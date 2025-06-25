@@ -41,7 +41,7 @@ class HubUpdates
                         if ($fieldType == "select_choices_or_calculations" && strtolower(
                                 $value['field_type']
                             ) == "sql" && $value['select_choices_or_calculations'] != "") {
-                            $sql['sql'] = $value[$fieldType];
+                            $sql['sql'] = self::removeExtraWhiteSpaces($value[$fieldType]);
                             $sql['changed'] = false;
                             $sql = self::changeSQLDataTable("", $sql);
                             $sql = self::checkSQLRegisteredPids($projects_array_sql[$pidsArray[$constant]][$key]['query'], $sql);
@@ -75,11 +75,11 @@ class HubUpdates
                                     if ($fieldType == "select_choices_or_calculations" && strtolower(
                                             $value['field_type']
                                         ) == "sql") {
-                                        $sql['sql'] = $possiblyChanged[$key][$fieldType];
+                                        $sql['sql'] = self::removeExtraWhiteSpaces($possiblyChanged[$key][$fieldType]);
                                         $sql['changed'] = false;
                                         $sql = self::changeSQLDataTable($old[$key][$fieldType], $sql);
                                         $sql = self::compareSQL($old[$key][$fieldType], $sql);
-                                        $sql = self::checkSQLRegisteredPids($projects_array_sql[$pidsArray[$constant]][$key]['query'], $sql);
+                                        $sql = self::checkSQLRegisteredPids($projects_array_sql[$pidsArray[$constant]][$key]['query'], $sql, $old[$key][$fieldType]);
                                         if ($sql['changed']) {
                                             $hasValueChanged = true;
                                             $hasSQLChanged = true;
@@ -149,6 +149,11 @@ class HubUpdates
         return $sqlNew;
     }
 
+    public static function removeExtraWhiteSpaces($sql): string
+    {
+        $sql = preg_replace('/\s+/', ' ', $sql);
+        return $sql;
+    }
     public static function changeSQLDataTable($sqlOld, $sqlNew): array
     {
         if (str_contains($sqlOld, 'redcap_data')) {
@@ -214,20 +219,30 @@ class HubUpdates
         return $sqlNew;
     }
 
-    public static function checkSQLRegisteredPids($sqlData, $sqlNew): array
+    public static function checkSQLRegisteredPids($sqlData, $sqlNew, $sqlOld = ""): array
     {
-        #remove extra white spaces
-        $sqlNew['sql'] = preg_replace('/\s+/', ' ', $sqlNew['sql']);
+        $sqlNew['sql'] = self::removeExtraWhiteSpaces($sqlNew['sql']);
+        $sqlData = self::removeExtraWhiteSpaces($sqlData);
         if(!empty($sqlData)) {
+            $found = false;
             foreach (['/project_id=(\d+)/', '/project_id\s=\s(\d+)/', '/\[data-table:(.*?)\]/'] as $pattern){
                 preg_match_all($pattern, $sqlNew['sql'], $matchNew);
                 $slqPidNew = $matchNew[1][0];
                 preg_match_all($pattern, $sqlData, $matchRegistered);
                 $slqPidRegistered = $matchRegistered[1][0];
                 if ($slqPidNew != $slqPidRegistered && !empty($slqPidNew) && !empty($slqPidRegistered)) {
+                    $found = true;
                     $sqlNew['sql'] = str_replace("[data-table:" . $slqPidNew . "]", "[data-table:" . $slqPidRegistered . "]", $sqlNew['sql']);
                     $projectIdValueInSQLNew = str_replace($slqPidRegistered, $slqPidNew, $matchRegistered[0][0]);
                     $sqlNew['sql'] = str_replace($projectIdValueInSQLNew, $matchRegistered[0][0], $sqlNew['sql']);
+                }
+            }
+            #Make sure that the SQL is like the template in code and not on the CSV
+            if(!$found && !empty($sqlOld)) {
+                $sqlOld = self::removeExtraWhiteSpaces($sqlOld);
+                if($sqlData == $sqlOld) {
+                    $sqlNew['sql'] = $sqlOld;
+                    $sqlNew['changed'] = false;
                 }
             }
         }
@@ -302,7 +317,7 @@ class HubUpdates
                         $sql['changed'] = false;
                         $sql = self::changeSQLDataTable($old[$variable]['select_choices_or_calculations'], $sql);
                         $sql = self::compareSQL($old[$variable]['select_choices_or_calculations'], $sql);
-                        $sql = self::checkSQLRegisteredPids($projects_array_sql[$pidsArray[$constant]][$variable]['query'], $sql);
+                        $sql = self::checkSQLRegisteredPids($projects_array_sql[$pidsArray[$constant]][$variable]['query'], $sql, $old[$variable]['select_choices_or_calculations']);
                         if ($sql['changed']) {
                             $new[$variable]['select_choices_or_calculations'] = $sql['sql'];
                         }
