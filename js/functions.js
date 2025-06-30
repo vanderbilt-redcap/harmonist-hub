@@ -465,6 +465,10 @@ function loadAjax_steps(data,url,loadAjax,step){
                             tinymce.get(key).setContent(tinymce.get(key).getContent({ format: 'text' }));
                             $('[name=' + key + ']').val(jsonAjax[key]);
                             $('[preview=' + key+"]").html(tinymce.get(key).getContent());
+                            //Reinitialize tinyMCE after adding text
+                            tinymce.init({
+                                selector: '#'+key
+                            });
                             if(key == "sop_notes"){
                                 $('[preview=' + key + "_header]").html("General notes: &nbsp;");
                             }else if(key == "dataformat_notes") {
@@ -511,6 +515,10 @@ function loadAjax_steps(data,url,loadAjax,step){
                             tinymce.get(key).setContent(tinymce.get(key).getContent({ format: 'text' }));
                             $('[name=' + key + ']').val(jsonAjax[key]);
                             $('[preview=' + key+"]").html(tinymce.get(key).getContent());
+                            //Reinitialize tinyMCE after adding text
+                            tinymce.init({
+                                selector: '#'+key
+                            });
                             if(key == "sop_notes"){
                                 $('[preview=' + key + "_header]").html("General notes: &nbsp;");
                             }else if(key == "dataformat_notes") {
