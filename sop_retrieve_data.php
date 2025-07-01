@@ -38,7 +38,7 @@ foreach ($request_DU as $down){
 <div class="container" style="margin: 0 auto;float:none;min-height: 900px;">
 <div class="optionSelect">
     <div class="backTo">
-        <a href="<?=$indexUrl.'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a>
+        <a href="<?=$indexUrl.'&NOAUTH&option=dat'?>">< Back to Data</a>
     </div>
     <div class="optionSelect">
         <h3>Retrieve Data</h3>

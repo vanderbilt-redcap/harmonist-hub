@@ -34,7 +34,7 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
     }
     ?>
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=cpt'?>">< Back to Concepts</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=cpt'?>">< Back to Concepts</a>
     </div>
     <?php if($concept != "") {?>
     <h3 class="concepts-title-title"><?=$concept->getConceptId()?></h3>

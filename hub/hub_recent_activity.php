@@ -146,7 +146,7 @@ if($person_record != ""){
                             $concept_id = "<em>None</em>";
                             if(!empty($requestComment['assoc_concept'])){
                                 $concept = $module->escape(\REDCap::getData($pidsArray['HARMONIST'], 'json-array', array('record_id' => $requestComment['assoc_concept']),array('record_id','concept_id'))[0]);
-                                $concept_id = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$concept['record_id'].'">'.$concept['concept_id'].'</a>';
+                                $concept_id = '<a href="'.$module->getUrl('index.php').'&NOAUTH&option=ttl&record='.$concept['record_id'].'">'.$concept['concept_id'].'</a>';
                             }else if($requestComment['mr_temporary'] != ""){
                                 $concept_id = $requestComment['mr_temporary'];
                             }
@@ -211,7 +211,7 @@ if($person_record != ""){
                                 }
                             }
 
-                            echo    $comment_vote.'<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id'] . '" target="_blank">' . $requestComment['request_title'] . '</a></td>';
+                            echo    $comment_vote.'<a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub&record=' . $requestComment['request_id'] . '" target="_blank">' . $requestComment['request_title'] . '</a></td>';
                             if($comment['revised_file'] != ''){
                                 echo '<td>'.\Vanderbilt\HarmonistHubExternalModule\getFileLink($module, $pidsArray['PROJECTS'], $comment['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
                             }else{

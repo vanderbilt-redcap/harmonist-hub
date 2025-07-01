@@ -29,7 +29,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
     }
     ?>
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=dat'?>">< Back to Data</a>
     </div>
     <div class="optionSelect">
             <h3>Request Data</h3>

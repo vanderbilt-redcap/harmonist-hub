@@ -60,7 +60,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
 </script>
 <div class="container">
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=dat'?>">< Back to Data</a>
     </div>
     <h3>Recent Data Activity</h3>
     <p class="hub-title"><?=$settings['hub_recent_data_act_text']?></p>
@@ -164,7 +164,7 @@ ArrayFunctions::array_sort_by_column($all_data_recent_activity, 'responsecomplet
                             echo $text.'</td>';
 
                             echo '<td width="40px">'.htmlspecialchars($region['region_code'],ENT_QUOTES).'</td>'.
-                                '<td width="360px"><a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.htmlspecialchars($sop_name,ENT_QUOTES).'</a></td>';
+                                '<td width="360px"><a href="'.$module->getUrl('index.php').'&NOAUTH&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.htmlspecialchars($sop_name,ENT_QUOTES).'</a></td>';
 
                             if($recent_activity['revised_file'] != ''){
                                 echo '<td width="40px">'.getFileLink($module, $pidsArray['PROJECTS'], $recent_activity['revised_file'],'1','',$secret_key,$secret_iv,$current_user['record_id'],"").'</td>';
