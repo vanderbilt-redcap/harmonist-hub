@@ -113,7 +113,11 @@ if(strtotime($settings['publications_lastupdate']) < $today || $settings['public
             if ($output['producedby_region'] == 2) {
                 $type = "<span class='badge badge-pill badge-draft'>".$pubtext5."</span>";
             } else if ($output['producedby_region'] == 1) {
-                $my_region = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $output['lead_region']),array('region_code'))[0]['region_code'];
+                $regionData = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $output['lead_region']),array('region_code'));
+                $my_region = "";
+                if(!empty($regionData) && array_key_exists(0, $regionData) && array_key_exists($output['region_code'], $regionData[0])) {
+                    $my_region = $regionData[0]['region_code'];
+                }
                 $type = "<span class='badge badge-pill badge-draft'>".$pubtext4."</span><div><i>" . $my_region . "</i></div>";
             }
 

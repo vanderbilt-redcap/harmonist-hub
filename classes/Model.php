@@ -93,7 +93,7 @@ class Model
                                             }
                                         }
                                     }
-                                    if (ProjectData::isCheckbox($fieldName, $projectId) && $value[1] !== "") {
+                                    if (ProjectData::isCheckbox($fieldName, $projectId) && array_key_exists(1, $value) && $value[1] !== "") {
                                         $array[$index][$fieldName][$instance] = $value[1];
                                     }
                                 }
