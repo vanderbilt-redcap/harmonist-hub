@@ -9,7 +9,7 @@ $title = "Requests";
 $link_all_requests = '';
 if($_REQUEST['type'] != ''){
     $title = $title." for ".$request_type_label[$_REQUEST['type']];
-    $link_all_requests = '<a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub'.'">View All Requests</a> | ';
+    $link_all_requests = '<a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub'.'">View All Requests</a> | ';
 }
 
 $requests = $hubData->getAllRequests();
@@ -47,7 +47,7 @@ foreach ($requests as $req){
     <h3><?=$title;?></h3>
     <p class="hub-title"><?=$settings['hub_req_text']?></p>
     <div class="pull-right">
-        <p><?php echo $link_all_requests; ?><a href="<?=$module->escape(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['REQUESTLINK'])?>" target="_blank">Create New Request</a> | <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=mra&type=r'?>">View Archived Requests</a></p>
+        <p><?php echo $link_all_requests; ?><a href="<?=$module->escape(APP_PATH_WEBROOT_FULL."surveys/?s=".$pidsArray['REQUESTLINK'])?>" target="_blank">Create New Request</a> | <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=mra&type=r'?>">View Archived Requests</a></p>
     </div>
     <ul class="list-inline">
         <li><span class="label label-default_light" title="Not Started"><i class="fa fa-times text-default_light" aria-hidden="true"></i></span> <a href="#" data-toggle="tooltip" title="No regional activity on this request." data-placement="top" class="custom-tooltip" style="vertical-align: -2px;cursor:default;">Not started</a></li>

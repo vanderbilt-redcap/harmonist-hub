@@ -310,7 +310,7 @@ if(!empty($homepage)) {
                                 if ($comment['author_revision_y'] == '1') {
                                     echo '<i class="fa fa-fw fa-file-text-o text-success" aria-hidden="true"></i>' .
                                         '<span class="time"> ' . $time . '</span> ' .
-                                        '<strong>' . $name . '</strong> submitted a <b>revision</b> for <a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id'] . '" target="_blank">' . $title . '</a>';
+                                        '<strong>' . $name . '</strong> submitted a <b>revision</b> for <a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub&record=' . $requestComment['request_id'] . '" target="_blank">' . $title . '</a>';
                                 } else{
                                     $text = '<span class="time"> ' . $time . '</span> <strong>' . $name . '</strong> submited a ';
                                     $itemcount = 0;
@@ -337,7 +337,7 @@ if(!empty($homepage)) {
                                         $text .= '<strong>vote</strong>';
                                     }
 
-                                    echo $icon.$text.' for <a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=hub&record=' . $requestComment['request_id'].'" target="_blank">' . $title . '</a>';
+                                    echo $icon.$text.' for <a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub&record=' . $requestComment['request_id'].'" target="_blank">' . $title . '</a>';
                                 }
                                 echo '</li>';
                                 $i++;

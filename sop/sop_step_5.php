@@ -12,7 +12,7 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
 if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
     ?>
     <div class="alert alert-success fade in col-md-12" style="line-height: 2.5em;border-color: #b2dba1 !important;"
-         id="succMsgContainer">Data Request successfully finalized.  <a class="btn btn-success" style="float:right" href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'?>">View Data Request</a>
+         id="succMsgContainer">Data Request successfully finalized.  <a class="btn btn-success" style="float:right" href="<?=$module->getUrl('index.php').'&NOAUTH&option=upd'?>">View Data Request</a>
     </div>
     <?php
 }
@@ -21,7 +21,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
     <div class="optionSelect">
         <h3 style="color:#5cb85c">Steps Complete <i class="fa fa-check" aria-hidden="true"></i></span><span></h3>
         <div class="hub-title">
-            <p>Your Data Request has been generated successfully. You can review and download the PDF below or download a ZIP file with an HTML and a PDF version. If you need to make changes, <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ss1&record='.$record_id.'&step=3'?>">you can go back to edit your data request</a>.</p>
+            <p>Your Data Request has been generated successfully. You can review and download the PDF below or download a ZIP file with an HTML and a PDF version. If you need to make changes, <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=ss1&record='.$record_id.'&step=3'?>">you can go back to edit your data request</a>.</p>
             <?php
             echo filter_tags($settings['hub_steps_complete_text']);
             if($sop['sop_visibility'] != "2"){
@@ -33,14 +33,14 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
                 <div style="display: inline-block; margin-right:20px">
                     <?php if($sop['sop_status'] == "1"){
 
-                       ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=upd'?>" class="btn btn-default btn-md">View in Submit Data</a><?php
+                       ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&option=upd'?>" class="btn btn-default btn-md">View in Submit Data</a><?php
                     }else{
-                        ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=smn'?>" class="btn btn-default btn-md">View in My Drafts</a><?php
+                        ?><a href="<?=$module->getUrl('index.php').'&NOAUTH&option=smn'?>" class="btn btn-default btn-md">View in My Drafts</a><?php
                     }?>
                 </div>
                 <?php if($sop['sop_visibility'] != "2"){?>
                     <div style="display: inline-block">
-                        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=spr&record='.$record_id?>" class="btn btn-success btn-md">Send for Review</a>
+                        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=spr&record='.$record_id?>" class="btn btn-success btn-md">Send for Review</a>
                     </div>
                 <?php }else if($harmonist_perm){
                     $passthru_link = $module->resetSurveyAndGetCodes($pidsArray['SOP'], 1, "finalization_of_data_request","");
@@ -73,7 +73,7 @@ if(array_key_exists('message', $_REQUEST) && ($_REQUEST['message'] == 'S')){
         </div>
     </div>
     <div class="pull-left backTo">
-        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ss1&record='.$record_id.'&step=3'?>">< Back to Edit Data Request</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=ss1&record='.$record_id.'&step=3'?>">< Back to Edit Data Request</a>
     </div>
 </div>
 <div class="container">

@@ -64,7 +64,7 @@ if(array_key_exists('message', $_REQUEST)){
 ?>
 
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dat'?>">< Back to Data</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=dat'?>">< Back to Data</a>
     </div>
 </div>
 <div class="container">

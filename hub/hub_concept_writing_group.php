@@ -96,7 +96,7 @@ $harmonistPermEditConcept = ($current_user['harmonist_perms___3'] == 1) ? true :
     }
     ?>
     <div class="backTo">
-        <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=ttl&record='.$recordId?>">< Back to Concept</a>
+        <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=ttl&record='.$recordId?>">< Back to Concept</a>
     </div>
     <?php if($concept != "" && $concept != null) {?>
     <h3 class="concepts-title-title"><?=$concept->getConceptId().": Writing Group"?></h3>

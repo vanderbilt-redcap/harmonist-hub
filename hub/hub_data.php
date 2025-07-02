@@ -192,7 +192,7 @@ if($settings['deactivate_datadown___1'] != "1"){
             <div class="panel-heading" style="border: none;">
                 <h3 class="panel-title">
                     Data News
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=dna&type=1'?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=dna&type=1'?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <div id="collapse3" class="table-responsive panel-collapse collapse in" aria-expanded="true">
@@ -239,7 +239,7 @@ if($settings['deactivate_datadown___1'] != "1"){
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Recent Data Activity
-                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sra'?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
+                    <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=sra'?>" style="float: right;padding-right: 10px;color: #337ab7">View more</a>
                 </h3>
             </div>
             <ul class="list-group">
@@ -266,7 +266,7 @@ if($settings['deactivate_datadown___1'] != "1"){
                                 if ($recent_activity['author_revision_y'] == '1') {
                                     echo '<i class="fa fa-fw fa-file-text-o text-success" aria-hidden="true"></i>' .
                                         '<span class="time"> ' . $time . '</span> ' .
-                                        '<strong>' . $name . '</strong> submitted a <strong>revision</strong> for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.$title . '</a>';
+                                        '<strong>' . $name . '</strong> submitted a <strong>revision</strong> for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php').'&NOAUTH&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.$title . '</a>';
                                 } else{
                                     $text = '<span class="time"> ' . $time . '</span> <strong>' . $name . '</strong> submited a ';
                                     $itemcount = 0;
@@ -285,7 +285,7 @@ if($settings['deactivate_datadown___1'] != "1"){
                                         $text .= '<strong>file</strong>';
                                     }
 
-                                    echo $icon.$text.' for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php').'&NOAUTH&pid='.$pidsArray['PROJECTS'].'&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.$title . '</a>';
+                                    echo $icon.$text.' for ' . $assoc_concept.', <a href="'.$module->getUrl('index.php').'&NOAUTH&option=sop&record=' . $recent_activity['sop_id'] . '" target="_blank">'.$title . '</a>';
                                 }
                                 echo '</li>';
                                 $i++;
