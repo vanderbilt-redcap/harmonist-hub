@@ -159,6 +159,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
 
     function redcap_save_record($project_id, $record, $instrument, $event_id)
     {
+        error_log("IeDEA -  redcap_save_record");
+        error_log("IeDEA -  project_id: ".$project_id);
         echo '<script>';
         include_once("js/iframe.js");
         echo '</script>';
@@ -166,8 +168,6 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         #Get Projects ID's
         $hub_mapper = $this->getProjectSetting('hub-mapper',$project_id);
         $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-        error_log("IeDEA -  redcap_save_record");
-        error_log("IeDEA -  project_id: ".$project_id);
         error_log("IeDEA -  hub_mapper: ".$hub_mapper);
         error_log("IeDEA -  COMMENTSVOTES: ".$pidsArray['COMMENTSVOTES']);
         try {
