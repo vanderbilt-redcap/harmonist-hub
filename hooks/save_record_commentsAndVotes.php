@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 include_once(__DIR__ ."/../projects.php");
 include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
-error_log("IeDEA -  save_record_commentsAndVotes");
+
 #Get Projects ID's
 $hub_mapper = $this->getProjectSetting('hub-mapper');
 $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
@@ -11,7 +11,6 @@ $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
 $comment = \REDCap::getData($project_id, 'json-array', array('record_id' => $record))[0];
 $vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
 if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'comments_and_votes'){
-    error_log("IeDEA -  inside");
     $data = \REDCap::getData($project_id, 'array',$record,$instrument.'_complete', null,null,false,false,true);
 
     $completion_time = ($comment[$instrument.'_complete'] == '2')?$data[$record][$event_id][$instrument.'_timestamp']:"";
@@ -30,7 +29,6 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $comment['request_id']));
     $request = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'])[0];
     if(!empty($request)){
-        error_log("IeDEA -  inside request #".$record);
         $arrayCV[$record][$event_id]['request_type'] = $request['request_type'];
         $all_votes_completed = true;
         foreach ($request['responding_region'] as $instanceId => $resp_region){
@@ -100,11 +98,7 @@ if(($comment[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
         $arrayCV[$record][$event_id]['contact_email'] = $request['contact_email'];
         $arrayCV[$record][$event_id]['request_title'] = $request['request_title'];
         $arrayCV[$record][$event_id]['contactnotification_y'] = array(1=>($request['contactnotification_y'][1] == "")?"0":"1");//checkbox
-        error_log("IeDEA -  save comments and votes");
-        error_log(json_encode($arrayCV[$record][$event_id]));
         $results = \Records::saveData($project_id, 'array', $arrayCV,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false);
-        error_log(json_encode($results['errors']));
-        error_log("IeDEA -  saved!");
         if($request['follow_activity'] != ''){
             $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array')[0];
 
