@@ -14,7 +14,7 @@ $secret_key = "";
 $secret_iv = "";
 
 if(!isset($isCron) || !$isCron) {
-    if($module == null) {
+    if(!isset($module) || $module == null) {
         $module = $this;
     }
 
