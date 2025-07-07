@@ -74,8 +74,8 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 'records' => [1],
                 'fields' => ['deactivate_datahub']
             ];
-            $settings = $this->escape(REDCap::getData($params))[0];
-            if($settings['deactivate_datahub___1'] == "1"){
+            $settings = $this->escape(REDCap::getData($params));
+            if(!empty($settings) && array_key_exists(0, $settings) && array_key_exists('deactivate_datahub___1', $settings[0]) && $settings[0]['deactivate_datahub___1'] == "1"){
                 return false;
             }
 

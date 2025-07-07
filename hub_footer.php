@@ -3,8 +3,8 @@ use Vanderbilt\HarmonistHubExternalModule\ProjectData;
 
 $aboutData = \REDCap::getData($pidsArray['ABOUT'], 'json-array', null);
 $aboutTitle = "";
-if(array_key_exists(0, $aboutData) && is_array($aboutData[0])) {
-    $aboutTitle = $aboutData['about_title'][0];
+if(array_key_exists(0, $aboutData) && is_array($aboutData[0]) && array_key_exists('about_title', $aboutData[0])) {
+    $aboutTitle = $aboutData[0]['about_title'];
 }
 $versionsByPrefix = $module->getEnabledModules($_GET['pid']);
 
