@@ -37,7 +37,6 @@ class Concept extends Model
     private $conceptFile;
     private $outputYear;
     private $outputTitle;
-    private $outputDescription;
     private $outputVenue;
     private $outputPmcid;
     private $outputCitation;
@@ -129,16 +128,6 @@ class Concept extends Model
     public function setDatasopFile($datasopFile): void
     {
         $this->datasopFile = $datasopFile;
-    }
-
-    public function getOutputDescription()
-    {
-        return $this->outputDescription;
-    }
-
-    public function setOutputDescription($outputDescription): void
-    {
-        $this->outputDescription = $outputDescription;
     }
 
     public function getOutputTitle()
@@ -617,7 +606,6 @@ class Concept extends Model
         $this->conceptFile = $this->conceptData['concept_file'];
         $this->outputYear = $this->conceptData['output_year'];
         $this->outputTitle = $this->conceptData['output_title'];
-        $this->outputDescription = $this->conceptData['output_description'];
         $this->outputType = $this->conceptData['output_type'];
         $this->outputVenue = $this->conceptData['output_venue'];
         $this->outputPmcid = $this->conceptData['output_pmcid'];
