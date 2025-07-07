@@ -192,7 +192,7 @@ class AllCrons
             "<div>".$settings['hub_name']." Program Managers,</div><br>".
             "<div>This e-mail provides a summary of ".$settings['hub_name']." Hub activity for <strong>".date("F",strtotime("-1 months"))." ".date("Y",strtotime("-1 months"))."</strong>. This includes active Hub requests, Hub requests that have been finalized, and active data calls. If you have questions about the content of this e-mail, please e-mail <a href='mailto:".$settings['hub_contact_email']."'>".$settings['hub_contact_email']."</a>.</div><br><br>".
             "<div><h3><strong>Active Hub Requests</strong></h3></div>".
-            "<ol style='padding-left: 15px;'>";
+            "<ol style='padding-left: 25px;'>";
         $isEmpty = true;
         $message = array();
         $message['active_requests'] = 0;
@@ -252,7 +252,7 @@ class AllCrons
             $email_req .= "<li><em>No active hub requests.</em></li>";
         }
         $email_req .= "</ol>".
-            "<br><div style='padding: 3px;'><h3><strong>Hub Requests Finalized in Past Month</strong></h3></div><ol style='padding-left: 15px;'>";
+            "<br><div style='padding: 3px;'><h3><strong>Hub Requests Finalized in Past Month</strong></h3></div><ol style='padding-left: 25px;'>";
 
         $numberDaysInCurrentMonth = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'));
         $expire_date = date('Y-m-d', strtotime(date('Y-m-d') ."-".$numberDaysInCurrentMonth." days"));
@@ -290,7 +290,7 @@ class AllCrons
             $email_req .= "<li><em>No finalized hub requests.</em></li>";
         }
         $email_req .= "</ol>".
-            "<br><div style='padding: 3px;'><h3><strong>Active Data Calls</strong></h3></div><ol style='padding-left: 15px;'>";
+            "<br><div style='padding: 3px;'><h3><strong>Active Data Calls</strong></h3></div><ol style='padding-left: 25px;'>";
 
         $isEmpty = true;
         $RecordSetRegions = \REDCap::getData($pidsArray['REGIONS'], 'array', null,null,null,null,false,false,false,"[showregion_y] = 1");
