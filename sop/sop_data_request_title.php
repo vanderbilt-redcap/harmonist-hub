@@ -606,22 +606,8 @@ $harmonist_perm = ($current_user['harmonist_perms___1'] == 1) ? true : false;
                     <div class="col-md-4">
                         <strong>Status: </strong>
                         <?php
-                        $status_text = "";
-                        if(is_array($status_type)){
-                            if(array_key_exists('data_response_status',$sop) &&
-                                is_array($sop['data_response_status']) &&
-                                array_key_exists('person_region',$current_user) &&
-                                array_key_exists($current_user['person_region'],$sop['data_response_status'])){
-                                if($sop['data_response_status'][$current_user['person_region']] == ""){
-                                    $status_text = $status_type[0];
-                                }else{
-                                    $status_text = $status_type[$sop['data_response_status'][$current_user['person_region']]];
-                                }
-                            }
-
-                        }
                         $status_icons = getDataCallStatusIcons($sop['data_response_status'][$current_user['person_region']]);
-                        echo $status_icons.'<span class="status-text"> '.htmlspecialchars($status_text,ENT_QUOTES).'</span>';
+                        echo $status_icons.'<span class="status-text"> '.htmlspecialchars(getStatusText($status_type, $sop, $current_user),ENT_QUOTES).'</span>';
                         ?>
                     </div>
                 </div>
