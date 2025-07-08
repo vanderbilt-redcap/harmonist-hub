@@ -591,7 +591,7 @@ class Concept extends Model
         $this->contact2Link = $this->conceptData['contact2_link'];
         $this->wgLink = $this->conceptData['wg_link'];
         $this->wg2Link = $this->conceptData['wg2_link'];
-        $this->revisedY = $this->conceptData['revised_y'][0];
+        $this->revisedY = $this->conceptData['revised_y'][1];
         $this->ecApprovalD = $this->conceptData['ec_approval_d'];
         $this->participantsComplete = $this->conceptData['participants_complete'];
         $this->personLink = $this->conceptData['person_link'];
