@@ -1057,15 +1057,10 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
     }else {
         foreach ($regions as $region) {
             $status = $sop['data_response_status'][$region['record_id']];
-            $status_text = $status_type[$sop['data_response_status'][$current_user['person_region']]];
-            if ($sop['data_response_status'][$current_user['person_region']] == "") {
-                $status_text = $status_type[1];
-            }
-
             $status_row .= "<td style='text-align: center'>";
             $status_icons = getDataCallStatusIcons($status);
             if ($region['record_id'] == $current_user['person_region']) {
-                $current_region_status = htmlentities($status_icons . '<span class="status-text"> ' . $status_text . '</span>');
+                $current_region_status = htmlentities($status_icons . '<span class="status-text"> ' . getStatusText($status_type, $sop, $current_user) . '</span>');
             }
             $status_row .= $status_icons . "</td>";
         }
@@ -1931,5 +1926,22 @@ function interpolate($pBegin, $pEnd, $pStep, $pMax) {
 
 function getDataTable($project_id){
     return method_exists('\REDCap', 'getDataTable') ? \REDCap::getDataTable($project_id) : "redcap_data";
+}
+
+function getStatusText($status_type, $sop, $current_user){
+    $status_text = "";
+    if(is_array($status_type)){
+        if(array_key_exists('data_response_status',$sop) &&
+            is_array($sop['data_response_status']) &&
+            array_key_exists('person_region',$current_user) &&
+            array_key_exists($current_user['person_region'],$sop['data_response_status'])){
+            if($sop['data_response_status'][$current_user['person_region']] == ""){
+                $status_text = $status_type[0];
+            }else{
+                $status_text = $status_type[$sop['data_response_status'][$current_user['person_region']]];
+            }
+        }
+    }
+    return $status_text;
 }
 ?>

@@ -125,7 +125,7 @@ $harmonist_perm_edit_concept = ($current_user['harmonist_perms___3'] == 1) ? tru
             <div class="col-md-6">
                 <?php
                 echo $concept->getParticipants();
-                if($settings['writinggroup_opt'] == "2" || ($settings['writinggroup_opt'] == "1" && $isAdmin)){
+                if(array_key_exists('writinggroup_opt', $settings) && ($settings['writinggroup_opt'] == "2" || ($settings['writinggroup_opt'] == "1" && $isAdmin))){
                     echo " (<a href='".$module->getUrl('index.php').'&NOAUTH&option=cwg&record='.$recordId."'>View Writing Group</a>)";
                 }
                 ?>
