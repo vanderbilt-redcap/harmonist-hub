@@ -21,7 +21,7 @@ class HubData
     {
         $project_id = $this->pidsArray['PEOPLE'];
         $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
-        if ((!array_key_exists('current_user', $_SESSION[$this->session_name]) || empty($_SESSION[$this->session_name]['current_user']) || $_SESSION[$this->session_name]['last_logged_event']['current_user'] != $last_logged_event) && !empty($this->token)) {
+        if ((empty($_SESSION[$this->session_name]['current_user']) || $_SESSION[$this->session_name]['last_logged_event']['current_user'] != $last_logged_event) && !empty($this->token)) {
             $_SESSION[$this->session_name]['current_user'] = $this->module->escape(
                 \REDCap::getData(
                     $project_id,
@@ -51,16 +51,14 @@ class HubData
         $project_id = $this->pidsArray['REGIONS'];
         $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
         if (empty($_SESSION[$this->session_name]['person_region']) || ($_SESSION[$this->session_name]['last_logged_event']['person_region'] != $last_logged_event)) {
-            if(array_key_exists('current_user', $_SESSION[$this->session_name])) {
-                $_SESSION[$this->session_name]['person_region'] = $this->module->escape(
-                    \REDCap::getData(
-                        $project_id,
-                        'json-array',
-                        array('record_id' => $_SESSION[$this->session_name]['current_user']['person_region'])
-                    )[0]
-                );
-                $_SESSION[$this->session_name]['last_logged_event']['person_region'] = $last_logged_event;
-            }
+            $_SESSION[$this->session_name]['person_region'] = $this->module->escape(
+                \REDCap::getData(
+                    $project_id,
+                    'json-array',
+                    array('record_id' => $_SESSION[$this->session_name]['current_user']['person_region'])
+                )[0]
+            );
+            $_SESSION[$this->session_name]['last_logged_event']['person_region'] = $last_logged_event;
         }
         return $_SESSION[$this->session_name]['person_region'];
     }
