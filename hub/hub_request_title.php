@@ -393,6 +393,7 @@ if($request !="") {
                         <?php
                         $request_time = "";
                         $newest_record = "";
+                        $group_discussion = "";
                         if(!empty($request['requestopen_ts'])){
                             $date = new \DateTime($request['requestopen_ts']);
                             $date->modify("+1 hours");
