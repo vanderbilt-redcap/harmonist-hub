@@ -21,7 +21,7 @@ class HubData
     {
         $project_id = $this->pidsArray['PEOPLE'];
         $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
-        if ((empty($_SESSION[$this->session_name]['current_user']) || $_SESSION[$this->session_name]['last_logged_event']['current_user'] != $last_logged_event) && !empty($this->token)) {
+        if ((!array_key_exists('current_user', $_SESSION[$this->session_name]) || empty($_SESSION[$this->session_name]['current_user']) || $_SESSION[$this->session_name]['last_logged_event']['current_user'] != $last_logged_event) && !empty($this->token)) {
             $_SESSION[$this->session_name]['current_user'] = $this->module->escape(
                 \REDCap::getData(
                     $project_id,
