@@ -393,6 +393,7 @@ if($request !="") {
                         <?php
                         $request_time = "";
                         $newest_record = "";
+                        $group_discussion = "";
                         if(!empty($request['requestopen_ts'])){
                             $date = new \DateTime($request['requestopen_ts']);
                             $date->modify("+1 hours");
@@ -428,7 +429,6 @@ if($request !="") {
                             echo "<tr class='author_doc'>".getFileRow($module,$request['author_doc'], $request['contact_name'], "Final", "",$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
                         }
 
-                        $group_discussion = "";
                         if(!empty($comments)){
                             foreach ($comments as $comment_record) {
                                 foreach ($comment_record as $comment) {
