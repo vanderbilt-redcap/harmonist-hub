@@ -1,0 +1,6 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,project_info,,text,"Record ID",,,,,,,,,,,,,
+parent_txt,project_info,,descriptive,"<div style=""font-weight:lighter"">This project <b>ties together all the separate REDCap projects that are used for the Data Model Browser External Module (EM).</b> The link to the Data Model Browser webpage can be found in the sidebar of THIS project.</div>
+<div style=""font-weight:lighter"">Do not edit the IDs of the projects below. All the necessary sub-projects are created and linked to this one during the EM installation process. The sub-projects have pre-defined data dictionaries. All data should be entered into the sub-projects. You must have Project Setup rights on all the sub-projects.</div>",,,,,,,,,,,,,
+project_id,project_info,,text,"Project ID",,,,,,,,,,,,,
+project_constant,project_info,,text,"Constant Name",,,,,,,,,,,,,

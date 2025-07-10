@@ -1,6 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-
+use ExternalModules\AbstractExternalModule;
+use ExternalModules\ExternalModules;
 
 class REDCapManagement {
     const DEFAULT_EMAIL_ADDRESS = "harmonist@vumc.org";
@@ -48,6 +49,13 @@ class REDCapManagement {
 
     public static function getExtraConstantsArray(){
         return ['DES'];
+    }
+    public static function getProjectsDESArray(){
+        return ['MAP' => 'Parent Project MAP (DES)','SETTINGS' => 'Settings (DES)'];
+    }
+
+    public static function getDESMapOtherConstantsArray(){
+        return ['DATAMODEL', 'CODELIST', 'DATAMODELMETADATA', 'JSONCOPY'];
     }
 
     public static function getProjectConstantsArrayWithoutDeactivatedProjects(){
@@ -994,6 +1002,10 @@ class REDCapManagement {
         return $projects_array_module_getpmid;
     }
 
+    public static function getProjectsModuleDESArray($name){
+        return ["des-projectname" => $name,"des-privacy" => "public"];
+    }
+
     public static function getProjectsModuleEmailAlertsArray($module, $hub_projectname){
         $projects_array_module_emailalerts = array(
             2=> array(
@@ -1714,5 +1726,65 @@ class REDCapManagement {
                 }
             }
         }
+    }
+
+    public static function addMapRecord($module, $project_id, $record, $project_id_new,$name,$project_show_y): void
+    {
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'record_id', $record);
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_id', $project_id_new);
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_constant', $name);
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_show_y', $project_show_y);
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_info_complete', 2);
+    }
+
+    public static function enableAnotherModule($module, $project_id, $moduleName, $settings): void
+    {
+        $module->enableModule($project_id,$moduleName);
+        $othermodule = ExternalModules::getModuleInstance($moduleName);
+        foreach ($settings as $setting_name => $setting_value){
+            if($moduleName == "vanderbilt_emailTrigger" && $setting_name == "email-text"){
+                $setting_value = str_replace("___project_id_new", $project_id, $setting_value);
+            }
+            $othermodule->setProjectSetting($setting_name, $setting_value, $project_id);
+        }
+    }
+
+    public static function installDataModelBrowserEM($module,$pidsArray,$record): void
+    {
+        $hub_projectname = $module->getProjectSetting('hub-projectname');
+        $projects_array_des = self::getProjectsDESArray();
+        $projects_array_module_des = self::getProjectsModuleDESArray($hub_projectname);
+        $project_id_des = null;
+        foreach ($projects_array_des as $name=>$project){
+            $project_title = $hub_projectname." Hub: ".$project;
+            $project_id_new = $module->createProjectAndImportDataDictionary($name."_DES",$project_title);
+            if($name == "MAP")
+            {
+                #Activate EM on Mapper
+                $project_id_des = $project_id_new;
+                self::enableAnotherModule($module, $project_id_new, "data-model-browser", $projects_array_module_des);
+
+                #Set Custom Labels
+                $custom_record_label = "[project_constant]: [project_id]";
+                $module->query("UPDATE redcap_projects SET custom_record_label = ? WHERE project_id = ?", [$custom_record_label, $project_id_new]);
+            } else {
+                #Save Records in DES mapper
+                $recordDES = 1;
+                self::addMapRecord($module, $project_id_des, $recordDES, $project_id_new,"SETTINGS",0);
+                foreach (self::getDESMapOtherConstantsArray() as $constant_name){
+                    $recordDES++;
+                    self::addMapRecord($module, $project_id_des, $recordDES, $pidsArray[$constant_name],$constant_name,0);
+                }
+                $recordDES++;
+                self::addMapRecord($module, $project_id_des, $recordDES, $pidsArray['FILELIBRARY'],"FILEREPO",0);
+
+                #Save Data in Settings
+                $module->addProjectToList($project_id_new, $module->framework->getEventId($project_id_new), 1, 'record_id', 1);
+                $module->addProjectToList($project_id_new, $module->framework->getEventId($project_id_new), 1, 'des_wkname', $hub_projectname);
+            }
+        }
+        #Add DES Mapper PID to Harmonist Mapper & the res of PIDs
+        $name = self::getExtraConstantsArray()[0];
+        self::addMapRecord($module, $pidsArray['PROJECTS'], $record, $project_id_des,$name,0);
     }
 }

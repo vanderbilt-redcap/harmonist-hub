@@ -36,12 +36,7 @@ $record = 1;
 foreach ($projects_array as $index=>$name){
     $project_title = $hub_projectname." Hub: ".$projects_titles_array[$index];
     $project_id_new = $module->createProjectAndImportDataDictionary($name,$project_title);
-    $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'record_id', $record);
-    $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_id', $project_id_new);
-    $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_constant', $name);
-    $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_show_y', $projects_array_show[$index]);
-    $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_info_complete', 2);
-
+    REDCapManagement::addMapRecord($module, $project_id, $record, $project_id_new,$name,$projects_array_show[$index]);
     if($custom_record_label_array[$index] != ''){
         $module->query("UPDATE redcap_projects SET custom_record_label = ? WHERE project_id = ?",[$custom_record_label_array[$index],$project_id_new]);
     }
@@ -72,12 +67,11 @@ foreach ($projects_array as $index=>$name){
                         "<li>AWS Bucket name</li>" .
                         "<li>AWS Bucket Credentials</li>" .
                         "</ul>";
-                \Vanderbilt\HarmonistHubExternalModule\sendEmail(REDCapManagement::DEFAULT_EMAIL_ADDRESS, "noreply.harmonist@vumc.org", "noreply.harmonist@vumc.org", $subject, $message, "Not in database","New DataTolkit setup needed",$project_id_new);
+                sendEmail(REDCapManagement::DEFAULT_EMAIL_ADDRESS, "noreply.harmonist@vumc.org", "noreply.harmonist@vumc.org", $subject, $message, "Not in database","New DataTolkit setup needed",$project_id_new);
             }
         }
         #Add the Default values or they get deleted with the saved new record
         ProjectData::installDefault($module,$project_id_new,$rowtype['event_id'],1);
-        \Records::addRecordToRecordListCache($project_id_new, $record,1);
     }else if($name == "HOME"){
         $pidHome = $project_id_new;
     }
@@ -93,23 +87,12 @@ foreach ($projects_array as $index=>$name){
 
     if(array_key_exists($index,$projects_array_module_emailalerts)){
         #Email Alerts
-        $module->enableModule($project_id_new,"vanderbilt_emailTrigger");
-        $othermodule = ExternalModules::getModuleInstance("vanderbilt_emailTrigger");
-        foreach ($projects_array_module_emailalerts[$index] as $setting_name => $setting_value){
-            if($setting_name == "email-text"){
-                $setting_value = str_replace("___project_id_new", $project_id_new, $setting_value);
-            }
-            $othermodule->setProjectSetting($setting_name, $setting_value, $project_id_new);
-        }
+        REDCapManagement::enableAnotherModule($module, $project_id_new, "vanderbilt_emailTrigger", $projects_array_module_emailalerts[$index]);
     }
 
     if(array_key_exists($index,$projects_array_module_getpmid)){
         #Get PMID Details
-        $module->enableModule($project_id_new,"get-pmid-details");
-        $othermodule = ExternalModules::getModuleInstance("get-pmid-details");
-        foreach ($projects_array_module_getpmid[$index] as $setting_name => $setting_value){
-            $othermodule->setProjectSetting($setting_name, $setting_value, $project_id_new);
-        }
+        REDCapManagement::enableAnotherModule($module, $project_id_new, "get-pmid-details", $projects_array_module_getpmid[$index]);
     }
 
     #ADD USER PERMISSIONS
@@ -119,8 +102,6 @@ foreach ($projects_array as $index=>$name){
             HubREDCapUsers::addUserToProject($module, $project_id_new, $user, $user_roles[HubREDCapUsers::HUB_ROLE_USER], "Harmonist Installation Process", $project_id, HubREDCapUsers::HUB_ROLE_USER);
         }
     }
-
-    \Records::addRecordToRecordListCache($project_id, $record,1);
     $record++;
 
     #We create the surveys
@@ -140,13 +121,7 @@ foreach ($projects_array as $index=>$name){
             $module->query("INSERT INTO redcap_surveys_participants (survey_id,hash,event_id) VALUES (?,?,?)",[$surveyId,$hash,$event_id]);
 
             if($index != 1 && (array_key_exists($index,$projects_array_surveys_hash) && $survey == $projects_array_surveys_hash[$index]['instrument'])){
-                $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'record_id', $record);
-                $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_id', $hash);
-                $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_constant', $projects_array_surveys_hash[$index]['constant']);
-                $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_show_y', 0);
-                $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_info_complete', 2);
-
-                \Records::addRecordToRecordListCache($project_id, $record,1);
+                REDCapManagement::addMapRecord($module, $project_id, $record, $hash,$projects_array_surveys_hash[$index]['constant'],0);
                 $record++;
             }
         }
@@ -234,6 +209,11 @@ foreach ($projects_array_sql as $projectid=>$projects){
         }
     }
 }
+
+#We must clear the project cache so our hub-updates are pulled from the DB.
+$module->clearProjectCache();
+
+REDCapManagement::installDataModelBrowserEM($module, $pidsArray, $record);
 
 echo json_encode(array(
         'status' =>'success'
