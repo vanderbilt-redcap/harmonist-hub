@@ -427,7 +427,7 @@ if($request !="") {
                         if(!empty($request['author_doc'])){
                             echo "<tr class='author_doc'>".getFileRow($module,$request['author_doc'], $request['contact_name'], "Final", "",$secret_key,$secret_iv,$current_user['record_id'],"")."</tr>";
                         }
-                        $group_discussion = "";
+
                         if(!empty($comments)){
                             foreach ($comments as $comment_record) {
                                 foreach ($comment_record as $comment) {
