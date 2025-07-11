@@ -7,7 +7,7 @@ $header = getRequestHeader($hubData,$settings['vote_grid'],'0');
 
 $title = "Requests";
 $link_all_requests = '';
-if($_REQUEST['type'] != ''){
+if(arrayKeyExists($_REQUEST, 'type') && $_REQUEST['type'] != ''){
     $title = $title." for ".$request_type_label[$_REQUEST['type']];
     $link_all_requests = '<a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub'.'">View All Requests</a> | ';
 }
@@ -17,6 +17,9 @@ $requests = $hubData->getAllRequests();
 $commentDetails = $hubData->getCommentDetails();
 
 $types_of_requests_data = [];
+$types_of_requests_data['completed'] = "";
+$types_of_requests_data['pending'] = "";
+$types_of_requests_data['open'] = "";
 foreach ($requests as $req){
     if ((array_key_exists('type', $_REQUEST) && $_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || !array_key_exists('type', $_REQUEST) || (array_key_exists('type', $_REQUEST) && $_REQUEST['type'] == "")) {
         if (!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y'])) {

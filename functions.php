@@ -464,7 +464,7 @@ function showOpenRequest($req,$instance){
  * @return bool
  */
 function showClosedRequest($settings,$req,$instance){
-    if (($req['region_response_status'][$instance] == "2" || $req['finalize_y'] != "") && !empty($req['due_d'])) {
+    if (((arrayKeyExists($req, 'region_response_status', $instance) && $req['region_response_status'][$instance] == "2") || $req['finalize_y'] != "") && !empty($req['due_d'])) {
         $extra_days = ' + ' . $settings['pastrequest_dur'] . " days";
         $due_date_time = date('Y-m-d', strtotime($req['due_d'] . $extra_days));
         $today = date('Y-m-d');
@@ -608,15 +608,14 @@ function getRequestHTML($module, $hubData, $pidsArray, $req, $commentReq, $reque
         }
     }
 
-    $width = "";
+    $width = [0 => "width='70px'", 1 => "width='70px'", 2 => "width='70px'"];
     $button_text = "Respond";
     $button_icon = "fa-share";
     if($req_type == 'home'){
-        $width = array(0 => "width='70px'", 1 => "width='70px'", 2 => "width='70px'");
         $button_text = "View";
         $button_icon = "fa-eye";
     }else  if($req_type == 'archive'){
-        $width = array(0 => "width='80px'", 1 => "width='150px'", 2 => "width='590px'");
+        $width = [0 => "width='80px'", 1 => "width='150px'", 2 => "width='590px'"];
         $button_text = "View";
         $button_icon = "fa-eye";
     }
@@ -1943,5 +1942,20 @@ function getStatusText($status_type, $sop, $current_user){
         }
     }
     return $status_text;
+}
+
+function arrayKeyExists($array, $key, $key2=null) {
+    if(array_key_exists($key, $array)) {
+        if($key2 != null && $key2 != "") {
+            if(is_array($array[$key]) && array_key_exists($key2, $array[$key])) {
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }
+    return false;
 }
 ?>
