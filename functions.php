@@ -1048,8 +1048,9 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
     $url = "";
     $buttons = '';
     $width='';
+    $personRegion = arrayKeyExistsReturnValue($current_user, 'person_region');
     if($vote_grid == '2' || $vote_grid == '0') {
-        $status = $sop['data_response_status'][$current_user['person_region']];
+        $status = arrayKeyExistsReturnValue($sop, 'data_response_status',$personRegion);
         $status_row .= "<td style='text-align: center'>";
         $status_icons = getDataCallStatusIcons($status);
         $status_row .= $status_icons."</td>";
@@ -1058,7 +1059,7 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
             $status = $sop['data_response_status'][$region['record_id']];
             $status_row .= "<td style='text-align: center'>";
             $status_icons = getDataCallStatusIcons($status);
-            if ($region['record_id'] == $current_user['person_region']) {
+            if ($region['record_id'] == $personRegion) {
                 $current_region_status = htmlentities($status_icons . '<span class="status-text"> ' . getStatusText($status_type, $sop, $current_user) . '</span>');
             }
             $status_row .= $status_icons . "</td>";
@@ -1090,7 +1091,7 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
         } else {
             $buttons = '<div><a href="#" onclick="confirmDataUpload(\'' . $sop['sop_concept_id'] . '\',\'' . $current_user['record_id'] . '\',\'' . $concept_id . '\',\'' . $sop['record_id'] . '\');" class="btn btn-primary btn-xs">Upload Data</a></div>';
             if ($current_user['allowgetdata_y___1'] == "1" || $current_user['harmonistadmin_y'] == '1') {
-                $buttons .= '<div style="padding-top: 8px"><a href="#" onclick="changeStatus(\'' . $current_region_status . '\',\'' . $sop['record_id'] . '\',\'' . $current_user['person_region'] . '\',\'' . htmlspecialchars($sop['data_response_notes'][$current_user['person_region']]) . '\',\'' . $sop['region_update_ts'][$current_user['person_region']] . '\',\'modal-data-change-status\')" class="btn btn-default btn-xs">Change Status</a></div>';
+                $buttons .= '<div style="padding-top: 8px"><a href="#" onclick="changeStatus(\'' . $current_region_status . '\',\'' . $sop['record_id'] . '\',\'' .$personRegion . '\',\'' . htmlspecialchars(arrayKeyExistsReturnValue($sop, 'data_response_notes', $personRegion)) . '\',\'' . htmlspecialchars(arrayKeyExistsReturnValue($sop, 'region_update_ts', $personRegion)) . '\',\'modal-data-change-status\')" class="btn btn-default btn-xs">Change Status</a></div>';
             }
         }
 
@@ -1958,4 +1959,19 @@ function arrayKeyExists($array, $key, $key2=null) {
     }
     return false;
 }
+
+function arrayKeyExistsReturnValue($array, $key, $key2=null) {
+        if(array_key_exists($key, $array)) {
+            if($key2 != null && $key2 != "") {
+                if(is_array($array[$key]) && array_key_exists($key2, $array[$key])) {
+                    return $array[$key][$key2];
+                }else{
+                    return null;
+                }
+            }else{
+                return $array[$key];
+            }
+        }
+        return null;
+    }
 ?>
