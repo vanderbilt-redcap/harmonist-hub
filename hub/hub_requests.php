@@ -20,8 +20,9 @@ $types_of_requests_data = [];
 $types_of_requests_data['completed'] = "";
 $types_of_requests_data['pending'] = "";
 $types_of_requests_data['open'] = "";
+$RequestType = arrayKeyExistsReturnValue($_REQUEST,'type');
 foreach ($requests as $req){
-    if ((array_key_exists('type', $_REQUEST) && $_REQUEST['type'] != "" && $req['request_type'] == $_REQUEST['type']) || !array_key_exists('type', $_REQUEST) || (array_key_exists('type', $_REQUEST) && $_REQUEST['type'] == "")) {
+    if (($RequestType != "" && $req['request_type'] == $RequestType) || $RequestType == null || $RequestType == "") {
         if (!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y'])) {
             if (showClosedRequest($settings, $req, $current_user['person_region'])) {
                 //COMPLETED REQUESTS
