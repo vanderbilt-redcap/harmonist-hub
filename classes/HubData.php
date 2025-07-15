@@ -21,7 +21,10 @@ class HubData
     {
         $project_id = $this->pidsArray['PEOPLE'];
         $last_logged_event = \Project::getLastLoggedEvent($project_id, true);
-        if ((!self::doesCurrentUserExistsInSession() || self::isSessionParamEmptyORLastLoggedEvent('current_user', $last_logged_event)) && !empty($this->token)) {
+        if ((!self::doesCurrentUserExistsInSession() || self::isSessionParamEmptyORLastLoggedEvent(
+                    'current_user',
+                    $last_logged_event
+                )) && !empty($this->token)) {
             $_SESSION[$this->session_name]['current_user'] = $this->module->escape(
                 \REDCap::getData(
                     $project_id,
@@ -43,6 +46,9 @@ class HubData
                 $_SESSION[$this->session_name]['current_user']['is_admin'] = true;
             }
         }
+        if(!self::doesCurrentUserExistsInSession()){
+            return [];
+        }
         return $_SESSION[$this->session_name]['current_user'];
     }
 
@@ -63,7 +69,7 @@ class HubData
             }
             return $_SESSION[$this->session_name]['person_region'];
         }else{
-            return null;
+            return [];
         }
     }
     public function getAllRegions()
@@ -79,7 +85,7 @@ class HubData
             }
             return $_SESSION[$this->session_name]['regions'];
         }else{
-            return null;
+            return [];
         }
     }
     public function getAllRequests()
@@ -97,7 +103,7 @@ class HubData
             }
             return $_SESSION[$this->session_name]['requests'];
         }else{
-            return null;
+            return [];
         }
     }
     public function getCommentDetails()
@@ -116,7 +122,7 @@ class HubData
             }
             return $_SESSION[$this->session_name]['commentsDetails'];
         }else{
-            return null;
+            return [];
         }
     }
 

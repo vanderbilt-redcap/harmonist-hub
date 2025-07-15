@@ -22,11 +22,14 @@ $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$p
 
 $name = $current_user['firstname'].' '.$current_user['lastname'];
 $isAdmin = $current_user['is_admin'];
-$numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$current_user['person_region'],$person_region['voteregion_y'],$settings['pastrequest_dur']));
+$voteRegion = arrayKeyExistsReturnValue($person_region,'voteregion_y');
+$currentUserRegion = arrayKeyExistsReturnValue($current_user,'person_region');
+$pastrequestDur = arrayKeyExistsReturnValue($settings,'pastrequest_dur');
+$numberOfOpenRequest = $module->escape(numberOfOpenRequest($requests,$currentUserRegion,$voteRegion,$pastrequestDur));
 
 $personRegionCode = "";
 if($person_region != null){
-    $personRegionCode = $person_region['region_code'];
+    $personRegionCode = arrayKeyExistsReturnValue($person_region,'region_code');
 }
 
 if($settings['hub_name'] !== ""){
