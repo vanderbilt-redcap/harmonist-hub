@@ -15,7 +15,13 @@ $home_metrics_values = array();
 foreach ($requests as $req){
     //Only open requests
     if(!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y']) && showOpenRequest($req,$instance)) {
+        if(!isset($open_requests_values[$req['request_type']])){
+            $open_requests_values[$req['request_type']] = 0;
+        }
         $open_requests_values[$req['request_type']] += 1;
+    }
+    if(!isset($home_metrics_values[$req['request_type']])){
+        $home_metrics_values[$req['request_type']] = 0;
     }
     $home_metrics_values[$req['request_type']] += 1;
 }
@@ -48,7 +54,7 @@ foreach ($request_type as $keyLabel => $requestsLabel){
 
 //remove hidden options
 $hidden_choices = $default_values->getHideChoice($pidsArray['RMANAGER']);
-if(!empty($hidden_choices) && array_key_exists($pidsArray['RMANAGER'], $hidden_choices)){
+if(!empty($hidden_choices) && array_key_exists($pidsArray['RMANAGER'], $hidden_choices) && arrayKeyExists($hidden_choices,'request_type')){
     foreach ($hidden_choices['request_type'] as $value){
         if(array_key_exists($value,$request_type) ){
             unset($request_type[$value]);
@@ -161,7 +167,7 @@ if(!empty($homepage)) {
                        <?php
                        $i=0;
                        foreach ($request_type as $value => $label){
-                           $open_req_value = ($open_requests_values[$value] == 0)?"":$open_requests_values[$value];
+                           $open_req_value = (arrayKeyExistsReturnValue($open_requests_values, [$value])) ?? "";
                            if($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'] == "" || $default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'] != "" && !in_array($value,$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])){
 
                                #GRADIENT for the Badge
@@ -400,7 +406,7 @@ if(!empty($homepage)) {
             </div>
         </div>
 
-        <?php if($settings['calendar_active'][1] == "1"){?>
+        <?php if(arrayKeyExistsReturnValue($settings,['calendar_active',1]) == "1"){?>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -443,7 +449,7 @@ if(!empty($homepage)) {
                             for($i = 1; $i<$number_of_quicklinks+1; $i++){
                                 if(!empty($homepage['links_text'.$i][$order])){
                                     $stay = "target='_blank'";
-                                    if($homepage['links_stay'.$i][$order][1] == '1'){
+                                    if(arrayKeyExistsReturnValue($homepage,['links_stay'.$i, $order, 1]) == '1'){
                                         $stay = "";
                                     }
                                     echo '<li class="list-group-item"><i class="fa fa-fw" aria-hidden="true"></i><a href="'.$module->escape($homepage['links_link'.$i][$order]).'" '.$module->escape($stay).'>'.$module->escape($homepage['links_text'.$i][$order]).'</a></li>';

@@ -7,7 +7,7 @@ $header = getRequestHeader($hubData,$settings['vote_grid'],'0');
 
 $title = "Requests";
 $link_all_requests = '';
-$RequestType = arrayKeyExistsReturnValue($_REQUEST,'type');
+$RequestType = arrayKeyExistsReturnValue($_REQUEST,['type']);
 if($RequestType != ''){
     $title = $title." for ".$request_type_label[$_REQUEST['type']];
     $link_all_requests = '<a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub'.'">View All Requests</a> | ';

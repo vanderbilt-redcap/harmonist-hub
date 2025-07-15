@@ -69,11 +69,11 @@ $request_dataCall = ProjectData::getProjectInfoArrayRepeatingInstruments($Record
 ArrayFunctions::array_sort_by_column($request_dataCall,'sop_due_d');
 $open_data_calls = "";
 $completed_data_calls = "";
-$personRegion = arrayKeyExistsReturnValue($current_user, 'person_region');
+$personRegion = arrayKeyExistsReturnValue($current_user, ['person_region']);
 if(!empty($request_dataCall)) {
     foreach ($request_dataCall as $sop) {
         if ($sop['sop_closed_y'] != "1") {
-            $sopDataResponseStatus = arrayKeyExistsReturnValue($sop, 'data_response_status',$personRegion);
+            $sopDataResponseStatus = arrayKeyExistsReturnValue($sop, ['data_response_status',$personRegion]);
             if($sopDataResponseStatus == "0" || $sopDataResponseStatus == "1" || $sopDataResponseStatus == ""){
                 $open_data_calls .= getDataCallRow($module, $pidsArray,$sop,$isAdmin,$current_user,$secret_key,$secret_iv,$settings['vote_grid'],'s');
             }else{
