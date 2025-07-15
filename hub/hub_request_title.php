@@ -116,7 +116,7 @@ if($request !="") {
     ?>
     <div class="backTo">
         <?php
-        $type = arrayKeyExistsReturnValue($_REQUEST,'type');
+        $type = arrayKeyExistsReturnValue($_REQUEST,['type']);
         if($type != "" && $type == 'r'){ ?>
             <a href="<?=$module->getUrl('index.php').'&NOAUTH&option=mrr'?>">< Back to Rejected Requests Archive</a>
         <?php }else{ ?>
