@@ -133,7 +133,7 @@ $upload_type = $module->escape($module->getChoiceLabels('upload_type', $pidsArra
                             $file_pdf = (!is_numeric($filel['file'])) ? $filel['file_title'] : getOtherFilesLink($module, $filel['file'], $filel['record_id'], $current_user['record_id'], $secret_key, $secret_iv, $filel['file_title']);
 
                             echo '<tr><td width="250x">' .$file_pdf . '</td>' .
-                                '<td width="450px"><div>' . htmlspecialchars($filel['file_description'],ENT_QUOTES) . '</div><div style="padding-top: 10px">'.$tags.'</div></td>' .
+                                '<td width="450px"><div>' . htmlspecialchars($filel['file_description'],ENT_QUOTES) . '</div><div style="padding-top: 10px">'.filter_tags($tags).'</div></td>' .
                                 '<td width="100px">' . htmlspecialchars($upload_type[$filel['upload_type']],ENT_QUOTES) . '</td>' .
                                 '<td width="150px"><a href="mailto:' . $module->escape($people['email']) . '">' . htmlspecialchars($name ,ENT_QUOTES). '</a></td>' .
                                 '<td width="150px;">' . htmlspecialchars($filel['upload_dt'],ENT_QUOTES) . '</td>';
