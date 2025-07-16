@@ -121,15 +121,9 @@ $upload_type = $module->escape($module->getChoiceLabels('upload_type', $pidsArra
                     foreach ($fileLibrary as $filel) {
                         if($filel['hidden_y'][1] != "1") {
                             $tags = '';
-                            $tagcount = 0;
                             foreach ($file_tags as $tagindex=>$label) {
                                 if($filel['file_tags___'.$tagindex] == '1') {
                                     $tags .= "<li class='docLibrary tag label label-info'>" . $label . "</li>";
-                                    $tagcount++;
-
-                                    if ($tagcount == 2) {
-                                        $tagcount = 0;
-                                    }
                                 }
                             }
 
