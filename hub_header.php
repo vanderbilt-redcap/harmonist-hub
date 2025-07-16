@@ -20,8 +20,8 @@ $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', null,
 $requests = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],array('approval_y'=>1));
 
 
-$name = $current_user['firstname'].' '.$current_user['lastname'];
-$isAdmin = $current_user['is_admin'];
+$name = arrayKeyExistsReturnValue($current_user,['firstname']).' '.arrayKeyExistsReturnValue($current_user,['lastname']);
+$isAdmin = arrayKeyExistsReturnValue($current_user,['is_admin']);
 $voteRegion = arrayKeyExistsReturnValue($person_region,['voteregion_y']);
 $currentUserRegion = arrayKeyExistsReturnValue($current_user,['person_region']);
 $pastrequestDur = arrayKeyExistsReturnValue($settings,['pastrequest_dur']);
