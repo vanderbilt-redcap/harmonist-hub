@@ -1203,6 +1203,7 @@ function changeStatus(current_region_status,status,region,notes,region_update_ts
 }
 
 function selectTag(value){
+    console.log("TAG: "+value)
     var table = $('#table_archive').DataTable();
 
     if($('#tag_'+value).hasClass('dt-button')){
@@ -1220,10 +1221,12 @@ function selectTag(value){
 
     var filter_search = "";
     var column = 1;
+    console.log(filter_column_array)
     if(filter_column_array != undefined){
         Object.keys(filter_column_array).forEach(function (filter) {
             filter_search += "(?=.*"+filter_column_array[filter]+")";
         });
+        console.log("filter_search: "+filter_search)
         table.column(column).search(filter_search,true, false).draw();
     }else{
         table.column(column).search("",true, false).draw();

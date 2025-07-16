@@ -104,15 +104,6 @@ $upload_type = $module->escape($module->getChoiceLabels('upload_type', $pidsArra
             <table class="table table_requests sortable-theme-bootstrap" data-sortable id="table_archive">
                 <?php
                 if(!empty($fileLibrary)) {?>
-                    <colgroup>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                    </colgroup>
                     <thead>
                     <tr>
                         <th class="sorted_class">Title</th>
@@ -130,27 +121,25 @@ $upload_type = $module->escape($module->getChoiceLabels('upload_type', $pidsArra
                     foreach ($fileLibrary as $filel) {
                         if($filel['hidden_y'][1] != "1") {
                             $tags = '';
-                            if ($filel['file_tags'] != "") {
-                                $tagcount = 0;
-                                $totalcount = 0;
-                                foreach ($filel['file_tags'] as $tagindex=>$value) {
-                                    if($value == '1') {
-                                        $style = "";
-                                        if ($totalcount % 2 == 0 && $tagcount == 0 && $totalcount != 0) {
-                                            $style = "style='margin-top: 10px;'";
-                                        }
+                            $tagcount = 0;
+                            $totalcount = 0;
+                            foreach ($file_tags as $tagindex=>$label) {
+                                if($filel['file_tags___'.$tagindex] == '1') {
+                                    $style = "";
+                                    if ($totalcount % 2 == 0 && $tagcount == 0 && $totalcount != 0) {
+                                        $style = "style='margin-top: 10px;'";
+                                    }
 
-                                        if ($tagcount == 0) {
-                                            $tags .= "<div " . $style . ">";
-                                        }
-                                        $tags .= "<div class='tag label label-info'>" . $file_tags[$tagindex] . "</div>";
-                                        $tagcount++;
-                                        $totalcount++;
+                                    if ($tagcount == 0) {
+                                        $tags .= "<div " . $style . ">";
+                                    }
+                                    $tags .= "<div class='tag label label-info'>" . $label . "</div>";
+                                    $tagcount++;
+                                    $totalcount++;
 
-                                        if ($tagcount == 2) {
-                                            $tags .= "</div>";
-                                            $tagcount = 0;
-                                        }
+                                    if ($tagcount == 2) {
+                                        $tags .= "</div>";
+                                        $tagcount = 0;
                                     }
                                 }
                             }
@@ -161,7 +150,7 @@ $upload_type = $module->escape($module->getChoiceLabels('upload_type', $pidsArra
                             $file_pdf = (!is_numeric($filel['file'])) ? $filel['file_title'] : getOtherFilesLink($module, $filel['file'], $filel['record_id'], $current_user['record_id'], $secret_key, $secret_iv, $filel['file_title']);
 
                             echo '<tr><td width="250x">' .$file_pdf . '</td>' .
-                                '<td width="450px"><div>' . htmlspecialchars($filel['file_description'],ENT_QUOTES) . '</div><div style="padding-top: 10px">'.$module->escape($tags).'</div></td>' .
+                                '<td width="450px"><div>' . htmlspecialchars($filel['file_description'],ENT_QUOTES) . '</div><div style="padding-top: 10px">'.$tags.'</div></td>' .
                                 '<td width="100px">' . htmlspecialchars($upload_type[$filel['upload_type']],ENT_QUOTES) . '</td>' .
                                 '<td width="150px"><a href="mailto:' . $module->escape($people['email']) . '">' . htmlspecialchars($name ,ENT_QUOTES). '</a></td>' .
                                 '<td width="150px;">' . htmlspecialchars($filel['upload_dt'],ENT_QUOTES) . '</td>';
