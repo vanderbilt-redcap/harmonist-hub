@@ -145,7 +145,7 @@ class SecurityHandler
             return null;
         }
 
-        if (self::isSessionOut() || $this->logOut) {
+        if (self::isSessionOut() || (isset($this->logOut) && $this->logOut)) {
             return null;
         }
 

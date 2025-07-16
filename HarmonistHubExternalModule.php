@@ -105,7 +105,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 $today = date("Y-m-d");
 
                 #Only save & check hub-updates once a day
-                if (strtotime($hub_updates['timestamp']) < strtotime($today)) {
+                if (strtotime($hub_updates['timestamp']) < strtotime($today) && !empty($pidsArray)) {
                     $allUpdates['data'] = HubUpdates::compareDataDictionary($this, $pidsArray);
                     $allUpdates['timestamp'] = $today;
                     $total_updates = count($allUpdates['data']);
