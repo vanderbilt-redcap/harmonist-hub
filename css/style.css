@@ -1228,6 +1228,10 @@ canvas{
 .comment {
     padding-left: 50px;
 }
+/*DOCUMENT LIBRARY*/
+.docLibrary li:nth-child( odd ) {
+    margin-top: 10px;
+}
 /*MODAL*/
 .sop_modal_table{
     margin: 0 auto;

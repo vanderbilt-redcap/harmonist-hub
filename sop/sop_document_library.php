@@ -122,23 +122,12 @@ $upload_type = $module->escape($module->getChoiceLabels('upload_type', $pidsArra
                         if($filel['hidden_y'][1] != "1") {
                             $tags = '';
                             $tagcount = 0;
-                            $totalcount = 0;
                             foreach ($file_tags as $tagindex=>$label) {
                                 if($filel['file_tags___'.$tagindex] == '1') {
-                                    $style = "";
-                                    if ($totalcount % 2 == 0 && $tagcount == 0 && $totalcount != 0) {
-                                        $style = "style='margin-top: 10px;'";
-                                    }
-
-                                    if ($tagcount == 0) {
-                                        $tags .= "<div " . $style . ">";
-                                    }
-                                    $tags .= "<div class='tag label label-info'>" . $label . "</div>";
+                                    $tags .= "<li class='docLibrary tag label label-info'>" . $label . "</li>";
                                     $tagcount++;
-                                    $totalcount++;
 
                                     if ($tagcount == 2) {
-                                        $tags .= "</div>";
                                         $tagcount = 0;
                                     }
                                 }
