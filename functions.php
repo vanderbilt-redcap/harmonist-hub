@@ -289,10 +289,11 @@ function fetchNumberOfOpenDataCalls($sopPid, $currentUserRegion): int
     );
     if (!empty($request_dataCall)) {
         foreach ($request_dataCall as $sop) {
-            if ($sop['sop_closed_y'] != "1") {
-                if ($sop['data_response_status'][$currentUserRegion] == "0" ||
-                    $sop['data_response_status'][$currentUserRegion] == "1" ||
-                    $sop['data_response_status'][$currentUserRegion] == "") {
+            if (arrayKeyExistsReturnValue($sop,['sop_closed_y']) != "1") {
+                $dataResponseStatus = arrayKeyExistsReturnValue($sop,['data_response_status', $currentUserRegion]);
+                if ($dataResponseStatus == "0" ||
+                    $dataResponseStatus == "1" ||
+                    $dataResponseStatus == "") {
                     $open_data_calls++;
                 }
             }

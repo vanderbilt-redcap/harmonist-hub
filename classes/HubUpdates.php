@@ -120,24 +120,26 @@ class HubUpdates
             preg_match_all($pattern, $sqlOld, $matchOld);
             preg_match_all($pattern, $sqlNew['sql'], $matchNew);
 
-            if(is_numeric($matchOld[1][0])){
+            if(is_numeric(arrayKeyExistsReturnValue($matchOld,[1, 0]))){
                 $originalPid = $matchOld[1][0];
             }
-            if(is_numeric($matchNew[1][0])){
+            if(is_numeric(arrayKeyExistsReturnValue($matchNew,[1, 0]))){
                 $newPid = $matchNew[1][0];
             }
 
             //Change pids in Admins SQL (NEW) to match the old and check for changes again
-            foreach ($matchOld[0] as $index => $slqPid) {
-                if (!empty($matchNew[0][$index])) {
-                    $pattern_replace = "/" . $matchNew[0][$index] . "/";
-                    if ($pattern == '/\[data-table:(.*?)\]/') {
-                        $pattern_replace = "/\[data-table:" . $matchNew[1][$index] . "\]/";
-                    }
-                    $sqlNew['sql'] = preg_replace($pattern_replace, $slqPid, $sqlNew['sql'], 1);
-                    #We ensure we are making the changes but keeping the original PID
-                    if($originalPid != $newPid && $originalPid != null && $newPid != null){
-                        $sqlNew['sql'] = str_replace($newPid, $originalPid, $sqlNew['sql']);
+            if(array_key_exists(0 , $matchOld)) {
+                foreach ($matchOld[0] as $index => $slqPid) {
+                    if (!empty($matchNew[0][$index])) {
+                        $pattern_replace = "/" . $matchNew[0][$index] . "/";
+                        if ($pattern == '/\[data-table:(.*?)\]/') {
+                            $pattern_replace = "/\[data-table:" . $matchNew[1][$index] . "\]/";
+                        }
+                        $sqlNew['sql'] = preg_replace($pattern_replace, $slqPid, $sqlNew['sql'], 1);
+                        #We ensure we are making the changes but keeping the original PID
+                        if ($originalPid != $newPid && $originalPid != null && $newPid != null) {
+                            $sqlNew['sql'] = str_replace($newPid, $originalPid, $sqlNew['sql']);
+                        }
                     }
                 }
             }
@@ -156,6 +158,7 @@ class HubUpdates
     }
     public static function changeSQLDataTable($sqlOld, $sqlNew): array
     {
+        $sql_redcap_data = "";
         if (str_contains($sqlOld, 'redcap_data')) {
             $sql_redcap_data = $sqlOld;
         } else {
@@ -170,6 +173,7 @@ class HubUpdates
         }
         $sql_redcap_data_compare = $sql_redcap_data;
 
+        $lastPos = 0;
         while (($lastPos = strpos($sql_redcap_data, 'redcap_data', $lastPos)) !== false) {
             $positions[] = $lastPos;
             $lastPos = $lastPos + strlen('redcap_data');
@@ -227,9 +231,9 @@ class HubUpdates
             $found = false;
             foreach (['/project_id=(\d+)/', '/project_id\s=\s(\d+)/', '/\[data-table:(.*?)\]/'] as $pattern){
                 preg_match_all($pattern, $sqlNew['sql'], $matchNew);
-                $slqPidNew = $matchNew[1][0];
+                $slqPidNew = arrayKeyExistsReturnValue($matchNew, [1, 0]);
                 preg_match_all($pattern, $sqlData, $matchRegistered);
-                $slqPidRegistered = $matchRegistered[1][0];
+                $slqPidRegistered = arrayKeyExistsReturnValue($matchRegistered, [1, 0]);
                 if ($slqPidNew != $slqPidRegistered && !empty($slqPidNew) && !empty($slqPidRegistered)) {
                     $found = true;
                     $sqlNew['sql'] = str_replace("[data-table:" . $slqPidNew . "]", "[data-table:" . $slqPidRegistered . "]", $sqlNew['sql']);
@@ -490,7 +494,7 @@ class HubUpdates
             $total = 0;
             foreach ($data as $key => $value) {
                 $resolved_found = false;
-                if (!empty($resolved_list) && is_array($resolved_list)) {
+                if (!empty($resolved_list) && is_array($resolved_list) && array_key_exists($constant, $resolved_list) && !is_array($resolved_list[$constant])) {
                     foreach ($resolved_list[$constant] as $key_resolved => $value_resolved) {
                         if ($value_resolved['field_name'] == $key) {
                             $resolved_found = true;
@@ -515,6 +519,7 @@ class HubUpdates
             if (!$is_empty && $option == '') {
                 if (!array_key_exists('TOTAL', $result)) {
                     $result["TOTAL"] = array();
+                    $result["TOTAL"]["total"] = 0;
                 }
                 $result["TOTAL"][$type] = $total;
                 $result["TOTAL"]["total"] += $result["TOTAL"][$type];
