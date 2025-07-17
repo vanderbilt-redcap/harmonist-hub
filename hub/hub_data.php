@@ -249,7 +249,7 @@ if($settings['deactivate_datadown___1'] != "1"){
                     foreach ($all_data_recent_activity as $recent_activity) {
                         if ($i < $number_of_recentactivity) {
                             $time = getDateForHumans($recent_activity['responsecomplete_ts']);
-                            if($recent_activity['comments'] != '') {
+                            if(arrayKeyExistsReturnValue($recent_activity, ['comments']) != '') {
                                 echo '<li class="list-group-item">';
 
                                 $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['response_person']),array('firstname','lastname'))[0];
@@ -289,7 +289,7 @@ if($settings['deactivate_datadown___1'] != "1"){
                                 }
                                 echo '</li>';
                                 $i++;
-                            }else if($recent_activity['download_id'] != ""){
+                            }else if(arrayKeyExistsReturnValue($recent_activity, ['download_id']) != ""){
                                 echo '<li class="list-group-item">';
 
                                 $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $recent_activity['downloader_id']),array('firstname','lastname'))[0];

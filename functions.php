@@ -1057,7 +1057,7 @@ function getDataCallRow($module, $pidsArray, $sop,$isAdmin,$current_user,$secret
         $status_row .= $status_icons."</td>";
     }else {
         foreach ($regions as $region) {
-            $status = $sop['data_response_status'][$region['record_id']];
+            $status =  arrayKeyExistsReturnValue($sop,['data_response_status', $region['record_id']]);
             $status_row .= "<td style='text-align: center'>";
             $status_icons = getDataCallStatusIcons($status);
             if ($region['record_id'] == $personRegion) {

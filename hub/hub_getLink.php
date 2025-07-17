@@ -21,7 +21,7 @@ if(!empty($_REQUEST['email'])) {
     if(!empty($people)) {
         $people = $people[0];
     }
-    if(strtolower($people['email']) == strtolower($email) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
+    if(!empty($people) && strtolower($people['email']) == strtolower($email) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
         $arrayLogin = array(array('record_id' => $people['record_id']));
         $module->log("HUB: " . $pidsArray['PROJECTS'] . " - Email found in database. Proceeding to send link");
         $token = getRandomIdentifier(12);
