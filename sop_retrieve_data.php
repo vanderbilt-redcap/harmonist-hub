@@ -70,24 +70,24 @@ foreach ($request_DU as $down){
         foreach ($array_downloads_by_concept as $concept_id => $concept_table) {
             foreach ($concept_table as $sop_id => $AllDataUp) {
                 $RecordSetTable = \REDCap::getData($pidsArray['HARMONIST'], 'array', array('record_id' => $concept_id));
-                $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable,$pidsArray['HARMONIST'])[0];
-                $concept_sheet = $concept['concept_id'];
-                $concept_title = $concept['concept_title'];
+                $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable,$pidsArray['HARMONIST']);
+                $concept_sheet = arrayKeyExistsReturnValue($concept,[0,'concept_id']);
+                $concept_title = arrayKeyExistsReturnValue($concept,[0,'concept_title']);
 
                 $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', array('record_id' => $sop_id));
-                $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP'])[0];
-                $array_userid = explode(',', $sop['sop_downloaders']);
+                $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP,$pidsArray['SOP']);
+                $array_userid = explode(',', arrayKeyExistsReturnValue($sop,[0,'sop_downloaders']));
 
-                $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $sop['sop_datacontact']),array('firstname','lastname','email'))[0];
-                if($person_info != ""){
-                    $contact_concept_person = $person_info['firstname'] . " " . $person_info['lastname'] . " (<a href='mailto:" . $person_info['email'] . "'>" . $person_info['email'] . "</a>)";
+                $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => arrayKeyExistsReturnValue($sop,[0,'sop_datacontact'])),array('firstname','lastname','email'));
+                if(!empty($person_info)){
+                    $contact_concept_person = arrayKeyExistsReturnValue($person_info,[0,'firstname']) . " " . arrayKeyExistsReturnValue($person_info,[0,'lastname']) . " (<a href='mailto:" . arrayKeyExistsReturnValue($person_info,[0,'email']) . "'>" . arrayKeyExistsReturnValue($person_info,[0,'email']) . "</a>)";
                 }else{
                     $contact_concept_person = "<i>None</i>";
                 }
 
                 $concept_header = $concept_sheet . ' | Data Request #' . $sop_id;
 
-                $array_dates = $module->escape(getNumberOfDaysLeftButtonHTML($sop['sop_due_d'], '', '', '1', '1'));
+                $array_dates = $module->escape(getNumberOfDaysLeftButtonHTML(arrayKeyExistsReturnValue($sop,[0,'sop_due_d']), '', '', '1', '1'));
 
                 $downloads_active = 0;
                 $body = '';

@@ -17,11 +17,14 @@ $options = array(0=>"map",1=>"sop",2=>"ss1",3=>"cpt",4=>"ttl",5=>"pup",6=>"cup",
 
 if(!empty($_REQUEST['email'])) {
     $module->log("HUB: " . $pidsArray['PROJECTS'] . " - link requested for ".$email);
-    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','harmonist_regperm','active_y','email','first_ever_login_d'),null,null,false,false,false,"lower([email]) ='".strtolower($email)."'")[0];
-    if(strtolower($people['email']) == strtolower($email) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
+    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','harmonist_regperm','active_y','email','first_ever_login_d'),null,null,false,false,false,"lower([email]) ='".strtolower($email)."'");
+    if(!empty($people)) {
+        $people = $people[0];
+    }
+    if(!empty($people) && strtolower($people['email']) == strtolower($email) && $people['harmonist_regperm'] !='0' && $people['harmonist_regperm'] != NULL && $people['active_y'] == '1'){
         $arrayLogin = array(array('record_id' => $people['record_id']));
         $module->log("HUB: " . $pidsArray['PROJECTS'] . " - Email found in database. Proceeding to send link");
-        $token = \Vanderbilt\HarmonistHubExternalModule\getRandomIdentifier(12);
+        $token = getRandomIdentifier(12);
         $send_option = "";
         if(!empty($current_option)){
             foreach ($options as $option){
