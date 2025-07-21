@@ -68,9 +68,10 @@ class ProjectData
                         foreach ($datarepeat as $field => $datai) {
                             #check if non repeatable value is empty and add repeatable value
                             #empty value or checkboxes
-                            if ($array[$index][$field] == "" || (is_array(
-                                        $array[$index][$field]
-                                    ) && empty($array[$index][$field]))) {
+                            $arrayField = arrayKeyExistsReturnValue($array, [$index, $field]);
+                            if ($arrayField == "" || (is_array(
+                                        $arrayField
+                                    ) && empty($arrayField))) {
                                 $array[$index][$field] = $datarepeat[$field];
                             } else {
                                 if (is_array($datai) && $option == "json") {
