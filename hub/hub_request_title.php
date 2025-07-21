@@ -187,10 +187,11 @@ if($request !="") {
                                     ArrayFunctions::array_sort_by_column($regions, 'region_code');
 
                                     $region_row = '';
+                                    $class = "";
                                     foreach ($regions as $region){
                                         if ($region['voteregion_y'] != 0) {
-                                            $region_id = $region['record_id'];
-                                            $region_time = $request['region_close_ts'][$region_id];
+                                            $region_id = arrayKeyExistsReturnValue($region,['record_id']);
+                                            $region_time = arrayKeyExistsReturnValue($request,['region_close_ts', $region_id]);
                                             if (!empty($region_time)) {
                                                 $region_time = date('Y-m-d H:i', strtotime($region_time));
                                                 $class = "";
@@ -201,10 +202,12 @@ if($request !="") {
                                             $menu = '<li><span><em>No vote recorded</em></li></span><input type="hidden" value="" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_none" >';
                                             $selected = '<span><em>No vote recorded</em></span><input type="hidden" value="" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $region_id . '_none">';
                                             foreach ($region_vote_status as $index => $vote_text) {
-                                                $menu .= '<li><span class="fa ' . $module->escape($region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index]) . '" aria-hidden="true"></span><span class="' . $module->escape($region_vote_icon_text[$index]) . '"> ' . $module->escape($vote_text) . '</span>';
+                                                $regionIcon = arrayKeyExistsReturnValue($region_vote_icon_view, [$index]);
+                                                $regionIconText = arrayKeyExistsReturnValue($region_vote_icon_text, [$index]);
+                                                $menu .= '<li><span class="fa ' . $module->escape($regionIcon . ' ' . $regionIconText) . '" aria-hidden="true"></span><span class="' . $module->escape($regionIconText) . '"> ' . $module->escape($vote_text) . '</span>';
                                                 $menu .= '<input type="hidden" value="' . $module->escape($index) . '" class="dropdown_votes" request="' . $request['request_id'] . '" id="' . $module->escape($region_id . '_' . $index) . '"></li>';
-                                                if ($request['region_vote_status'][$region_id] == $index && $request['region_vote_status'][$region_id] != '') {
-                                                    $selected = '<span class="fa ' . $module->escape($region_vote_icon_view[$index] . ' ' . $region_vote_icon_text[$index]) . '" aria-hidden="true"></span><span class="' . $module->escape($region_vote_icon_text[$index]) . '"> ' . $module->escape($vote_text) . '</span>';
+                                                if (arrayKeyExistsReturnValue($request, ['region_vote_status',$region_id]) == $index && arrayKeyExistsReturnValue($request, ['region_vote_status',$region_id]) != '') {
+                                                    $selected = '<span class="fa ' . $module->escape($regionIcon . ' ' . $regionIconText) . '" aria-hidden="true"></span><span class="' . $module->escape($regionIconText) . '"> ' . $module->escape($vote_text) . '</span>';
                                                     $selected .= '<input type="hidden" value="' . $module->escape($index) . '" class="dropdown_votes" request="' . $module->escape($request['request_id']) . '" id="' . $module->escape($region_id . '_' . $index) . '"">';
                                                 }
                                             }

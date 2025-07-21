@@ -1,6 +1,6 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-$wg_type = $_REQUEST['type'];
+$wg_type = arrayKeyExistsReturnValue($_REQUEST,['type']);
 $concepts_table = "";
 $concepts = $module->getConceptModel()->fetchAllConcepts();
 if (!empty($concepts)) {

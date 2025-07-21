@@ -456,7 +456,7 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                         echo '<td>'.$available.'</td>';
 
                         $file ='';
-                        if($concept->getOutputFile()[$index] != ""){
+                        if(arrayKeyExistsReturnValue($concept->getOutputFile(),[$index]) != ""){
                             $file = getFileLink($module, $pidsArray['PROJECTS'], $concept->getOutputFile()[$index],'1','',$secret_key,$secret_iv,$current_user['record_id'],"");
                         }
                         echo '<td>'.$file.'</td>';

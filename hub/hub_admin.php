@@ -555,7 +555,8 @@ namespace Vanderbilt\HarmonistHubExternalModule;
                     <?php
                     $projectsY = \REDCap::getData($pidsArray['PROJECTS'], 'json-array', null,null,null,null,false,false,false, "[project_show_y] = '1'");
                     foreach ($projectsY as $project){
-                        $iedea_constant = $pidsArray[$project['project_constant']];
+                        $constant = arrayKeyExistsReturnValue($project,['project_constant']);
+                        $iedea_constant = arrayKeyExistsReturnValue($pidsArray,[$constant]);
                         $title = $module->framework->getProject($iedea_constant)->getTitle();
                         $project_plugin = $iedea_constant;
                         echo '<tr>'.
