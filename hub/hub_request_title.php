@@ -316,10 +316,11 @@ if($request !="") {
             <div class="row request">
                 <div class="col-md-8 col-sm-12"><strong>Working Group:</strong> <?=$wg_name;?></div>
                 <?php if(($settings['vote_visibility'] == '1' || $settings['vote_visibility'] == '') || ($settings['vote_visibility'] == '2' && $current_user['harmonist_regperm'] == '3')){
-                    $region_id = $current_user['person_region'];
-                    $vote = empty($region_vote_status[$request['region_vote_status'][$region_id]])?"<em>No vote recorded</em>":$region_vote_status[$request['region_vote_status'][$region_id]];
+                    $region_id = arrayKeyExistsReturnValue($current_user,['person_region']);
+                    $requesRegionVoteStatusByRegionId = arrayKeyExistsReturnValue($request,['region_vote_status',$region_id]);
+                    $vote = empty(arrayKeyExistsReturnValue($region_vote_status,[$requesRegionVoteStatusByRegionId]))?"<em>No vote recorded</em>":arrayKeyExistsReturnValue($region_vote_status,[$requesRegionVoteStatusByRegionId]);
                 ?>
-                <div class="col-md-4 hidden-sm hidden-xs"><strong>Vote: </strong><span class="<?=$region_vote_icon_text[$request['region_vote_status'][$region_id]]?>"><?=$vote?> <i class="<?=$region_vote_icon_view[$request['region_vote_status'][$region_id]]?>" aria-hidden="true"></i></span></div>
+                <div class="col-md-4 hidden-sm hidden-xs"><strong>Vote: </strong><span class="<?=arrayKeyExistsReturnValue($region_vote_icon_text,[$requesRegionVoteStatusByRegionId])?>"><?=$vote?> <i class="<?=arrayKeyExistsReturnValue($region_vote_icon_view,[$requesRegionVoteStatusByRegionId])?>" aria-hidden="true"></i></span></div>
            <?php } ?>
             </div>
             <?php if(!empty($conference_info)){ ?>
@@ -333,11 +334,11 @@ if($request !="") {
                 <div class="col-md-8"><strong>Due: </strong><?=$array_dates['text']?> <?=$array_dates['button']?></div>
             </div>
             <div class="row request hidden-md hidden-lg">
-                <div class="col-md-8"><strong>Review: </strong><span class="<?=$region_review_icon_text[$request['region_response_status'][$current_user['person_region']]]?>"><?=$region_response_status[$request['region_response_status'][$current_user['person_region']]]?> <i class="<?=$region_review_icon[$request['region_response_status'][$current_user['person_region']]]?>" aria-hidden="true"></i></span></div>
+                <div class="col-md-8"><strong>Review: </strong><span class="<?=$region_review_icon_text[$request['region_response_status'][$current_user['person_region']]]?>"><?=$region_response_status[arrayKeyExistsReturnValue($request,['region_vote_status', $current_user['person_region']])]?> <i class="<?=$region_review_icon[arrayKeyExistsReturnValue($request,['region_vote_status', $current_user['person_region']])]?>" aria-hidden="true"></i></span></div>
             </div>
             <?php if(($settings['vote_visibility'] == '1' || $settings['vote_visibility'] == '') || ($settings['vote_visibility'] == '2' && $current_user['harmonist_regperm'] == '3')){?>
             <div class="row request hidden-md hidden-lg">
-                <div class="col-md-8"><strong>Vote: </strong><span class="<?=$region_vote_icon_text[$request['region_vote_status'][$region_id]]?>"><?=$vote?> <i class="<?=$region_vote_icon_view[$request['region_vote_status'][$region_id]]?>" aria-hidden="true"></i></span></div>
+                <div class="col-md-8"><strong>Vote: </strong><span class="<?=$region_vote_icon_text[arrayKeyExistsReturnValue($request,['region_vote_status', $region_id])]?>"><?=$vote?> <i class="<?=$region_vote_icon_view[arrayKeyExistsReturnValue($request,['region_vote_status', $region_id])]?>" aria-hidden="true"></i></span></div>
             </div>
             <?php } ?>
 
