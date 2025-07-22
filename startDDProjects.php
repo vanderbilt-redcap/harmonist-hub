@@ -33,6 +33,7 @@ $projects_array_surveys_hash = REDCapManagement::getProjectsSurveyHashArray();
 
 $pidHome = "";
 $record = 1;
+$desProjectId = "";
 foreach ($projects_array as $index=>$name){
     $project_title = $hub_projectname." Hub: ".$projects_titles_array[$index];
     $project_id_new = $module->createProjectAndImportDataDictionary($name,$project_title);
@@ -74,7 +75,22 @@ foreach ($projects_array as $index=>$name){
         ProjectData::installDefault($module,$project_id_new,$rowtype['event_id'],1);
     }else if($name == "HOME"){
         $pidHome = $project_id_new;
+    }else{
+        #Update DES Information
+        if ($name == "JSONCOPY" || $name == "FILELIBRARY"){
+            if($name == "JSONCOPY"){
+                $desRecord = 5;
+            }else{
+                $desRecord = 6;
+            }
+            $Proj = new \Project($desProjectId);
+            $event_id = $Proj->firstEventId;
+            $updateRecord = array();
+            $updateRecord[$desRecord][$event_id]['project_id'] = $project_id_new;
+            $results = \REDCap::saveData($desProjectId, 'array', $updateRecord,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
+        }
     }
+
     #Add Repeatable projects
     REDCapManagement::addRepeatableInstrument($module, $projects_array_repeatable[$index], $project_id_new);
 
@@ -125,6 +141,12 @@ foreach ($projects_array as $index=>$name){
                 $record++;
             }
         }
+    }
+
+    #Install DES
+    if($name == "DATAMODELMETADATA"){
+        $desProjectId = REDCapManagement::installDataModelBrowserEM($module, $project_id, $record);
+        $record++;
     }
 }
 
@@ -212,8 +234,6 @@ foreach ($projects_array_sql as $projectid=>$projects){
 
 #We must clear the project cache so our hub-updates are pulled from the DB.
 $module->clearProjectCache();
-
-REDCapManagement::installDataModelBrowserEM($module, $pidsArray, $record);
 
 echo json_encode(array(
         'status' =>'success'
