@@ -337,11 +337,11 @@ if($request !="") {
                 <div class="col-md-8"><strong>Due: </strong><?=$array_dates['text']?> <?=$array_dates['button']?></div>
             </div>
             <div class="row request hidden-md hidden-lg">
-                <div class="col-md-8"><strong>Review: </strong><span class="<?=$region_review_icon_text[$request['region_response_status'][$current_user['person_region']]]?>"><?=$region_response_status[arrayKeyExistsReturnValue($request,['region_vote_status', $current_user['person_region']])]?> <i class="<?=$region_review_icon[arrayKeyExistsReturnValue($request,['region_vote_status', $current_user['person_region']])]?>" aria-hidden="true"></i></span></div>
+                <div class="col-md-8"><strong>Review: </strong><span class="<?=arrayKeyExistsReturnValue($region_review_icon_text,[arrayKeyExistsReturnValue($request,['region_response_status', $current_user['person_region']])])?>"><?=arrayKeyExistsReturnValue($region_response_status,[arrayKeyExistsReturnValue($request,['region_vote_status', $current_user['person_region']])])?> <i class="<?=arrayKeyExistsReturnValue($region_review_icon,[arrayKeyExistsReturnValue($request,['region_vote_status', $current_user['person_region']])])?>" aria-hidden="true"></i></span></div>
             </div>
             <?php if(($settings['vote_visibility'] == '1' || $settings['vote_visibility'] == '') || ($settings['vote_visibility'] == '2' && $current_user['harmonist_regperm'] == '3')){?>
             <div class="row request hidden-md hidden-lg">
-                <div class="col-md-8"><strong>Vote: </strong><span class="<?=$region_vote_icon_text[arrayKeyExistsReturnValue($request,['region_vote_status', $region_id])]?>"><?=$vote?> <i class="<?=$region_vote_icon_view[arrayKeyExistsReturnValue($request,['region_vote_status', $region_id])]?>" aria-hidden="true"></i></span></div>
+                <div class="col-md-8"><strong>Vote: </strong><span class="<?=arrayKeyExistsReturnValue($region_vote_icon_text,[arrayKeyExistsReturnValue($request,['region_vote_status', $region_id])])?>"><?=$vote?> <i class="<?=arrayKeyExistsReturnValue($region_vote_icon_view,[arrayKeyExistsReturnValue($request,['region_vote_status', $region_id])])?>" aria-hidden="true"></i></span></div>
             </div>
             <?php } ?>
 
@@ -421,6 +421,7 @@ if($request !="") {
                             krsort($comments);
 
                         $most_recent_file = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'json-array', array('request_id' => $request['request_id']),null,null,null,false,false,false,"[responsecomplete_ts] <> '' and [revised_file] <> ''");
+                        $max = "";
                         if(is_array($most_recent_file) && !empty($most_recent_file)) {
                             foreach ($most_recent_file as $k => $v) {
                                 if (array_key_exists('responsecomplete_ts',$v) && $v['responsecomplete_ts'] > $max) {
