@@ -645,7 +645,7 @@ function getRequestHTML($module, $hubData, $pidsArray, $req, $commentReq, $reque
     if ($req['revision_counter_total'] != '') {
         $comment_time ="";
         foreach ($commentReq as $comment) {
-            if($comment['revision_counter'] == $req['revision_counter_total'] && !empty($comment['responsecomplete_ts'])){
+            if(arrayKeyExistsReturnValue($comment,['revision_counter']) == arrayKeyExistsReturnValue($req,['revision_counter_total']) && !empty($comment['responsecomplete_ts'])){
                 $dateComment = new \DateTime($comment['responsecomplete_ts']);
                 $dateComment->modify("+1 hours");
                 $comment_time = ": ".$dateComment->format("Y-m-d H:i");

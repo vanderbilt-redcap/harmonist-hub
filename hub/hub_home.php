@@ -168,10 +168,11 @@ if(!empty($homepage)) {
                        $i=0;
                        foreach ($request_type as $value => $label){
                            $open_req_value = (arrayKeyExistsReturnValue($open_requests_values, [$value])) ?? "";
-                           if($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'] == "" || $default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'] != "" && !in_array($value,$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])){
+                           $hideChoicedRManagerRequestType = arrayKeyExistsReturnValue($default_values->getHideChoice($pidsArray['RMANAGER']),[$pidsArray['RMANAGER'],'request_type']);
+                           if($hideChoicedRManagerRequestType == "" || $hideChoicedRManagerRequestType != "" && !in_array($value,$hideChoicedRManagerRequestType)){
 
                                #GRADIENT for the Badge
-                               $total_colors = count($requests_values) - count(empty($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']) ? $request_type:$default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']);
+                               $total_colors = count($requests_values) - count(empty($hideChoicedRManagerRequestType) ? $request_type:$hideChoicedRManagerRequestType);
                                $color = getGradientColor("777777","003D99",$total_colors,$i);
                                echo '<li class="list-group-item">
                                         <a href="'.$module->getUrl("index.php")."&NOAUTH&pid=".$pidsArray['PROJECTS']."&option=hub&type=".$value.'" title="'.$label.'" class="home_openrequests_link">

@@ -94,9 +94,10 @@ if($_REQUEST['type'] != ""){
                 <select class="form-control" name="selectReqType" id="selectReqType">
                     <option value="">Select All</option>
                     <?php
-                    if(!empty($request_type_label) && is_array($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])  || empty($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])){
+                    $hideChoicedRManagerRequestType = arrayKeyExistsReturnValue($default_values->getHideChoice($pidsArray['RMANAGER']),[$pidsArray['RMANAGER'],'request_type']);
+                    if(!empty($request_type_label) && is_array($hideChoicedRManagerRequestType)  || empty($hideChoicedRManagerRequestType)){
                         foreach ($request_type_label as $value => $label) {
-                            if ((is_array($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type']) && !in_array($value, $default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])) || empty($default_values->getHideChoice($pidsArray['RMANAGER'])[$pidsArray['RMANAGER']]['request_type'])) {
+                            if ((is_array($hideChoicedRManagerRequestType) && !in_array($value, $hideChoicedRManagerRequestType)) || empty($hideChoicedRManagerRequestType)) {
                                 echo "<option value='" . $label . "'>" . $label . "</option>";
                             }
                         }
