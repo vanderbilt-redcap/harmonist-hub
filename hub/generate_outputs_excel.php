@@ -27,14 +27,14 @@ if(!empty($concepts)) {
         if(is_array($output_year) && !empty($output_year)) {
             foreach ($output_year as $index => $value) {
                 $excel_data_aux = array();
-                $excel_data_aux[0] = $abstracts_publications_type[$concept['output_type'][$index]];
-                $excel_data_aux[1] = $concept['output_title'][$index];
-                $excel_data_aux[2] = $concept['output_authors'][$index];
-                $excel_data_aux[3] = $concept['output_venue'][$index];
-                $excel_data_aux[4] = $concept['output_year'][$index];
-                $excel_data_aux[5] = $concept['output_citation'][$index];
-                $excel_data_aux[6] = $concept['output_pmcid'][$index];
-                $excel_data_aux[7] = $concept['output_url'][$index];
+                $excel_data_aux[0] = arrayKeyExistsReturnValue($abstracts_publications_type,[arrayKeyExistsReturnValue($concept,['output_type',$index])]);
+                $excel_data_aux[1] = arrayKeyExistsReturnValue($concept,['output_title',$index]);
+                $excel_data_aux[2] = arrayKeyExistsReturnValue($concept,['output_authors',$index]);
+                $excel_data_aux[3] = arrayKeyExistsReturnValue($concept,['output_venue',$index]);
+                $excel_data_aux[4] = arrayKeyExistsReturnValue($concept,['output_year',$index]);
+                $excel_data_aux[5] = arrayKeyExistsReturnValue($concept,['output_citation',$index]);
+                $excel_data_aux[6] = arrayKeyExistsReturnValue($concept,['output_pmcid',$index]);
+                $excel_data_aux[7] = arrayKeyExistsReturnValue($concept,['output_url',$index]);
                 $excel_data_aux[8] = "MR";
                 $excel_data_aux[9] = "H:1";
                 array_push($excel_data, $excel_data_aux);
