@@ -8,10 +8,10 @@ class REDCapManagement {
 
     public static function getProjectsConstantsArray(){
         $projects_array = array(28=>'SETTINGS', 0=>'DATAMODEL',1=>'CODELIST',29=>'DATAMODELMETADATA',14=>'JSONCOPY',2=>'HARMONIST',3=>'RMANAGER',4=>'COMMENTSVOTES',5=>'SOP',6=>'SOPCOMMENTS',
-            7=>'REGIONS',8=>'PEOPLE',9=>'GROUP', 10=>'FAQ',11=>'HOME',12=>'DATAUPLOAD',13=>'DATADOWNLOAD',
+            7=>'REGIONS',8=>'PEOPLE',9=>'GROUP', 10=>'FAQ',11=>'HOME',12=>'DATAUPLOAD',13=>'DATADOWNLOAD',41=>'DATADOWNLOADUSERS',
             15=>'METRICS',16=>'DATAAVAILABILITY',17=>'PROJECTSSTUDIES',18=>'DATATOOLMETRICS',19=>'DATATOOLUPLOADSECURITY',
             20=>'FAQDATASUBMISSION',21=>'CHANGELOG',22=>'FILELIBRARY',23=>'FILELIBRARYDOWN',24=>'NEWITEMS',25=>'ABOUT',26=>'EXTRAOUTPUTS',
-            27=>'TBLCENTERREVISED', 41=>'DATADOWNLOADUSERS');
+            27=>'TBLCENTERREVISED');
 
         return $projects_array;
     }
@@ -23,7 +23,7 @@ class REDCapManagement {
             14=>'Data Model JSON (0F)',15=>'Metrics (12)',16=>'Data Availability (13)',17=>'Projects and Studies (14)',
             18=>'Toolkit Usage Metrics (15)',19=>'External Tool Security (16)',20=>'Toolkit FAQ (17)', 21=>'Changelog (18)',
             22=>'File Library (19)',23=>'File Library Log (20)',24=>'News Items (21)',25=>'About (22)',26=>'Extra Outputs (23)',
-            27=>'Consortium Site List (24)',28=>'Settings (99)',29=>'Toolkit Metadata (0C)' ,41=>'Data Download Users');
+            27=>'Consortium Site List (24)',28=>'Settings (99)',29=>'Toolkit Metadata (0C)' ,41=>'Data Download Users (11)');
 
         return $projects_array_title;
     }
