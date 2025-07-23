@@ -47,9 +47,10 @@ if(isset( $_REQUEST['message'] )) {
 <?php if (!empty($module->getDataDownloadsUsersHandler()->getErrorUserList())){ ?>
     <div class="container" style="margin-top: 10px">
         <div class="alert alert-warning col-md-12">
-            <div style="float: left;">There are users that need to be reviewed due to permission issues.</div>
+            <div style="float: left;">Other users have conflicting permission issues. <br>
+                Please <strong>review the list of conflicts</strong> in order to enable their Data Download permissions.</div>
             <form method="POST" action="<?=$module->getUrl('hub-user-management/error_user_list.php') . '&redcap_csrf_token=' . $module->getCSRFToken()?>" class="" id="resolved_list">
-                <div class="float-right"><button type="submit" name="option" value="update" class="btn btn-warning" style="display: block;margin-right: 10px;">Manage Users</button></div>
+                <div class="float-right"><button type="submit" name="option" value="update" class="btn btn-warning" style="display: block;margin-right: 10px;">Resolve Permission Conflicts</button></div>
             </form>
         </div>
     </div>
