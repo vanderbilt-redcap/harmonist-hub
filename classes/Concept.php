@@ -733,11 +733,11 @@ class Concept extends Model
                 $params = [
                     'project_id' => $this->getPidsArray()['PEOPLE'],
                     'return_format' => 'array',
-                    'records' => [$this->personLink[$id]]
+                    'records' => [arrayKeyExistsReturnValue($this->personLink,[$id])]
                 ];
                 $RecordSetParticipant = $this->module->escape(REDCap::getData($params));
                 $participantInfo = $this->module->escape(
-                    $this->getProjectInfoArrayRepeatingInstruments($RecordSetParticipant, $this->pidsArray['PEOPLE'])[0]
+                    arrayKeyExistsReturnValue($this->getProjectInfoArrayRepeatingInstruments($RecordSetParticipant, $this->pidsArray['PEOPLE']),[0])
                 );
                 if (!empty($participantInfo)) {
                     #get the label from the drop down menu

@@ -1291,6 +1291,7 @@ function getDataCallStatusIcons($status){
 }
 
 function getTBLCenterUpdatePercentRegions($TBLCenter,$regions,$pastlastreview_dur){
+    $region_array = [];
     if(!is_array($regions)){
         $total_centers = 0;
         $total_centers_updated = 0;
@@ -1307,7 +1308,6 @@ function getTBLCenterUpdatePercentRegions($TBLCenter,$regions,$pastlastreview_du
             $region_array = number_format((float)($total_centers_updated / $total_centers * 100), 0, '.', '');
         }
     }else{
-        $region_array = array();
         foreach ($regions as $region){
             $total_centers = 0;
             $total_centers_updated = 0;

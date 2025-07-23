@@ -199,8 +199,8 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                         foreach ($concept->getAdminupdateD() as $index=>$value){
                             echo '<tr>';
                             echo  '<td style="width: 10%;">' . htmlspecialchars($value,ENT_QUOTES). '</td>';
-                            echo  '<td>' . filter_tags($concept->getAdminUpdate()[$index]). '</td>';
-                            echo  '<td style="width: 25%;">'.htmlspecialchars($admin_status[$concept->getAdminStatus()[$index]],ENT_QUOTES).'</td>';
+                            echo  '<td>' . filter_tags(arrayKeyExistsReturnValue($concept->getAdminUpdate(),[$index])). '</td>';
+                            echo  '<td style="width: 25%;">'.htmlspecialchars(arrayKeyExistsReturnValue($admin_status,[arrayKeyExistsReturnValue($concept->getAdminStatus(),[$index])]),ENT_QUOTES).'</td>';
                             echo '</tr>';
                         }
                     }else if($concept->getAdminupdateD() == "" && $concept->getUpdateD() != ""){
@@ -208,8 +208,8 @@ if ((!empty($concept) && $concept->getAdminupdateD() != "" && count($concept->ge
                         foreach ($concept->getUpdateD() as $index=>$value){
                             echo '<tr>';
                             echo  '<td style="width: 10%;">' . htmlspecialchars($value,ENT_QUOTES). '</td>';
-                            echo  '<td>' . filter_tags($concept->getProjectUpdate()[$index]). '</td>';
-                            echo  '<td style="width: 25%;">'.htmlspecialchars($project_status[$concept->getProjectStatus()[$index]],ENT_QUOTES).'</td>';
+                            echo  '<td>' . filter_tags(arrayKeyExistsReturnValue($concept->getProjectUpdate(),[$index])). '</td>';
+                            echo  '<td style="width: 25%;">'.htmlspecialchars(arrayKeyExistsReturnValue($project_status,[arrayKeyExistsReturnValue($concept->getProjectStatus(),[$index])]),ENT_QUOTES).'</td>';
                             echo '</tr>';
                         }
                     }

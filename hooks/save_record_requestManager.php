@@ -23,8 +23,9 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
     $arrayRM = array(array('request_id' => $record,'requestopen_ts' => $completion_time));
 
-    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','firstname','lastname','active_y'),null,null,false,false,false,"lower([email]) = '".strtolower($request['contact_email'])."'")[0];
-    if(!empty($people)){
+    $peopleData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','firstname','lastname','active_y'),null,null,false,false,false,"lower([email]) = '".strtolower($request['contact_email'])."'");
+    if(!empty($peopleData) && !empty(arrayKeyExistsReturnValue($peopleData,[0]))){
+        $people = $peopleData[0];
         $arrayRM[0]['contactperson_id'] = $people['record_id'];
         $arrayRM[0]['request_contact_display'] = $people['firstname']." ".$people['lastname'];
 
@@ -44,21 +45,24 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
     $regions = \REDCap::getData($pidsArray['REGIONS'], 'json-array');
     foreach ($regions as $region){
         $instance = $region['record_id'];
+        $dashboardVotingStatus = arrayKeyExistsReturnValue($requestData,[$record,'repeat_instances',$event_id,'dashboard_voting_status']);
+        $dashboardVotingStatusInstance = arrayKeyExistsReturnValue($dashboardVotingStatus,[$instance]);
+        $dashboardVotingStatusRespondingRegion = arrayKeyExistsReturnValue($dashboardVotingStatusInstance,['responding_region']);
         //only if it's the first time we save the info
         if($region['voteregion_y'] == '1' &&
             (
-                is_array($requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'])
+                is_array($dashboardVotingStatus)
                 &&
-                !array_key_exists($instance, $requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'])
+                $dashboardVotingStatusInstance ==  null
             )
             ||
             (
-                is_array($requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance])
+                is_array($dashboardVotingStatusInstance)
                 &&
-                !array_key_exists('responding_region', $requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance])
+                $dashboardVotingStatusRespondingRegion ==  null
             )
             ||
-            empty($requestData[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance]['responding_region']))
+            empty($dashboardVotingStatusRespondingRegion))
         {
             $array_repeat_instances = array();
             $aux = array();
