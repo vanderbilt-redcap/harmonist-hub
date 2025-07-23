@@ -92,7 +92,7 @@ if($hub_projectname != '' && $hub_profile != ''){
                         include('map/index.php');
                     }else if( !array_key_exists(SecurityHandler::SESSION_TOKEN_STRING, $_REQUEST) && !array_key_exists('request', $_REQUEST) && empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])){
                         include('hub/hub_login.php');
-                    }else if($current_user['active_y'] == "0"){
+                    }else if(arrayKeyExistsReturnValue($current_user,['active_y']) == "0"){
                         include('hub/hub_login.php');
                     }else if(!empty($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()]) && $module->getSecurityHandler()->isTokenCorrect($_SESSION[SecurityHandler::SESSION_TOKEN_STRING][$module->getSecurityHandler()->getTokenSessionName()])){
                         if( !array_key_exists(SecurityHandler::SESSION_OPTION_STRING, $_REQUEST)){
