@@ -98,7 +98,7 @@ foreach ($request_DU as $down){
                         $data_printed = true;
                         $assoc_concept = getReqAssocConceptLink($module, $pidsArray, $data_up['data_assoc_concept']);
 
-                        $assocRequestData = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', array('request_id' => $data_up['data_assoc_request']),array('request_title'));
+                        $assocRequestData = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', ['request_id' => $data_up['data_assoc_request']],['request_title']);
                         $assoc_request = arrayKeyExistsReturnValue($assocRequestData,[0,'request_title']);
 
                         $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $data_up['data_upload_person']),array('firstname','lastname','email'))[0];
