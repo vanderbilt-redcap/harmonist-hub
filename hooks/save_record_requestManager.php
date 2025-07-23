@@ -23,7 +23,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 
     $arrayRM = array(array('request_id' => $record,'requestopen_ts' => $completion_time));
 
-    $peopleData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,array('record_id','firstname','lastname','active_y'),null,null,false,false,false,"lower([email]) = '".strtolower($request['contact_email'])."'");
+    $peopleData = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', null,['record_id','firstname','lastname','active_y'],null,null,false,false,false,"lower([email]) = '".strtolower($request['contact_email'])."'");
     if(!empty($peopleData) && !empty(arrayKeyExistsReturnValue($peopleData,[0]))){
         $people = $peopleData[0];
         $arrayRM[0]['contactperson_id'] = $people['record_id'];
