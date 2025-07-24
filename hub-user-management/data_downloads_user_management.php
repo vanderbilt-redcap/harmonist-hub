@@ -47,9 +47,10 @@ if(isset( $_REQUEST['message'] )) {
 <?php if (!empty($module->getDataDownloadsUsersHandler()->getErrorUserList())){ ?>
     <div class="container" style="margin-top: 10px">
         <div class="alert alert-warning col-md-12">
-            <div style="float: left;">There are users that need to be reviewed due to permission issues.</div>
+            <div style="float: left;">Other users have conflicting permission issues. <br>
+                Please <strong>review the list of conflicts</strong> in order to enable their Data Download permissions.</div>
             <form method="POST" action="<?=$module->getUrl('hub-user-management/error_user_list.php') . '&redcap_csrf_token=' . $module->getCSRFToken()?>" class="" id="resolved_list">
-                <div class="float-right"><button type="submit" name="option" value="update" class="btn btn-warning" style="display: block;margin-right: 10px;">Manage Users</button></div>
+                <div class="float-right"><button type="submit" name="option" value="update" class="btn btn-warning" style="display: block;margin-right: 10px;">Resolve Permission Conflicts</button></div>
             </form>
         </div>
     </div>
@@ -62,7 +63,7 @@ $show = false;
 include_once ("data_downloads_user_management_buttons.php");
 ?>
 <div class="container-fluid p-y-1"  style="margin-top:40px">
-    <table id="selectUserListDataTable" class="table table-striped table-hover" style="border: 1px solid #dee2e6;" data-sortable>
+    <table id="selectUserListDataTable" class="main table table-striped table-hover" style="border: 1px solid #dee2e6;" data-sortable>
         <thead>
             <tr>
                 <th></th>
@@ -77,8 +78,10 @@ include_once ("data_downloads_user_management_buttons.php");
         foreach ($data as $index => $user) {
             $count++;
             $admin = "";
+            $adminText = "";
             if($user->getHarmonistadminY() == "1"){
                 $admin = "<span class='label label-approved'>Admin</span>";
+                $adminText = "Admin";
             }
             $personDataEntryLink = $module->getDataDownloadsUsersHandler()->getDatEntryLink($user->getRecordId(),$_GET['pid']);
             $name = $user->getFirstname()." ".$user->getLastname();

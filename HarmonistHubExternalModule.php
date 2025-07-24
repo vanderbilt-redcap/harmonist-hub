@@ -58,7 +58,7 @@ class HarmonistHubExternalModule extends AbstractExternalModule
         } elseif($link['name'] == "Data Downloads User Management" && $hub_mapper != "") {
             #Link only displays on People's Project
             $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
-            if ($project_id != $pidsArray['PEOPLE']) {
+            if ($project_id != $pidsArray['PEOPLE'] && $project_id != $hub_mapper) {
                 return false;
             }
 
@@ -79,6 +79,9 @@ class HarmonistHubExternalModule extends AbstractExternalModule
                 return false;
             }
 
+            if($project_id == $hub_mapper){
+                $link['url'] = $this->getUrl("hub-user-management/redirectToPeopleDataDownloadsUserManagement.php");
+            }
         } else {
             #User has no permissions to see Last Updates, do not show link
             if (!$this->getUser()->hasDesignRights($project_id)) {

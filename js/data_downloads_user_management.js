@@ -15,8 +15,12 @@ $(document).ready(function () {
         if( $('#admin_only').is(":checked")){
             $searchTerm = "Admin";
         }
-        var table = $('#selectUserListDataTable').DataTable();
-        table.columns().search($searchTerm).draw();
+        let table = $('#selectUserListDataTable').DataTable();
+        let column = 0;
+        if($('#selectUserListDataTable').hasClass('main')){
+            column = 1;
+        }
+        table.columns(column).search($searchTerm).draw();
     } );
 
     $('#selectUserListDataTable_filter').insertAfter($('#admin_wrapper'));
