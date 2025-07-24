@@ -262,8 +262,12 @@ array_push($projects_titles_array,$hub_name.": Parent Project (MAP)");
         <div class="alert alert-success col-md-12" id="success_message"><?=$message?></div>
     </div>
 <?php } ?>
+<div style="padding-left:15px">
+    <h2>Hub REDCap User Management</h2>
+</div>
 <div style="padding-top:15px;padding-left:15px">
-    The data displayed shows the different <?=$hub_name?> projects and their assigned REDCap users.<br>
+    The list below shows each REDCap project that is part of the <?=$hub_name?> Hub and which REDCap users have access/edit permissions.<br>
+    You can make batch edits by <strong>selecting the projects first</strong> and then using the Add/Change/Remove buttons at the top.
 </div>
 <div class="container-fluid p-y-1" style="margin-top:60px">
     <div style="float:left;margin-top: 10px;">
