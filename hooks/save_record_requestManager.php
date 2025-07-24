@@ -11,8 +11,7 @@ $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
 $requestData = \REDCap::getData($project_id, 'array', array('request_id' => $record),null,null,false,false,false,true);
 $request = $requestData[$record][$event_id];
 
-$vanderbilt_emailTrigger = ExternalModules::getModuleInstance('vanderbilt_emailTrigger');
-if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEmailTriggerRequested()) && $instrument == 'request'){
+if($instrument == 'request'){
     $data = \REDCap::getData($project_id, 'json-array',$record,array($instrument.'_complete',$instrument.'_timestamp'), null,false,false,false,true)[0];
 
     $completion_time = $data[$instrument.'_timestamp'];
@@ -82,7 +81,7 @@ if(($request[$instrument.'_complete'] == '2' || $vanderbilt_emailTrigger->getEma
 }else if($instrument == 'tracking_number_assignment_survey' && $request['mr_copy_ok'][1] == "1") {
     $settings = \REDCap::getData($pidsArray['SETTINGS'], 'json-array', array('record_id' => '1'))[0];
     $RecordSetConcepts = \REDCap::getData($pidsArray['HARMONIST'], 'array', null,null,null,null,false,false,false,"[concept_id] = '".$request['mr_assigned']."'");
-    $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST'])[0];
+    $concept = arrayKeyExistsReturnValue(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetConcepts,$pidsArray['HARMONIST']),[0]);
     if (empty($concept)) {
         if($request['final_d'] != ""){
             $start_year = date("Y", strtotime($request['final_d']));

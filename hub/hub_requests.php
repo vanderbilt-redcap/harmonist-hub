@@ -28,13 +28,13 @@ foreach ($requests as $req){
         if (!hideRequestForNonVoters($settings['pastrequest_dur'], $req, $person_region['voteregion_y'])) {
             if (showClosedRequest($settings, $req, $personRegion)) {
                 //COMPLETED REQUESTS
-                $types_of_requests_data['completed'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentDetails[$req['request_id']], $request_type_label, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
-            } else if (arrayKeyExistsReturnValue($current_user,['pendingpanel_y___1']) == '1' && showPendingRequest($commentDetails[$req['request_id']], $personRegion, $req) && $regionResponseStatus != '2') {
+                $types_of_requests_data['completed'] .= getRequestHTML($module, $hubData, $pidsArray, $req, arrayKeyExistsReturnValue($commentDetails,[$req['request_id']]), $request_type_label, 1, $settings['vote_visibility'], $settings['vote_grid'], '');
+            } else if (arrayKeyExistsReturnValue($current_user,['pendingpanel_y___1']) == '1' && showPendingRequest(arrayKeyExistsReturnValue($commentDetails,[$req['request_id']]), $personRegion, $req) && $regionResponseStatus != '2') {
                 //PENDING REQUESTS
-                $types_of_requests_data['pending'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentDetails[$req['request_id']], $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $types_of_requests_data['pending'] .= getRequestHTML($module, $hubData, $pidsArray, $req, arrayKeyExistsReturnValue($commentDetails,[$req['request_id']]), $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
             } else if (showOpenRequest($req, $personRegion) && $regionResponseStatus != '2') {
                 //OPEN REQUESTS
-                $types_of_requests_data['open'] .= getRequestHTML($module, $hubData, $pidsArray, $req, $commentDetails[$req['request_id']], $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
+                $types_of_requests_data['open'] .= getRequestHTML($module, $hubData, $pidsArray, $req, arrayKeyExistsReturnValue($commentDetails,[$req['request_id']]), $request_type_label, 0, $settings['vote_visibility'], $settings['vote_grid'], '');
             }
         }
     }

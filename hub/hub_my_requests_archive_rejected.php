@@ -1,6 +1,7 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
+$person_name = htmlentities(arrayKeyExistsReturnValue($_REQUEST,['person_name']),ENT_QUOTES);
 $request_type_label = $module->getChoiceLabels('request_type', $pidsArray['RMANAGER']);
 ?>
 <script>

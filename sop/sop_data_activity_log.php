@@ -1,7 +1,8 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
 
-$record = htmlentities($_REQUEST['record'],ENT_QUOTES);
+$record = htmlentities(arrayKeyExistsReturnValue($_REQUEST,['record']),ENT_QUOTES);
+$person_name = htmlentities(arrayKeyExistsReturnValue($_REQUEST,['person_name']),ENT_QUOTES);
 
 $dataUpload_sevenDaysYoung = \REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null);
 ArrayFunctions::array_sort_by_column($dataUpload_sevenDaysYoung, 'responsecomplete_ts',SORT_DESC);
@@ -243,7 +244,7 @@ if(array_key_exists('record', $_REQUEST) && $record != ''){
                                 $comment_time = $dateComment->format("Y-m-d H:i:s");
                             }
 
-                            if ($recent_activity['download_id'] != "") {
+                            if (arrayKeyExistsReturnValue($recent_activity,['download_id']) != "") {
                                 #DOWNLOADS
                                 $people = \REDCap::getData(
                                     $pidsArray['PEOPLE'],
