@@ -341,7 +341,7 @@ class People extends Model
     {
         if(!empty($this->redcapName)){
             if(!$this->isUserInDataDownloads()){
-                $this->errorPermissionList[] = "User <strong><em>".$this->redcapName."</em></strong> has data downloads activated but is <strong>not in Data Downloads Project</strong>.";
+                $this->errorPermissionList[] = "User <strong><em>".$this->redcapName."</em></strong> has data download permissions activated in the People Project (5), but <strong>is not added to the Data Download Users Project (11)</strong>. Use the “Add User” button above to fix.";
             }
             if($this->isUserExpired()){
                 $this->errorPermissionList[] = "<strong>REDCap account has expired</strong> for user <strong><em>".$this->redcapName."</em></strong> .";
