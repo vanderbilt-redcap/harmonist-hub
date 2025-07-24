@@ -376,7 +376,7 @@ class People extends Model
     private function doesUserExistInREDCap(): bool
     {
         $sql = "SELECT * 
-                FROM `redcap_user_rights` 
+                FROM `redcap_user_information` 
                 WHERE username = ?";
 
         $q = $this->module->query($sql,[$this->redcapName]);
