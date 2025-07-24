@@ -63,7 +63,7 @@ $show = false;
 include_once ("data_downloads_user_management_buttons.php");
 ?>
 <div class="container-fluid p-y-1"  style="margin-top:40px">
-    <table id="selectUserListDataTable" class="table table-striped table-hover" style="border: 1px solid #dee2e6;" data-sortable>
+    <table id="selectUserListDataTable" class="main table table-striped table-hover" style="border: 1px solid #dee2e6;" data-sortable>
         <thead>
             <tr>
                 <th></th>
@@ -78,8 +78,10 @@ include_once ("data_downloads_user_management_buttons.php");
         foreach ($data as $index => $user) {
             $count++;
             $admin = "";
+            $adminText = "";
             if($user->getHarmonistadminY() == "1"){
                 $admin = "<span class='label label-approved'>Admin</span>";
+                $adminText = "Admin";
             }
             $personDataEntryLink = $module->getDataDownloadsUsersHandler()->getDatEntryLink($user->getRecordId(),$_GET['pid']);
             $name = $user->getFirstname()." ".$user->getLastname();
