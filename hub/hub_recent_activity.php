@@ -8,7 +8,7 @@ $region_vote_icon_text = array("1" => "text-approved", "0" => "text-error", "9" 
 
 $person_record = $_REQUEST['record'];
 if($person_record != ""){
-    $person_name = \Vanderbilt\HarmonistHubExternalModule\getPeopleName($pidsArray['PEOPLE'], $person_record);
+    $person_name = getPeopleName($pidsArray['PEOPLE'], $person_record);
 }
 ?>
 <script>

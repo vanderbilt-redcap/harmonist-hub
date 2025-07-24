@@ -3,6 +3,7 @@ namespace Vanderbilt\HarmonistHubExternalModule;
 
 $option = htmlentities($_GET['option'],ENT_QUOTES);
 $record = htmlentities($_GET['record'],ENT_QUOTES);
+$response_pi_level = 0;
 
 $RecordSetRM = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => $record));
 $request = $module->escape(ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRM,$pidsArray['RMANAGER'],'')[0]);
@@ -237,7 +238,6 @@ if($request !="") {
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                 <?php
-                                $response_pi_level = 0;
                                 if($current_user['harmonist_regperm'] == '3'){
                                     $response_pi_level = 1;
                                 }
