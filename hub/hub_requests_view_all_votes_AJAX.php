@@ -17,9 +17,10 @@ $region_vote_icon_text = $module->escape(array("1" => "text-approved", "0" => "t
 $region_vote_status = $module->escape($module->getChoiceLabels('region_vote_status', $pidsArray['RMANAGER']));
 
 $region_row = '';
+$class = "";
 foreach ($regions as $region){
     $region_id = $module->escape($region['record_id']);
-    $region_time = $request['region_close_ts'][$region_id];
+    $region_time = arrayKeyExistsReturnValue($request,['region_close_ts',$region_id]);
     if(!empty($region_time)) {
         $region_time = $module->escape(date('Y-m-d H:i', strtotime($region_time)));
         $class = "";
@@ -32,7 +33,7 @@ foreach ($regions as $region){
     foreach ($region_vote_status as $index=>$vote_text){
         $menu .= '<li><span class="fa '.$region_vote_icon_view[$index].' '.$region_vote_icon_text[$index].'" aria-hidden="true"></span><span class="'.$region_vote_icon_text[$index].'"> '.$vote_text.'</span>';
         $menu .= '<input type="hidden" value="'.$index.'" class="dropdown_votes" request="'.$request_id.'" id="'.$region_id.'_'.$index.'"></li>';
-        if($request['region_vote_status'][$region_id] == $index && $request['region_vote_status'][$region_id] != ''){
+        if(arrayKeyExistsReturnValue($request,['region_vote_status',$region_id]) == $index && arrayKeyExistsReturnValue($request,['region_vote_status',$region_id]) != ''){
             $selected = '<span class="fa '.$region_vote_icon_view[$index].' '.$region_vote_icon_text[$index].'" aria-hidden="true"></span><span class="'.$region_vote_icon_text[$index].'"> '.$vote_text.'</span>';
             $selected .= '<input type="hidden" value="'.$index.'" class="dropdown_votes" request="'.$request_id.'" id="'.$region_id.'_'.$index.'"">';
         }
