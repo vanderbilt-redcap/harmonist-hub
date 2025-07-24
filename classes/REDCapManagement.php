@@ -1,16 +1,17 @@
 <?php
 namespace Vanderbilt\HarmonistHubExternalModule;
-
+use ExternalModules\AbstractExternalModule;
+use ExternalModules\ExternalModules;
 
 class REDCapManagement {
     const DEFAULT_EMAIL_ADDRESS = "harmonist@vumc.org";
 
     public static function getProjectsConstantsArray(){
-        $projects_array = array(28=>'SETTINGS', 0=>'DATAMODEL',1=>'CODELIST',29=>'DATAMODELMETADATA',2=>'HARMONIST',3=>'RMANAGER',4=>'COMMENTSVOTES',5=>'SOP',6=>'SOPCOMMENTS',
-            7=>'REGIONS',8=>'PEOPLE',9=>'GROUP', 10=>'FAQ',11=>'HOME',12=>'DATAUPLOAD',13=>'DATADOWNLOAD',
-            14=>'JSONCOPY',15=>'METRICS',16=>'DATAAVAILABILITY',17=>'PROJECTSSTUDIES',18=>'DATATOOLMETRICS',19=>'DATATOOLUPLOADSECURITY',
+        $projects_array = array(28=>'SETTINGS', 0=>'DATAMODEL',1=>'CODELIST',29=>'DATAMODELMETADATA',14=>'JSONCOPY',2=>'HARMONIST',3=>'RMANAGER',4=>'COMMENTSVOTES',5=>'SOP',6=>'SOPCOMMENTS',
+            7=>'REGIONS',8=>'PEOPLE',9=>'GROUP', 10=>'FAQ',11=>'HOME',12=>'DATAUPLOAD',13=>'DATADOWNLOAD',41=>'DATADOWNLOADUSERS',
+            15=>'METRICS',16=>'DATAAVAILABILITY',17=>'PROJECTSSTUDIES',18=>'DATATOOLMETRICS',19=>'DATATOOLUPLOADSECURITY',
             20=>'FAQDATASUBMISSION',21=>'CHANGELOG',22=>'FILELIBRARY',23=>'FILELIBRARYDOWN',24=>'NEWITEMS',25=>'ABOUT',26=>'EXTRAOUTPUTS',
-            27=>'TBLCENTERREVISED', 41=>'DATADOWNLOADUSERS');
+            27=>'TBLCENTERREVISED');
 
         return $projects_array;
     }
@@ -19,10 +20,10 @@ class REDCapManagement {
         $projects_array_title= array(0=>'Data Model (0A)',1=>'Code Lists (0B)',2=>'Concept Sheets (1)',3=>'Request Manager (2)',
             4=>'Comments and Votes (2B)',5=>'Data Requests (3)',6=>'Data Request Comments (3B)', 7=>'Research Groups (4)',8=>'People (5)',
             9=>'Working Groups (6)', 10=>'Hub FAQ (7)',11=>'Homepage Content (8)',12=>'Data Upload Log (9)',13=>'Data Download Log (10)',
-            14=>'Data Model JSON (11)',15=>'Metrics (12)',16=>'Data Availability (13)',17=>'Projects and Studies (14)',
+            14=>'Data Model JSON (0F)',15=>'Metrics (12)',16=>'Data Availability (13)',17=>'Projects and Studies (14)',
             18=>'Toolkit Usage Metrics (15)',19=>'External Tool Security (16)',20=>'Toolkit FAQ (17)', 21=>'Changelog (18)',
             22=>'File Library (19)',23=>'File Library Log (20)',24=>'News Items (21)',25=>'About (22)',26=>'Extra Outputs (23)',
-            27=>'Consortium Site List (24)',28=>'Settings (99)',29=>'Toolkit Metadata (0C)' ,41=>'Data Download Users');
+            27=>'Consortium Site List (24)',28=>'Settings (99)',29=>'Toolkit Metadata (0C)' ,41=>'Data Download Users (11)');
 
         return $projects_array_title;
     }
@@ -48,6 +49,13 @@ class REDCapManagement {
 
     public static function getExtraConstantsArray(){
         return ['DES'];
+    }
+    public static function getProjectsDESArray(){
+        return ['MAP' => 'Data Model Browser Parent Project (0D)','SETTINGS' => 'Data Model Browser Settings (0E)'];
+    }
+
+    public static function getDESMapOtherConstantsArray(){
+        return ['DATAMODEL', 'CODELIST', 'DATAMODELMETADATA', 'JSONCOPY'];
     }
 
     public static function getProjectConstantsArrayWithoutDeactivatedProjects(){
@@ -994,6 +1002,10 @@ class REDCapManagement {
         return $projects_array_module_getpmid;
     }
 
+    public static function getProjectsModuleDESArray($name){
+        return ["des-projectname" => $name,"des-privacy" => "public"];
+    }
+
     public static function getProjectsModuleEmailAlertsArray($module, $hub_projectname){
         $projects_array_module_emailalerts = array(
             2=> array(
@@ -1714,5 +1726,67 @@ class REDCapManagement {
                 }
             }
         }
+    }
+
+    public static function addMapRecord($module, $project_id, $record, $project_id_new,$name,$project_show_y): void
+    {
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'record_id', $record);
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_id', $project_id_new);
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_constant', $name);
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_show_y', $project_show_y);
+        $module->addProjectToList($project_id, $module->framework->getEventId($project_id), $record, 'project_info_complete', 2);
+    }
+
+    public static function enableAnotherModule($module, $project_id, $moduleName, $settings): void
+    {
+        $module->enableModule($project_id,$moduleName);
+        $othermodule = ExternalModules::getModuleInstance($moduleName);
+        foreach ($settings as $setting_name => $setting_value){
+            if($moduleName == "vanderbilt_emailTrigger" && $setting_name == "email-text"){
+                $setting_value = str_replace("___project_id_new", $project_id, $setting_value);
+            }
+            $othermodule->setProjectSetting($setting_name, $setting_value, $project_id);
+        }
+    }
+
+    public static function installDataModelBrowserEM($module,$projectId,$record): int
+    {
+        $hubProjectnName = $module->getProjectSetting('hub-projectname');
+        $projectsArrayDes = self::getProjectsDESArray();
+        $projectsArrayModuleDes = self::getProjectsModuleDESArray($hubProjectnName);
+        $pidsArray = self::getPIDsArray($projectId);
+        $project_id_des = null;
+        foreach ($projectsArrayDes as $name => $project){
+            $project_title = $hubProjectnName." Hub: ".$project;
+            $project_id_new = $module->createProjectAndImportDataDictionary($name."_DES",$project_title);
+            if($name == "MAP")
+            {
+                #Activate EM on Mapper
+                $project_id_des = $project_id_new;
+                self::enableAnotherModule($module, $project_id_new, "data-model-browser", $projectsArrayModuleDes);
+
+                #Set Custom Labels
+                $custom_record_label = "[project_constant]: [project_id]";
+                $module->query("UPDATE redcap_projects SET custom_record_label = ? WHERE project_id = ?", [$custom_record_label, $project_id_new]);
+            } else {
+                #Save Records in DES mapper
+                $recordDES = 1;
+                self::addMapRecord($module, $project_id_des, $recordDES, $project_id_new,"SETTINGS",0);
+                foreach (self::getDESMapOtherConstantsArray() as $constant_name){
+                    $recordDES++;
+                    self::addMapRecord($module, $project_id_des, $recordDES, $pidsArray[$constant_name],$constant_name,0);
+                }
+                $recordDES++;
+                self::addMapRecord($module, $project_id_des, $recordDES, $pidsArray['FILELIBRARY'],"FILEREPO",0);
+
+                #Save Data in Settings
+                $module->addProjectToList($project_id_new, $module->framework->getEventId($project_id_new), 1, 'record_id', 1);
+                $module->addProjectToList($project_id_new, $module->framework->getEventId($project_id_new), 1, 'des_wkname', $hubProjectnName);
+            }
+        }
+        #Add DES Mapper PID to Harmonist Mapper & the res of PIDs
+        $name = self::getExtraConstantsArray()[0];
+        self::addMapRecord($module, $pidsArray['PROJECTS'], $record, $project_id_des,$name,0);
+        return $project_id_des;
     }
 }

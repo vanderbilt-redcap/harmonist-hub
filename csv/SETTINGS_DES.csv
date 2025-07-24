@@ -1,0 +1,41 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,external_module_settings,,text,"Record ID",,,,,,,,,,,,,
+record1_txt,external_module_settings,,descriptive,"<div class=""red""><b>STOP!</b> Only data in <b>Record ID 1</b> will be used for the Settings project. You are currently in <b>Record ID [record_id].</b></div>",,,,,,,"[record_id] != ""1""",,,,,,
+des_logo,external_module_settings,,file,"Logo Image
+<div style=""font-weight:lighter;font-style:italic"">to be displayed in top left of Data Model Browser page. Recommended dimensions (100x40px)</div>",,,,,,,,,,,,,
+des_wkname,external_module_settings,,text,"Consortium, Working Group, or Team Name",,,,,,,,,,,,,
+des_favicon,external_module_settings,,file,"Logo Favicon (browser tab picture)
+<div style=""font-weight:lighter;font-style:italic"">small square image</div>",,,,,,,,,RH,,,,
+des_doc_title,external_module_settings,,notes,"Header Title
+<div style=""font-weight:lighter;font-style:italic"">to be displayed in the menu bar, to the right of the logo, and in the page tab.</div>",,,,,,,,,,,,,
+des_doc_subtitle,external_module_settings,,notes,"Page Text Title
+<div style=""font-weight:lighter;font-style:italic"">to be displayed at the top of the main text section.</div>",,,,,,,,,,,,,
+des_doc_fronttext,external_module_settings,,notes,"Page Descriptive Text
+<div style=""font-weight:lighter;font-style:italic"">to be displayed underneath the Page Text Title. Can include HTML.</div>",,,,,,,,,,,,,
+upload_name,display_file,,text,"File name (descriptive)",,,,,,,,,RH,,,,
+upload_text,display_file,,text,"Download text
+<div style=""font-weight:lighter"">Text for the user to click on to download the file, e.g. ""Download PDF""</div>",,,,,,,,,RH,,,,
+upload_file,display_file,,file,"Document or file",,,,,,,,,,,,,
+upload_category,display_file,,dropdown,"File upload category (optional)
+<div style=""font-weight:lighter"">This variable can be revised (category names) or ignored as appropriate for the data model.</div>","1, Category 1 | 2, Category 2 | 3, Category 3",,,,,,,,,,,,
+upload_date,display_file,,text,"Date of file upload",,,date_ymd,,,,,,,,,,
+upload_user,display_file,,text,"REDCap username of person uploading file
+<div style=""font-weight:lighter"">for logging purposes</div>",,,,,,,,,,,,," @USERNAME"
+des_pdf_logo,pdf_settings,"PDF Contents",file,"Logo for the PDF
+<div style=""font-weight:lighter;font-style:italic"">high-resolution JPEG recommended.</div>",,,,,,,,,,,,,
+des_pdf_title,pdf_settings,,text,"PDF Title
+<div style=""font-weight:lighter;font-style:italic"">to be displayed at the top of the PDF.</div>",,,,,,,,,,,,,
+des_pdf_subtitle,pdf_settings,,text,"PDF Subtitle
+<div style=""font-weight:lighter;font-style:italic"">to be displayed in the PDF underneath the title.</div>",,,,,,,,,,,,,
+des_pdf_text,pdf_settings,,notes,"PDF Page Text
+<div style=""font-weight:lighter;font-style:italic"">to be displayed on the front page of the PDF. Can include basic HTML.</div>",,,,,,,,,,,,,
+des_update_d,pdf_settings,"Current Data Model PDF (and associated files)",text,"Datetime of last PDF update",,,datetime_seconds_ymd,,,,,,,,,,
+des_pdf,pdf_settings,,file,"Data Model PDF (most recently generated copy)
+<div style=""font-weight:lighter;font-style:italic"">Generating this file on the fly when users request a download can take a long time, so it is necessary to pre-generate and save the Data Model PDF each time the data model is revised.</div>",,,,,,,,,,,,,
+des_variable_search,pdf_settings,,file,"JSON File Variable Search File
+<div style=""font-weight:lighter;font-style:italic"">This file pre-parses the data model contents and enables responsive variable search.</div>",,,,,,,,,,,,,
+des_pdf_regenerate,pdf_settings,,checkbox,"<p><span style=""color: #ba372a;"">Regenerate the PDF immediately</span></p> <div style=""font-weight: lighter; font-style: italic;"">Check this box and save the record in order to force the Data Model PDF and JSON to regenerate immediately. This option will take a few minutes and the checkbox will be unchecked when the process is done. You will need to refresh the page to see changes.</div>","1, YES",,,,,,,,,,,,
+des_pdf_notification_email,email_notifications_settings,,notes,"List of email subscribers for PDF Updates 
+<div style=""font-weight:lighter"">These users will receive email notifications every time the PDF is regenerated. Separate email addresses with semi-colon (;)</div>",,,,,,,,,,,,,
+des_0a0b_email,email_notifications_settings,,notes,"List of emails subscribers for Data Model/Code List Updates
+<div style=""font-weight:lighter"">These users will receive email notifications every time data in the Data Model or the Code Lists sub-projects are updated. Separate email addresses with semi-colon (;)</div>",,,,,,,,,,,,,
