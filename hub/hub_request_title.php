@@ -416,7 +416,7 @@ if($request !="") {
                         }
 
                         $parameter = '[request_id] = "'.$request['request_id'].'"';
-                        $comments = \REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, $parameter, false);
+                        $comments = $module->escape(\REDCap::getData($pidsArray['COMMENTSVOTES'], 'array', null, null, null, null, false, false, false, $parameter, false));
                         if(!empty($comments))
                             krsort($comments);
 
@@ -452,7 +452,7 @@ if($request !="") {
                                         $revised_class = 'last_file';
                                     }
 
-                                    $people = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname','email'))[0];
+                                    $people = $module->escape(\REDCap::getData($pidsArray['PEOPLE'], 'json-array', array('record_id' => $comment['response_person']),array('firstname','lastname','email'))[0]);
                                     $name = trim($people['firstname'].' '.$people['lastname']);
 
                                     $comment_time ="";
@@ -502,7 +502,7 @@ if($request !="") {
 
                                     $region_code = $comment['response_regioncode'];
                                     if($region_code == ""){
-                                        $region_code = \REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $comment['response_region']),array('region_code'))[0]['region_code'];
+                                        $region_code = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'json-array', array('record_id' => $comment['response_region']),array('region_code'))[0]['region_code']);
                                     }
 
                                     $writing_group = "";
